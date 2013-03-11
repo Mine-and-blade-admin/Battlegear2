@@ -7,13 +7,13 @@ The mod will have a heavy dependency on the use of ASM (coremod) to edit the byt
 
 What does and doesn't work
 --------------------------
-What works
+**What works**
 * Dual wielding of weapons and fists
 * Switching between normal and battlemode with the 'R' Key
 * Attacking entities with both the offhand and mainhand weapons
 * Rendering of dual wielding in 1st person view
 
-What does not work
+**What does not work**
 * ASM capabilities
 * 3rd person renderering
 * The Battlegear inventory screen - currently 3 pairs of weapon slots appaer to the left of the normal inventory screen, this is only a temporary measure until the GUI is written
