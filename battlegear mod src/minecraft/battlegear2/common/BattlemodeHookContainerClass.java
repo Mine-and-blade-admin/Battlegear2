@@ -20,7 +20,7 @@ public class BattlemodeHookContainerClass {
 
 	@ForgeSubscribe
 	public void playerInterect(PlayerInteractEvent event){
-		if(FMLCommonHandler.instance().getSide() == Side.CLIENT){
+		if(FMLCommonHandler.instance().getSide() == Side.CLIENT){//we could put this into client proxy instead of checking the side
 			
 			if(event.entityPlayer.inventory.isBattlemode()){
 				Minecraft mc = FMLClientHandler.instance().getClient();
