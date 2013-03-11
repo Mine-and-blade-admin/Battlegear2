@@ -16,9 +16,13 @@ def generate_patches(src_dir, src_backup_dir, battlegear_dir):
 			if os.path.exists(original_path) and os.path.exists(new_path) and new_path.endswith('.java'):
 				
 				#generate and compare the md5s, ignoring the filepath
-				if not ('', hashfile(open(original_path, 'rb'), hashlib.md5())) == ('', hashfile(open(new_path, 'rb'), hashlib.md5())):
+				if not ('', hashfile(open(original_path, 'r'), hashlib.md5())) == ('', hashfile(open(new_path, 'r'), hashlib.md5())):
 					
 					print "Generating .patch for "+cur_file
+					
+					
+					
+					
 					
 					patch_path = original_path.replace(src_backup_dir, battlegear_dir)+".patch"
 					patch_parent = os.path.abspath(os.path.join(patch_path, os.pardir))
@@ -28,7 +32,7 @@ def generate_patches(src_dir, src_backup_dir, battlegear_dir):
 						
 					patch_File = open(patch_path, 'w')
 					
-					diff = difflib.unified_diff(open(original_path, 'rb').readlines(), open(new_path, 'rb').readlines())
+					diff = difflib.unified_diff(open(original_path, 'r').readlines(), open(new_path, 'r').readlines())
 					
 					patch_File.writelines(diff)
 				

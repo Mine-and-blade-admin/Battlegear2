@@ -44,7 +44,7 @@
 -            this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var31.currentItem * 20, var7 - 22 - 1, 0, 22, 24, 22);
 +            //-----MB-Edited-----
 +            if(var31.isBattlemode()){
-+            	GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture(BattleGear.imageFolder+"gui2.png"));
++            	GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture(BattleGear.imageFolder+"Battlegear-IngameGUI.png"));
 +            	
 +            	this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
 + 	            this.drawTexturedModalRect(var6 / 2 - 91 - 1 + (var31.currentItem-var31.offset) * 70, var7 - 22 - 1, 0, 22, 24+24, 22);

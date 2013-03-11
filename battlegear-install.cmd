@@ -1,3 +1,3 @@
 @echo off
-.\fml\python\battlegear-install.py
+.\fml\python\python_fml battlegear-install.py
 pause

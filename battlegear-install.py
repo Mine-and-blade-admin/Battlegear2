@@ -25,11 +25,13 @@ def main(mcp_dir, battlegearCode_dir, runtime_dir):
 	
 	print '================ Copy Battlegear Files ==================='
 	temp = os.path.abspath('temp.patch')
-	cmd = 'patch -iR'
+	cmd = 'patch -u -i'
+	cmd = 'patch -p2 -i "%s" ' % temp
     
 	if os.name == 'nt':
 		applydiff = os.path.abspath(os.path.join(mcp_dir, 'runtime', 'bin', 'applydiff.exe'))
-		cmd = '"'+applydiff+'" -uf -iR'
+		cmd = '"'+applydiff+'" -u -i'
+		cmd = '"%s" -uf -p2 -i "%s"' % (applydiff, temp)
 					
 	for root, _, filelist in os.walk(battlegearCode_dir, followlinks=True):
 		for cur_file in filelist:
@@ -40,14 +42,16 @@ def main(mcp_dir, battlegearCode_dir, runtime_dir):
 			if cur_file.endswith('.java.patch'):
 				
 				target_file = target_file[:len(target_file)-6]
+				
+				target_parent = os.path.abspath(os.path.join(target_file, os.pardir))
+				
+				next_cmd = cmd + ' "'+target_file+'"'
+				
 				print 'Patching ' + cur_file[:len(cur_file)-6]
 				
+				fix_patch(bg_file, temp)
 				
-				thiscmd = cmd +' "'+target_file+'"'
-				thiscmd = thiscmd +' "'+bg_file+'"'
-				
-				args = shlex.split(thiscmd)
-				process = subprocess.Popen(args, bufsize=-1)
+				process = subprocess.Popen(cmdsplit(next_cmd), bufsize=-1)
 				process.communicate()
 			else:
 				#not a patch file 
@@ -58,18 +62,48 @@ def main(mcp_dir, battlegearCode_dir, runtime_dir):
 					os.makedirs(target_parent)
 				
 				shutil.copy(bg_file, target_parent)
-				
-				
-	
-	if os.path.isfile(temp):
-		os.remove(temp)
+
+	#if os.path.isfile(temp):
+	#	os.remove(temp)
 
 	
 	print '================ Copy Battlegear Files Done==================='
 	
 	print '================ Battlegear src Instalation Done==================='
+
+#Copied from fml.py
+def fix_patch(in_file, out_file, find=None, rep=None):
+    in_file = os.path.normpath(in_file)
+    if out_file is None:
+        tmp_filename = in_file + '.tmp'
+    else:
+        out_file = os.path.normpath(out_file)
+        tmp_file = out_file
+        dir_name = os.path.dirname(out_file)
+        if dir_name:
+            if not os.path.exists(dir_name):
+                os.makedirs(dir_name)
+    file = 'not found'
+    with open(in_file, 'rb') as inpatch:
+        with open(tmp_file, 'wb') as outpatch:
+            for line in inpatch:
+                line = line.rstrip('\r\n')
+                if line[:3] in ['+++', '---', 'Onl', 'dif']:
+                    if not find == None and not rep == None:
+                        line = line.replace('\\', '/').replace(find, rep).replace('/', os.sep)
+                    else:
+                        line = line.replace('\\', '/').replace('/', os.sep)
+                    outpatch.write(line + os.linesep)
+                else:
+                    outpatch.write(line + os.linesep)
+                if line[:3] == '---':
+                    file = line[line.find(os.sep, line.find(os.sep)+1)+1:]
+                    
+    if out_file is None:
+        shutil.move(tmp_file, in_file)
+    return file	
 	
-	
+#Copied from fml.py
 def cmdsplit(args):
     if os.sep == '\\':
         args = args.replace('\\', '\\\\')
