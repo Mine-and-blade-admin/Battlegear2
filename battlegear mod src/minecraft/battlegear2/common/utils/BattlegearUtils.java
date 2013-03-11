@@ -80,7 +80,6 @@ public class BattlegearUtils {
 					if(weapons[i] || tools[i]){
 						//make sure there are no special functions for offhand/mainhand weapons
 						boolean rightClickFunction = checkForRightClickFunction(item);
-						
 						//only weapons can be placed in offhand
 						offhandDualWeapons[i] = !(tools[i]) && !rightClickFunction;
 						mainHandDualWeapons[i] = !rightClickFunction;
