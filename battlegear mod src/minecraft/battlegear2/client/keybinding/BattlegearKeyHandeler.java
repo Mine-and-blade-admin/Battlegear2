@@ -30,20 +30,23 @@ public class BattlegearKeyHandeler extends KeyHandler{
 	@Override
 	public void keyDown(EnumSet<TickType> types, KeyBinding kb,
 			boolean tickEnd, boolean isRepeat) {
-		
-		if(FMLClientHandler.instance().getClient().currentScreen == null){
+		Minecraft client=FMLClientHandler.instance().getClient();
+		if(client!=null && client.thePlayer!=null && client.currentScreen == null){//null checks to prevent any crash outside the world
 			if(kb.keyCode == battleInv.keyCode){
-				 FMLClientHandler.instance().getClient().thePlayer.swingOffItem();
+				 client.thePlayer.swingOffItem();
+				 //can send a packet here instead of inside the upper method
+				 //i'd go with a: commonproxy.sendPacket(client.thePlayer,new Packet18Animation(client.thePlayer, 1));
+				 //then the proxy would decide what to do depending on the effective side and type of entityplayer
 			}else if (kb.keyCode == drawWeapons.keyCode && tickEnd){
-				InventoryPlayer playerInventory = FMLClientHandler.instance().getClient().thePlayer.inventory;
+				InventoryPlayer playerInventory = client.thePlayer.inventory;
 				if(playerInventory.isBattlemode()){
 					previousBattlemode = playerInventory.currentItem;
 					playerInventory.currentItem = previousNormal;
-				}else{
+				}else{  //i'd use int bounds check (0-8) for the item, just in case
 					previousNormal = playerInventory.currentItem;
 					playerInventory.currentItem = previousBattlemode;
 				}
-				FMLClientHandler.instance().getClient().playerController.updateController();
+				client.playerController.updateController();
 			}
 		}
 	}
