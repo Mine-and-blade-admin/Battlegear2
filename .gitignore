@@ -4,3 +4,16 @@
 *.jar
 *.war
 *.ear
+
+#Ignore EVERYTHING
+*
+
+#Don't ignore the battlegear mod src folder
+!battlegear mod src/*
+
+#Also don't ignore the install scripts
+!battlegear-*
+
+#Or this file ;) (or readme)
+!.getignore
+!README.md
