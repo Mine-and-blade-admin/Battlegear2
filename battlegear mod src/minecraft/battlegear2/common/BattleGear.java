@@ -29,7 +29,7 @@ public class BattleGear {
 		
 		proxy.registerKeyHandelers();
 		
-		MinecraftForge.EVENT_BUS.register(new BattlemodeHookContainerClass());
+		MinecraftForge.EVENT_BUS.register(proxy);//using the proxy system
 		
 	}
 	
