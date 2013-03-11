@@ -1,6 +1,6 @@
 --- 
 +++ 
-@@ -73,6 +73,17 @@
+@@ -73,6 +73,19 @@
  
  public class NetServerHandler extends NetHandler
  {
@@ -8,17 +8,29 @@
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
 +	 * 
-+	 * Edits: 1
++	 * Edits: 2
 +	 * Added Methods: 0
 +	 * Added Fields: 0
 +	 * 
 +	 * Edit to allow a switch to occur to items that are outside of the normal slot range.
++	 * 
++	 * A second edit to prevent an index out of bounds error when "using" a block
 +	 */
 +	
      /** The logging system. */
      public static Logger logger = Logger.getLogger("Minecraft");
  
-@@ -691,7 +702,8 @@
+@@ -629,7 +642,8 @@
+         if (var3 == null || var3.getMaxItemUseDuration() == 0)
+         {
+             this.playerEntity.playerInventoryBeingManipulated = true;
+-            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = ItemStack.copyItemStack(this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem]);
++            //-----MB-Edited-----
++            this.playerEntity.inventory.setInventorySlotContents(this.playerEntity.inventory.currentItem, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
+             Slot var14 = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
+             this.playerEntity.openContainer.detectAndSendChanges();
+             this.playerEntity.playerInventoryBeingManipulated = false;
+@@ -691,7 +705,8 @@
  
      public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
      {

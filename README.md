@@ -11,10 +11,10 @@ What does and doesn't work
 * Switching between normal and battlemode with the 'R' Key
 * Attacking entities with both the offhand and mainhand weapons
 * Rendering of dual wielding in 1st person view
+* 3rd person renderering
 
 **What does not work**
 * ASM capabilities
-* 3rd person renderering
 * The Battlegear inventory screen - currently 3 pairs of weapon slots appaer to the left of the normal inventory screen, this is only a temporary measure until the GUI is written
 * Tools breaking blocks when held in the left hand (if possible)
 
@@ -36,6 +36,8 @@ The patch source can be re-obtained by issuing
 on a unix enviroment or
 ``./battlegear-getsrc.cmd``
 on a windows environment
+
+Remember to set the exeuction bit to true on the unix enviroment
 
 When the project is in a more mature state I will also include another script (likely an ant script) to retrieve the fully compiled and packaged code
 

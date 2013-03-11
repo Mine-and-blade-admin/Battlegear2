@@ -40,3 +40,22 @@
                  MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thisPlayerMP, var6));
              }
  
+@@ -454,4 +469,18 @@
+     {
+         blockReachDistance = distance;
+     }
++    
++    
++    /**
++     * Attempts to harvest a block at the given coordinate
++     */
++    //-----MB-Added-----
++    public boolean tryHarvestBlockOffHand(int par1, int par2, int par3)
++    {
++    	
++    	thisPlayerMP.inventory.currentItem += 3;
++    	boolean result = tryHarvestBlock(par1, par2, par3);
++    	thisPlayerMP.inventory.currentItem -= 3;
++        return result;
++    }
+ }

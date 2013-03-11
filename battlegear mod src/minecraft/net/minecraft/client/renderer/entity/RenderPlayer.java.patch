@@ -1,0 +1,38 @@
+--- 
++++ 
+@@ -1,5 +1,6 @@
+ package net.minecraft.client.renderer.entity;
+ 
++import battlegear2.client.utils.BattlegearRenderHelper;
+ import cpw.mods.fml.relauncher.Side;
+ import cpw.mods.fml.relauncher.SideOnly;
+ import net.minecraft.block.Block;
+@@ -31,6 +32,18 @@
+ @SideOnly(Side.CLIENT)
+ public class RenderPlayer extends RenderLiving
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 1
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * Because rendering the offhand item is quite complex the edits only defer the actual rendering to 
++	 * another method in BattlegearRenderHelper. This makes the coremod infinatly simpeler.
++	 */
++	
+     private ModelBiped modelBipedMain;
+     private ModelBiped modelArmorChestplate;
+     private ModelBiped modelArmor;
+@@ -453,6 +466,9 @@
+ 
+             GL11.glPopMatrix();
+         }
++        
++        //-----MB-Edited-----
++        BattlegearRenderHelper.renderItemIn3rdPerson(par1EntityPlayer,renderManager, modelBipedMain, modelArmor, modelArmorChestplate, par2);
+     }
+ 
+     protected void renderPlayerScale(EntityPlayer par1EntityPlayer, float par2)

@@ -1,22 +1,35 @@
 package battlegear2.client.utils;
 
+import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
+import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
+
+import javax.jws.Oneway;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import battlegear2.common.utils.BattlegearUtils;
 
 public class BattlegearRenderHelper {
 	
@@ -24,9 +37,10 @@ public class BattlegearRenderHelper {
 	
 	private static final ItemStack dummyStack = new ItemStack(Block.lavaMoving);
 	
-	public static void renderItemInFirstPerson(float frame, Minecraft mc, ItemRenderer itemRenderer){
+	public static void renderItemInFirstPerson(float frame, Minecraft mc, ItemRenderer itemRenderer, ItemStack itemToRender){
 		
-		if(itemRenderer.offHandItemToRender != dummyStack){
+		if(itemRenderer.offHandItemToRender != dummyStack &&  
+				(itemToRender == null || BattlegearUtils.isMainHand(itemToRender.itemID) )){
 	    	float progress = itemRenderer.prevEquippedOffHandProgress + (itemRenderer.equippedOffHandProgress - itemRenderer.prevEquippedOffHandProgress) * frame;
 	       
 	    	EntityClientPlayerMP player = mc.thePlayer;
@@ -252,7 +266,6 @@ public class BattlegearRenderHelper {
 	}
 
 	
-	
 	public static void updateEquippedItem(ItemRenderer itemRenderer, Minecraft mc)
     {
 		itemRenderer.prevEquippedOffHandProgress = itemRenderer.equippedOffHandProgress;
@@ -303,4 +316,171 @@ public class BattlegearRenderHelper {
             itemRenderer.equippedItemOffhandSlot = var1.inventory.currentItem+3;
         }
     }
+
+
+	public static void renderItemIn3rdPerson(EntityPlayer par1EntityPlayer, RenderManager renderManager,
+			ModelBiped modelBipedMain, ModelBiped modelArmour, ModelBiped modelArmorChestplate, float frame){
+		
+		ItemStack var21 = par1EntityPlayer.inventory.getStackInSlot(par1EntityPlayer.inventory.currentItem+3);
+		
+		modelBipedMain.onGroundOffhand = modelArmour.onGroundOffhand = modelBipedMain.onGroundOffhand = 
+				par1EntityPlayer.getOffSwingProgress(frame);
+
+        if (var21 != null && par1EntityPlayer.inventory.isBattlemode())
+        {
+        	modelBipedMain.heldItemLeft = modelArmour.heldItemLeft = modelBipedMain.heldItemLeft = 1;
+        	
+        	float var7;
+        	float var8;
+        	float var11;
+            GL11.glPushMatrix();
+            modelBipedMain.bipedLeftArm.postRender(0.0625F);
+            GL11.glTranslatef(0.0625F, 0.4375F, 0.0625F);
+
+            if (par1EntityPlayer.fishEntity != null)
+            {
+                var21 = new ItemStack(Item.stick);
+            }
+
+            EnumAction var23 = null;
+
+            if (par1EntityPlayer.getItemInUseCount() > 0)
+            {
+                var23 = var21.getItemUseAction();
+            }
+
+            IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer(var21, EQUIPPED);
+            boolean is3D = (customRenderer != null && customRenderer.shouldUseRenderHelper(EQUIPPED, var21, BLOCK_3D));
+
+            if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.blocksList[var21.itemID].getRenderType())))
+            {
+                var7 = 0.5F;
+                GL11.glTranslatef(0.0F, 0.1875F, -0.3125F);
+                var7 *= 0.75F;
+                GL11.glRotatef(20.0F, 1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glScalef(-var7, -var7, var7);
+            }
+            else if (var21.itemID == Item.bow.itemID)
+            {
+                var7 = 0.625F;
+                GL11.glTranslatef(0.0F, 0.125F, 0.3125F);
+                GL11.glRotatef(-20.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glScalef(var7, -var7, var7);
+                GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+            }
+            else if (Item.itemsList[var21.itemID].isFull3D())
+            {
+                var7 = 0.625F;
+
+                if (Item.itemsList[var21.itemID].shouldRotateAroundWhenRendering())
+                {
+                    GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+                    GL11.glTranslatef(0.0F, -0.125F, 0.0F);
+                }
+
+                if (par1EntityPlayer.getItemInUseCount() > 0 && var23 == EnumAction.block)
+                {
+                    GL11.glTranslatef(0.05F, 0.0F, -0.1F);
+                    GL11.glRotatef(-50.0F, 0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(-10.0F, 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(-60.0F, 0.0F, 0.0F, 1.0F);
+                }
+
+                GL11.glTranslatef(0.0F, 0.1875F, 0.0F);
+                GL11.glScalef(var7, -var7, var7);
+                GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+            }
+            else
+            {
+                var7 = 0.375F;
+                GL11.glTranslatef(0.25F, 0.1875F, -0.1875F);
+                GL11.glScalef(var7, var7, var7);
+                GL11.glRotatef(60.0F, 0.0F, 0.0F, 1.0F);
+                GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(20.0F, 0.0F, 0.0F, 1.0F);
+            }
+
+            float var10;
+            int var27;
+            float var28;
+
+            if (var21.getItem().requiresMultipleRenderPasses())
+            {
+                for (var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27)
+                {
+                    int var26 = var21.getItem().getColorFromItemStack(var21, var27);
+                    var28 = (float)(var26 >> 16 & 255) / 255.0F;
+                    var10 = (float)(var26 >> 8 & 255) / 255.0F;
+                    var11 = (float)(var26 & 255) / 255.0F;
+                    GL11.glColor4f(var28, var10, var11, 1.0F);
+                    renderManager.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
+                }
+            }
+            else
+            {
+                var27 = var21.getItem().getColorFromItemStack(var21, 0);
+                var8 = (float)(var27 >> 16 & 255) / 255.0F;
+                var28 = (float)(var27 >> 8 & 255) / 255.0F;
+                var10 = (float)(var27 & 255) / 255.0F;
+                GL11.glColor4f(var8, var28, var10, 1.0F);
+                renderManager.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
+            }
+
+            GL11.glPopMatrix();
+        }else{
+        	modelBipedMain.heldItemLeft = modelArmour.heldItemLeft = modelBipedMain.heldItemLeft = 0;
+        }
+	}
+
+
+	public static void moveOffHandArm(ModelBiped biped){
+		 if (biped.onGroundOffhand > -9990.0F)
+	     {
+			 
+			 /*var8 = this.onGround;
+	            this.bipedBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt_float(var8) * (float)Math.PI * 2.0F) * 0.2F;
+	            this.bipedRightArm.rotationPointZ = MathHelper.sin(this.bipedBody.rotateAngleY) * 5.0F;
+	            this.bipedRightArm.rotationPointX = -MathHelper.cos(this.bipedBody.rotateAngleY) * 5.0F;
+	            this.bipedLeftArm.rotationPointZ = -MathHelper.sin(this.bipedBody.rotateAngleY) * 5.0F;
+	            this.bipedLeftArm.rotationPointX = MathHelper.cos(this.bipedBody.rotateAngleY) * 5.0F;
+	            this.bipedRightArm.rotateAngleY += this.bipedBody.rotateAngleY;
+	            this.bipedLeftArm.rotateAngleY += this.bipedBody.rotateAngleY;
+	            this.bipedLeftArm.rotateAngleX += this.bipedBody.rotateAngleY;
+	            var8 = 1.0F - this.onGround;
+	            var8 *= var8;
+	            var8 *= var8;
+	            var8 = 1.0F - var8;
+	            var9 = MathHelper.sin(var8 * (float)Math.PI);
+	            float var10 = MathHelper.sin(this.onGround * (float)Math.PI) * -(this.bipedHead.rotateAngleX - 0.7F) * 0.75F;
+	            this.bipedRightArm.rotateAngleX = (float)((double)this.bipedRightArm.rotateAngleX - ((double)var9 * 1.2D + (double)var10));
+	            this.bipedRightArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
+	            this.bipedRightArm.rotateAngleZ = MathHelper.sin(this.onGround * (float)Math.PI) * -0.4F;*/
+	            
+	            
+			 biped.bipedBody.rotateAngleY = -MathHelper.sin(MathHelper.sqrt_float(biped.onGroundOffhand) * 3.141593F * 2.0F) * 0.2F;
+	            
+			 biped.bipedRightArm.rotationPointZ = MathHelper.sin(biped.bipedBody.rotateAngleY) * 5F;
+			 biped.bipedRightArm.rotationPointX = -MathHelper.cos(biped.bipedBody.rotateAngleY) * 5F;
+			 
+			 biped.bipedLeftArm.rotationPointZ = -MathHelper.sin(biped.bipedBody.rotateAngleY) * 5F;
+			 biped.bipedLeftArm.rotationPointX = MathHelper.cos(biped.bipedBody.rotateAngleY) * 5F;
+	            
+			 biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY;
+			 biped.bipedRightArm.rotateAngleY += biped.bipedBody.rotateAngleY;
+			 biped.bipedRightArm.rotateAngleX += biped.bipedBody.rotateAngleY;
+	            float f6 = 1.0F - biped.onGroundOffhand;
+	            f6 *= f6;
+	            f6 *= f6;
+	            f6 = 1.0F - f6;
+	            float f8 = MathHelper.sin(f6 * 3.141593F);
+	            float f10 = MathHelper.sin(biped.onGroundOffhand * 3.141593F) * -(biped.bipedHead.rotateAngleX - 0.7F) * 0.75F;
+	            biped.bipedLeftArm.rotateAngleX -= (double)f8 * 1.2D + (double)f10;
+	            biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY * 2.0F;
+	            biped.bipedLeftArm.rotateAngleZ = MathHelper.sin(biped.onGroundOffhand * 3.141593F) * -0.4F;
+	     }
+	}
+
 }

@@ -5,6 +5,8 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet7UseEntity;
 import net.minecraft.util.EnumMovingObjectType;
@@ -24,14 +26,15 @@ public class BattlemodeHookContainerClass {
 				Minecraft mc = FMLClientHandler.instance().getClient();
 				switch (event.action) {
 				case LEFT_CLICK_BLOCK:
+					System.out.println("clicked");
 					break;
 				case RIGHT_CLICK_BLOCK:
-					//TODO add support for tools
+					//TODO add support for tools, although I think this could
+					//require too many edits and is likely not viable
 					event.entityPlayer.swingOffItem();
-					event.setCanceled(true);
+					event.useItem = Result.DENY;
 					break;
 				case RIGHT_CLICK_AIR:
-					
 					ItemStack mainHand = event.entityPlayer.getCurrentEquippedItem();
 					if(mainHand == null || BattlegearUtils.isMainHand(mainHand.itemID)){
 						event.entityPlayer.swingOffItem();
@@ -50,6 +53,7 @@ public class BattlemodeHookContainerClass {
 		if(event.entityPlayer.inventory.isBattlemode()){
 			event.entityPlayer.swingOffItem();
 			event.entityPlayer.attackTargetEntityWithCurrentOffItem(event.target);
+			event.setCanceled(true);
 		}
 	}
 	

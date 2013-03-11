@@ -49,7 +49,7 @@
       */
      public void renderItemInFirstPerson(float par1)
      {
-+    	BattlegearRenderHelper.renderItemInFirstPerson(par1, mc, this);
++    	BattlegearRenderHelper.renderItemInFirstPerson(par1, mc, this, itemToRender);
          float var2 = this.prevEquippedProgress + (this.equippedProgress - this.prevEquippedProgress) * par1;
          EntityClientPlayerMP var3 = this.mc.thePlayer;
          float var4 = var3.prevRotationPitch + (var3.rotationPitch - var3.prevRotationPitch) * par1;
