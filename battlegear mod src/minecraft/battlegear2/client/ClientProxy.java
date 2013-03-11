@@ -10,6 +10,30 @@ public class ClientProxy extends CommonProxy{
 	public void registerKeyHandelers() {
 		KeyBindingRegistry.registerKeyBinding(new BattlegearKeyHandeler());
 	}
-
-	
+@ForgeSubscribe
+	public void playerInterect(PlayerInteractEvent event){
+			if(event.entityPlayer.inventory.isBattlemode()){
+				Minecraft mc = FMLClientHandler.instance().getClient();
+				switch (event.action) {
+				case LEFT_CLICK_BLOCK:
+					System.out.println("clicked");
+					break;
+				case RIGHT_CLICK_BLOCK:
+					//TODO add support for tools, although I think this could
+					//require too many edits and is likely not viable
+					event.entityPlayer.swingOffItem();
+					event.useItem = Result.DENY;
+					break;
+				case RIGHT_CLICK_AIR:
+					ItemStack mainHand = event.entityPlayer.getCurrentEquippedItem();
+					if(mainHand == null || BattlegearUtils.isMainHand(mainHand.itemID)){
+						event.entityPlayer.swingOffItem();
+						event.setCanceled(true);
+						break;
+					}else{
+							break;
+					}
+				}
+			}
+		}	
 }
