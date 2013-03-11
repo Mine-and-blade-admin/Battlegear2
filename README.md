@@ -1,8 +1,7 @@
-Battlegear2
-===========
+Mine and Blade : Battlegear - 2
+===============================
 
 This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft.
-
 The mod will have a heavy dependency on the use of ASM (coremod) to edit the bytecode of the minecraft base classess. Currently this feature is not avaliable.
 
 What does and doesn't work
@@ -22,7 +21,6 @@ What does and doesn't work
 Instalation
 -----------
 The files contained within the repository must be placed inside a minecraft forge-universal src installation.
-
 Due to potential legal issues of re-distributing Majong .java files, all base class edits are distributed as .java.patch files.
 
 The full battlegear source can be obtained by running
