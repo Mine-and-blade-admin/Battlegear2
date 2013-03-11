@@ -1,0 +1,30 @@
+--- 
++++ 
+@@ -73,6 +73,17 @@
+ 
+ public class NetServerHandler extends NetHandler
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 1
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * Edit to allow a switch to occur to items that are outside of the normal slot range.
++	 */
++	
+     /** The logging system. */
+     public static Logger logger = Logger.getLogger("Minecraft");
+ 
+@@ -691,7 +702,8 @@
+ 
+     public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
+     {
+-        if (par1Packet16BlockItemSwitch.id >= 0 && par1Packet16BlockItemSwitch.id < InventoryPlayer.getHotbarSize())
++    	//-----MB-Edited-----
++        if (InventoryPlayer.isValidSwitch(par1Packet16BlockItemSwitch.id))
+         {
+             this.playerEntity.inventory.currentItem = par1Packet16BlockItemSwitch.id;
+         }

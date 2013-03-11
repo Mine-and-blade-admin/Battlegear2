@@ -1,0 +1,31 @@
+--- 
++++ 
+@@ -168,6 +168,18 @@
+ @SideOnly(Side.CLIENT)
+ public class NetClientHandler extends NetHandler
+ {
++	
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 1
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * Edit to allow a switch to occur to items that are outside of the normal slot range.
++	 */
++	
+     /** True if kicked or disconnected from the server. */
+     private boolean disconnected = false;
+ 
+@@ -591,7 +603,8 @@
+ 
+     public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
+     {
+-        if (par1Packet16BlockItemSwitch.id >= 0 && par1Packet16BlockItemSwitch.id < InventoryPlayer.getHotbarSize())
++    	//-----MB-Edited-----
++        if (InventoryPlayer.isValidSwitch(par1Packet16BlockItemSwitch.id))
+         {
+             this.mc.thePlayer.inventory.currentItem = par1Packet16BlockItemSwitch.id;
+         }

@@ -1,0 +1,95 @@
+--- 
++++ 
+@@ -1,5 +1,6 @@
+ package net.minecraft.client.gui;
+ 
++import battlegear2.common.BattleGear;
+ import cpw.mods.fml.relauncher.Side;
+ import cpw.mods.fml.relauncher.SideOnly;
+ import java.awt.Color;
+@@ -26,11 +27,28 @@
+ import org.lwjgl.opengl.GL11;
+ import org.lwjgl.opengl.GL12;
+ 
++
+ import net.minecraftforge.common.ForgeHooks;
+ 
+ @SideOnly(Side.CLIENT)
+ public class GuiIngame extends Gui
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 3
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * The 1st 2 edits are required to switch between the battlemode and normal inventory bar rendering.
++	 * The 3rd edit is to prevent an index out of bounds error
++	 * 
++	 * These edits probably done even need to be done. We could render the extra slots on the side
++	 * of the inventory bar like the old battlegear. This would eliminate the need of this class
++	 * Transformer. This is probably the best way to go (I will keep it like this for now because cbf'd
++	 * making a new GUI class)
++	 */
+     private static final RenderItem itemRenderer = new RenderItem();
+     private final Random rand = new Random();
+     private final Minecraft mc;
+@@ -113,8 +131,16 @@
+             GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/gui.png"));
+             InventoryPlayer var31 = this.mc.thePlayer.inventory;
+             this.zLevel = -90.0F;
+-            this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
+-            this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var31.currentItem * 20, var7 - 22 - 1, 0, 22, 24, 22);
++            //-----MB-Edited-----
++            if(var31.isBattlemode()){
++            	GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture(BattleGear.imageFolder+"gui2.png"));
++            	
++            	this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
++ 	            this.drawTexturedModalRect(var6 / 2 - 91 - 1 + (var31.currentItem-var31.offset) * 70, var7 - 22 - 1, 0, 22, 24+24, 22);
++            }else{
++	            this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
++	            this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var31.currentItem * 20, var7 - 22 - 1, 0, 22, 24, 22);
++            }
+             GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/icons.png"));
+             GL11.glEnable(GL11.GL_BLEND);
+             GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
+@@ -342,11 +368,22 @@
+             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+             RenderHelper.enableGUIStandardItemLighting();
+ 
+-            for (var18 = 0; var18 < 9; ++var18)
+-            {
+-                var19 = var6 / 2 - 90 + var18 * 20 + 2;
+-                var20 = var7 - 16 - 3;
+-                this.renderInventorySlot(var18, var19, var20, par1);
++            if(var31.isBattlemode()){
++            	for (var18 = 0; var18 < 3; ++var18)
++	            {
++	                var19 = var6 / 2 - 90 + var18 * 70 + 2;
++	                var20 = var7 - 16 - 3;
++	                this.renderInventorySlot(var18+InventoryPlayer.offset, var19, var20, par1);
++	                this.renderInventorySlot(var18+InventoryPlayer.offset+3, var19+20, var20, par1);
++	            }
++            	
++            }else{
++	            for (var18 = 0; var18 < 9; ++var18)
++	            {
++	                var19 = var6 / 2 - 90 + var18 * 20 + 2;
++	                var20 = var7 - 16 - 3;
++	                this.renderInventorySlot(var18, var19, var20, par1);
++	            }
+             }
+ 
+             RenderHelper.disableStandardItemLighting();
+@@ -736,7 +773,8 @@
+      */
+     private void renderInventorySlot(int par1, int par2, int par3, float par4)
+     {
+-        ItemStack var5 = this.mc.thePlayer.inventory.mainInventory[par1];
++    	//-----MB-Edited-----
++        ItemStack var5 = this.mc.thePlayer.inventory.getStackInSlot(par1);
+ 
+         if (var5 != null)
+         {

@@ -1,0 +1,49 @@
+--- 
++++ 
+@@ -1,4 +1,6 @@
+ package net.minecraft.inventory;
++
++import battlegear2.common.gui.WeaponSlot;
+ 
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.entity.player.InventoryPlayer;
+@@ -8,6 +10,20 @@
+ 
+ public class ContainerPlayer extends Container
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 1
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * This edit is purely because I am lazy. I DO NOT intend for this to be the final 
++	 * functionality. This is just to add the duel wielding slots to the default 
++	 * inventory screen for testing purposes. Eventually a new inventory screen will be
++	 * built.
++	 */
++	
+     /** The crafting matrix inventory. */
+     public InventoryCrafting craftMatrix = new InventoryCrafting(this, 2, 2);
+     public IInventory craftResult = new InventoryCraftResult();
+@@ -49,6 +65,18 @@
+         {
+             this.addSlotToContainer(new Slot(par1InventoryPlayer, var4, 8 + var4 * 18, 142));
+         }
++        
++        //-----MB-Edited----- (Temp)
++        for(int x = 0; x < 3; x++){
++        	WeaponSlot main = new WeaponSlot(par1InventoryPlayer, x+InventoryPlayer.offset, -55, 25+x*25, true);
++        	WeaponSlot offhand = new WeaponSlot(par1InventoryPlayer, x+InventoryPlayer.offset+3, -25, 25+x*25, false);
++        	
++        	main.setPartner(offhand);
++        	offhand.setPartner(main);
++        	
++        	addSlotToContainer(main);
++        	addSlotToContainer(offhand);
++        }
+ 
+         this.onCraftMatrixChanged(this.craftMatrix);
+     }

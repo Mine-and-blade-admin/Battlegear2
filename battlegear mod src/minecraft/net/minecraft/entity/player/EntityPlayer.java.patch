@@ -1,0 +1,117 @@
+--- 
++++ 
+@@ -68,6 +68,19 @@
+ 
+ public abstract class EntityPlayer extends EntityLiving implements ICommandSender
+ {
++	
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 0
++	 * Added Methods: 5
++	 * Added Fields: 4
++	 * 
++	 * Adding methods and fields is relatively easy. Some of the methods provided are not needed,
++	 * they do however provide more simple access.
++	 */
++	
+     public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
+ 
+     /** Inventory of the player */
+@@ -163,6 +176,12 @@
+     protected float speedOnGround = 0.1F;
+     protected float speedInAir = 0.02F;
+     private int field_82249_h = 0;
++    
++    //-----MB-addFilds-----
++    public float offHandSwingProgress;
++    public float prevOffHandSwingProgress;
++    public int offHandSwingProgressInt;
++    public boolean isOffHandSwingInProgress;
+ 
+     /**
+      * An instance of a fishing rod's hook. If this isn't null, the icon image of the fishing rod is slightly different
+@@ -1356,6 +1375,7 @@
+                     }
+ 
+                     ItemStack var9 = this.getCurrentEquippedItem();
++                    System.out.println(var9);
+ 
+                     if (var9 != null && par1Entity instanceof EntityLiving)
+                     {
+@@ -2293,4 +2313,73 @@
+     {
+         FMLNetworkHandler.openGui(this, mod, modGuiId, world, x, y, z);
+     }
++    
++    //-----MB-AddMethod-----
++    @Override
++	protected void updateArmSwingProgress() {
++		super.updateArmSwingProgress();
++		
++		this.prevOffHandSwingProgress = this.offHandSwingProgress;
++		
++		int var1 = this.getArmSwingAnimationEndCopy();
++
++        if (this.isOffHandSwingInProgress)
++        {
++            ++this.offHandSwingProgressInt;
++
++            if (this.offHandSwingProgressInt >= var1)
++            {
++                this.offHandSwingProgressInt = 0;
++                this.isOffHandSwingInProgress = false;
++            }
++        }
++        else
++        {
++            this.offHandSwingProgressInt = 0;
++        }
++
++        this.offHandSwingProgress = (float)this.offHandSwingProgressInt / (float)var1;
++	}
++    
++    //-----MB-AddMethod-----
++    public void attackTargetEntityWithCurrentOffItem(Entity target){
++    	inventory.currentItem = inventory.currentItem+3;
++    	attackTargetEntityWithCurrentItem(target);
++    	inventory.currentItem = inventory.currentItem-3;
++    }
++    
++    //-----MB-AddMethod-----
++    public void swingOffItem()
++    {
++        if (!this.isOffHandSwingInProgress || this.offHandSwingProgressInt>= this.getArmSwingAnimationEndCopy() / 2 || this.offHandSwingProgressInt < 0)
++        {
++            this.offHandSwingProgressInt = -1;
++            this.isOffHandSwingInProgress = true;
++
++            //We will need to send some sort of animation packet here
++            /*if (this.worldObj instanceof WorldServer)
++            {
++                ((WorldServer)this.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(this, new Packet18Animation(this, 1));
++            }*/
++        }
++    }
++    
++    //-----MB-AddMethod-----
++    public float getOffSwingProgress(float par1)
++    {
++        float var2 = this.offHandSwingProgress - this.prevOffHandSwingProgress;
++
++        if (var2 < 0.0F)
++        {
++            ++var2;
++        }
++
++        return this.prevOffHandSwingProgress + var2 * par1;
++    }
++    
++    //-----MB-AddMethod-----
++    private int getArmSwingAnimationEndCopy()
++    {
++        return this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) * 1 : (this.isPotionActive(Potion.digSlowdown) ? 6 + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : 6);
++    }
+ }

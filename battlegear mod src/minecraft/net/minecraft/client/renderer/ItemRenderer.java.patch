@@ -1,0 +1,63 @@
+--- 
++++ 
+@@ -1,8 +1,11 @@
+ package net.minecraft.client.renderer;
+ 
++import battlegear2.client.utils.BattlegearRenderHelper;
++import battlegear2.common.BattleGear;
+ import cpw.mods.fml.client.TextureFXManager;
+ import cpw.mods.fml.relauncher.Side;
+ import cpw.mods.fml.relauncher.SideOnly;
++
+ import net.minecraft.block.Block;
+ import net.minecraft.block.material.Material;
+ import net.minecraft.client.Minecraft;
+@@ -32,6 +35,18 @@
+ @SideOnly(Side.CLIENT)
+ public class ItemRenderer
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 2
++	 * Added Methods: 0
++	 * Added Fields: 4
++	 * 
++	 * Because rendering the offhand item is quite complex the edits only defer the actual rendering to 
++	 * another method in BattlegearRenderHelper. This makes the coremod infinatly simpeler.
++	 */
++	
+     /** A reference to the Minecraft object. */
+     private Minecraft mc;
+     private ItemStack itemToRender = null;
+@@ -48,6 +63,13 @@
+ 
+     /** The index of the currently held item (0-8, or -1 if not yet updated) */
+     private int equippedItemSlot = -1;
++    
++    //-----MB-AddFields-----(4)
++    public ItemStack offHandItemToRender;
++    public int equippedItemOffhandSlot;
++    public float equippedOffHandProgress;
++    public float prevEquippedOffHandProgress;
++    
+ 
+     public ItemRenderer(Minecraft par1Minecraft)
+     {
+@@ -230,6 +252,7 @@
+      */
+     public void renderItemInFirstPerson(float par1)
+     {
++    	BattlegearRenderHelper.renderItemInFirstPerson(par1, mc, this);
+         float var2 = this.prevEquippedProgress + (this.equippedProgress - this.prevEquippedProgress) * par1;
+         EntityClientPlayerMP var3 = this.mc.thePlayer;
+         float var4 = var3.prevRotationPitch + (var3.rotationPitch - var3.prevRotationPitch) * par1;
+@@ -680,6 +703,7 @@
+ 
+     public void updateEquippedItem()
+     {
++    	BattlegearRenderHelper.updateEquippedItem(this, mc);
+         this.prevEquippedProgress = this.equippedProgress;
+         EntityClientPlayerMP var1 = this.mc.thePlayer;
+         ItemStack var2 = var1.inventory.getCurrentItem();

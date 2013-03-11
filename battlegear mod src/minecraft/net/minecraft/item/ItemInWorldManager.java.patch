@@ -1,0 +1,42 @@
+--- 
++++ 
+@@ -18,6 +18,19 @@
+ 
+ public class ItemInWorldManager
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 2
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * Both of the edits to this class involve replacing a call to the inventory.mainInvetory array.
++	 * This is just to prevent an index out of bounds error. *grumble about dodgey Majong coding*
++     * 
++	 */
++	
+     /** Forge reach distance */
+     private double blockReachDistance = 5.0d;
+ 
+@@ -353,7 +366,8 @@
+         }
+         else
+         {
+-            par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = var6;
++        	//-----MB-Edited-----
++        	par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, var6);
+ 
+             if (this.isCreative())
+             {
+@@ -367,7 +381,8 @@
+ 
+             if (var6.stackSize == 0)
+             {
+-                par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = null;
++            	//-----MB-Edited-----
++            	par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, null);
+                 MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thisPlayerMP, var6));
+             }
+ 
