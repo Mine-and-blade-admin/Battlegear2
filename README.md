@@ -12,10 +12,11 @@ What does and doesn't work
 * Attacking entities with both the offhand and mainhand weapons
 * Rendering of dual wielding in 1st person view
 * 3rd person renderering
+* Initial work on the equip screen
 
 **What does not work**
 * ASM capabilities
-* The Battlegear inventory screen - currently 3 pairs of weapon slots appaer to the left of the normal inventory screen, this is only a temporary measure until the GUI is written
+* Shift clicking on the inventory screen (It also needs to be tested on both ssp & smp)
 * Tools breaking blocks when held in the left hand (if possible)
 
 Instalation

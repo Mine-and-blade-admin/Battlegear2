@@ -4,6 +4,9 @@ import java.util.EnumSet;
 
 import org.lwjgl.input.Keyboard;
 
+import battlegear2.common.BattleGear;
+import battlegear2.common.gui.BattlegearGUIHandeler;
+
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.InventoryPlayer;
 import cpw.mods.fml.client.FMLClientHandler;
@@ -33,7 +36,12 @@ public class BattlegearKeyHandeler extends KeyHandler{
 		
 		if(FMLClientHandler.instance().getClient().currentScreen == null){
 			if(kb.keyCode == battleInv.keyCode){
-				 FMLClientHandler.instance().getClient().thePlayer.swingOffItem();
+				
+				FMLClientHandler.instance().getClient().thePlayer.openGui(
+						BattleGear.instance, BattlegearGUIHandeler.equipID,
+						FMLClientHandler.instance().getClient().theWorld,
+						0, 0, 0); 
+				
 			}else if (kb.keyCode == drawWeapons.keyCode && tickEnd){
 				InventoryPlayer playerInventory = FMLClientHandler.instance().getClient().thePlayer.inventory;
 				if(playerInventory.isBattlemode()){
