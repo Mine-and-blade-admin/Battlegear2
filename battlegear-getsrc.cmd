@@ -1,3 +1,3 @@
 @echo off
-.\fml\python\battlegear-getsrc.py
+.\fml\python\python_fml battlegear-getsrc.py
 pause
