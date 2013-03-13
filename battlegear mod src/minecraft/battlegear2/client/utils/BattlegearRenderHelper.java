@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
@@ -330,6 +331,8 @@ public class BattlegearRenderHelper {
 		//render the offhand weapon (if required)
 		renderItemIn3rdPerson(entityPlayer, renderManager, modelBipedMain, modelArmour, modelArmorChestplate, frame);
 		
+		
+		System.out.println(!entityPlayer.inventory.isBattlemode());
 		//Render Sheathed weapons if not in battlemode
 		if(!entityPlayer.inventory.isBattlemode()){
 			float backOffset = 0;
@@ -347,9 +350,10 @@ public class BattlegearRenderHelper {
 			float frame, boolean mainhand, float backOffset) {
 		
 		ItemStack item = mainhand ? 
-				entityPlayer.inventory.getStackInSlot(entityPlayer.inventory.currentItem) :
-					entityPlayer.inventory.getStackInSlot(entityPlayer.inventory.currentItem+3);
+				entityPlayer.inventory.getStackInSlot(entityPlayer.inventory.currentItem+InventoryPlayer.offset) :
+					entityPlayer.inventory.getStackInSlot(entityPlayer.inventory.currentItem+3+InventoryPlayer.offset);
 			
+		System.out.println(item);
 		if(item != null){
 			if(BattlegearConfig.forceBackSheath || !(BattlegearUtils.isMainHand(item.itemID))){
 				//Render on back
@@ -362,6 +366,7 @@ public class BattlegearRenderHelper {
 						(entityPlayer.inventory.armorItemInSlot(1) == null && entityPlayer.inventory.armorItemInSlot(2) == null) ?
 								modelBipedMain : modelArmorChestplate;
 				
+				System.out.println("Rendering");
 				targetModel.bipedBody.postRender((1F/16));
 				renderManager.itemRenderer.renderItem(entityPlayer, item, 0);
 				

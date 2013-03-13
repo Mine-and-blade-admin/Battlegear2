@@ -2,6 +2,7 @@ package battlegear2.common;
 
 import battlegear2.client.keybinding.BattlegearKeyHandeler;
 import battlegear2.common.gui.BattlegearGUIHandeler;
+import battlegear2.common.utils.BattlegearConnectionHandeler;
 import battlegear2.common.utils.BattlegearUtils;
 
 
@@ -19,7 +20,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, 
-	channels={BattlegearPacketHandeler.guiPackets}, 
+	channels={
+		BattlegearPacketHandeler.guiPackets,
+		BattlegearPacketHandeler.syncBattlePackets}, 
 	packetHandler =BattlegearPacketHandeler.class)
 public class BattleGear {
 	
@@ -43,6 +46,8 @@ public class BattleGear {
 		MinecraftForge.EVENT_BUS.register(new BattlemodeHookContainerClass());
 		
 		NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
+		
+		NetworkRegistry.instance().registerConnectionHandler(new BattlegearConnectionHandeler());
 		
 	}
 	

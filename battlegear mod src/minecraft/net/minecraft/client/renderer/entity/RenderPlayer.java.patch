@@ -32,7 +32,7 @@
          }
 +        
 +        //-----MB-Edited-----
-+        BattlegearRenderHelper.renderItemIn3rdPerson(par1EntityPlayer,renderManager, modelBipedMain, modelArmor, modelArmorChestplate, par2);
++        BattlegearRenderHelper.postRenderSpecials(par1EntityPlayer,renderManager, modelBipedMain, modelArmor, modelArmorChestplate, par2);
      }
  
      protected void renderPlayerScale(EntityPlayer par1EntityPlayer, float par2)

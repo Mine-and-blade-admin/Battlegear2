@@ -48,6 +48,8 @@ public class ContainerBattle extends Container{
         	addSlotToContainer(main);
         	addSlotToContainer(offhand);
         }
+        
+        System.out.println(inventorySlots.size());
 	}
 
 	public boolean canInteractWith(EntityPlayer par1EntityPlayer){

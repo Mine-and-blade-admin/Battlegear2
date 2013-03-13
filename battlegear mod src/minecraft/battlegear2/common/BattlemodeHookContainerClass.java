@@ -20,15 +20,15 @@ public class BattlemodeHookContainerClass {
 
 	@ForgeSubscribe
 	public void playerInterect(PlayerInteractEvent event){
-		if(FMLCommonHandler.instance().getSide() == Side.CLIENT){
-			
+		
+		//if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
 			if(event.entityPlayer.inventory.isBattlemode()){
-				Minecraft mc = FMLClientHandler.instance().getClient();
+				//Minecraft mc = FMLClientHandler.instance().getClient();
 				switch (event.action) {
 				case LEFT_CLICK_BLOCK:
-					System.out.println("clicked");
 					break;
 				case RIGHT_CLICK_BLOCK:
+					
 					//TODO add support for tools, although I think this could
 					//require too many edits and is likely not viable
 					event.entityPlayer.swingOffItem();
@@ -45,7 +45,8 @@ public class BattlemodeHookContainerClass {
 					}
 				}
 			}
-		}
+		//}
+		
 	}
 	
 	@ForgeSubscribe
