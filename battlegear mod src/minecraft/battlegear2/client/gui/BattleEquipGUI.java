@@ -5,9 +5,11 @@ import org.lwjgl.opengl.GL11;
 import battlegear2.common.BattleGear;
 import battlegear2.common.gui.ContainerBattle;
 
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.stats.AchievementList;
 
 public class BattleEquipGUI extends InventoryEffectRenderer{
@@ -22,10 +24,12 @@ public class BattleEquipGUI extends InventoryEffectRenderer{
     */
    private float ySize_lo;
 
-   public BattleEquipGUI(EntityPlayer entityPlayer)
+   public BattleEquipGUI(EntityPlayer entityPlayer, boolean isRemote)
    {
-       super(new ContainerBattle(entityPlayer.inventory, true, entityPlayer));
+	   //super(new ContainerPlayer(entityPlayer.inventory, !isRemote, entityPlayer));
+       super(new ContainerBattle(entityPlayer.inventory, !isRemote, entityPlayer));
        this.allowUserInput = true;
+       
        //Don't need this, however maybe we can add a stat later on. I will keep it comented out for now
        //entityPlayer.addStat(AchievementList.openInventory, 1);
    }
@@ -38,6 +42,15 @@ public class BattleEquipGUI extends InventoryEffectRenderer{
        super.drawScreen(par1, par2, par3);
        this.xSize_lo = (float)par1;
        this.ySize_lo = (float)par2;
+   }
+   
+   /**
+    * Adds the buttons (and other controls) to the screen in question.
+    */
+   public void initGui()
+   {
+       this.controlList.clear();
+       super.initGui();
    }
    
    /**

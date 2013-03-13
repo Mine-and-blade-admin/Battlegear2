@@ -1,9 +1,13 @@
 package battlegear2.common.gui;
 
 import battlegear2.client.gui.BattleEquipGUI;
+import battlegear2.common.BattlegearPacketHandeler;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.world.World;
 import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class BattlegearGUIHandeler implements IGuiHandler{
 	
@@ -14,7 +18,7 @@ public class BattlegearGUIHandeler implements IGuiHandler{
 			int x, int y, int z) {
 		switch(ID){
 		case equipID:
-			return new ContainerBattle(player.inventory, false, player);
+			return new ContainerBattle(player.inventory, !world.isRemote, player);
 		default:
 			return null;
 		}
@@ -26,7 +30,7 @@ public class BattlegearGUIHandeler implements IGuiHandler{
 			int x, int y, int z) {
 		switch(ID){
 		case equipID:
-			return new BattleEquipGUI(player);	
+			return new BattleEquipGUI(player, world.isRemote);	
 		default:
 			return null;
 		}

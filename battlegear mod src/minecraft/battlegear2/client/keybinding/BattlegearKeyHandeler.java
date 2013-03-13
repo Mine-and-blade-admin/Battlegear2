@@ -5,13 +5,17 @@ import java.util.EnumSet;
 import org.lwjgl.input.Keyboard;
 
 import battlegear2.common.BattleGear;
+import battlegear2.common.BattlegearPacketHandeler;
 import battlegear2.common.gui.BattlegearGUIHandeler;
 
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry.KeyHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class BattlegearKeyHandeler extends KeyHandler{
 
@@ -35,15 +39,20 @@ public class BattlegearKeyHandeler extends KeyHandler{
 			boolean tickEnd, boolean isRepeat) {
 		
 		if(FMLClientHandler.instance().getClient().currentScreen == null){
+			
+			EntityClientPlayerMP player = FMLClientHandler.instance().getClient().thePlayer;
+			
 			if(kb.keyCode == battleInv.keyCode){
-				
-				FMLClientHandler.instance().getClient().thePlayer.openGui(
+				//send packet to open container on server
+				PacketDispatcher.sendPacketToServer(BattlegearPacketHandeler.generateGUIPacket(BattlegearGUIHandeler.equipID));
+				//Also open on client
+				player.openGui(
 						BattleGear.instance, BattlegearGUIHandeler.equipID,
 						FMLClientHandler.instance().getClient().theWorld,
-						0, 0, 0); 
+						(int)player.posX, (int)player.posY, (int)player.posZ); 
 				
 			}else if (kb.keyCode == drawWeapons.keyCode && tickEnd){
-				InventoryPlayer playerInventory = FMLClientHandler.instance().getClient().thePlayer.inventory;
+				InventoryPlayer playerInventory = player.inventory;
 				if(playerInventory.isBattlemode()){
 					previousBattlemode = playerInventory.currentItem;
 					playerInventory.currentItem = previousNormal;

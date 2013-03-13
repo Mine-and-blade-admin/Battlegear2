@@ -50,16 +50,16 @@ public class ContainerBattle extends Container{
         }
 	}
 
-	@Override
-	public boolean canInteractWith(EntityPlayer var1) {
-		return true;
-	}
-	
+	public boolean canInteractWith(EntityPlayer par1EntityPlayer){
+        return true;
+    }
+
 	/**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
     public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
     {
+    	System.out.println("transfer");
     	//TODO do this!!!!
     	return null;
     }

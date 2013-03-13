@@ -14,9 +14,13 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 
 @Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2")
+@NetworkMod(clientSideRequired=true, serverSideRequired=false, 
+	channels={BattlegearPacketHandeler.guiPackets}, 
+	packetHandler =BattlegearPacketHandeler.class)
 public class BattleGear {
 	
 	 @Instance("MB-Battlegear2")

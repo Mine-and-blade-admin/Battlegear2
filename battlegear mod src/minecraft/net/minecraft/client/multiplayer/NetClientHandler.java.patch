@@ -29,3 +29,12 @@
          {
              this.mc.thePlayer.inventory.currentItem = par1Packet16BlockItemSwitch.id;
          }
+@@ -1075,7 +1088,7 @@
+     public void handleSetSlot(Packet103SetSlot par1Packet103SetSlot)
+     {
+         EntityClientPlayerMP var2 = this.mc.thePlayer;
+-
++        
+         if (par1Packet103SetSlot.windowId == -1)
+         {
+             var2.inventory.setItemStack(par1Packet103SetSlot.myItemStack);

@@ -10,6 +10,4 @@ public class ClientProxy extends CommonProxy{
 	public void registerKeyHandelers() {
 		KeyBindingRegistry.registerKeyBinding(new BattlegearKeyHandeler());
 	}
-
-	
 }
