@@ -28,13 +28,13 @@ public interface IBattlegearWeapon {
 	 * This is generally used to attack an entity with the offhand item. If this is the case the event should
 	 * be canceled to prevent any default right clicking events (Eg Villager Trading)
 	 * 
-	 * @param event the EntityInteractEvent that was generated
+	 * @param event the OffhandAttackEvent that was generated
 	 * @param mainhandItem the ItemStack currently being held in the right hand
 	 * @param offhandItem the ItemStack currently being held in the left hand
 	 * 
 	 * @return true if the off hand swing animation should be performed
 	 */
-	public boolean offhandAttackEntity(EntityInteractEvent event, ItemStack mainhandItem, ItemStack offhandItem);
+	public boolean offhandAttackEntity(OffhandAttackEvent event, ItemStack mainhandItem, ItemStack offhandItem);
 	
 	/**
 	 * Perform any function when the item is held in the offhand and the user right clicks "Air".
@@ -55,7 +55,6 @@ public interface IBattlegearWeapon {
 	 * @param mainhandItem the ItemStack currently being held in the right hand
 	 * @param offhandItem the ItemStack currently being held in the left hand
 	 * 
-	 * @return true if the off hand swing animation should be performed
 	 */
 	public boolean offhandClickBlock(PlayerInteractEvent event, ItemStack mainhandItem, ItemStack offhandItem);
 		

@@ -42,9 +42,7 @@ public class WeaponSlot extends Slot{
 			return super.isItemValid(par1ItemStack);
 		}
 		else if(mainHand){
-			if(BattlegearUtils.isWeapon(par1ItemStack.itemID) || 
-					BattlegearUtils.isTool(par1ItemStack.itemID) || 
-					BattlegearUtils.isBow(par1ItemStack.itemID)){
+			if(BattlegearUtils.isWeapon(par1ItemStack.itemID)){
 				if(partner.getHasStack()){
 					return BattlegearUtils.isMainHand(par1ItemStack.itemID) ? super.isItemValid(par1ItemStack) : false;
 				}else{

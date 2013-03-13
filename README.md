@@ -13,11 +13,15 @@ What does and doesn't work
 * Rendering of dual wielding in 1st person view
 * 3rd person renderering
 * Initial work on the equip screen
+* Inital work on an API to allow other modders to define dual wielding weapons
 
 **What does not work**
 * ASM capabilities
 * Shift clicking on the inventory screen (It also needs to be tested on both ssp & smp)
-* Tools breaking blocks when held in the left hand (if possible)
+* Tools breaking blocks when held in the left hand (probably will not make it into the game)
+* Rendering of sheathed weapons
+* Animation of other players swinging items in SMP (amedw/nerd-boy working on this next)
+* Possibly also other players holding offhand weapons (I need to test this)
 
 Instalation
 -----------

@@ -3,6 +3,8 @@ package battlegear2.common.utils;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import battlegear2.api.IBattlegearWeapon;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.relauncher.ReflectionHelper;
@@ -22,8 +24,6 @@ public class BattlegearUtils {
 	
 	
 	private static boolean[] weapons;
-	private static boolean[] bows;
-	private static boolean[] tools;
 	private static boolean[] mainHandDualWeapons;
 	private static boolean[] offhandDualWeapons;
 	
@@ -34,55 +34,53 @@ public class BattlegearUtils {
 	};
 
 	public static boolean isWeapon(int id){
-		return weapons[id];
-	}
-	
-	public static boolean isBow(int id){
-		return bows[id];
-	}
-	
-	public static boolean isTool(int id){
-		return tools[id];
+		
+		if(Item.itemsList[id] instanceof IBattlegearWeapon)
+			return true;
+		else
+			return weapons[id];
 	}
 	
 	public static boolean isMainHand(int id){
-		return mainHandDualWeapons[id];
+		if(Item.itemsList[id] instanceof IBattlegearWeapon)
+			return ((IBattlegearWeapon)Item.itemsList[id]).willAllowOffhandWeapon();
+		else
+			return mainHandDualWeapons[id];
 	}
 	
 	public static boolean isOffHand(int id){
-		return offhandDualWeapons[id];
+		if(Item.itemsList[id] instanceof IBattlegearWeapon)
+			return ((IBattlegearWeapon)Item.itemsList[id]).isOffhandHandDualWeapon();
+		else
+			return offhandDualWeapons[id];
 	}
 	
 	public static void scanAndProcessItems(){
 		
 		weapons = new boolean[Item.itemsList.length];
-		bows = new boolean[Item.itemsList.length];;
 		mainHandDualWeapons = new boolean[Item.itemsList.length];
 		offhandDualWeapons = new boolean[Item.itemsList.length];
-		tools = new boolean[Item.itemsList.length];
 		
 		for(int i = 0; i < Item.itemsList.length; i++){
 			Item item = Item.itemsList[i];
 			weapons[i] = false;
-			bows[i] = false;
 			mainHandDualWeapons[i] = false;
 			offhandDualWeapons[i] = false;
-			tools[i] = false;
 			if(item != null){
 				
 				boolean valid = item.getItemStackLimit() == 1 && item.isDamageable();
 				if(valid){
-					weapons[i] = item instanceof ItemSword;
-					bows[i] = item instanceof ItemBow;
-					tools[i] = item instanceof ItemTool;
+					weapons[i] = item instanceof ItemSword ||
+							item instanceof ItemBow ||
+							item instanceof ItemTool;					
 					
 					
-					if(weapons[i] || tools[i]){
+					if(weapons[i]){
 						//make sure there are no special functions for offhand/mainhand weapons
 						boolean rightClickFunction = checkForRightClickFunction(item);
 						//only weapons can be placed in offhand
-						offhandDualWeapons[i] = !(tools[i]) && !rightClickFunction;
-						mainHandDualWeapons[i] = !rightClickFunction;
+						offhandDualWeapons[i] = !(item instanceof ItemTool || item instanceof ItemBow) && !rightClickFunction;
+						mainHandDualWeapons[i] = !(item instanceof ItemBow) && !rightClickFunction;
 					}
 				}
 			}
@@ -90,8 +88,7 @@ public class BattlegearUtils {
 	}
 
 	public static boolean checkForRightClickFunction(Item item) {
-		
-		
+
 		try{
 			if(item.getItemUseAction(null) == EnumAction.block || item.getItemUseAction(null) == EnumAction.none){
 				
