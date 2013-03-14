@@ -1,6 +1,8 @@
 Mine and Blade : Battlegear - 2
 ===============================
 
+Source is updated for Minecraft 1.5
+
 This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft.
 The mod will have a heavy dependency on the use of ASM (coremod) to edit the bytecode of the minecraft base classess. Currently this feature is not avaliable.
 

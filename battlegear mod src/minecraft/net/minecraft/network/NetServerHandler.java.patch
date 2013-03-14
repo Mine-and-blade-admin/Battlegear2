@@ -1,6 +1,14 @@
 --- 
 +++ 
-@@ -73,6 +73,19 @@
+@@ -8,6 +8,7 @@
+ import java.util.Random;
+ 
+ import cpw.mods.fml.common.network.FMLNetworkHandler;
++import mods.battlegear2.common.inventory.InventoryPlayerBattle;
+ import net.minecraft.crash.CrashReport;
+ import net.minecraft.crash.CrashReportCategory;
+ import net.minecraft.entity.Entity;
+@@ -74,6 +75,19 @@
  
  public class NetServerHandler extends NetHandler
  {
@@ -8,35 +16,46 @@
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
 +	 * 
-+	 * Edits: 2
++	 * Edits: 3
 +	 * Added Methods: 0
 +	 * Added Fields: 0
 +	 * 
 +	 * Edit to allow a switch to occur to items that are outside of the normal slot range.
 +	 * 
-+	 * A second edit to prevent an index out of bounds error when "using" a block
++	 * A second & third edit to prevent an index out of bounds error when "using" a block
 +	 */
 +	
-     /** The logging system. */
-     public static Logger logger = Logger.getLogger("Minecraft");
+     /** The underlying network manager for this server handler. */
+     public final INetworkManager netManager;
  
-@@ -629,7 +642,8 @@
-         if (var3 == null || var3.getMaxItemUseDuration() == 0)
+@@ -597,14 +611,17 @@
+ 
+         if (itemstack != null && itemstack.stackSize == 0)
+         {
+-            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = null;
++        	//-----MB-Edited-----
++        	this.playerEntity.inventory.setInventorySlotContents(this.playerEntity.inventory.currentItem, null);
+             itemstack = null;
+         }
+ 
+         if (itemstack == null || itemstack.getMaxItemUseDuration() == 0)
          {
              this.playerEntity.playerInventoryBeingManipulated = true;
 -            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = ItemStack.copyItemStack(this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem]);
 +            //-----MB-Edited-----
 +            this.playerEntity.inventory.setInventorySlotContents(this.playerEntity.inventory.currentItem, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
-             Slot var14 = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
++            
+             Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
              this.playerEntity.openContainer.detectAndSendChanges();
              this.playerEntity.playerInventoryBeingManipulated = false;
-@@ -691,7 +705,8 @@
+@@ -677,8 +694,8 @@
  
      public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
      {
 -        if (par1Packet16BlockItemSwitch.id >= 0 && par1Packet16BlockItemSwitch.id < InventoryPlayer.getHotbarSize())
+-        {
 +    	//-----MB-Edited-----
-+        if (InventoryPlayer.isValidSwitch(par1Packet16BlockItemSwitch.id))
-         {
++    	if (InventoryPlayerBattle.isValidSwitch(par1Packet16BlockItemSwitch.id)){
              this.playerEntity.inventory.currentItem = par1Packet16BlockItemSwitch.id;
          }
+         else

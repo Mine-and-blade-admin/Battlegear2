@@ -1,13 +1,14 @@
 --- 
 +++ 
-@@ -1,5 +1,6 @@
- package net.minecraft.client.renderer.entity;
+@@ -2,6 +2,7 @@
  
-+import battlegear2.client.utils.BattlegearRenderHelper;
  import cpw.mods.fml.relauncher.Side;
  import cpw.mods.fml.relauncher.SideOnly;
++import mods.battlegear2.client.utils.BattlegearRenderHelper;
  import net.minecraft.block.Block;
-@@ -31,6 +32,18 @@
+ import net.minecraft.client.entity.EntityPlayerSP;
+ import net.minecraft.client.model.ModelBiped;
+@@ -30,6 +31,18 @@
  @SideOnly(Side.CLIENT)
  public class RenderPlayer extends RenderLiving
  {
@@ -26,13 +27,14 @@
      private ModelBiped modelBipedMain;
      private ModelBiped modelArmorChestplate;
      private ModelBiped modelArmor;
-@@ -453,6 +466,9 @@
+@@ -397,6 +410,10 @@
  
              GL11.glPopMatrix();
          }
 +        
-+        //-----MB-Edited-----
-+        BattlegearRenderHelper.postRenderSpecials(par1EntityPlayer,renderManager, modelBipedMain, modelArmor, modelArmorChestplate, par2);
++      //-----MB-Edited-----
++       BattlegearRenderHelper.postRenderSpecials(par1EntityPlayer,renderManager, modelBipedMain, modelArmor, modelArmorChestplate, par2);
++        
      }
  
      protected void renderPlayerScale(EntityPlayer par1EntityPlayer, float par2)

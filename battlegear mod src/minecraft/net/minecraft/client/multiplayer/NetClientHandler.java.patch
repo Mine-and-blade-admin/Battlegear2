@@ -1,10 +1,18 @@
 --- 
 +++ 
-@@ -168,6 +168,18 @@
+@@ -21,6 +21,8 @@
+ import java.util.Map;
+ import java.util.Random;
+ import javax.crypto.SecretKey;
++
++import mods.battlegear2.common.inventory.InventoryPlayerBattle;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.client.entity.EntityClientPlayerMP;
+ import net.minecraft.client.entity.EntityOtherPlayerMP;
+@@ -184,6 +186,17 @@
  @SideOnly(Side.CLIENT)
  public class NetClientHandler extends NetHandler
  {
-+	
 +	/*
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
@@ -19,22 +27,14 @@
      /** True if kicked or disconnected from the server. */
      private boolean disconnected = false;
  
-@@ -591,7 +603,8 @@
+@@ -609,8 +622,8 @@
  
      public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
      {
 -        if (par1Packet16BlockItemSwitch.id >= 0 && par1Packet16BlockItemSwitch.id < InventoryPlayer.getHotbarSize())
+-        {
 +    	//-----MB-Edited-----
-+        if (InventoryPlayer.isValidSwitch(par1Packet16BlockItemSwitch.id))
-         {
++    	if (InventoryPlayerBattle.isValidSwitch(par1Packet16BlockItemSwitch.id)){
              this.mc.thePlayer.inventory.currentItem = par1Packet16BlockItemSwitch.id;
          }
-@@ -1075,7 +1088,7 @@
-     public void handleSetSlot(Packet103SetSlot par1Packet103SetSlot)
-     {
-         EntityClientPlayerMP var2 = this.mc.thePlayer;
--
-+        
-         if (par1Packet103SetSlot.windowId == -1)
-         {
-             var2.inventory.setItemStack(par1Packet103SetSlot.myItemStack);
+     }

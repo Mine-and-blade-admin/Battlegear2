@@ -1,52 +1,101 @@
 --- 
 +++ 
-@@ -68,6 +68,19 @@
+@@ -7,6 +7,10 @@
+ import java.util.Collection;
+ import java.util.Iterator;
+ import java.util.List;
++
++import mods.battlegear2.common.BattleGear;
++import mods.battlegear2.common.BattlegearPacketHandeler;
++import mods.battlegear2.common.inventory.InventoryPlayerBattle;
+ import net.minecraft.block.Block;
+ import net.minecraft.block.BlockBed;
+ import net.minecraft.block.material.Material;
+@@ -39,6 +43,7 @@
+ import net.minecraft.item.ItemStack;
+ import net.minecraft.nbt.NBTTagCompound;
+ import net.minecraft.nbt.NBTTagList;
++import net.minecraft.network.packet.Packet18Animation;
+ import net.minecraft.potion.Potion;
+ import net.minecraft.scoreboard.Score;
+ import net.minecraft.scoreboard.ScoreObjective;
+@@ -64,6 +69,7 @@
+ import net.minecraft.util.Vec3;
+ import net.minecraft.world.EnumGameType;
+ import net.minecraft.world.World;
++import net.minecraft.world.WorldServer;
+ import net.minecraft.world.chunk.IChunkProvider;
+ 
+ import net.minecraftforge.common.ForgeHooks;
+@@ -79,10 +85,125 @@
  
  public abstract class EntityPlayer extends EntityLiving implements ICommandSender
  {
-+	
 +	/*
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
 +	 * 
-+	 * Edits: 0
-+	 * Added Methods: 5
++	 * Edits: 1
++	 * Added Methods: 6
 +	 * Added Fields: 4
 +	 * 
 +	 * Adding methods and fields is relatively easy. Some of the methods provided are not needed,
 +	 * they do however provide more simple access.
++	 * 
++	 * The only other edit is to replace the instance of Inventory player with the custom Inventory class.
++	 * It has also been marked as private to prevent other mods changing this later.
 +	 */
 +	
-     public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
- 
-     /** Inventory of the player */
-@@ -163,6 +176,12 @@
-     protected float speedOnGround = 0.1F;
-     protected float speedInAir = 0.02F;
-     private int field_82249_h = 0;
-+    
-+    //-----MB-addFilds-----
++	//-----MB-addFilds-----
 +    public float offHandSwingProgress;
 +    public float prevOffHandSwingProgress;
 +    public int offHandSwingProgressInt;
 +    public boolean isOffHandSwingInProgress;
- 
-     /**
-      * An instance of a fishing rod's hook. If this isn't null, the icon image of the fishing rod is slightly different
-@@ -1356,6 +1375,7 @@
-                     }
- 
-                     ItemStack var9 = this.getCurrentEquippedItem();
-+                    System.out.println(var9);
- 
-                     if (var9 != null && par1Entity instanceof EntityLiving)
-                     {
-@@ -2293,4 +2313,73 @@
-     {
-         FMLNetworkHandler.openGui(this, mod, modGuiId, world, x, y, z);
-     }
 +    
 +    //-----MB-AddMethod-----
++    public void attackTargetEntityWithCurrentOffItem(Entity target){
++    	inventory.currentItem = inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS;
++    	attackTargetEntityWithCurrentItem(target);
++    	inventory.currentItem = inventory.currentItem-InventoryPlayerBattle.WEAPON_SETS;
++    }
++    
++    //-----MB-AddMethod-----
++    public void swingOffItem()
++    {
++        if (!this.isOffHandSwingInProgress || this.offHandSwingProgressInt>= this.getArmSwingAnimationEndCopy() / 2 || this.offHandSwingProgressInt < 0)
++        {
++            this.offHandSwingProgressInt = -1;
++            this.isOffHandSwingInProgress = true;
++            
++            //TODO: We will need to send some sort of animation packet here
++            /*if (this.worldObj instanceof WorldServer)
++            {
++                ((WorldServer)this.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(this, new Packet18Animation(this, 1));
++            }*/
++        }
++    }
++    
++  //-----MB-AddMethod-----
++    public float getOffSwingProgress(float par1)
++    {
++        float var2 = this.offHandSwingProgress - this.prevOffHandSwingProgress;
++
++        if (var2 < 0.0F)
++        {
++            ++var2;
++        }
++
++        return this.prevOffHandSwingProgress + var2 * par1;
++    }
++    
++    //-----MB-AddMethod-----
++    private int getArmSwingAnimationEndCopy()
++    {
++        return this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) * 1 : (this.isPotionActive(Potion.digSlowdown) ? 6 + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : 6);
++    }
++    
++    
++    //-----MB-AddMethod----- (Overridden)
 +    @Override
 +	protected void updateArmSwingProgress() {
 +		super.updateArmSwingProgress();
@@ -71,47 +120,46 @@
 +        }
 +
 +        this.offHandSwingProgress = (float)this.offHandSwingProgressInt / (float)var1;
++        
++        
++        /*
++         *  This will update the Inventory for this player to all players in range.
++         *  This is not the easiest place to find but requies no extra edits and 
++         *  is called every tick. The method itself will only be called every 20th tick
++         *  
++         *  TODO:
++         *  It's also currently inefficant. May be best to only do this if there has
++         *  been a change. Although that could cause problems on the 1st sync
++         */
++        
++        if(ticksExisted % 20 == 0){
++        	BattleGear.proxy.syncBattleItems(this);
++        }
 +	}
 +    
 +    //-----MB-AddMethod-----
-+    public void attackTargetEntityWithCurrentOffItem(Entity target){
-+    	inventory.currentItem = inventory.currentItem+3;
-+    	attackTargetEntityWithCurrentItem(target);
-+    	inventory.currentItem = inventory.currentItem-3;
++    public boolean isBattlemode(){
++    	return ((InventoryPlayerBattle)inventory).isBattlemode();
 +    }
 +    
-+    //-----MB-AddMethod-----
-+    public void swingOffItem()
-+    {
-+        if (!this.isOffHandSwingInProgress || this.offHandSwingProgressInt>= this.getArmSwingAnimationEndCopy() / 2 || this.offHandSwingProgressInt < 0)
-+        {
-+            this.offHandSwingProgressInt = -1;
-+            this.isOffHandSwingInProgress = true;
-+
-+            //We will need to send some sort of animation packet here
-+            /*if (this.worldObj instanceof WorldServer)
-+            {
-+                ((WorldServer)this.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(this, new Packet18Animation(this, 1));
-+            }*/
-+        }
-+    }
++	
++	
+     public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
+ 
 +    
-+    //-----MB-AddMethod-----
-+    public float getOffSwingProgress(float par1)
-+    {
-+        float var2 = this.offHandSwingProgress - this.prevOffHandSwingProgress;
-+
-+        if (var2 < 0.0F)
-+        {
-+            ++var2;
-+        }
-+
-+        return this.prevOffHandSwingProgress + var2 * par1;
-+    }
-+    
-+    //-----MB-AddMethod-----
-+    private int getArmSwingAnimationEndCopy()
-+    {
-+        return this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) * 1 : (this.isPotionActive(Potion.digSlowdown) ? 6 + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : 6);
-+    }
- }
+     /** Inventory of the player */
+-    public InventoryPlayer inventory = new InventoryPlayer(this);
++    //-----MB-Edit-----
++    public final InventoryPlayer inventory = new InventoryPlayerBattle(this);
+     private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
+ 
+     /**
+@@ -195,7 +316,7 @@
+     public int getMaxHealth()
+     {
+         return 20;
+-    }
++    }	
+ 
+     protected void entityInit()
+     {

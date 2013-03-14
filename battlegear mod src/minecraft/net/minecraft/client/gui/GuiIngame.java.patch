@@ -1,19 +1,16 @@
 --- 
 +++ 
-@@ -1,5 +1,6 @@
- package net.minecraft.client.gui;
- 
-+import battlegear2.common.BattleGear;
- import cpw.mods.fml.relauncher.Side;
- import cpw.mods.fml.relauncher.SideOnly;
- import java.awt.Color;
-@@ -26,11 +27,28 @@
- import org.lwjgl.opengl.GL11;
- import org.lwjgl.opengl.GL12;
- 
+@@ -7,6 +7,9 @@
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.Random;
 +
- import net.minecraftforge.common.ForgeHooks;
- 
++import mods.battlegear2.common.BattleGear;
++import mods.battlegear2.common.inventory.InventoryPlayerBattle;
+ import net.minecraft.block.Block;
+ import net.minecraft.block.material.Material;
+ import net.minecraft.client.Minecraft;
+@@ -39,6 +42,23 @@
  @SideOnly(Side.CLIENT)
  public class GuiIngame extends Gui
  {
@@ -33,63 +30,67 @@
 +	 * Transformer. This is probably the best way to go (I will keep it like this for now because cbf'd
 +	 * making a new GUI class)
 +	 */
++	
      private static final RenderItem itemRenderer = new RenderItem();
      private final Random rand = new Random();
      private final Minecraft mc;
-@@ -113,8 +131,16 @@
-             GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/gui.png"));
-             InventoryPlayer var31 = this.mc.thePlayer.inventory;
+@@ -120,12 +140,19 @@
+ 
+         if (!this.mc.playerController.enableEverythingIsScrewedUpMode())
+         {
+-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
++        	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+             this.mc.renderEngine.func_98187_b("/gui/gui.png");
+             InventoryPlayer inventoryplayer = this.mc.thePlayer.inventory;
              this.zLevel = -90.0F;
--            this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
--            this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var31.currentItem * 20, var7 - 22 - 1, 0, 22, 24, 22);
+-            this.drawTexturedModalRect(k / 2 - 91, l - 22, 0, 0, 182, 22);
+-            this.drawTexturedModalRect(k / 2 - 91 - 1 + inventoryplayer.currentItem * 20, l - 22 - 1, 0, 22, 24, 22);
 +            //-----MB-Edited-----
-+            if(var31.isBattlemode()){
-+            	GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture(BattleGear.imageFolder+"Battlegear-IngameGUI.png"));
-+            	
-+            	this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
-+ 	            this.drawTexturedModalRect(var6 / 2 - 91 - 1 + (var31.currentItem-var31.offset) * 70, var7 - 22 - 1, 0, 22, 24+24, 22);
++            if(mc.thePlayer.isBattlemode()){
++            	this.mc.renderEngine.func_98187_b(BattleGear.imageFolder+"gui/Battlegear-IngameGUI.png");
++            	this.drawTexturedModalRect(k / 2 - 91, l - 22, 0, 0, 182, 22);
++            	this.drawTexturedModalRect(k / 2 - 91 - 1 + (inventoryplayer.currentItem-InventoryPlayerBattle.OFFSET) * 70, l - 22 - 1, 0, 22, 24+24, 22);
 +            }else{
-+	            this.drawTexturedModalRect(var6 / 2 - 91, var7 - 22, 0, 0, 182, 22);
-+	            this.drawTexturedModalRect(var6 / 2 - 91 - 1 + var31.currentItem * 20, var7 - 22 - 1, 0, 22, 24, 22);
++            	this.drawTexturedModalRect(k / 2 - 91, l - 22, 0, 0, 182, 22);
++            	this.drawTexturedModalRect(k / 2 - 91 - 1 + inventoryplayer.currentItem * 20, l - 22 - 1, 0, 22, 24, 22);
 +            }
-             GL11.glBindTexture(GL11.GL_TEXTURE_2D, this.mc.renderEngine.getTexture("/gui/icons.png"));
+             this.mc.renderEngine.func_98187_b("/gui/icons.png");
              GL11.glEnable(GL11.GL_BLEND);
              GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR);
-@@ -342,11 +368,22 @@
+@@ -351,11 +378,21 @@
              GL11.glEnable(GL12.GL_RESCALE_NORMAL);
              RenderHelper.enableGUIStandardItemLighting();
  
--            for (var18 = 0; var18 < 9; ++var18)
+-            for (i2 = 0; i2 < 9; ++i2)
 -            {
--                var19 = var6 / 2 - 90 + var18 * 20 + 2;
--                var20 = var7 - 16 - 3;
--                this.renderInventorySlot(var18, var19, var20, par1);
-+            if(var31.isBattlemode()){
-+            	for (var18 = 0; var18 < 3; ++var18)
-+	            {
-+	                var19 = var6 / 2 - 90 + var18 * 70 + 2;
-+	                var20 = var7 - 16 - 3;
-+	                this.renderInventorySlot(var18+InventoryPlayer.offset, var19, var20, par1);
-+	                this.renderInventorySlot(var18+InventoryPlayer.offset+3, var19+20, var20, par1);
-+	            }
-+            	
+-                i4 = k / 2 - 90 + i2 * 20 + 2;
+-                j2 = l - 16 - 3;
+-                this.renderInventorySlot(i2, i4, j2, par1);
++            if(mc.thePlayer.isBattlemode()){
++            	for (i2 = 0; i2 < 3; ++i2)
++            	{
++            		i4 =k / 2 - 90 + i2 * 70 + 2;
++            		j2 = l - 16 - 3;
++            		this.renderInventorySlot(i2+InventoryPlayerBattle.OFFSET, i4, j2, par1);
++            		this.renderInventorySlot(i2+InventoryPlayerBattle.OFFSET+InventoryPlayerBattle.WEAPON_SETS, i4+20, j2, par1);
++            	}	
 +            }else{
-+	            for (var18 = 0; var18 < 9; ++var18)
++	            for (i2 = 0; i2 < 9; ++i2)
 +	            {
-+	                var19 = var6 / 2 - 90 + var18 * 20 + 2;
-+	                var20 = var7 - 16 - 3;
-+	                this.renderInventorySlot(var18, var19, var20, par1);
++	                i4 = k / 2 - 90 + i2 * 20 + 2;
++	                j2 = l - 16 - 3;
++	                this.renderInventorySlot(i2, i4, j2, par1);
 +	            }
              }
  
              RenderHelper.disableStandardItemLighting();
-@@ -736,7 +773,8 @@
+@@ -818,7 +855,8 @@
       */
      private void renderInventorySlot(int par1, int par2, int par3, float par4)
      {
--        ItemStack var5 = this.mc.thePlayer.inventory.mainInventory[par1];
+-        ItemStack itemstack = this.mc.thePlayer.inventory.mainInventory[par1];
 +    	//-----MB-Edited-----
-+        ItemStack var5 = this.mc.thePlayer.inventory.getStackInSlot(par1);
++    	ItemStack itemstack = this.mc.thePlayer.inventory.getStackInSlot(par1);
  
-         if (var5 != null)
+         if (itemstack != null)
          {

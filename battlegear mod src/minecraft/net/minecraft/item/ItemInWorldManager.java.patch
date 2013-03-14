@@ -14,48 +14,28 @@
 +	 * 
 +	 * Both of the edits to this class involve replacing a call to the inventory.mainInvetory array.
 +	 * This is just to prevent an index out of bounds error. *grumble about dodgey Majong coding*
-+     * 
++	 * 
 +	 */
 +	
      /** Forge reach distance */
      private double blockReachDistance = 5.0d;
  
-@@ -353,7 +366,8 @@
+@@ -354,7 +367,8 @@
          }
          else
          {
--            par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = var6;
-+        	//-----MB-Edited-----
-+        	par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, var6);
+-            par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = itemstack1;
++            //-----MB-Edited-----
++            par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, itemstack1);
  
              if (this.isCreative())
              {
-@@ -367,7 +381,8 @@
+@@ -368,7 +382,7 @@
  
-             if (var6.stackSize == 0)
+             if (itemstack1.stackSize == 0)
              {
 -                par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = null;
-+            	//-----MB-Edited-----
 +            	par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, null);
-                 MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thisPlayerMP, var6));
+                 MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thisPlayerMP, itemstack1));
              }
  
-@@ -454,4 +469,18 @@
-     {
-         blockReachDistance = distance;
-     }
-+    
-+    
-+    /**
-+     * Attempts to harvest a block at the given coordinate
-+     */
-+    //-----MB-Added-----
-+    public boolean tryHarvestBlockOffHand(int par1, int par2, int par3)
-+    {
-+    	
-+    	thisPlayerMP.inventory.currentItem += 3;
-+    	boolean result = tryHarvestBlock(par1, par2, par3);
-+    	thisPlayerMP.inventory.currentItem -= 3;
-+        return result;
-+    }
- }
