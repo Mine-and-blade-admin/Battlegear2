@@ -32,6 +32,14 @@ public class BattlegearUtils {
 		new ReflectionMethod("onItemRightClick", "", new Class[]{ItemStack.class, World.class, EntityPlayer.class})
 	
 	};
+	
+	public static void setPlayerCurrentItem(EntityPlayer player, ItemStack stack, int offset){
+		player.inventory.setInventorySlotContents(player.inventory.currentItem+offset, stack);
+	}
+	
+	public static void setPlayerCurrentItem(EntityPlayer player, ItemStack stack){
+		setPlayerCurrentItem(player, stack, 0);
+	}
 
 	public static boolean isWeapon(int id){
 		

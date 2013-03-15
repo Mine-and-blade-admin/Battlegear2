@@ -1,6 +1,13 @@
 --- 
 +++ 
-@@ -18,6 +18,19 @@
+@@ -1,5 +1,6 @@
+ package net.minecraft.item;
+ 
++import mods.battlegear2.common.utils.BattlegearUtils;
+ import net.minecraft.block.Block;
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.entity.player.EntityPlayerMP;
+@@ -18,6 +19,19 @@
  
  public class ItemInWorldManager
  {
@@ -20,17 +27,17 @@
      /** Forge reach distance */
      private double blockReachDistance = 5.0d;
  
-@@ -354,7 +367,8 @@
+@@ -354,7 +368,8 @@
          }
          else
          {
 -            par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = itemstack1;
 +            //-----MB-Edited-----
-+            par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, itemstack1);
++        	BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, itemstack1);
  
              if (this.isCreative())
              {
-@@ -368,7 +382,7 @@
+@@ -368,7 +383,7 @@
  
              if (itemstack1.stackSize == 0)
              {

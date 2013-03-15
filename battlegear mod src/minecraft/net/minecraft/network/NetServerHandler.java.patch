@@ -1,14 +1,15 @@
 --- 
 +++ 
-@@ -8,6 +8,7 @@
+@@ -8,6 +8,8 @@
  import java.util.Random;
  
  import cpw.mods.fml.common.network.FMLNetworkHandler;
 +import mods.battlegear2.common.inventory.InventoryPlayerBattle;
++import mods.battlegear2.common.utils.BattlegearUtils;
  import net.minecraft.crash.CrashReport;
  import net.minecraft.crash.CrashReportCategory;
  import net.minecraft.entity.Entity;
-@@ -74,6 +75,19 @@
+@@ -74,6 +76,19 @@
  
  public class NetServerHandler extends NetHandler
  {
@@ -28,13 +29,13 @@
      /** The underlying network manager for this server handler. */
      public final INetworkManager netManager;
  
-@@ -597,14 +611,17 @@
+@@ -597,14 +612,17 @@
  
          if (itemstack != null && itemstack.stackSize == 0)
          {
 -            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = null;
 +        	//-----MB-Edited-----
-+        	this.playerEntity.inventory.setInventorySlotContents(this.playerEntity.inventory.currentItem, null);
++        	BattlegearUtils.setPlayerCurrentItem(playerEntity, null);
              itemstack = null;
          }
  
@@ -43,12 +44,12 @@
              this.playerEntity.playerInventoryBeingManipulated = true;
 -            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = ItemStack.copyItemStack(this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem]);
 +            //-----MB-Edited-----
-+            this.playerEntity.inventory.setInventorySlotContents(this.playerEntity.inventory.currentItem, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
++            BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
 +            
              Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
              this.playerEntity.openContainer.detectAndSendChanges();
              this.playerEntity.playerInventoryBeingManipulated = false;
-@@ -677,8 +694,8 @@
+@@ -677,8 +695,8 @@
  
      public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
      {

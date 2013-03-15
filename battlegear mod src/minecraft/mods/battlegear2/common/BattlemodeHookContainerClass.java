@@ -6,6 +6,7 @@ import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.OffhandAttackEvent;
 import mods.battlegear2.common.utils.BattlegearUtils;
+import mods.battlegear2.common.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -22,8 +23,8 @@ public class BattlemodeHookContainerClass {
 
 	@ForgeSubscribe
 	public void playerInterect(PlayerInteractEvent event){
+		
 		if(event.entityPlayer.isBattlemode()){
-			
 			ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
 			ItemStack offhandItem =  event.entityPlayer.inventory.getStackInSlot(event.entityPlayer.inventory.currentItem+3);
 			
@@ -38,12 +39,12 @@ public class BattlemodeHookContainerClass {
 					
 					if(shouldSwing){
 						event.entityPlayer.swingOffItem();
-						BattleGear.proxy.sendAnimationPacket(0, event.entityPlayer);
+						BattleGear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
 					}
 
 				}else{
 					event.entityPlayer.swingOffItem();
-					BattleGear.proxy.sendAnimationPacket(0, event.entityPlayer);
+					BattleGear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
 				}
 				break;
 				
@@ -58,12 +59,12 @@ public class BattlemodeHookContainerClass {
 						
 						if(shouldSwing){
 							event.entityPlayer.swingOffItem();
-							BattleGear.proxy.sendAnimationPacket(0, event.entityPlayer);
+							BattleGear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
 						}
 
 					}else{
 						event.entityPlayer.swingOffItem();
-						BattleGear.proxy.sendAnimationPacket(0, event.entityPlayer);
+						BattleGear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
 					}
 					break;
 					
@@ -91,7 +92,7 @@ public class BattlemodeHookContainerClass {
 				
 				if(offAttackEvent.swingOffhand){
 					event.entityPlayer.swingOffItem();
-					BattleGear.proxy.sendAnimationPacket(0, event.entityPlayer);
+					BattleGear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
 				}
 				
 				if(offAttackEvent.shouldAttack){
@@ -102,7 +103,7 @@ public class BattlemodeHookContainerClass {
 				event.setCanceled(true);
 				event.entityPlayer.swingOffItem();
 				event.entityPlayer.attackTargetEntityWithCurrentOffItem(event.target);
-				BattleGear.proxy.sendAnimationPacket(0, event.entityPlayer);
+				BattleGear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
 			}
 			
 			

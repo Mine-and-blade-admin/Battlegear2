@@ -8,7 +8,7 @@
  import net.minecraft.block.Block;
  import net.minecraft.client.entity.EntityPlayerSP;
  import net.minecraft.client.model.ModelBiped;
-@@ -30,6 +31,18 @@
+@@ -30,6 +31,20 @@
  @SideOnly(Side.CLIENT)
  public class RenderPlayer extends RenderLiving
  {
@@ -16,7 +16,7 @@
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
 +	 * 
-+	 * Edits: 1
++	 * Edits: 2
 +	 * Added Methods: 0
 +	 * Added Fields: 0
 +	 * 
@@ -24,17 +24,48 @@
 +	 * another method in BattlegearRenderHelper. This makes the coremod infinatly simpeler.
 +	 */
 +	
++	
++	
      private ModelBiped modelBipedMain;
      private ModelBiped modelArmorChestplate;
      private ModelBiped modelArmor;
-@@ -397,6 +410,10 @@
+@@ -142,6 +157,7 @@
+ 
+     public void renderPlayer(EntityPlayer par1EntityPlayer, double par2, double par4, double par6, float par8, float par9)
+     {
++    	
+         float f2 = 1.0F;
+         GL11.glColor3f(f2, f2, f2);
+         ItemStack itemstack = par1EntityPlayer.inventory.getCurrentItem();
+@@ -168,11 +184,19 @@
+         {
+             d3 -= 0.125D;
+         }
+-
++        
++        //-----MB-Edited------
++        BattlegearRenderHelper.preRenderLiving(par1EntityPlayer, modelBipedMain, modelArmor, modelArmorChestplate, par9);
++        
++        
+         super.doRenderLiving(par1EntityPlayer, par2, d3, par6, par8, par9);
++       
+         this.modelArmorChestplate.aimedBow = this.modelArmor.aimedBow = this.modelBipedMain.aimedBow = false;
+         this.modelArmorChestplate.isSneak = this.modelArmor.isSneak = this.modelBipedMain.isSneak = false;
+         this.modelArmorChestplate.heldItemRight = this.modelArmor.heldItemRight = this.modelBipedMain.heldItemRight = 0;
++        
++        //-----MB-Edited------
++        BattlegearRenderHelper.postRenderLiving(par1EntityPlayer, modelBipedMain, modelArmor, modelArmorChestplate, par9);
+     }
+ 
+     /**
+@@ -397,6 +421,10 @@
  
              GL11.glPopMatrix();
          }
 +        
-+      //-----MB-Edited-----
-+       BattlegearRenderHelper.postRenderSpecials(par1EntityPlayer,renderManager, modelBipedMain, modelArmor, modelArmorChestplate, par2);
-+        
++        //-----MB-Edited-----
++        BattlegearRenderHelper.postRenderSpecials(par1EntityPlayer, renderManager, modelBipedMain, modelArmor, modelArmorChestplate, par2);
++         
      }
  
      protected void renderPlayerScale(EntityPlayer par1EntityPlayer, float par2)

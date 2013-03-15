@@ -2,6 +2,7 @@ package mods.battlegear2.common;
 
 
 
+import mods.battlegear2.client.gui.BattlegearGUITickHandeler;
 import mods.battlegear2.client.keybinding.BattlegearKeyHandeler;
 import mods.battlegear2.common.gui.BattlegearGUIHandeler;
 import mods.battlegear2.common.utils.BattlegearConnectionHandeler;
@@ -10,6 +11,7 @@ import net.minecraftforge.common.MinecraftForge;
 
 
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
@@ -19,6 +21,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, 
@@ -56,6 +60,10 @@ public class BattleGear {
 		NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
 		
 		NetworkRegistry.instance().registerConnectionHandler(new BattlegearConnectionHandeler());
+		
+		TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.SERVER);
+		TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
+		TickRegistry.registerTickHandler(new BattlegearGUITickHandeler(), Side.CLIENT);
 		
 	}
 	

@@ -24,7 +24,7 @@ public class BattlegearConnectionHandeler implements IConnectionHandler{
 		EntityPlayer entityPlayer = (EntityPlayer)player;
 		
 		PacketDispatcher.sendPacketToPlayer(
-				BattlegearPacketHandeler.generateSyncBattleItemsPacket(entityPlayer.inventory),
+				BattlegearPacketHandeler.generateSyncBattleItemsPacket(entityPlayer.username, entityPlayer.inventory),
 				player);
 	}
 

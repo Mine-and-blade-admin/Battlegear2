@@ -59,7 +59,7 @@
          }
 +        
 +        //-----MB-Edited-----
-+        BattlegearRenderHelper.updateEquippedItem(this, mc);
++        BattlegearRenderHelper.updateEquippedItem(this, mc, itemToRender);
      }
  
      /**

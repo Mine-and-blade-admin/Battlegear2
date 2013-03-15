@@ -5,6 +5,7 @@ import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3
 
 import javax.jws.Oneway;
 
+import mods.battlegear2.common.inventory.InventoryPlayerBattle;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.BattlegearUtils;
 import net.minecraft.block.Block;
@@ -42,7 +43,7 @@ public class BattlegearRenderHelper {
 	public static void renderItemInFirstPerson(float frame, Minecraft mc, ItemRenderer itemRenderer, ItemStack itemToRender){
 		
 		if(itemRenderer.offHandItemToRender != dummyStack &&  
-				(itemToRender == null || BattlegearUtils.isMainHand(itemToRender.itemID) )){
+				(itemToRender == null || BattlegearUtils.isOffHand(itemToRender.itemID) )){
 	    	float progress = itemRenderer.prevEquippedOffHandProgress + (itemRenderer.equippedOffHandProgress - itemRenderer.prevEquippedOffHandProgress) * frame;
 	       
 	    	EntityClientPlayerMP player = mc.thePlayer;
@@ -268,7 +269,7 @@ public class BattlegearRenderHelper {
 	}
 
 	
-	public static void updateEquippedItem(ItemRenderer itemRenderer, Minecraft mc)
+	public static void updateEquippedItem(ItemRenderer itemRenderer, Minecraft mc, ItemStack mainhandToRender)
     {
 		itemRenderer.prevEquippedOffHandProgress = itemRenderer.equippedOffHandProgress;
         EntityClientPlayerMP var1 = mc.thePlayer;
@@ -291,7 +292,11 @@ public class BattlegearRenderHelper {
             var3 = true;
         }
         
+        
+        
         ItemStack offhand = var1.isBattlemode() ? var1.inventory.getStackInSlot(var1.inventory.currentItem+3) : dummyStack;
+        
+        offhand = (mainhandToRender==null || BattlegearUtils.isMainHand(mainhandToRender.itemID)) ? offhand : dummyStack;
         var3 = var3 & (itemRenderer.equippedItemOffhandSlot == var1.inventory.currentItem+3 && offhand == itemRenderer.offHandItemToRender);
 
         float var4 = 0.4F;
@@ -322,8 +327,10 @@ public class BattlegearRenderHelper {
 			ModelBiped modelBipedMain, ModelBiped modelArmour, ModelBiped modelArmorChestplate, float frame){
 		
 		//Update the swing progress variables
-		modelBipedMain.onGroundOffhand = modelArmour.onGroundOffhand = modelBipedMain.onGroundOffhand = 
-				entityPlayer.getOffSwingProgress(frame);
+		
+		
+		if(entityPlayer.getOffSwingProgress(frame) > 0)
+		System.out.println(entityPlayer.username+": "+entityPlayer.getOffSwingProgress(frame));
 		
 		//render the offhand weapon (if required)
 		renderItemIn3rdPerson(entityPlayer, renderManager, modelBipedMain, modelArmour, modelArmorChestplate, frame);
@@ -379,12 +386,10 @@ public class BattlegearRenderHelper {
 			ModelBiped modelBipedMain, ModelBiped modelArmour, ModelBiped modelArmorChestplate, float frame){
 		
 		ItemStack var21 = par1EntityPlayer.inventory.getStackInSlot(par1EntityPlayer.inventory.currentItem+3);
-		
-		
 
         if (var21 != null && par1EntityPlayer.isBattlemode())
         {
-        	modelBipedMain.heldItemLeft = modelArmour.heldItemLeft = modelBipedMain.heldItemLeft = 1;
+        	//modelBipedMain.heldItemLeft = modelArmour.heldItemLeft = modelBipedMain.heldItemLeft = 1;
         	
         	float var7;
         	float var8;
@@ -494,7 +499,7 @@ public class BattlegearRenderHelper {
 
 	
 	public static void moveOffHandArm(ModelBiped biped){
-		 if (biped.onGroundOffhand > -9990.0F)
+		 if (biped.onGroundOffhand > 0.0F)
 	     { 
 			 biped.bipedBody.rotateAngleY = -MathHelper.sin(MathHelper.sqrt_float(biped.onGroundOffhand) * 3.141593F * 2.0F) * 0.2F;
 	            
@@ -517,6 +522,29 @@ public class BattlegearRenderHelper {
 	            biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY * 2.0F;
 	            biped.bipedLeftArm.rotateAngleZ = MathHelper.sin(biped.onGroundOffhand * 3.141593F) * -0.4F;
 	     }
+	}
+
+
+	public static void preRenderLiving(EntityPlayer player, ModelBiped modelBipedMain,
+			ModelBiped modelArmor, ModelBiped modelArmorChestplate, float frame) {
+		
+		
+			modelBipedMain.onGroundOffhand = modelArmor.onGroundOffhand = modelBipedMain.onGroundOffhand = 
+					player.getOffSwingProgress(frame);
+			
+			if(player.inventory.getStackInSlot(player.inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS) != null)
+				modelArmor.heldItemLeft = modelArmorChestplate.heldItemLeft = modelBipedMain.heldItemLeft = 1;
+
+	}
+
+
+	public static void postRenderLiving(EntityPlayer par1EntityPlayer,
+			ModelBiped modelBipedMain, ModelBiped modelArmor,
+			ModelBiped modelArmorChestplate, float par9) {
+
+		modelArmor.heldItemLeft = modelArmorChestplate.heldItemLeft = modelBipedMain.heldItemLeft = 0;
+		modelBipedMain.onGroundOffhand = modelArmor.onGroundOffhand = modelBipedMain.onGroundOffhand = 0;
+		
 	}
 	
 }

@@ -1,5 +1,7 @@
 package mods.battlegear2.common;
 
+import mods.battlegear2.common.utils.EnumBGAnimations;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -16,26 +18,12 @@ public class CommonProxy {
 
 	public void syncBattleItems(EntityPlayer entityPlayer) {
 		
-		((WorldServer)entityPlayer.worldObj)
-			.getEntityTracker().sendPacketToAllPlayersTrackingEntity(
-					entityPlayer, BattlegearPacketHandeler.generateSyncBattleItemsPacket(entityPlayer.inventory)
-					);
+		
 		
 	}
 
-	public void processAnimationPacket(Packet250CustomPayload packet, EntityPlayer entityPlayer) {
-		if(entityPlayer.worldObj instanceof WorldServer){
-			System.out.println("Re-distribute");
-			
-			((WorldServer)entityPlayer.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(
-					entityPlayer, packet);
-		}
-		
-	}
 
-	public void sendAnimationPacket(int i, EntityPlayer entityPlayer) {
-		processAnimationPacket(BattlegearPacketHandeler.generateBgAnimationPacket(i, entityPlayer.entityId), entityPlayer);
-	}
+	public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {}
 
 
 }
