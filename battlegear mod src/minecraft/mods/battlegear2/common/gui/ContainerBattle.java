@@ -78,9 +78,15 @@ public class ContainerBattle extends Container{
     	    }
     	    else //we are in normal inventory
     	    {
-    	    	//TODO: decide what to do, should we put armor/weapons in corresponding slot ?
+    	    	//TODO: decide what to do, should we put armor/weapons in corresponding slot like this?
     	    	if(itemStack1.getItem() instanceof ItemArmor)
-    	    	{}
+    	    	{
+    	    		this.mergeItemStack(itemStack1, 0, 3, false);
+    	    	}
+    	    	else if(itemStack1.getItem() instanceof ItemSword)
+    	    	{
+    	    		this.mergeItemStack(itemStack1, 40, 42, false);
+    	    	}
     	    }	
     	    if (itemStack1.stackSize == 0) 
     	    {
