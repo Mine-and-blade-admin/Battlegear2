@@ -1,0 +1,38 @@
+--- 
++++ 
+@@ -24,6 +24,8 @@
+ import java.util.Iterator;
+ import java.util.List;
+ import javax.swing.JPanel;
++
++import mods.battlegear2.common.utils.BattlegearUtils;
+ import net.minecraft.block.Block;
+ import net.minecraft.client.audio.SoundManager;
+ import net.minecraft.client.entity.EntityClientPlayerMP;
+@@ -130,6 +132,16 @@
+ @SideOnly(Side.CLIENT)
+ public abstract class Minecraft implements Runnable, IPlayerUsage
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 1
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * Prevention of index out of bounds errors
++	 */
+     /** A 10MiB preallocation to ensure the heap is reasonably sized. */
+     public static byte[] memoryReserve = new byte[10485760];
+     private final ILogAgent field_94139_O = new LogAgent("Minecraft-Client", " [CLIENT]", (new File(getMinecraftDir(), "output-client.log")).getAbsolutePath());
+@@ -1321,7 +1333,8 @@
+ 
+                     if (itemstack.stackSize == 0)
+                     {
+-                        this.thePlayer.inventory.mainInventory[this.thePlayer.inventory.currentItem] = null;
++                    	//-----MB-Edited-----
++                    	BattlegearUtils.setPlayerCurrentItem(thePlayer, null);
+                     }
+                     else if (itemstack.stackSize != j1 || this.playerController.isInCreativeMode())
+                     {

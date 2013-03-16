@@ -1,0 +1,58 @@
+--- 
++++ 
+@@ -2,6 +2,7 @@
+ 
+ import cpw.mods.fml.relauncher.Side;
+ import cpw.mods.fml.relauncher.SideOnly;
++import mods.battlegear2.common.utils.BattlegearUtils;
+ import net.minecraft.client.Minecraft;
+ import net.minecraft.entity.player.EntityPlayer;
+ import net.minecraft.item.Item;
+@@ -15,6 +16,17 @@
+ @SideOnly(Side.CLIENT)
+ public class EntityOtherPlayerMP extends EntityPlayer
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 2
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * Prevention of index out of bounds error
++	 */
++	
+     private boolean isItemInUse = false;
+     private int otherPlayerMPPosRotationIncrements;
+     private double otherPlayerMPX;
+@@ -94,12 +106,13 @@
+ 
+         this.limbYaw += (f - this.limbYaw) * 0.4F;
+         this.limbSwing += this.limbYaw;
+-
+-        if (!this.isItemInUse && this.isEating() && this.inventory.mainInventory[this.inventory.currentItem] != null)
+-        {
+-            ItemStack itemstack = this.inventory.mainInventory[this.inventory.currentItem];
+-            this.setItemInUse(this.inventory.mainInventory[this.inventory.currentItem], Item.itemsList[itemstack.itemID].getMaxItemUseDuration(itemstack));
+-            this.isItemInUse = true;
++        
++        //-----MB-Edited-----
++        ItemStack itemStack = inventory.getStackInSlot(inventory.currentItem);
++        if (!this.isItemInUse && this.isEating() && itemStack != null)
++        {
++        	setItemInUse(itemStack, Item.itemsList[itemStack.itemID].getMaxItemUseDuration(itemStack));
++        	this.isItemInUse = true;
+         }
+         else if (this.isItemInUse && !this.isEating())
+         {
+@@ -175,7 +188,8 @@
+     {
+         if (par1 == 0)
+         {
+-            this.inventory.mainInventory[this.inventory.currentItem] = par2ItemStack;
++        	//-----MB-Edited-----
++        	BattlegearUtils.setPlayerCurrentItem(this, par2ItemStack);
+         }
+         else
+         {

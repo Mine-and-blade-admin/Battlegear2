@@ -1,0 +1,36 @@
+--- 
++++ 
+@@ -1,5 +1,6 @@
+ package net.minecraft.entity.ai;
+ 
++import mods.battlegear2.common.utils.BattlegearUtils;
+ import net.minecraft.block.Block;
+ import net.minecraft.block.BlockHalfSlab;
+ import net.minecraft.entity.EntityCreature;
+@@ -13,6 +14,16 @@
+ 
+ public class EntityAIControlledByPlayer extends EntityAIBase
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 1
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * Also prevention of index out of bounds errors
++	 */
+     private final EntityLiving thisEntity;
+     private final float maxSpeed;
+     private float currentSpeed = 0.0F;
+@@ -186,7 +197,8 @@
+                 {
+                     ItemStack itemstack1 = new ItemStack(Item.fishingRod);
+                     itemstack1.setTagCompound(itemstack.stackTagCompound);
+-                    entityplayer.inventory.mainInventory[entityplayer.inventory.currentItem] = itemstack1;
++                    //-----MB-Edited-----
++                    BattlegearUtils.setPlayerCurrentItem(entityplayer, itemstack1);
+                 }
+             }
+         }
