@@ -71,6 +71,8 @@ public class BattlegearKeyHandeler extends KeyHandler{
 					playerInventory.currentItem = previousBattlemode;
 					
 				}
+				
+				
 				mc.playerController.updateController();
 			}
 		}

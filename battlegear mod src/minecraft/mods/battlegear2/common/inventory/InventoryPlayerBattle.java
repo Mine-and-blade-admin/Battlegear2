@@ -153,6 +153,9 @@ public class InventoryPlayerBattle extends InventoryPlayer{
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack itemStack) {
 		
+		if(itemStack != null && itemStack.itemID == 0)
+			itemStack = null;
+		
 		if(slot >= OFFSET){
 			extraItems[slot-OFFSET] = itemStack;
 		}else{

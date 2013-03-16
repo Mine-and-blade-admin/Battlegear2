@@ -52,19 +52,13 @@ public class BattleGear {
 	public void postInit(FMLPostInitializationEvent event){
 		BattlegearUtils.scanAndProcessItems();
 		
-		
 		proxy.registerKeyHandelers();
+		proxy.registerTickHandelers();
 		
 		MinecraftForge.EVENT_BUS.register(new BattlemodeHookContainerClass());
 		
 		NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
-		
 		NetworkRegistry.instance().registerConnectionHandler(new BattlegearConnectionHandeler());
-		
-		TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.SERVER);
-		TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
-		TickRegistry.registerTickHandler(new BattlegearGUITickHandeler(), Side.CLIENT);
-		
 	}
 	
 	

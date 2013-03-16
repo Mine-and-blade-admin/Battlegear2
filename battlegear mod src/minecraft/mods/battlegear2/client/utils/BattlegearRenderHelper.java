@@ -329,9 +329,6 @@ public class BattlegearRenderHelper {
 		//Update the swing progress variables
 		
 		
-		if(entityPlayer.getOffSwingProgress(frame) > 0)
-		System.out.println(entityPlayer.username+": "+entityPlayer.getOffSwingProgress(frame));
-		
 		//render the offhand weapon (if required)
 		renderItemIn3rdPerson(entityPlayer, renderManager, modelBipedMain, modelArmour, modelArmorChestplate, frame);
 		

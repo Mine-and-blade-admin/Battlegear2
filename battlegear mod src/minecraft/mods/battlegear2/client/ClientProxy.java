@@ -9,6 +9,7 @@ import mods.battlegear2.client.gui.BattlegearGUITickHandeler;
 import mods.battlegear2.client.keybinding.BattlegearKeyHandeler;
 import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.BattlegearPacketHandeler;
+import mods.battlegear2.common.BattlegearTickHandeler;
 import mods.battlegear2.common.CommonProxy;
 import mods.battlegear2.common.utils.EnumBGAnimations;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -46,16 +47,22 @@ public class ClientProxy extends CommonProxy{
 	@Override
 	public void registerKeyHandelers() {
 		KeyBindingRegistry.registerKeyBinding(new BattlegearKeyHandeler());
+		
+		
+	}
+	
+	@Override
+	public void registerTickHandelers(){
+		
+		super.registerTickHandelers();
+		TickRegistry.registerTickHandler(new BattlegearGUITickHandeler(), Side.CLIENT);
+		TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
 	}
 
 	@Override
 	public void setSlotIcon(Slot slot, int slotID) {
 		slot.setBackgroundIconIndex(slotIcons[slotID]);
 	}
-
-	@Override
-	public void syncBattleItems(EntityPlayer entityPlayer) {}
-
 
 	@Override
 	public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {

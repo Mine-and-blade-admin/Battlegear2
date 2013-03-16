@@ -9,6 +9,7 @@ import java.util.List;
 
 
 import mods.battlegear2.common.inventory.InventoryPlayerBattle;
+import mods.battlegear2.common.utils.BattlegearUtils;
 import mods.battlegear2.common.utils.EnumBGAnimations;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -83,6 +84,8 @@ public class BattlegearPacketHandeler implements IPacketHandler {
 		try {
 			Packet.writeString(user, outputStream);
 			outputStream.writeInt(inventory.currentItem);
+			Packet.writeItemStack(inventory.getCurrentItem(), outputStream);
+			
 			for(int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++){
 				Packet.writeItemStack(inventory.getStackInSlot(i+InventoryPlayerBattle.OFFSET), outputStream);
 			}
@@ -104,13 +107,13 @@ public class BattlegearPacketHandeler implements IPacketHandler {
 		try{
 			EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
 			
-			System.out.println(targetPlayer.username);
 			targetPlayer.inventory.currentItem = inputStream.readInt();
+			BattlegearUtils.setPlayerCurrentItem(targetPlayer, Packet.readItemStack(inputStream));
+			
 			for(int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++){
 				ItemStack stack = Packet.readItemStack(inputStream);
 				
 				if(stack!=null){
-					System.out.println(stack.getItemName());
 					targetPlayer.inventory.setInventorySlotContents(InventoryPlayerBattle.OFFSET+i, stack);
 				}
 			}
@@ -142,16 +145,13 @@ public class BattlegearPacketHandeler implements IPacketHandler {
 	}
 	
 	private void processOffHandAnimationPacket(Packet250CustomPayload packet, World world) {
-		
-		System.out.println("Recieve");
-		
+				
 		DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 		String playername = null;
 		EnumBGAnimations animation = null;
 		try{
 			animation = EnumBGAnimations.values()[inputStream.readInt()];
 			playername = Packet.readString(inputStream, 16);
-			System.out.println(playername);
 		}catch (IOException e) {
             e.printStackTrace();
             return;
@@ -164,19 +164,11 @@ public class BattlegearPacketHandeler implements IPacketHandler {
 		
 				
 				if(world instanceof WorldServer){
-					System.out.println("Re-distribute Packet");
-					
 					((WorldServer)world).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entity, packet);
 				}
 				
 				
-				System.out.println("Process");
 				animation.processAnimation(entity);
-				
-			
-			
-			
-			
 		}
 	}
 }
