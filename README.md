@@ -18,14 +18,28 @@ What does and doesn't work
 * Inital work on an API to allow other modders to define dual wielding weapons
 * Swinging of offhand items of other players
 * Rendering of offhand weapons on other players
+* Basic Shift Clicking on the inventory screen
 
 **Note from nerd-boy:** I am not 100% happy with the way we are syncing items. It works now by sending a packet with all the "battle items" to each player that is viewing a player every 5 ticks. I am not sure if this will be too much or not. Although right now I cannot think of another way to do it that doesn't require more bytecode manipulation. I think we already have enough AccessTransformers planed to keep us busy without adding more that we may in fact not need.
 
 **What does not work**
-* ASM capabilities
-* Shift clicking on the inventory screen (It also needs to be tested on both ssp & smp)
-* Tools breaking blocks when held in the left hand (probably will not make it into the game)
+* (Most) ASM capabilities*
 * Rendering of sheathed weapons
+* Icons for the main hand and offhand slots on the inventory screen
+
+**ASM Transformers**
+* EntityPlayer (sk) - (12/12 edits)
+* EntityOtherPlayerMP - (0/2 edits)
+* ModelBiped -(0/2 edits)
+* NetClientHandeler - (0/2 edits)
+* PlayerControlerMP - (0/2 edits)
+* ItemRenderer - (0/3 edits)
+* RenderPlayer - (0/3 edits)
+* Minecraft - (0/1 edits)
+* EntityAIControledByPlayer - (0/1 edits)
+* ItemInWorldManager - (0/1 edits)
+* NetServiceHandeler - (0/3 edits)
+
 
 Instalation
 -----------

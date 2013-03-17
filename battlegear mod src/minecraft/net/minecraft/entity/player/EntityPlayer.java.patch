@@ -28,7 +28,7 @@
  import net.minecraft.world.chunk.IChunkProvider;
  
  import net.minecraftforge.common.ForgeHooks;
-@@ -79,10 +86,106 @@
+@@ -79,10 +86,105 @@
  
  public abstract class EntityPlayer extends EntityLiving implements ICommandSender
  {
@@ -38,7 +38,7 @@
 +	 * 
 +	 * Edits: 3
 +	 * Added Methods: 6
-+	 * Added Fields: 5
++	 * Added Fields: 4
 +	 * 
 +	 * Adding methods and fields is relatively easy. Some of the methods provided are not needed,
 +	 * they do however provide more simple access.
@@ -52,7 +52,6 @@
 +    public float prevOffHandSwingProgress;
 +    public int offHandSwingProgressInt;
 +    public boolean isOffHandSwingInProgress;
-+    public ItemStack[] battleItems = new ItemStack[2];
 +    
 +    //-----MB-AddMethod-----
 +    public void attackTargetEntityWithCurrentOffItem(Entity target){
@@ -72,17 +71,17 @@
 +        }
 +    }
 +    
-+  //-----MB-AddMethod-----
-+    public float getOffSwingProgress(float par1)
++    //-----MB-AddMethod-----
++    public float getOffSwingProgress(float frame)
 +    {
-+        float var2 = this.offHandSwingProgress - this.prevOffHandSwingProgress;
++        float diff = this.offHandSwingProgress - this.prevOffHandSwingProgress;
 +
-+        if (var2 < 0.0F)
++        if (diff < 0.0F)
 +        {
-+            ++var2;
++            ++diff;
 +        }
 +
-+        return this.prevOffHandSwingProgress + var2 * par1;
++        return this.prevOffHandSwingProgress + diff * frame;
 +    }
 +    
 +    //-----MB-AddMethod-----
@@ -136,7 +135,7 @@
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
  
      /**
-@@ -195,7 +298,7 @@
+@@ -195,7 +297,7 @@
      public int getMaxHealth()
      {
          return 20;
@@ -145,7 +144,7 @@
  
      protected void entityInit()
      {
-@@ -464,11 +567,12 @@
+@@ -464,11 +566,12 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
@@ -160,7 +159,7 @@
                  }
              }
  
-@@ -2325,7 +2429,8 @@
+@@ -2325,7 +2428,8 @@
      {
          if (par1 == 0)
          {

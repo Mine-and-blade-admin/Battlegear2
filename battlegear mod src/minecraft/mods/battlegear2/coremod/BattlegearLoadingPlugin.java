@@ -5,6 +5,9 @@ import java.util.Map;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 public class BattlegearLoadingPlugin implements IFMLLoadingPlugin{
+	
+	public static final String EntityPlayerTransformer = "mods.battlegear2.coremod.transformers.EntityPlayerTransformer";
+	
 
 	@Override
 	public String[] getLibraryRequestClass() {
@@ -13,8 +16,9 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin{
 
 	@Override
 	public String[] getASMTransformerClass() {
-		System.out.println("Get Transformers");
-		return null;
+		return new String[]{
+				EntityPlayerTransformer
+				};
 	}
 
 	@Override

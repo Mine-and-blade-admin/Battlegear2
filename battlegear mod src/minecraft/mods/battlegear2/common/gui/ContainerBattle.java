@@ -6,7 +6,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 
 
 public class ContainerBattle extends Container{
@@ -63,7 +65,7 @@ public class ContainerBattle extends Container{
 	/**
      * Called when a player shift-clicks on a slot. You must override this or you will crash when someone does that.
      */
-    public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2)
+    public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
     {
     	ItemStack itemStack = null;
     	Slot slot = (Slot) this.inventorySlots.get(slotIndex);
@@ -85,6 +87,10 @@ public class ContainerBattle extends Container{
     	    	}
     	    	else if(itemStack1.getItem() instanceof ItemSword)
     	    	{
+    	    		/*
+    	    		 * TODO: This doesn't 100% work. It will not move bows and will move items
+    	    		 * into invalid slots (eg a sword in an offhand slot with a bow)
+    	    		 */
     	    		this.mergeItemStack(itemStack1, 40, 42, false);
     	    	}
     	    }	
