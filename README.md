@@ -29,10 +29,10 @@ What does and doesn't work
 
 **ASM Transformers**
 * EntityPlayer (sk) - (12/12 edits)
+* ModelBiped -(2/2 edits)
+* NetClientHandeler - (2/2 edits)
+* PlayerControlerMP - (2/2 edits)
 * EntityOtherPlayerMP - (0/2 edits)
-* ModelBiped -(0/2 edits)
-* NetClientHandeler - (0/2 edits)
-* PlayerControlerMP - (0/2 edits)
 * ItemRenderer - (0/3 edits)
 * RenderPlayer - (0/3 edits)
 * Minecraft - (0/1 edits)

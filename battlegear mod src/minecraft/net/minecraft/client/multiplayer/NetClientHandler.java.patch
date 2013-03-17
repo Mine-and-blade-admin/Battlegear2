@@ -30,26 +30,29 @@
      /** True if kicked or disconnected from the server. */
      private boolean disconnected = false;
  
-@@ -570,14 +586,10 @@
+@@ -570,15 +586,17 @@
          entityotherplayermp.prevPosZ = entityotherplayermp.lastTickPosZ = (double)(entityotherplayermp.serverPosZ = par1Packet20NamedEntitySpawn.zPosition);
          int i = par1Packet20NamedEntitySpawn.currentItem;
  
--        if (i == 0)
--        {
++        //-----MB-Edited-----
++        //Changed to simplify ASM
+         if (i == 0)
+         {
 -            entityotherplayermp.inventory.mainInventory[entityotherplayermp.inventory.currentItem] = null;
--        }
--        else
--        {
++        	BattlegearUtils.setPlayerCurrentItem(entityotherplayermp, null);
+         }
+         else
+         {
 -            entityotherplayermp.inventory.mainInventory[entityotherplayermp.inventory.currentItem] = new ItemStack(i, 1, 0);
 -        }
-+        //-----MB-Edited-----
-+        ItemStack stack = i==0 ? new ItemStack(i, 1, 0) : null;
-+        BattlegearUtils.setPlayerCurrentItem(entityotherplayermp, stack);
+-
++        	BattlegearUtils.setPlayerCurrentItem(entityotherplayermp, new ItemStack(i, 1, 0));
++        }
 +        
- 
          entityotherplayermp.setPositionAndRotation(d0, d1, d2, f, f1);
          this.worldClient.addEntityToWorld(par1Packet20NamedEntitySpawn.entityId, entityotherplayermp);
-@@ -609,8 +621,8 @@
+         List list = par1Packet20NamedEntitySpawn.func_73509_c();
+@@ -609,8 +627,8 @@
  
      public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
      {

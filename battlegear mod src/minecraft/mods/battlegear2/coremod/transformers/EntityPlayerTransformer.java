@@ -31,7 +31,9 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import static mods.battlegear2.coremod.BattlegearObNames.*;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.IClassTransformer;
+import cpw.mods.fml.relauncher.Side;
 
 public class EntityPlayerTransformer implements IClassTransformer{
 
@@ -39,6 +41,8 @@ public class EntityPlayerTransformer implements IClassTransformer{
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
 		
 		if(name.equals(entityPlayerClassName)){
+			
+			System.out.println("M&B - Patching Class EntityPlayer ("+name+")");
 						
 			ClassReader cr = new ClassReader(bytes);
 			ClassNode cn = new ClassNode(ASM4);
@@ -48,6 +52,7 @@ public class EntityPlayerTransformer implements IClassTransformer{
 			processFields(cn);
 			processMethods(cn);
 		
+			System.out.println("\tCreating new methods in EntityPlayer");
 			cn.methods.add(0, generateAttackOffhandMethod());
 			cn.methods.add(1, generateSwingOffhand());
 			cn.methods.add(2, generateGetOffSwingMethod());
@@ -55,34 +60,20 @@ public class EntityPlayerTransformer implements IClassTransformer{
 			cn.methods.add(4, generateUpdateSwingArm());
 			cn.methods.add(5, generateIsBattleMode());
 			
-			 ClassWriter cw = new ClassWriter(0);
-		     cn.accept(cw);
-		     
-		     File outDir=new File("test");
-		        outDir.mkdirs();
-		        DataOutputStream dout;
-				try {
-					dout = new DataOutputStream(new FileOutputStream(new File(outDir,"EntityPlayer.class")));
-		        dout.write(cw.toByteArray());
-		        
-		        System.out.println(new File(outDir,"EntityPlayer.class"));
-		        
-		        dout.flush();
-		        dout.close();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-				
-				
-				return cw.toByteArray();
+			ClassWriter cw = new ClassWriter(0);
+		    cn.accept(cw);
+		    
+		    
+		    System.out.println("M&B - Patching Class EntityPlayer done");
+
+			return cw.toByteArray();
 			
 		}else
 			return bytes;
 	}
 	
 	private void processFields(ClassNode cn) {
+		System.out.println("\tAdding new fields to EntityPlayer");
 		cn.fields.add(0, new FieldNode(ACC_PUBLIC, "offHandSwingProgress", "F", null, 0F));
 		cn.fields.add(1, new FieldNode(ACC_PUBLIC, "prevOffHandSwingProgress", "F", null, 0F));
 		cn.fields.add(2, new FieldNode(ACC_PUBLIC, "offHandSwingProgressInt", "I", null, 0));
@@ -90,6 +81,7 @@ public class EntityPlayerTransformer implements IClassTransformer{
 		
 		for (FieldNode fn: cn.fields) {
 			if(fn.name.equals("L"+inventoryCurrentItremField) && fn.desc.equals(inventoryClassName+";")){
+				System.out.println("M&B - Marking field inventory as final in EntityPlayer");
 				fn.access = ACC_PUBLIC | ACC_FINAL;
 			}
 		}
@@ -98,7 +90,7 @@ public class EntityPlayerTransformer implements IClassTransformer{
 	private void processMethods(ClassNode cn) {
 		for (MethodNode mn : cn.methods) {
 			if(mn.name.equals("<init>")){
-				
+				System.out.println("\tPatching constructor in EntityPlayer");
 				ListIterator<AbstractInsnNode> it = mn.instructions.iterator();
 				
 				while(it.hasNext()){
@@ -115,11 +107,15 @@ public class EntityPlayerTransformer implements IClassTransformer{
 					}
 				}
 			}else if(mn.name.equals(onItemFinishMethodName) && mn.desc.equals("()V")){
-				mn = processOnItemFinish(mn);
+				System.out.println("\tPatching method onItemUseFinish in EntityPlayer");
+				
+				TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 3, 3);
+				//mn = processOnItemFinish(mn);
 			}
 		}
 	}
 
+	@Deprecated
 	private MethodNode processOnItemFinish(MethodNode mn) {
 		InsnList newList = new InsnList();
 		
