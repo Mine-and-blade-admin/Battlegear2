@@ -2,6 +2,8 @@ package mods.battlegear2.coremod.transformers;
 
 import java.util.Iterator;
 
+import mods.battlegear2.coremod.BattleGearTranslator;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -12,18 +14,32 @@ import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.IClassTransformer;
 
-import static mods.battlegear2.coremod.BattlegearObNames.*;
 import static org.objectweb.asm.Opcodes.*;
 
 public class ModelBipedTransformer implements IClassTransformer{
+	
+	private String modelBipedClassName;
+	private String entityClassName;
+	
+	private String setRotationAngleMethodName;
+	private String setRotationAngleMethodDesc;
+	
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
 		
-		if(name.equals(modelBipedClassName)){
+		if(transformedName.equals("net.minecraft.client.model.ModelBiped")){
 			
+			modelBipedClassName = BattleGearTranslator.getMapedClassName("ModelBiped");
+			entityClassName = BattleGearTranslator.getMapedClassName("Entity");
+			
+			setRotationAngleMethodName = BattleGearTranslator.getMapedMethodName("ModelBiped", "func_78087_a");
+			setRotationAngleMethodDesc = BattleGearTranslator.getMapedMethodDesc("ModelBiped", "func_78087_a");
+			
+						
 			System.out.println("M&B - Patching Class ModelBiped ("+name+")");
 			ClassReader cr = new ClassReader(bytes);
 			ClassNode cn = new ClassNode(ASM4);
@@ -32,8 +48,11 @@ public class ModelBipedTransformer implements IClassTransformer{
 			cn.fields.add(0, new FieldNode(ACC_PUBLIC, "onGroundOffhand", "F", null, null));
 			
 			for (MethodNode  method: cn.methods) {
-				if(method.name.equals("a") && method.desc.equals("(FFFFFFL"+entityClassName+";)V")){
+				if(method.name.equals(setRotationAngleMethodName) && 
+						method.desc.equals(setRotationAngleMethodDesc)){
+					
 					processRotationAnglesMethod(method);
+					
 				}
 			}
 			

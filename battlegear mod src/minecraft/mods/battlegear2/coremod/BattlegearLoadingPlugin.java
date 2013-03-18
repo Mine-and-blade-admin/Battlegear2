@@ -1,5 +1,6 @@
 package mods.battlegear2.coremod;
 
+import java.io.File;
 import java.util.Map;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
@@ -32,7 +33,7 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin{
 
 	@Override
 	public String getSetupClass() {
-		return null;
+		return "mods.battlegear2.coremod.BattleGearTranslator";
 	}
 
 	@Override

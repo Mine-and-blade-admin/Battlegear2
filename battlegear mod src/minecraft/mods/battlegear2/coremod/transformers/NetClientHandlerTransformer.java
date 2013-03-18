@@ -1,20 +1,37 @@
 package mods.battlegear2.coremod.transformers;
 
+import mods.battlegear2.coremod.BattleGearTranslator;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
 import cpw.mods.fml.relauncher.IClassTransformer;
-import static mods.battlegear2.coremod.BattlegearObNames.*;
 import static org.objectweb.asm.Opcodes.ASM4;
 
 public class NetClientHandlerTransformer implements IClassTransformer{
+	
+	private String entityOtherPlayerMPClassName;
+	private String playerInventoryFieldName;
+	private String packet20NamedEntitySpawnClassName;
+	private String netClientHandlerHandleNamedEntitySpawnMethodName;
+	private String netClientHandlerHandleNamedEntitySpawnMethodDesc;
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
-		if(name.equals(netClientHandlerClassName)){
+		if(transformedName.equals("net.minecraft.client.multiplayer.NetClientHandler")){
+			
+			entityOtherPlayerMPClassName = BattleGearTranslator.getMapedClassName("EntityOtherPlayerMP");
+			packet20NamedEntitySpawnClassName = BattleGearTranslator.getMapedClassName("Packet20NamedEntitySpawn");
+			playerInventoryFieldName = BattleGearTranslator.getMapedFieldName("EntityPlayer","field_71071_by");
+			
+			netClientHandlerHandleNamedEntitySpawnMethodName =
+					BattleGearTranslator.getMapedMethodName("NetClientHandler", "func_72518_a");
+			netClientHandlerHandleNamedEntitySpawnMethodDesc =
+					BattleGearTranslator.getMapedMethodDesc("NetClientHandler", "func_72518_a");
 			
 			System.out.println("M&B - Patching Class NetClientHandler ("+name+")");
 			
@@ -25,8 +42,9 @@ public class NetClientHandlerTransformer implements IClassTransformer{
 			
 			for (MethodNode method: cn.methods) {
 				if(method.name.equals(netClientHandlerHandleNamedEntitySpawnMethodName) &&
-						method.desc.equals("L"+packet20NamedEntitySpawnClassName+";")){
+						method.desc.equals(netClientHandlerHandleNamedEntitySpawnMethodDesc)){
 					System.out.println("\tPatching method handleNamedEntitySpawn in NetClientHandler");
+					
 					TransformerUtils.replaceInventoryArrayAccess(method, entityOtherPlayerMPClassName, playerInventoryFieldName, 9, 13);
 				}
 			}

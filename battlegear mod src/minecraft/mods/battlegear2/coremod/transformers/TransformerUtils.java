@@ -1,13 +1,10 @@
 package mods.battlegear2.coremod.transformers;
-
-import static mods.battlegear2.coremod.BattlegearObNames.entityPlayerClassName;
-import static mods.battlegear2.coremod.BattlegearObNames.inventoryClassName;
-import static mods.battlegear2.coremod.BattlegearObNames.itemStackClassName;
-import static mods.battlegear2.coremod.BattlegearObNames.playerInventoryFieldName;
 import static org.objectweb.asm.Opcodes.AASTORE;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 
 import java.util.Iterator;
+
+import mods.battlegear2.coremod.BattleGearTranslator;
 
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -28,9 +25,11 @@ public class TransformerUtils {
 			AbstractInsnNode nextNode = it.next();
 			
 			if(nextNode instanceof FieldInsnNode && 
-					((FieldInsnNode)nextNode).owner.equals(entityPlayerClassName) &&
-					((FieldInsnNode)nextNode).name.equals(playerInventoryFieldName) &&
-					((FieldInsnNode)nextNode).desc.equals("L"+inventoryClassName+";")){
+					((FieldInsnNode)nextNode).owner.equals(
+							BattleGearTranslator.getMapedClassName("EntityPlayer")) &&
+					((FieldInsnNode)nextNode).name.equals(
+							BattleGearTranslator.getMapedFieldName("EntityPlayer","field_71071_by"))
+					){
 				
 				//skip the next four
 				it.next();
@@ -44,7 +43,8 @@ public class TransformerUtils {
 				newList.add(new MethodInsnNode(INVOKESTATIC, 
 						"mods/battlegear2/common/utils/BattlegearUtils", 
 						"setPlayerCurrentItem", 
-						"(L"+entityPlayerClassName+";L"+itemStackClassName+";)V"));
+						"(L"+BattleGearTranslator.getMapedClassName("EntityPlayer")+
+						";L"+BattleGearTranslator.getMapedClassName("ItemStack")+";)V"));
 			}else{
 				newList.add(nextNode);
 			}

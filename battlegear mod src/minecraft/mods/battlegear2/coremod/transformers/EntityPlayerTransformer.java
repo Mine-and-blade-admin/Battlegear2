@@ -7,11 +7,11 @@ import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.ListIterator;
 
+import mods.battlegear2.coremod.BattleGearTranslator;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
-import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
-import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
 import static org.objectweb.asm.Opcodes.*;
 
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -29,18 +29,84 @@ import org.objectweb.asm.tree.MethodNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
-import static mods.battlegear2.coremod.BattlegearObNames.*;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.IClassTransformer;
 import cpw.mods.fml.relauncher.Side;
 
 public class EntityPlayerTransformer implements IClassTransformer{
+	
+	private String entityPlayerClassName;
+	private String inventoryClassName;
+	private String itemStackClassName;
+	private String entityClassName;
+	private String potionClassName;
+	private String potionEffectClassName;
+	private String entityLivingClassName;
+	
+	
+	private String playerInventoryFieldName;
+	private String inventoryCurrentItremField;
+	private String potionDigSpeedField;
+	private String potionDigSlowField;
+	
+	
+	private String onItemFinishMethodName;
+	private String onItemFinishMethodDesc;
+	private String attackTargetMethodName;
+	private String attackTargetMethodDesc;
+	private String playerPotionActiveMethodName;
+	private String playerPotionActiveMethodDesc;
+	private String playerGetActivePotionMethodName;
+	private String playerGetActivePotionMethodDesc;
+	private String potionEffectGetAmpMethodName;
+	private String playerUpdateArmSwingMethodName;
+	
+	
 
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
 		
-		if(name.equals(entityPlayerClassName)){
+		if(transformedName.equals("net.minecraft.entity.player.EntityPlayer")){
+			
+			entityPlayerClassName = BattleGearTranslator.getMapedClassName("EntityPlayer");
+			inventoryClassName = BattleGearTranslator.getMapedClassName("InventoryPlayer");
+			itemStackClassName = BattleGearTranslator.getMapedClassName("ItemStack");
+			entityClassName = BattleGearTranslator.getMapedClassName("Entity");
+			potionClassName = BattleGearTranslator.getMapedClassName("Potion");
+			potionEffectClassName = BattleGearTranslator.getMapedClassName("PotionEffect");
+			entityLivingClassName = BattleGearTranslator.getMapedClassName("EntityLiving");
+			
+			playerInventoryFieldName =
+					BattleGearTranslator.getMapedFieldName("EntityPlayer","field_71071_by");
+			inventoryCurrentItremField = 
+					BattleGearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c");
+			potionDigSpeedField = 
+					BattleGearTranslator.getMapedFieldName("Potion", "field_76422_e");
+			potionDigSlowField = 
+					BattleGearTranslator.getMapedFieldName("Potion", "field_76419_f");
+			
+			
+			onItemFinishMethodName = 
+					BattleGearTranslator.getMapedMethodName("EntityPlayer", "func_71036_o");
+			onItemFinishMethodDesc = 
+					BattleGearTranslator.getMapedMethodDesc("EntityPlayer", "func_71036_o");
+			attackTargetMethodName = 
+					BattleGearTranslator.getMapedMethodName("EntityPlayer", "func_71059_n");
+			attackTargetMethodDesc = 
+					BattleGearTranslator.getMapedMethodDesc("EntityPlayer", "func_71059_n");
+			playerPotionActiveMethodName = 
+					BattleGearTranslator.getMapedMethodName("EntityLiving", "func_82165_m");
+			playerPotionActiveMethodDesc = 
+					BattleGearTranslator.getMapedMethodDesc("EntityLiving", "func_82165_m");
+			playerGetActivePotionMethodName =
+					BattleGearTranslator.getMapedMethodName("EntityLiving", "func_70660_b");
+			playerGetActivePotionMethodDesc =
+					BattleGearTranslator.getMapedMethodDesc("EntityLiving", "func_70660_b");
+			potionEffectGetAmpMethodName =
+					BattleGearTranslator.getMapedMethodName("PotionEffect", "func_76458_c");
+			playerUpdateArmSwingMethodName = 
+					BattleGearTranslator.getMapedMethodName("EntityLiving", "func_82168_bl");
+					
 			
 			System.out.println("M&B - Patching Class EntityPlayer ("+name+")");
 						
@@ -106,7 +172,8 @@ public class EntityPlayerTransformer implements IClassTransformer{
 						}
 					}
 				}
-			}else if(mn.name.equals(onItemFinishMethodName) && mn.desc.equals("()V")){
+			}else if(mn.name.equals(onItemFinishMethodName) &&
+					mn.desc.equals(onItemFinishMethodDesc)){
 				System.out.println("\tPatching method onItemUseFinish in EntityPlayer");
 				
 				TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 3, 3);
@@ -170,7 +237,7 @@ public class EntityPlayerTransformer implements IClassTransformer{
 		mn.instructions.add(new FieldInsnNode(PUTFIELD, inventoryClassName, inventoryCurrentItremField, "I"));
 		mn.instructions.add(new VarInsnNode(ALOAD, 0));
 		mn.instructions.add(new VarInsnNode(ALOAD, 1));
-		mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, attackTargetMethodName, "(L"+entityClassName+";)V"));
+		mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, attackTargetMethodName, attackTargetMethodDesc));
 		mn.instructions.add(new VarInsnNode(ALOAD, 0));
 		mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
 		mn.instructions.add(new VarInsnNode(ALOAD, 0));
@@ -271,7 +338,7 @@ public class EntityPlayerTransformer implements IClassTransformer{
 		
 		mn.instructions.add(new VarInsnNode(ALOAD, 0));
 		mn.instructions.add(new FieldInsnNode(GETSTATIC, potionClassName, potionDigSpeedField, "L"+potionClassName+";"));
-		mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, playerPotionActiveMethodName, "(L"+potionClassName+";)Z"));
+		mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, playerPotionActiveMethodName, playerPotionActiveMethodDesc));
 		LabelNode l0 = new LabelNode();
 		mn.instructions.add(new JumpInsnNode(IFEQ, l0));
 		
@@ -279,7 +346,7 @@ public class EntityPlayerTransformer implements IClassTransformer{
 		mn.instructions.add(new InsnNode(ICONST_1));
 		mn.instructions.add(new VarInsnNode(ALOAD, 0));
 		mn.instructions.add(new FieldInsnNode(GETSTATIC, potionClassName, potionDigSpeedField, "L"+potionClassName+";"));
-		mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, playerGetActivePotionMethodName, "(L"+potionClassName+";)L"+potionEffectClassName+";"));
+		mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, playerGetActivePotionMethodName, playerGetActivePotionMethodDesc));
 		mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, potionEffectClassName, potionEffectGetAmpMethodName, "()I"));
 		mn.instructions.add(new InsnNode(IADD));
 		mn.instructions.add(new InsnNode(ICONST_1));
