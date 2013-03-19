@@ -1,14 +1,11 @@
 package mods.battlegear2.common.gui;
 
-import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.common.inventory.InventoryPlayerBattle;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
 
 
 public class ContainerBattle extends Container{
@@ -80,78 +77,25 @@ public class ContainerBattle extends Container{
     	    }
     	    else //we are in normal inventory
     	    {
-    	    	//TODO: review this
-    	    	if(itemStack1.getItem() instanceof ItemArmor)
-    	    	{
-    	    		/*
-    	    		 * put in slot corresponding to armortype,
-    	    		 *  no need to merge because max stack is 1
-    	    		 *  we only need to check if empty
-    	    		 */
-    	    		int type=((ItemArmor)itemStack1.getItem()).armorType;
-    	    		if (this.inventorySlots.get(type)!=null && !((Slot)this.inventorySlots.get(type)).getHasStack())
-    	    			this.putStackInSlot(type,itemStack1);
-    	    	}
-    	    	else if(itemStack1.getItem() instanceof IBattlegearWeapon)
-    	    	{
-    	    		/* Item using the API 
-    	    		 */
-    	    		if(((IBattlegearWeapon)itemStack1.getItem()).isOffhandHandDualWeapon())
-    	    		{//search first available offhand slot
-    	    			for (int i=41;i<46;i=i+2){
-    	    				Slot offhandSlot = (Slot) this.inventorySlots.get(i);
-    	    				if (offhandSlot!=null && !offhandSlot.getHasStack())//offhand slot is free
-    	    				{
-    	    					Slot mainSlot = (Slot) this.inventorySlots.get(i-1);
-    	    					if(mainSlot!=null && !mainSlot.getHasStack())//nothing in main slot
-    	    					{	
-    	    						this.putStackInSlot(i,itemStack1);
-    	    						break;
-    	    					}
-    	    					else if(mainSlot!=null && mainSlot.getHasStack()) //something in main slot
-    	    					{
-    	    						Item mainItem = mainSlot.getStack().getItem();
-    	    						if(mainItem instanceof IBattlegearWeapon && ((IBattlegearWeapon)mainItem).willAllowOffhandWeapon())
-    	    						{	//main item use the API too :)
-    	    							this.putStackInSlot(i,itemStack1);
-    	    							break;
-    	    						}
-    	    						else if(mainItem instanceof ItemSword)// a special case for swords
-    	    						{	
-    	    							this.putStackInSlot(i,itemStack1);
-    	    							break;
-    	    						}
-    	    					}
-    	    				}
-    	    			}
-    	    		}
-    	    		else//not offhandDualwieldable
-    	    		{//search first available main slot
-    	    			for (int i=40;i<45;i=i+2)
+    	    	int index=0;
+    	    	for(index=0;index<4;index++)//Search within ArmourSlot
+    	    	{ArmourSlot aSlot = (ArmourSlot) this.inventorySlots.get(index);
+    	    		if ( !aSlot.getHasStack() && aSlot.isItemValid(itemStack1))
     	    			{
-    	    				Slot mainSlot = (Slot) this.inventorySlots.get(i);
-    	    				if (mainSlot!=null && !mainSlot.getHasStack())
-    	    				{
-    	    					this.putStackInSlot(i,itemStack1);
-    	    					break;
-    	    				}
+    	    			this.putStackInSlot(index,itemStack1);
+    	    			break;
+    	    			}
+    	    	}
+    	    	if (index==4)//we use index as a flag, armor slots weren't valid
+    	    	{    	    	
+    	    		for(index=40;index<46;index++)//Search within WeaponSlot
+    	    		{WeaponSlot wSlot=(WeaponSlot) this.inventorySlots.get(index);
+    	    			if ( !wSlot.getHasStack() && wSlot.isItemValid(itemStack1))
+    	    			{
+    	    				this.putStackInSlot(index,itemStack1);
+    	    				break;
     	    			}
     	    		}
-    	    	}
-    	    	else//put any other item in first available main slot
-    	    	{
-    	    		for (int i=40;i<45;i=i+2)
-    	    		{
-	    			Slot mainSlot = (Slot) this.inventorySlots.get(i);
-	    			if (mainSlot!=null && !mainSlot.getHasStack())
-	    			{	Slot offhandSlot =(Slot)this.inventorySlots.get(i+1);
-	    				if (offhandSlot!=null && offhandSlot.getHasStack() && !mergeItemStack(offhandSlot.getStack(),4,39,false))
-	    					return null;/*something in offhandslot could be an issue, for safety
-	    						 				we stop if we can't put this one back in normal inventory*/
-	    				this.putStackInSlot(i,itemStack1);
-	    				break;
-	    			}
-	    		}
     	    	}
     	    }	
     	    if (itemStack1.stackSize == 0) 
