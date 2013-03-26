@@ -38,7 +38,7 @@ What does and doesn't work
 * Minecraft - (0/1 edits)
 * EntityAIControledByPlayer - (0/1 edits)
 * ItemInWorldManager - (0/1 edits)
-* NetServiceHandeler - (0/3 edits)
+* NetServiceHandeler - (3/3 edits)
 
 
 Instalation
