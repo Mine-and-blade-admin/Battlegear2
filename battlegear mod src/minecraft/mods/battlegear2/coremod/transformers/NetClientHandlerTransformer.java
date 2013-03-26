@@ -1,6 +1,11 @@
 package mods.battlegear2.coremod.transformers;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
 import mods.battlegear2.coremod.BattleGearTranslator;
+import mods.battlegear2.coremod.BattlegearLoadingPlugin;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -54,6 +59,10 @@ public class NetClientHandlerTransformer implements IClassTransformer{
 		    
 		    
 		    System.out.println("M&B - Patching Class NetClientHandler ("+name+") done");
+		    
+		    if(BattlegearLoadingPlugin.debug){
+			    TransformerUtils.writeClassFile(cw, name);
+		    }
 
 			return cw.toByteArray();
 			

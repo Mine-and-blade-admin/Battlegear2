@@ -2,10 +2,14 @@ package mods.battlegear2.coremod.transformers;
 import static org.objectweb.asm.Opcodes.AASTORE;
 import static org.objectweb.asm.Opcodes.INVOKESTATIC;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Iterator;
 
 import mods.battlegear2.coremod.BattleGearTranslator;
 
+import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.InsnList;
@@ -25,26 +29,32 @@ public class TransformerUtils {
 			AbstractInsnNode nextNode = it.next();
 			
 			if(nextNode instanceof FieldInsnNode && 
-					((FieldInsnNode)nextNode).owner.equals(
-							BattleGearTranslator.getMapedClassName("EntityPlayer")) &&
-					((FieldInsnNode)nextNode).name.equals(
-							BattleGearTranslator.getMapedFieldName("EntityPlayer","field_71071_by"))
+					nextNode.getNext() instanceof FieldInsnNode &&
+					((FieldInsnNode)nextNode).owner.equals(className) &&
+					((FieldInsnNode)nextNode).name.equals(fieldName) &&
+					((FieldInsnNode)nextNode.getNext()).owner.equals(BattleGearTranslator.getMapedClassName("InventoryPlayer")) &&
+					((FieldInsnNode)nextNode.getNext()).name.equals(BattleGearTranslator.getMapedFieldName("InventoryPlayer","field_70462_a"))
 					){
 				
-				//skip the next four
-				it.next();
-				it.next();
-				it.next();
-				it.next();
+				//skip the next 4
+				nextNode = it.next();
+				nextNode = it.next();
+				nextNode = it.next();
+				nextNode = it.next();
+				//add all until the AAStore
+				nextNode = it.next();
+				while(it.hasNext() && nextNode.getOpcode() != AASTORE){
+					newList.add(nextNode);
+					nextNode = it.next();
+				}
 				
-				
-			}else if(nextNode instanceof InsnNode && nextNode.getOpcode() == AASTORE){
-				
+				//Add New
 				newList.add(new MethodInsnNode(INVOKESTATIC, 
 						"mods/battlegear2/common/utils/BattlegearUtils", 
 						"setPlayerCurrentItem", 
 						"(L"+BattleGearTranslator.getMapedClassName("EntityPlayer")+
 						";L"+BattleGearTranslator.getMapedClassName("ItemStack")+";)V"));
+				
 			}else{
 				newList.add(nextNode);
 			}
@@ -59,6 +69,21 @@ public class TransformerUtils {
 		
 		return method;
 		
+	}
+
+	public static void writeClassFile(ClassWriter cw, String name) {
+		try{
+			File outDir = new File(System.getProperty("user.home"), "bg classFiles"+File.separator+"final");
+			outDir.mkdirs();
+			
+			 DataOutputStream dout=new DataOutputStream(new FileOutputStream(new File(outDir,name+".class")));
+	         dout.write(cw.toByteArray());
+	         dout.flush();
+	         dout.close();
+	         
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 }

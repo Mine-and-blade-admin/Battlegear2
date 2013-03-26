@@ -33,7 +33,7 @@ What does and doesn't work
 * NetClientHandeler - (2/2 edits)
 * PlayerControlerMP - (2/2 edits)
 * EntityOtherPlayerMP - (0/2 edits)
-* ItemRenderer - (0/3 edits)
+* ItemRenderer - (3/3 edits)
 * RenderPlayer - (0/3 edits)
 * Minecraft - (0/1 edits)
 * EntityAIControledByPlayer - (0/1 edits)

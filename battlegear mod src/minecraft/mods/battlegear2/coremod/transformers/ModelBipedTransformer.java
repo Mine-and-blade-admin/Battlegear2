@@ -1,8 +1,12 @@
 package mods.battlegear2.coremod.transformers;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Iterator;
 
 import mods.battlegear2.coremod.BattleGearTranslator;
+import mods.battlegear2.coremod.BattlegearLoadingPlugin;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -60,6 +64,10 @@ public class ModelBipedTransformer implements IClassTransformer{
 		    cn.accept(cw);
 		    
 		    System.out.println("M&B - Patching Class ModelBiped ("+name+") done");
+		    
+		    if(BattlegearLoadingPlugin.debug){
+			    TransformerUtils.writeClassFile(cw, name);
+		    }
 		    
 		    return cw.toByteArray();
 			

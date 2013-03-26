@@ -24,7 +24,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2")
+@Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2", version="dev")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, 
 	channels={
 		BattlegearPacketHandeler.guiPackets,

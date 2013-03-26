@@ -11,7 +11,11 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin{
 	public static final String ModelBipedTransformer = "mods.battlegear2.coremod.transformers.ModelBipedTransformer";
 	public static final String NetClientHandlerTransformer = "mods.battlegear2.coremod.transformers.NetClientHandlerTransformer";
 	public static final String PlayerControllerMPTransformer = "mods.battlegear2.coremod.transformers.PlayerControllerMPTransformer";
+	public static final String ItemRendererTransformer = "mods.battlegear2.coremod.transformers.ItemRendererTransformer";
 
+	
+	public static boolean debug = true;
+	
 	@Override
 	public String[] getLibraryRequestClass() {
 		return null;
@@ -22,7 +26,8 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin{
 		return new String[]{
 				EntityPlayerTransformer,
 				ModelBipedTransformer,
-				NetClientHandlerTransformer
+				NetClientHandlerTransformer,
+				ItemRendererTransformer
 				};
 	}
 

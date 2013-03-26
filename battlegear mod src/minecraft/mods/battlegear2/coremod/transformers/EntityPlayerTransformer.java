@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.ListIterator;
 
 import mods.battlegear2.coremod.BattleGearTranslator;
+import mods.battlegear2.coremod.BattlegearLoadingPlugin;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -52,6 +53,8 @@ public class EntityPlayerTransformer implements IClassTransformer{
 	
 	private String onItemFinishMethodName;
 	private String onItemFinishMethodDesc;
+	private String setCurrentItemArmourMethodName;
+	private String setCurrentItemArmourMethodDesc;
 	private String attackTargetMethodName;
 	private String attackTargetMethodDesc;
 	private String playerPotionActiveMethodName;
@@ -90,14 +93,18 @@ public class EntityPlayerTransformer implements IClassTransformer{
 					BattleGearTranslator.getMapedMethodName("EntityPlayer", "func_71036_o");
 			onItemFinishMethodDesc = 
 					BattleGearTranslator.getMapedMethodDesc("EntityPlayer", "func_71036_o");
+			setCurrentItemArmourMethodName =
+					BattleGearTranslator.getMapedMethodName("EntityPlayer", "func_70062_b");
+			setCurrentItemArmourMethodDesc =
+					BattleGearTranslator.getMapedMethodDesc("EntityPlayer", "func_70062_b");
 			attackTargetMethodName = 
 					BattleGearTranslator.getMapedMethodName("EntityPlayer", "func_71059_n");
 			attackTargetMethodDesc = 
 					BattleGearTranslator.getMapedMethodDesc("EntityPlayer", "func_71059_n");
 			playerPotionActiveMethodName = 
-					BattleGearTranslator.getMapedMethodName("EntityLiving", "func_82165_m");
+					BattleGearTranslator.getMapedMethodName("EntityLiving", "func_70644_a");
 			playerPotionActiveMethodDesc = 
-					BattleGearTranslator.getMapedMethodDesc("EntityLiving", "func_82165_m");
+					BattleGearTranslator.getMapedMethodDesc("EntityLiving", "func_70644_a");
 			playerGetActivePotionMethodName =
 					BattleGearTranslator.getMapedMethodName("EntityLiving", "func_70660_b");
 			playerGetActivePotionMethodDesc =
@@ -131,6 +138,12 @@ public class EntityPlayerTransformer implements IClassTransformer{
 		    
 		    
 		    System.out.println("M&B - Patching Class EntityPlayer done");
+		    
+		    
+		    if(BattlegearLoadingPlugin.debug){
+			    TransformerUtils.writeClassFile(cw, name);
+		    }
+		    
 
 			return cw.toByteArray();
 			
@@ -175,54 +188,17 @@ public class EntityPlayerTransformer implements IClassTransformer{
 			}else if(mn.name.equals(onItemFinishMethodName) &&
 					mn.desc.equals(onItemFinishMethodDesc)){
 				System.out.println("\tPatching method onItemUseFinish in EntityPlayer");
-				
+								
 				TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 3, 3);
-				//mn = processOnItemFinish(mn);
+			}else if(mn.name.equals(setCurrentItemArmourMethodName) &&
+					mn.desc.equals(setCurrentItemArmourMethodDesc)){
+				System.out.println("\tPatching method setCurrentItemOrArmor in EntityPlayer");
+								
+				TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 3, 3);
 			}
 		}
 	}
 
-	@Deprecated
-	private MethodNode processOnItemFinish(MethodNode mn) {
-		InsnList newList = new InsnList();
-		
-		Iterator<AbstractInsnNode> it = mn.instructions.iterator();
-		
-		while(it.hasNext()){
-			AbstractInsnNode nextNode = it.next();
-			
-			if(nextNode instanceof FieldInsnNode && 
-					((FieldInsnNode)nextNode).owner.equals(entityPlayerClassName) &&
-					((FieldInsnNode)nextNode).name.equals(playerInventoryFieldName) &&
-					((FieldInsnNode)nextNode).desc.equals("L"+inventoryClassName+";")){
-				
-				//skip the next four
-				it.next();
-				it.next();
-				it.next();
-				it.next();
-				
-				
-			}else if(nextNode instanceof InsnNode && nextNode.getOpcode() == AASTORE){
-				
-				newList.add(new MethodInsnNode(INVOKESTATIC, 
-						"mods/battlegear2/common/utils/BattlegearUtils", 
-						"setPlayerCurrentItem", 
-						"(L"+entityPlayerClassName+";L"+itemStackClassName+";)V"));
-			}else{
-				newList.add(nextNode);
-			}
-		}
-		
-		
-		
-		mn.instructions = newList;
-		
-		mn.maxStack = 3;
-		mn.maxLocals = 3;
-		
-		return mn;
-	}
 
 	private MethodNode generateAttackOffhandMethod() {
 		MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, "attackTargetEntityWithCurrentOffItem", "(L"+entityClassName+";)V", null, null);
