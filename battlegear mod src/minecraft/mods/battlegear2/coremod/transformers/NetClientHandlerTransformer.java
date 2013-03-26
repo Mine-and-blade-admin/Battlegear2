@@ -21,7 +21,9 @@ public class NetClientHandlerTransformer implements IClassTransformer{
 	
 	private String entityOtherPlayerMPClassName;
 	private String playerInventoryFieldName;
+	
 	private String packet20NamedEntitySpawnClassName;
+	
 	private String netClientHandlerHandleNamedEntitySpawnMethodName;
 	private String netClientHandlerHandleNamedEntitySpawnMethodDesc;
 

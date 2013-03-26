@@ -49,7 +49,6 @@ public class ItemRendererTransformer implements IClassTransformer{
 			itemStackClass = BattleGearTranslator.getMapedClassName("ItemStack");
 			itemRendererClass = BattleGearTranslator.getMapedClassName("ItemRenderer");
 			minecraftClass = BattleGearTranslator.getMapedClassName("Minecraft");
-			System.out.println(minecraftClass);
 			
 			itemRendererMinecraftField = BattleGearTranslator.getMapedFieldName("ItemRenderer", "field_78455_a");
 			itemRendereriteToRenderField = BattleGearTranslator.getMapedFieldName("ItemRenderer", "field_78453_b");
