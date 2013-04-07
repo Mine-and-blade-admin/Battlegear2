@@ -6,9 +6,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
 
 
 public class ContainerBattle extends Container{
@@ -40,7 +38,7 @@ public class ContainerBattle extends Container{
             this.addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 142));
         }
 		
-		//Weapon Slots[40-42]
+		//Weapon Slots[40-45] even slots for main, odd slots for offhand
         for(int x = 0; x < 3; x++){
         	WeaponSlot main = new WeaponSlot(inventoryPlayer,
         			x+InventoryPlayerBattle.OFFSET, 97, 15+x*18, true);
@@ -80,19 +78,28 @@ public class ContainerBattle extends Container{
     	    }
     	    else //we are in normal inventory
     	    {
-    	    	//TODO: decide what to do, should we put armor/weapons in corresponding slot like this?
-    	    	if(itemStack1.getItem() instanceof ItemArmor)
-    	    	{
-    	    		this.mergeItemStack(itemStack1, 0, 3, false);
-    	    	}
-    	    	else if(itemStack1.getItem() instanceof ItemSword)
-    	    	{
-    	    		/*
-    	    		 * TODO: This doesn't 100% work. It will not move bows and will move items
-    	    		 * into invalid slots (eg a sword in an offhand slot with a bow)
-    	    		 */
-    	    		this.mergeItemStack(itemStack1, 40, 42, false);
-    	    	}
+    	    	int index=0;
+    	        for(index=0;index<4;index++)//Search within ArmourSlot
+    	        {
+    	        	ArmourSlot aSlot = (ArmourSlot) this.inventorySlots.get(index);
+    	        	if ( !aSlot.getHasStack() && aSlot.isItemValid(itemStack1))
+    	        	{
+    	        		this.putStackInSlot(index,itemStack1);
+    	        		break;
+    	        	}
+    	        }
+    	        if (index==4)//we use index as a flag, armor slots weren't valid
+    	        {
+    	        	for(index=40;index<46;index++)//Search within WeaponSlot
+    	        	{
+    	        		WeaponSlot wSlot=(WeaponSlot) this.inventorySlots.get(index);
+    	        		if ( !wSlot.getHasStack() && wSlot.isItemValid(itemStack1))
+    	        		{
+    	        			this.putStackInSlot(index,itemStack1);
+    	        			break;
+    	        		}
+    	        	}
+    	        }
     	    }	
     	    if (itemStack1.stackSize == 0) 
     	    {
