@@ -35,7 +35,7 @@ public class BattlegearInGameGUI extends Gui{
 	     if (!this.mc.playerController.enableEverythingIsScrewedUpMode())
 	     {
 	    	 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	    	 this.mc.renderEngine.func_98187_b("/gui/gui.png");
+	    	 this.mc.renderEngine.bindTexture("/gui/gui.png");
 	         InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
 	         this.zLevel = -90.0F;
 
