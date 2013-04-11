@@ -42,6 +42,7 @@ public class BattleGear {
 		instance = this;
 		BattlegearConfig.getConfig(event);
 		BattlegearConfig.setItems();
+		BattlegearConfig.addNames();
         BattlegearConfig.registerRecipes();       
 	}
 	
