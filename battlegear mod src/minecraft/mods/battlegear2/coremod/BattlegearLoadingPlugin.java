@@ -13,11 +13,14 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin{
 	public static final String NetServerHandlerTransformer = "mods.battlegear2.coremod.transformers.NetServerHandlerTransformer";
 	public static final String PlayerControllerMPTransformer = "mods.battlegear2.coremod.transformers.PlayerControllerMPTransformer";
 	public static final String ItemRendererTransformer = "mods.battlegear2.coremod.transformers.ItemRendererTransformer";
-
-	
+	public static final String MinecraftTransformer = "mods.battlegear2.coremod.transformers.MinecraftTransformer";
+	public static final String RenderPlayerTransformer = "mods.battlegear2.coremod.transformers.RenderPlayerTransformer";
+	public static final String ItemInWorldTransformer = "mods.battlegear2.coremod.transformers.ItemInWorldTransformer";
+	public static final String EntityAIControlledTransformer = "mods.battlegear2.coremod.transformers.EntityAIControlledByPlayer";
+	public static final String EntityOtherPlayerMPTransformer = "mods.battlegear2.coremod.transformers.EntityOtherPlayerMPTransformer";
 	//Setting this to true will enable the output of all edited classess as .class files
 	//I will probably expose this via some sort of config to allow debugging of potential issues in the future
-	public static boolean debug = false;
+	public static boolean debug = true;
 	
 	@Override
 	public String[] getLibraryRequestClass() {
@@ -31,7 +34,13 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin{
 				ModelBipedTransformer,
 				NetClientHandlerTransformer,
 				NetServerHandlerTransformer,
-				ItemRendererTransformer
+				PlayerControllerMPTransformer,
+				ItemRendererTransformer,
+				MinecraftTransformer,
+				RenderPlayerTransformer,
+				ItemInWorldTransformer,
+				EntityAIControlledTransformer,
+				EntityOtherPlayerMPTransformer
 				};
 	}
 

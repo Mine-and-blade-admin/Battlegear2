@@ -19,7 +19,11 @@ import org.objectweb.asm.tree.MethodNode;
 
 public class TransformerUtils {
 
-	public static MethodNode replaceInventoryArrayAccess(MethodNode method, String className, String fieldName , int maxStack, int maxLocal){
+	public static MethodNode replaceInventoryArrayAccess(MethodNode method, String className, String fieldName, int maxStack, int maxLocal){
+		return replaceInventoryArrayAccess(method, className, fieldName, 4, maxStack, maxLocal);
+	}
+	
+	public static MethodNode replaceInventoryArrayAccess(MethodNode method, String className, String fieldName , int todelete, int maxStack, int maxLocal){
 		
 		InsnList newList = new InsnList();
 		
@@ -37,10 +41,9 @@ public class TransformerUtils {
 					){
 				
 				//skip the next 4
-				nextNode = it.next();
-				nextNode = it.next();
-				nextNode = it.next();
-				nextNode = it.next();
+				for(int i = 0; i < todelete; i++){
+					nextNode = it.next();
+				}
 				//add all until the AAStore
 				nextNode = it.next();
 				while(it.hasNext() && nextNode.getOpcode() != AASTORE){
@@ -74,8 +77,8 @@ public class TransformerUtils {
 	public static void writeClassFile(ClassWriter cw, String name) {
 		try{
 			File outDir = new File(System.getProperty("user.home"), "bg classFiles"+File.separator+"final");
-			outDir.mkdirs();
-			
+			System.out.println(outDir.getAbsolutePath());
+			outDir.mkdirs();			
 			 DataOutputStream dout=new DataOutputStream(new FileOutputStream(new File(outDir,name+".class")));
 	         dout.write(cw.toByteArray());
 	         dout.flush();

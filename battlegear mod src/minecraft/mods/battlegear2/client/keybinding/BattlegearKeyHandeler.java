@@ -24,11 +24,14 @@ public class BattlegearKeyHandeler extends KeyHandler{
 	public static KeyBinding battleInv = new KeyBinding("Battle Inventory", Keyboard.KEY_I);
 	public static KeyBinding drawWeapons = new KeyBinding("Draw Weapons", Keyboard.KEY_R);
 	
+	//TODO: I will replace this with some sort of command in the future, this is primarily for testing.
+	public static KeyBinding openSigilEditor = new KeyBinding("Open Sigil Editor", Keyboard.KEY_P);
+	
 	private static int previousNormal = 0;
 	private static int previousBattlemode = InventoryPlayerBattle.OFFSET;
 	
 	public BattlegearKeyHandeler() {
-		super(new KeyBinding[]{battleInv, drawWeapons}, new boolean[]{false, false});
+		super(new KeyBinding[]{battleInv, drawWeapons, openSigilEditor}, new boolean[]{false, false, false});
 	}
 
 	@Override
@@ -74,6 +77,10 @@ public class BattlegearKeyHandeler extends KeyHandler{
 				
 				
 				mc.playerController.updateController();
+			}else if (kb.keyCode == openSigilEditor.keyCode){
+				player.openGui(
+						BattleGear.instance, BattlegearGUIHandeler.sigilEditor, mc.theWorld,
+						(int)player.posX, (int)player.posY, (int)player.posZ); 
 			}
 		}
 	}
