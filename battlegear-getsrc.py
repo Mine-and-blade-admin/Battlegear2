@@ -20,10 +20,6 @@ def generate_patches(src_dir, src_backup_dir, battlegear_dir):
 					
 					print "Generating .patch for "+cur_file
 					
-					
-					
-					
-					
 					patch_path = original_path.replace(src_backup_dir, battlegear_dir)+".patch"
 					patch_parent = os.path.abspath(os.path.join(patch_path, os.pardir))
 					

@@ -12,10 +12,45 @@ def main(distDir,  mcpDir):
     from runtime.commands import Commands, CLIENT, SIDE_NAME
     from runtime.mcp import reobfuscate_side, recompile_side
     
+    print '================ Generating Details ==================='
+    
+    file_bin = os.path.join(mcpDir, 'src', 'minecraft')
+    reob_bin = os.path.join(mcpDir, 'reobf')
+    
+    with open(os.path.join(file_bin, 'net', 'minecraft', 'client', 'Minecraft.java'), 'rb') as mcClass:
+		for line in mcClass:
+			startIndex = line.find('"Minecraft Minecraft ')
+			endIndex = line.rfind('"')
+			if startIndex > -1 and endIndex > -1 and  endIndex > startIndex:
+				mcVersion = line[startIndex:endIndex]
+				mcVersion = mcVersion.replace('"', '')
+				mcVersion = mcVersion.replace('Minecraft', '')
+				mcVersion = mcVersion.replace(' ', '')
+    
+    modid = ''
+    version = ''
+    modName = ''
+    
+    with open(os.path.join(file_bin, 'mods', 'battlegear2', 'common', 'BattleGear.java'), 'rb') as mainClass:
+		for line in mainClass:
+			if(line.startswith('@Mod(')):
+				line = line.replace('@Mod(','')
+				line = line.replace(')','')
+				line = line.strip()
+				fields = line.split(', ')
+				for field in fields:
+					pair = field.split('=')
+					if(pair[0] == 'modid'):
+						modid = pair[1]
+					elif (pair[0] == 'name'):
+						modname = pair[1]
+					elif (pair[0] == 'version'):
+						version = pair[1]
+						
     print '================ Compiling Battlegear ==================='
     os.chdir(mcpDir)
     c = Commands()
-    #recompile_side(c, CLIENT)
+    recompile_side(c, CLIENT)
     
     print '================ Creating coremod jar ==================='
     os.chdir(defaultWD)
@@ -24,7 +59,7 @@ def main(distDir,  mcpDir):
     
     coremod_bin = os.path.join(mcpDir, 'bin', 'minecraft', coremod_dir)
     
-    core_jar = zipfile.ZipFile(os.path.join(distDir,'Battlegear-core.jar'), 'w')
+    core_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - core', mcVersion, version)), 'w')
 
     for root, _, filelist in os.walk(coremod_bin, followlinks=True):
 		if(root.find(coremod_dir) > -1):
@@ -49,37 +84,14 @@ def main(distDir,  mcpDir):
 		cmd = 'reobfuscate_srg.bat'
 
     
-    #os.system(cmd)
+    os.system(cmd)
     
     print '================ Creating Battlegear jar ==================='
     os.chdir(defaultWD)
     
-    file_bin = os.path.join(mcpDir, 'src', 'minecraft')
-    reob_bin = os.path.join(mcpDir, 'reobf')
-    
-    bg_jar = zipfile.ZipFile(os.path.join(distDir,'Battlegear-mod.jar'), 'w')
-    
+    bg_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - mod', mcVersion, version)), 'w')
     
     print 'Packing McMod Info'
-    modid = ''
-    version = ''
-    modName = ''
-    
-    with open(os.path.join(file_bin, 'mods', 'battlegear2', 'common', 'BattleGear.java'), 'rb') as mainClass:
-		for line in mainClass:
-			if(line.startswith('@Mod(')):
-				line = line.replace('@Mod(','')
-				line = line.replace(')','')
-				line = line.strip()
-				fields = line.split(', ')
-				for field in fields:
-					pair = field.split('=')
-					if(pair[0] == 'modid'):
-						modid = pair[1]
-					elif (pair[0] == 'name'):
-						modname = pair[1]
-					elif (pair[0] == 'version'):
-						version = pair[1]
 	
     packMcModInfo(bg_jar, modid, version, modname)
     
@@ -107,7 +119,9 @@ def main(distDir,  mcpDir):
 				print 'Packing Class File : '+class_file
 				bg_jar.write(os.path.join(root,cur_file), class_file)
 				
-	
+
+def generateJarName(name, mcVersion, version):
+	return '['+mcVersion+'] '+name+' ('+version.replace('"','')+').jar'
 	
 def packMcModInfo(bg_jar, modid, version, modname):
 	temp = open('temp', 'w')
