@@ -30,7 +30,7 @@ public class GUIAltButton extends GuiButton {
         if (this.drawButton)
         {
             FontRenderer var4 = minecraft.fontRenderer;
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/extendedGUI/image/GUI Controls.png"));
+            minecraft.renderEngine.bindTexture("/extendedGUI/image/GUI Controls.png");
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean mouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(mouseOver);
@@ -48,6 +48,7 @@ public class GUIAltButton extends GuiButton {
                 colour = 16777120;
             }
 
+            
             this.drawCenteredString(var4, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, colour);
         }
     }

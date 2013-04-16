@@ -235,6 +235,14 @@ public class InventoryPlayerBattle extends InventoryPlayer{
 		}
 	}
 	
+	public ItemStack getCurrentOffItem(){
+		if(isBattlemode()){
+			return this.getStackInSlot(currentItem+3);
+		}else{
+			return null;
+		}
+	}
+	
 	
 	
 			

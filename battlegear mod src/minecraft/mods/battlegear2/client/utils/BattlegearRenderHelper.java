@@ -4,8 +4,10 @@ import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
 import javax.jws.Oneway;
+import javax.swing.text.PlainDocument;
 
 import mods.battlegear2.common.inventory.InventoryPlayerBattle;
+import mods.battlegear2.common.items.ItemShield;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.BattlegearUtils;
 import net.minecraft.block.Block;
@@ -42,11 +44,13 @@ public class BattlegearRenderHelper {
 	
 	public static void renderItemInFirstPerson(float frame, Minecraft mc, ItemRenderer itemRenderer, ItemStack itemToRender){
 		
+		
 		if(itemRenderer.offHandItemToRender != dummyStack &&  
 				(itemToRender == null || BattlegearUtils.isOffHand(itemToRender.itemID) )){
 	    	float progress = itemRenderer.prevEquippedOffHandProgress + (itemRenderer.equippedOffHandProgress - itemRenderer.prevEquippedOffHandProgress) * frame;
 	       
 	    	EntityClientPlayerMP player = mc.thePlayer;
+	    	
 	        float rotation = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * frame;
 	        GL11.glPushMatrix();
 	        GL11.glRotatef(rotation, 1.0F, 0.0F, 0.0F);
@@ -97,132 +101,157 @@ public class BattlegearRenderHelper {
 	        
 	        if (itemRenderer.offHandItemToRender != null)
 	        {
-	            GL11.glPushMatrix();
-	            var7 = 0.8F;
-	
-	            if (player.getItemInUseCount() > 0)
-	            {
-	                EnumAction action = itemRenderer.offHandItemToRender.getItemUseAction();
-	                
-	                if (action == EnumAction.eat || action == EnumAction.drink)
-	                {
-	                    var21 = (float)player.getItemInUseCount() - frame + 1.0F;
-	                    var10 = 1.0F - var21 / (float)itemRenderer.offHandItemToRender.getMaxItemUseDuration();
-	                    var11 = 1.0F - var10;
-	                    var11 = var11 * var11 * var11;
-	                    var11 = var11 * var11 * var11;
-	                    var11 = var11 * var11 * var11;
-	                    var12 = 1.0F - var11;
-	                    GL11.glTranslatef(0.0F, MathHelper.abs(MathHelper.cos(var21 / 4.0F * (float)Math.PI) * 0.1F) * (float)((double)var10 > 0.2D ? 1 : 0), 0.0F);
-	                    GL11.glTranslatef(var12 * 0.6F, -var12 * 0.5F, 0.0F);
-	                    GL11.glRotatef(var12 * 90.0F, 0.0F, 1.0F, 0.0F);
-	                    GL11.glRotatef(var12 * 10.0F, 1.0F, 0.0F, 0.0F);
-	                    GL11.glRotatef(var12 * 30.0F, 0.0F, 0.0F, 1.0F);
-	                }
-	            }
-	            else
-	            {
-	                var20 = player.getOffSwingProgress(frame);
-	                var21 = MathHelper.sin(var20 * (float)Math.PI);
-	                var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float)Math.PI);
-	                //Flip the (x direction)
-	                GL11.glTranslatef(var10 * 0.4F, MathHelper.sin(MathHelper.sqrt_float(var20) * (float)Math.PI * 2.0F) * 0.2F, -var21 * 0.2F);
-	            }
-	            //Translate x in the opposite direction
-	            GL11.glTranslatef(-0.7F * var7, -0.65F * var7 - (1.0F - progress) * 0.6F, -0.9F * var7);
-	            
-	            //Rotate y in the opposite direction
-	            GL11.glRotatef(-45.0F, 0.0F, 1.0F, 0.0F);
-	            
-	            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-	            var20 = player.getOffSwingProgress(frame);
-	            
-	            
-	            var21 = MathHelper.sin(var20 * var20 * (float)Math.PI);
-	            var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float)Math.PI);
-	            	            
-	            GL11.glRotatef(-var21 * 20.0F, 0.0F, 1.0F, 0.0F);
-	            //Rotate z in the opposite direction
-	            GL11.glRotatef(var10 * 20.0F, 0.0F, 0.0F, 1.0F);
-	            GL11.glRotatef(-var10 * 80.0F, 1.0F, 0.0F, 0.0F);
-	            
-	            //Rotate y back to original position + 45
-	            GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-	            
-	            
-	            
-	            var11 = 0.4F;
-	            GL11.glScalef(var11, var11, var11);
-	            float var14;
-	            float var15;
-	
-	            if (player.getItemInUseCount() > 0)
-	            {
-	                EnumAction action = itemRenderer.offHandItemToRender.getItemUseAction();
-	
-	                if (action == EnumAction.block)
-	                {
-	                    GL11.glTranslatef(-0.5F, 0.2F, 0.0F);
-	                    GL11.glRotatef(30.0F, 0.0F, 1.0F, 0.0F);
-	                    GL11.glRotatef(-80.0F, 1.0F, 0.0F, 0.0F);
-	                    GL11.glRotatef(60.0F, 0.0F, 1.0F, 0.0F);
-	                }
-	                else if (action == EnumAction.bow)
-	                {
-	                    GL11.glRotatef(-18.0F, 0.0F, 0.0F, 1.0F);
-	                    GL11.glRotatef(-12.0F, 0.0F, 1.0F, 0.0F);
-	                    GL11.glRotatef(-8.0F, 1.0F, 0.0F, 0.0F);
-	                    GL11.glTranslatef(-0.9F, 0.2F, 0.0F);
-	                    var13 = (float)itemRenderer.offHandItemToRender.getMaxItemUseDuration() - ((float)player.getItemInUseCount() - frame + 1.0F);
-	                    var14 = var13 / 20.0F;
-	                    var14 = (var14 * var14 + var14 * 2.0F) / 3.0F;
-	
-	                    if (var14 > 1.0F)
-	                    {
-	                        var14 = 1.0F;
-	                    }
-	
-	                    if (var14 > 0.1F)
-	                    {
-	                        GL11.glTranslatef(0.0F, MathHelper.sin((var13 - 0.1F) * 1.3F) * 0.01F * (var14 - 0.1F), 0.0F);
-	                    }
-	
-	                    GL11.glTranslatef(0.0F, 0.0F, var14 * 0.1F);
-	                    GL11.glRotatef(-335.0F, 0.0F, 0.0F, 1.0F);
-	                    GL11.glRotatef(-50.0F, 0.0F, 1.0F, 0.0F);
-	                    GL11.glTranslatef(0.0F, 0.5F, 0.0F);
-	                    var15 = 1.0F + var14 * 0.2F;
-	                    GL11.glScalef(1.0F, 1.0F, var15);
-	                    GL11.glTranslatef(0.0F, -0.5F, 0.0F);
-	                    GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
-	                    GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
-	                }
-	            }
-	
-	            if (itemRenderer.offHandItemToRender.getItem().shouldRotateAroundWhenRendering())
-	            {
-	                GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
-	            }
-	
-	            if (itemRenderer.offHandItemToRender.getItem().requiresMultipleRenderPasses())
-	            {
-	                itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
-	                for (int x = 1; x < itemRenderer.offHandItemToRender.getItem().getRenderPasses(itemRenderer.offHandItemToRender.getItemDamage()); x++)
-	                {
-	                    int var25 = Item.itemsList[itemRenderer.offHandItemToRender.itemID].getColorFromItemStack(itemRenderer.offHandItemToRender, x);
-	                    var13 = (float)(var25 >> 16 & 255) / 255.0F;
-	                    var14 = (float)(var25 >> 8 & 255) / 255.0F;
-	                    var15 = (float)(var25 & 255) / 255.0F;
-	                    GL11.glColor4f(var6 * var13, var6 * var14, var6 * var15, 1.0F);
-	                    itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, x);
-	                }
-	            }
-	            else
-	            {
-	                itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
-	            }
-	
-	            GL11.glPopMatrix();
+	        	
+	        	if(itemRenderer.offHandItemToRender.getItem() instanceof ItemShield){
+	        		GL11.glPushMatrix();
+	        		
+	        		var7 = 0.8F;
+	        		GL11.glTranslatef(-0.7F * var7 - 0.25F*MathHelper.sin(player.swingProgress*3.14159F),
+	        				-0.65F * var7 - (1.0F - progress) * 0.6F - 0.4F, -0.9F * var7+0.1F);
+	        		
+	        		if(player.getItemInUse() != null){
+	        			GL11.glTranslatef(0.25F, 0.15F, 0);
+	        		}
+	        		
+	        		
+	        		GL11.glRotated(25, 0, 0, 1);
+	        		GL11.glRotatef(325+35*MathHelper.sin(player.swingProgress*3.14159F), 0, 1, 0);	        		
+	        		
+	        		
+	        		
+	        		itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
+	        		
+	        		GL11.glPopMatrix();
+	        		
+	        		
+	        	}else{
+		            GL11.glPushMatrix();
+		            var7 = 0.8F;
+		
+		            if (player.getItemInUseCount() > 0)
+		            {
+		                EnumAction action = itemRenderer.offHandItemToRender.getItemUseAction();
+		                
+		                if (action == EnumAction.eat || action == EnumAction.drink)
+		                {
+		                    var21 = (float)player.getItemInUseCount() - frame + 1.0F;
+		                    var10 = 1.0F - var21 / (float)itemRenderer.offHandItemToRender.getMaxItemUseDuration();
+		                    var11 = 1.0F - var10;
+		                    var11 = var11 * var11 * var11;
+		                    var11 = var11 * var11 * var11;
+		                    var11 = var11 * var11 * var11;
+		                    var12 = 1.0F - var11;
+		                    GL11.glTranslatef(0.0F, MathHelper.abs(MathHelper.cos(var21 / 4.0F * (float)Math.PI) * 0.1F) * (float)((double)var10 > 0.2D ? 1 : 0), 0.0F);
+		                    GL11.glTranslatef(var12 * 0.6F, -var12 * 0.5F, 0.0F);
+		                    GL11.glRotatef(var12 * 90.0F, 0.0F, 1.0F, 0.0F);
+		                    GL11.glRotatef(var12 * 10.0F, 1.0F, 0.0F, 0.0F);
+		                    GL11.glRotatef(var12 * 30.0F, 0.0F, 0.0F, 1.0F);
+		                }
+		            }
+		            else
+		            {
+		                var20 = player.getOffSwingProgress(frame);
+		                var21 = MathHelper.sin(var20 * (float)Math.PI);
+		                var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float)Math.PI);
+		                //Flip the (x direction)
+		                GL11.glTranslatef(var10 * 0.4F, MathHelper.sin(MathHelper.sqrt_float(var20) * (float)Math.PI * 2.0F) * 0.2F, -var21 * 0.2F);
+		            }
+		            //Translate x in the opposite direction
+		            GL11.glTranslatef(-0.7F * var7, -0.65F * var7 - (1.0F - progress) * 0.6F, -0.9F * var7);
+		            
+		            //Rotate y in the opposite direction
+		            GL11.glRotatef(-45.0F, 0.0F, 1.0F, 0.0F);
+		            
+		            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		            var20 = player.getOffSwingProgress(frame);
+		            
+		            
+		            var21 = MathHelper.sin(var20 * var20 * (float)Math.PI);
+		            var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float)Math.PI);
+		            	            
+		            GL11.glRotatef(-var21 * 20.0F, 0.0F, 1.0F, 0.0F);
+		            //Rotate z in the opposite direction
+		            GL11.glRotatef(var10 * 20.0F, 0.0F, 0.0F, 1.0F);
+		            GL11.glRotatef(-var10 * 80.0F, 1.0F, 0.0F, 0.0F);
+		            
+		            //Rotate y back to original position + 45
+		            GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+		            
+		            
+		            
+		            var11 = 0.4F;
+		            GL11.glScalef(var11, var11, var11);
+		            float var14;
+		            float var15;
+		
+		            if (player.getItemInUseCount() > 0)
+		            {
+		                EnumAction action = itemRenderer.offHandItemToRender.getItemUseAction();
+		
+		                if (action == EnumAction.block)
+		                {
+		                    GL11.glTranslatef(-0.5F, 0.2F, 0.0F);
+		                    GL11.glRotatef(30.0F, 0.0F, 1.0F, 0.0F);
+		                    GL11.glRotatef(-80.0F, 1.0F, 0.0F, 0.0F);
+		                    GL11.glRotatef(60.0F, 0.0F, 1.0F, 0.0F);
+		                }
+		                else if (action == EnumAction.bow)
+		                {
+		                    GL11.glRotatef(-18.0F, 0.0F, 0.0F, 1.0F);
+		                    GL11.glRotatef(-12.0F, 0.0F, 1.0F, 0.0F);
+		                    GL11.glRotatef(-8.0F, 1.0F, 0.0F, 0.0F);
+		                    GL11.glTranslatef(-0.9F, 0.2F, 0.0F);
+		                    var13 = (float)itemRenderer.offHandItemToRender.getMaxItemUseDuration() - ((float)player.getItemInUseCount() - frame + 1.0F);
+		                    var14 = var13 / 20.0F;
+		                    var14 = (var14 * var14 + var14 * 2.0F) / 3.0F;
+		
+		                    if (var14 > 1.0F)
+		                    {
+		                        var14 = 1.0F;
+		                    }
+		
+		                    if (var14 > 0.1F)
+		                    {
+		                        GL11.glTranslatef(0.0F, MathHelper.sin((var13 - 0.1F) * 1.3F) * 0.01F * (var14 - 0.1F), 0.0F);
+		                    }
+		
+		                    GL11.glTranslatef(0.0F, 0.0F, var14 * 0.1F);
+		                    GL11.glRotatef(-335.0F, 0.0F, 0.0F, 1.0F);
+		                    GL11.glRotatef(-50.0F, 0.0F, 1.0F, 0.0F);
+		                    GL11.glTranslatef(0.0F, 0.5F, 0.0F);
+		                    var15 = 1.0F + var14 * 0.2F;
+		                    GL11.glScalef(1.0F, 1.0F, var15);
+		                    GL11.glTranslatef(0.0F, -0.5F, 0.0F);
+		                    GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
+		                    GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
+		                }
+		            }
+		
+		            if (itemRenderer.offHandItemToRender.getItem().shouldRotateAroundWhenRendering())
+		            {
+		                GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+		            }
+		
+		            if (itemRenderer.offHandItemToRender.getItem().requiresMultipleRenderPasses())
+		            {
+		                itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
+		                for (int x = 1; x < itemRenderer.offHandItemToRender.getItem().getRenderPasses(itemRenderer.offHandItemToRender.getItemDamage()); x++)
+		                {
+		                    int var25 = Item.itemsList[itemRenderer.offHandItemToRender.itemID].getColorFromItemStack(itemRenderer.offHandItemToRender, x);
+		                    var13 = (float)(var25 >> 16 & 255) / 255.0F;
+		                    var14 = (float)(var25 >> 8 & 255) / 255.0F;
+		                    var15 = (float)(var25 & 255) / 255.0F;
+		                    GL11.glColor4f(var6 * var13, var6 * var14, var6 * var15, 1.0F);
+		                    itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, x);
+		                }
+		            }
+		            else
+		            {
+		                itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
+		            }
+		
+		            GL11.glPopMatrix();
+	        	}
 	        }else if (!player.getHasActivePotion())
 	        {
 	            GL11.glPushMatrix();
