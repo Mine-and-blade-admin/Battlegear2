@@ -1,6 +1,7 @@
 package mods.battlegear2.common.items;
 
 import mods.battlegear2.api.IBattlegearWeapon;
+import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.EnumToolMaterial;

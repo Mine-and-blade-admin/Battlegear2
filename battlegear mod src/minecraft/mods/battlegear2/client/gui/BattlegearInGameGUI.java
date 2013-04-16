@@ -20,7 +20,7 @@ public class BattlegearInGameGUI extends Gui{
 
 	private Minecraft mc;
 	
-	private static final RenderItem itemRenderer = new RenderItem();
+	public static final RenderItem itemRenderer = new RenderItem();
 	
 	public BattlegearInGameGUI() {
 		super();

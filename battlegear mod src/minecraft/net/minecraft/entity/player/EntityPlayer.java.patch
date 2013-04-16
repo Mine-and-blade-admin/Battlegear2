@@ -1,6 +1,6 @@
 --- 
 +++ 
-@@ -7,6 +7,11 @@
+@@ -7,6 +7,12 @@
  import java.util.Collection;
  import java.util.Iterator;
  import java.util.List;
@@ -8,11 +8,12 @@
 +import mods.battlegear2.common.BattleGear;
 +import mods.battlegear2.common.BattlegearPacketHandeler;
 +import mods.battlegear2.common.inventory.InventoryPlayerBattle;
++import mods.battlegear2.common.items.ItemShield;
 +import mods.battlegear2.common.utils.BattlegearUtils;
  import net.minecraft.block.Block;
  import net.minecraft.block.BlockBed;
  import net.minecraft.block.material.Material;
-@@ -39,6 +44,7 @@
+@@ -39,6 +45,7 @@
  import net.minecraft.item.ItemStack;
  import net.minecraft.nbt.NBTTagCompound;
  import net.minecraft.nbt.NBTTagList;
@@ -20,7 +21,7 @@
  import net.minecraft.potion.Potion;
  import net.minecraft.scoreboard.Score;
  import net.minecraft.scoreboard.ScoreObjective;
-@@ -64,6 +70,7 @@
+@@ -64,6 +71,7 @@
  import net.minecraft.util.Vec3;
  import net.minecraft.world.EnumGameType;
  import net.minecraft.world.World;
@@ -28,7 +29,7 @@
  import net.minecraft.world.chunk.IChunkProvider;
  
  import net.minecraftforge.common.ForgeHooks;
-@@ -80,10 +87,105 @@
+@@ -80,10 +88,107 @@
  
  public abstract class EntityPlayer extends EntityLiving implements ICommandSender
  {
@@ -36,7 +37,7 @@
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
 +	 * 
-+	 * Edits: 3
++	 * Edits: 4
 +	 * Added Methods: 6
 +	 * Added Fields: 4
 +	 * 
@@ -45,6 +46,8 @@
 +	 * 
 +	 * The only other edit is to replace the instance of Inventory player with the custom Inventory class.
 +	 * It has also been marked as private to prevent other mods changing this later.
++	 * 
++	 * The method in OnUpdate has not been added in the transfomer yet
 +	 */
 +	
 +	//-----MB-addFilds-----
@@ -135,7 +138,7 @@
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
  
      /**
-@@ -196,7 +298,7 @@
+@@ -196,7 +301,7 @@
      public int getMaxHealth()
      {
          return 20;
@@ -144,7 +147,19 @@
  
      protected void entityInit()
      {
-@@ -465,11 +567,12 @@
+@@ -279,6 +384,11 @@
+         if (this.itemInUse != null)
+         {
+             ItemStack itemstack = this.inventory.getCurrentItem();
++            
++            //-----MB-Edited-----
++            if(itemInUse.getItem() instanceof ItemShield){
++            	itemstack = ((InventoryPlayerBattle)inventory).getCurrentOffItem();
++            }
+ 
+             if (itemstack == this.itemInUse)
+             {
+@@ -465,11 +575,12 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
@@ -159,7 +174,7 @@
                  }
              }
  
-@@ -2330,7 +2433,8 @@
+@@ -2330,7 +2441,8 @@
      {
          if (par1 == 0)
          {
