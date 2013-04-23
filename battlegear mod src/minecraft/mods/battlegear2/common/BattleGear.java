@@ -22,7 +22,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 	channels={
 		BattlegearPacketHandeler.guiPackets,
 		BattlegearPacketHandeler.syncBattlePackets,
-		BattlegearPacketHandeler.mbAnimation}, 
+		BattlegearPacketHandeler.mbAnimation,
+		BattlegearPacketHandeler.guiHeraldryIconChange}, 
 	packetHandler =BattlegearPacketHandeler.class)
 public class BattleGear {
 	

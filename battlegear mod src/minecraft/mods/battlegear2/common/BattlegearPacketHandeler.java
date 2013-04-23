@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.List;
 
 
+import mods.battlegear2.client.utils.HeraldryItemRenderer;
+import mods.battlegear2.common.gui.ContainerHeraldry;
 import mods.battlegear2.common.inventory.InventoryPlayerBattle;
 import mods.battlegear2.common.utils.BattlegearUtils;
 import mods.battlegear2.common.utils.EnumBGAnimations;
@@ -31,6 +33,7 @@ public class BattlegearPacketHandeler implements IPacketHandler {
 	public static final String guiPackets = "MB-GUI";
 	public static final String syncBattlePackets = "MB-SyncAllItems";
 	public static final String mbAnimation = "MB-animation";
+	public static final String guiHeraldryIconChange = "MB-HeraldChange";
 
 	@Override
 	public void onPacketData(INetworkManager manager,
@@ -42,6 +45,50 @@ public class BattlegearPacketHandeler implements IPacketHandler {
 			processBattlegearGUIPacket(packet, (EntityPlayer)player);
 		}else if (packet.channel.equals(mbAnimation)){
 			processOffHandAnimationPacket(packet, ((EntityPlayer)player).worldObj);
+		}else if(packet.channel.equals(guiHeraldryIconChange)){
+			processHeraldryChangePacket(packet, (EntityPlayer)player);
+		}
+		
+	}
+	
+	public static Packet250CustomPayload generateHeraldryChangeGUIPacket(int code, EntityPlayer player){
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+		DataOutputStream outputStream = new DataOutputStream(bos);
+		try {
+			outputStream.writeInt(player.openContainer.windowId);
+			outputStream.writeInt(code);
+		}catch (Exception ex) {
+	        ex.printStackTrace();
+		}
+		
+		Packet250CustomPayload packet = new Packet250CustomPayload();
+		packet.channel = guiHeraldryIconChange;
+		packet.data = bos.toByteArray();
+		packet.length = bos.size();
+		
+		return packet;
+	}
+
+	private void processHeraldryChangePacket(Packet250CustomPayload packet, EntityPlayer player) {
+		DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
+		
+		int windowID = 0;
+		int code = 0;
+		try{
+			windowID = inputStream.readInt();
+			code = inputStream.readInt();
+		}catch (IOException e) {
+            e.printStackTrace();
+            return;
+		}
+		
+		System.out.println(player.openContainer.windowId +", "+ windowID);
+		
+		if(player.openContainer.windowId == windowID &&
+				player.openContainer.isPlayerNotUsingContainer(player)){
+			
+			((ContainerHeraldry)player.openContainer).setCode(code);
+			player.openContainer.detectAndSendChanges();
 		}
 		
 	}

@@ -1,7 +1,8 @@
 package mods.battlegear2.common.gui;
 
 import mods.battlegear2.client.gui.BattleEquipGUI;
-import mods.battlegear2.client.gui.GuiSigil;
+import mods.battlegear2.client.gui.GuiHeraldry;
+import mods.battlegear2.client.gui.GuiHeraldry2;
 import mods.battlegear2.common.BattlegearPacketHandeler;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,6 +22,8 @@ public class BattlegearGUIHandeler implements IGuiHandler{
 		switch(ID){
 		case equipID:
 			return new ContainerBattle(player.inventory, !world.isRemote, player);
+		case sigilEditor:
+			return new ContainerHeraldry(player.inventory, !world.isRemote, player);
 		default:
 			return null;
 		}
@@ -34,7 +37,7 @@ public class BattlegearGUIHandeler implements IGuiHandler{
 		case equipID:
 			return new BattleEquipGUI(player, world.isRemote);	
 		case sigilEditor:
-			return new GuiSigil(player, true);
+			return new GuiHeraldry2(player, true, world.isRemote);
 		default:
 			return null;
 		}

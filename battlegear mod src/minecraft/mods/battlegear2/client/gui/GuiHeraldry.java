@@ -7,26 +7,31 @@ import java.util.Random;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import extendedGUI.BasicColourButton;
 import extendedGUI.GUIAltButton;
 import extendedGUI.GUIAltScroll;
 import mods.battlegear2.client.utils.SigilHelper;
 import mods.battlegear2.common.BattleGear;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.NetServerHandler;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 
-public class GuiSigil extends GuiScreen{
+public class GuiHeraldry extends GuiScreen{
 	
 	private Minecraft mc = FMLClientHandler.instance().getClient();
 
 	/** The X size of the window in pixels. */
-	protected int xSize = 225;
+	protected int xSize = 176;
 
 	/** The Y size of the window in pixels. */
-	protected int ySize = 166;
+	protected int ySize = 190;
 	
 	/**
      * Starting X position for the Gui. Inconsistent use for Gui backgrounds.
@@ -37,8 +42,6 @@ public class GuiSigil extends GuiScreen{
      * Starting Y position for the Gui. Inconsistent use for Gui backgrounds.
      */
     protected int guiTop;
-	
-	
 	
 	private byte pattern; //only a nibble
 	private byte colour1; //only a nibble
@@ -65,14 +68,12 @@ public class GuiSigil extends GuiScreen{
 	private EntityPlayer player;
 	private boolean personal;
 	
-	private GUIAltScroll[] scrolls;
-	
 	/**
 	 * Creates a new GUI for creating and editing sigils.
 	 * @param player
 	 * @param personal
 	 */
-	public GuiSigil(EntityPlayer player, boolean personal){
+	public GuiHeraldry(EntityPlayer player, boolean personal){
 		this.player = player;
 		this.personal = personal;
 	}
@@ -83,54 +84,23 @@ public class GuiSigil extends GuiScreen{
 
         this.guiLeft = (this.width - this.xSize) / 2;
         this.guiTop = (this.height - this.ySize) / 2;
+                
+        int controlsX = guiLeft+130;
+        int controlsY = guiTop+27;
         
-        scrolls = new GUIAltScroll[7];
-
-        Random rand = new Random();
-        for(int i = 0; i < scrolls.length; i++){
-        	
-        	int size = 65;
-        	int max = 30;
-        	if(i == 0 || i == 3|| i == 4){
-        		size = 85;
-        	}
-        	
-        	if(i == 0){
-        		max = 15;
-        	}
-        	
-        	if(i == 4){
-        		max = 7;
-        	}
-        	
-        	int yLoc = 22+i*16+guiTop;
-        	if(i >= 3){
-        		yLoc = yLoc + 16;
-        	}
-
-        	scrolls[i] = new GUIAltScroll(10+i, 130+guiLeft, yLoc, size, true, 0, max);
-        	scrolls[i].sliderValue = (rand.nextFloat());
-        	scrolls[i].current = MathHelper.floor_float(scrolls[i].sliderValue*(max+1)); 
-        	scrolls[i].displayString = displayString[i];
-        	buttonList.add(scrolls[i]);
-        }
-        
-        this.buttonList.add(new GUIAltButton(0, 5+guiLeft, 120+guiTop, 115, 18, "Set Heraldry"));
-        
-        GUIAltButton teamHeraldry = new GUIAltButton(1, 5+guiLeft, 140+guiTop, 115, 18, "Set Team Heraldry");
-        teamHeraldry.enabled = false;
-        this.buttonList.add(teamHeraldry);
+       
     }
 
 	@Override
 	public void drawScreen(int par1, int par2, float par3) {
 		drawDefaultBackground();
 	    
-	    this.drawCenteredString(fontRenderer, patternTitle, this.guiLeft+130+45, 12+guiTop, 0xFFFFFF);
-	    this.drawCenteredString(fontRenderer, iconTitle, this.guiLeft+130+45, 12+guiTop+16*4, 0xFFFFFF);
+	    //this.drawCenteredString(fontRenderer, patternTitle, this.guiLeft+130+45, 12+guiTop, 0xFFFFFF);
+	    //this.drawCenteredString(fontRenderer, iconTitle, this.guiLeft+130+45, 12+guiTop+16*4, 0xFFFFFF);
 
 	    mc.renderEngine.bindTexture(BattleGear.imageFolder+"/gui/Sigil GUI.png");
 	    
+	    /*
 	    for(int i = 1; i < 3; i++){
 		    this.drawRect(guiLeft+130+72, guiTop+22+16*i, guiLeft+130+72+16, guiTop+22+16*i+16,
 		    		0xFF000000 | SigilHelper.colours[scrolls[i].current]);
@@ -147,15 +117,14 @@ public class GuiSigil extends GuiScreen{
 	    }
 	    
 	    drawSigil();
+	    */
 	    
-	    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	    mc.renderEngine.bindTexture(BattleGear.imageFolder+"gui/Sigil GUI.png");
-	    this.drawTexturedModalRect(guiLeft+11+15, guiTop+30, 0, 190, 66, 66);
 	    
 	    super.drawScreen(par1, par2, par3);
 	    	    
 	}
 	
+	/*
 	private void drawSigil() {
 		
 		int offset = 15;
@@ -168,15 +137,6 @@ public class GuiSigil extends GuiScreen{
 	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    GL11.glColor4f(colour[2], colour[1], colour[0], 1);
 	    this.drawTexturedModelRect(guiLeft+12+offset, guiTop+31, 64, 64);
-	    
-	    
-	    /*
-	    colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[scrolls[6].current]);
-	    GL11.glColor4f(1,1,1, 1);
-	    GL11.glEnable(GL11.GL_BLEND);
-	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    this.drawTexturedModalRect(guiLeft+19, guiTop+38, 32, 32, 32, 32);
-	    */
 	    
 	    mc.renderEngine.bindTexture(BattleGear.imageFolder+"/sigil/icons/icon-"+"1"+"-0.png");
 	    float[] colourIconPrimary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[scrolls[5].current]);
@@ -210,10 +170,7 @@ public class GuiSigil extends GuiScreen{
 	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    this.drawTexturedModalRect(guiLeft+19, guiTop+38, 32, 96, 32, 32);
 	    */
-	    
-	    
-	    
-	}
+	//}
 
 	@Override
 	public void drawDefaultBackground() {
