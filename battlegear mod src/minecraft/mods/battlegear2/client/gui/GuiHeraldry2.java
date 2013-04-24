@@ -11,7 +11,9 @@ import cpw.mods.fml.client.FMLClientHandler;
 import extendedGUI.BasicColourButton;
 import extendedGUI.GUIAltButton;
 import extendedGUI.GUIAltScroll;
+import mods.battlegear2.client.heraldry.HeraldryIcon;
 import mods.battlegear2.client.heraldry.HeraldryPattern;
+import mods.battlegear2.client.heraldry.HeraldryPositions;
 import mods.battlegear2.client.utils.HeraldryItemRenderer;
 import mods.battlegear2.client.utils.SigilHelper;
 import mods.battlegear2.common.BattleGear;
@@ -71,6 +73,8 @@ public class GuiHeraldry2 extends GuiContainer{
 	private BasicColourButton[] colourButtons;
 	
 	private int selectedPattern = 0;
+	private int selectedSigil = 0;
+	private int selectedPosition = 0;
 	
 	private int[] selectedColours = new int[]{0, 8, 16, 24};
 	
@@ -84,7 +88,7 @@ public class GuiHeraldry2 extends GuiContainer{
 	private EntityPlayer player;
 	private boolean personal;
 	
-	int panelId = -1;
+	private int panelId = -1;
 	
 	/**
 	 * Creates a new GUI for creating and editing sigils.
@@ -189,8 +193,6 @@ public class GuiHeraldry2 extends GuiContainer{
 					int xStart = guiLeft+25+xSize;
 					int yStart = y*27+guiTop+19;
 					
-										
-					
 					this.drawRect(guiLeft+25+xSize, y*27+guiTop+19, guiLeft+25+26+xSize, (y+1)*27+guiTop+18, primaryColour);
 					
 				    float[] colour = SigilHelper.convertColourToARGBArray(secondaryColour);
@@ -211,9 +213,109 @@ public class GuiHeraldry2 extends GuiContainer{
 					
 					}
 				}
+			}else if(panelId == 1){
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				int start = (int)(panelScroll.sliderValue * 11);
+				for(int y = 0; y < 6; y++){
+					
+					int primaryColour = 0xFF000000 | SigilHelper.colours[selectedColours[2]];
+					int secondaryColour = 0xFF000000 | SigilHelper.colours[selectedColours[3]];
+					
+					int xStart = guiLeft+25+xSize;
+					int yStart = y*27+guiTop+19;
+										
+					if(y+start < HeraldryIcon.values().length){
+						HeraldryIcon selected = HeraldryIcon.values()[y+start];
+						if(! HeraldryIcon.Blank.equals(selected)){
+							float[] colour = SigilHelper.convertColourToARGBArray(primaryColour);
+							GL11.glColor4f(colour[2], colour[1], colour[0], 1);
+							mc.renderEngine.bindTexture(selected.getForegroundImagePath());
+							GL11.glEnable(GL11.GL_BLEND);
+						    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+						    this.drawTexturedModelRect(guiLeft+25+xSize, y*27+guiTop+19, 26, 26, .33F, .33F, .33F, false);
+						    
+						    colour = SigilHelper.convertColourToARGBArray(secondaryColour);
+							GL11.glColor4f(colour[2], colour[1], colour[0], 1);
+							mc.renderEngine.bindTexture(selected.getBackgroundImagePath());
+							this.drawTexturedModelRect(guiLeft+25+xSize, y*27+guiTop+19, 26, 26, .33F, .33F, .33F, false);
+						}
+					}
+					
+					if(y+start == selectedSigil){					
+						
+						this.drawRect(xStart-1, yStart-1, xStart+1, yStart+1+27, 0xFFFFFF00);
+						this.drawRect(xStart-1, yStart-1+27, xStart+1+27, yStart+1+27, 0xFFFFFF00);
+						
+						this.drawRect(xStart-1, yStart-1, xStart+1+27, yStart+1, 0xFFFFFF00);
+						this.drawRect(xStart-1+27, yStart-1, xStart+1+27, yStart+1+27, 0xFFFFFF00);
+					
+					}
+					
+				}
+			}else if(panelId == 2){
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				int start = (int)(panelScroll.sliderValue * 3);
+				for(int y = 0; y < 6; y++){
+					
+					int primaryColour = 0xFF000000 | SigilHelper.colours[selectedColours[2]];
+					int secondaryColour = 0xFF000000 | SigilHelper.colours[selectedColours[3]];
+					
+					int xStart = guiLeft+25+xSize;
+					int yStart = y*27+guiTop+19;
+					
+					float[] colourIconPrimary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[selectedColours[2]]);
+				    float[] colourIconSconondary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[selectedColours[3]]);
+										
+					if(y+start < HeraldryPositions.values().length){
+
+						HeraldryIcon selectedIcon = HeraldryIcon.values()[selectedSigil];
+						HeraldryPositions position = HeraldryPositions.values()[y+start];
+						
+						for(int pass = 0; pass < position.getPassess(); pass++){
+							
+							float xPos = position.getSourceX(pass);
+					    	float yPos = position.getSourceY(pass);
+					    	float width = position.getWidth();
+					    	boolean flip = position.getPatternFlip(pass);
+					    	boolean flipColours = position.getAltColours(pass);
+					    	
+					    	if(flipColours){
+					    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
+					    	}else{
+					    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+					    	}
+					    	
+							mc.renderEngine.bindTexture(selectedIcon.getForegroundImagePath());
+							GL11.glEnable(GL11.GL_BLEND);
+							GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+							this.drawTexturedModelRect(guiLeft+25+xSize, y*27+guiTop+19, 26, 26, xPos, yPos, width, flip);
+							
+							if(!flipColours){
+					    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
+					    	}else{
+					    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+					    	}
+							
+							
+							mc.renderEngine.bindTexture(selectedIcon.getBackgroundImagePath());
+							this.drawTexturedModelRect(guiLeft+25+xSize, y*27+guiTop+19, 26, 26, xPos, yPos, width, flip);
+							
+						}
+
+						if(y+start == selectedPosition){					
+							
+							this.drawRect(xStart-1, yStart-1, xStart+1, yStart+1+27, 0xFFFFFF00);
+							this.drawRect(xStart-1, yStart-1+27, xStart+1+27, yStart+1+27, 0xFFFFFF00);
+							
+							this.drawRect(xStart-1, yStart-1, xStart+1+27, yStart+1, 0xFFFFFF00);
+							this.drawRect(xStart-1+27, yStart-1, xStart+1+27, yStart+1+27, 0xFFFFFF00);
+						
+						}
+					
+					}
+				}
+
 			}
-			
-			
 			//GL11.glColor4f(1.0F, 1.0F, 0.0F, 1.0F);
 			
 			String[] split = displayString[panelId].split("%");
@@ -221,6 +323,7 @@ public class GuiHeraldry2 extends GuiContainer{
 				this.drawCenteredString(this.fontRenderer, split[i], guiLeft+43+xSize, guiTop+4+i*10, 0xFFFF40);
 			}
 		}
+			
 	}
 	
 	
@@ -269,11 +372,10 @@ public class GuiHeraldry2 extends GuiContainer{
 		y+=20;
 		buttonList.add(new GUIAltButton(1, guiLeft+78, y, 90, 18, "Sigil"));
 		y+=20;
-		buttonList.add(new GUIAltButton(1, guiLeft+78, y, 90, 18, "Sigil Position"));
+		buttonList.add(new GUIAltButton(2, guiLeft+78, y, 90, 18, "Sigil Position"));
 		y+=20;
 		colourButtons[2] = new BasicColourButton(7, guiLeft+78, y, 45, 16, SigilHelper.colours[selectedColours[2]]);
 		colourButtons[3] = new BasicColourButton(8, guiLeft+78+45, y, 45, 16, SigilHelper.colours[selectedColours[3]]);
-		
 		
 		buttonList.add(colourButtons[0]);
 		buttonList.add(colourButtons[1]);
@@ -293,22 +395,54 @@ public class GuiHeraldry2 extends GuiContainer{
 		
 		this.drawRect(startX, startY, 64+startX, 64+startY, primaryPattern);
 		
-		
 		GL11.glColor4f(secondaryPattern[2], secondaryPattern[1], secondaryPattern[0], 1);
 	    mc.renderEngine.bindTexture("/gui/items.png");
 	    GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    this.drawTexturedModelRectFromIcon(startX, startY, HeraldryPattern.values()[selectedPattern].getIcon(), 64, 64);
+
+	    HeraldryPositions position = HeraldryPositions.values()[selectedPosition];
 	    
+	    float[] colourIconPrimary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[selectedColours[2]]);
+	    float[] colourIconSconondary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[selectedColours[3]]);
 	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
+	    if(! HeraldryIcon.Blank.equals(HeraldryIcon.values()[selectedSigil])){
+		    mc.renderEngine.bindTexture(HeraldryIcon.values()[selectedSigil].getForegroundImagePath());
+		    
+		    for(int i = 0; i < position.getPassess(); i++){
+		    	float x = position.getSourceX(i);
+		    	float y = position.getSourceY(i);
+		    	float width = position.getWidth();
+		    	boolean flip = position.getPatternFlip(i);
+		    	boolean flipColours = position.getAltColours(i);
+		    	
+		    	if(flipColours){
+		    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
+		    	}else{
+		    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+		    	}
+		    	
+		    	this.drawTexturedModelRect(startX, startY, 64, 64, x,y, width, flip);
+		    }
+		    
+		    mc.renderEngine.bindTexture(HeraldryIcon.values()[selectedSigil].getBackgroundImagePath());
+		    
+		    for(int i = 0; i < position.getPassess(); i++){
+		    	float x = position.getSourceX(i);
+		    	float y = position.getSourceY(i);
+		    	float width = position.getWidth();
+		    	boolean flip = position.getPatternFlip(i);
+		    	boolean flipColours = position.getAltColours(i);
+		    	
+		    	if(! flipColours){
+		    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
+		    	}else{
+		    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+		    	}
+		    	
+		    	this.drawTexturedModelRect(startX, startY, 64, 64, x,y,width, flip);
+		    }
+	    }
 	    
 	    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	    mc.renderEngine.bindTexture(BattleGear.imageFolder+"gui/Sigil GUI 2.png");
@@ -434,23 +568,40 @@ public class GuiHeraldry2 extends GuiContainer{
 
 		
 		if(par3 == 0 && panelId != -1 && panelId < 5){
+			int xOff = x - guiLeft - 5 - 8 - xSize;
+			int yOff = y - guiTop - 19;
+			
 			if(panelId == 0){
-				int xOff = x - guiLeft - 5 - 8 - xSize;
-				int yOff = y - guiTop - 19;
-				
 				if(xOff >= 0 && xOff <=50 && yOff >= 0 && yOff <= 162){
 					selectedPattern = (yOff/27) + (int)(panelScroll.sliderValue * 11);
+					
+					selectedPattern = Math.max(0, selectedPattern);
+					selectedPattern = Math.min(selectedPattern, HeraldryPattern.values().length-1);
+				}
+			}else if(panelId == 1){
+				if(xOff >= 0 && xOff <=50 && yOff >= 0 && yOff <= 162){
+					selectedSigil = (yOff/27) + (int)(panelScroll.sliderValue * 11);
 				}
 				
-				if(player instanceof EntityClientPlayerMP){
-					System.out.println("Add to send queue");
-					((EntityClientPlayerMP)player).sendQueue.addToSendQueue(
-							BattlegearPacketHandeler.generateHeraldryChangeGUIPacket(
-									SigilHelper.packSigil(
-											selectedPattern, selectedColours[0], selectedColours[1], 0, 0, 0, 0),
-											player));
+				selectedSigil = Math.max(0, selectedSigil);
+				selectedSigil = Math.min(selectedSigil, HeraldryIcon.values().length-1);
+			}else if(panelId == 2){
+				if(xOff >= 0 && xOff <=50 && yOff >= 0 && yOff <= 162){
+					selectedPosition = (yOff/27) + (int)(panelScroll.sliderValue * 3);
 				}
 				
+				selectedPosition = Math.max(0, selectedPosition);
+				selectedPosition = Math.min(selectedPosition, HeraldryPositions.values().length-1);
+			}
+			
+			
+			if(player instanceof EntityClientPlayerMP){
+				System.out.println("Add to send queue");
+				((EntityClientPlayerMP)player).sendQueue.addToSendQueue(
+						BattlegearPacketHandeler.generateHeraldryChangeGUIPacket(
+								SigilHelper.packSigil(
+										selectedPattern, selectedColours[0], selectedColours[1], 0, 0, 0, 0),
+										player));
 			}
 		}
 		
