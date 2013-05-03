@@ -1,32 +1,24 @@
 package mods.battlegear2.common.items;
 
 import mods.battlegear2.api.OffhandAttackEvent;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import cpw.mods.fml.relauncher.Side;
 
-public class ItemSpear extends ItemWeapon{
+public class ItemSpear extends TwoHandedWeapon{
 
 	public ItemSpear(int par1, int i) {
 		super(par1,i);
 		this.name="battlegear2:Spear-"+i;
 	}
-
+	
 	@Override
-	public boolean willAllowOffhandWeapon() {
-		return false;
-	}
-
-	@Override
-	public boolean isOffhandHandDualWeapon() {
-		return true;
-	}
-
-	@Override
-	public boolean sheatheOnBack() {
-		return true;
-	}
-
+	public boolean canHarvestBlock(Block par1Block)
+    {
+        return par1Block.blockID == Block.cloth.blockID;
+    }
+	
 	@Override
 	public boolean offhandAttackEntity(OffhandAttackEvent event,
 			ItemStack mainhandItem, ItemStack offhandItem) {

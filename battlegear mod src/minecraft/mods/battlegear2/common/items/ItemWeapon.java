@@ -1,11 +1,12 @@
 package mods.battlegear2.common.items;
 
 import mods.battlegear2.api.IBattlegearWeapon;
-import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -25,10 +26,23 @@ public abstract class ItemWeapon extends Item implements IBattlegearWeapon{
 		default:this.material=EnumToolMaterial.WOOD;break;
 		}
 		this.setCreativeTab(BattlegearConfig.customTab);
+		this.maxStackSize = 1;
 	}
+	
 	@SideOnly(Side.CLIENT)
     public void updateIcons(IconRegister par1IconRegister)
     {
         this.iconIndex = par1IconRegister.registerIcon(this.name);
     }
+	
+	public EnumToolMaterial getMaterial() {
+		return this.material;
+	}
+	
+	@Override
+	public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
+    {
+        return this.material.getToolCraftingMaterial() == par2ItemStack.itemID ? true : super.getIsRepairable(par1ItemStack, par2ItemStack);
+    }
+
 }

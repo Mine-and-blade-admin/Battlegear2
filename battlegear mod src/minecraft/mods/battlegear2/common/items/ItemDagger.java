@@ -6,16 +6,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import cpw.mods.fml.relauncher.Side;
 
-public class ItemWaraxe extends TwoHandedWeapon{
+public class ItemDagger extends OneHandedWeapon{
 
-	public ItemWaraxe(int par1, int i) {
-		super(par1,i);
-		this.name="battlegear2:Waraxe-"+i;
+	public ItemDagger(int par1, int i) {
+		super(par1, i);
+		this.name="battlegear2:Dagger-"+i;
 	}
 	@Override
 	public boolean canHarvestBlock(Block par1Block)
     {
-        return par1Block.blockID == Block.wood.blockID;
+        return par1Block.blockID == Block.tallGrass.blockID;
     }
 	
 	@Override
@@ -42,8 +42,10 @@ public class ItemWaraxe extends TwoHandedWeapon{
 	@Override
 	public void performPassiveEffects(Side effectiveSide,
 			ItemStack mainhandItem, ItemStack offhandItem) {
-		// TODO Auto-generated method stub
-		
+		if(mainhandItem==offhandItem)
+		{
+			this.addDamagePower(1);
+		}
 	}
 
 }
