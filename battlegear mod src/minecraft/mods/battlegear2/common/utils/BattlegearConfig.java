@@ -1,6 +1,7 @@
 package mods.battlegear2.common.utils;
 
 import mods.battlegear2.common.inventory.CreativeTabMB_B_2;
+import mods.battlegear2.common.items.ItemHeradryIcon;
 import mods.battlegear2.common.items.ItemMace;
 import mods.battlegear2.common.items.ItemShield;
 import mods.battlegear2.common.items.ItemSpear;
@@ -22,7 +23,7 @@ public class BattlegearConfig {
 	public static int[] setID=new int[8],validWeaponsID={11,12,16,20,27};
 	public static final String[] itemNames=new String[]{"Banner","Quiver","Chain","Waraxe","Mace","Spear","Shield","KnightArmor"};
 	public static Item[] warAxe=new Item[5],mace=new Item[5],spear=new Item[5],shield=new Item[5];
-	public static Item chains,quiver,banner;
+	public static Item chains,quiver,banner,heradricItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[4];
 	
 	public static void getConfig(FMLPreInitializationEvent event) {
@@ -54,6 +55,8 @@ public class BattlegearConfig {
 			/*if(i<4)
 			knightArmor[i]=new ItemKnightArmor(setID[7]+i,EnumArmorMaterial.IRON,0,i);*/
 		}
+		
+		heradricItem = new ItemHeradryIcon(22000-1);
 	}
 	public static void registerRecipes() {//Those are old recipes found on your M-B topic
 		for (int i=0;i<15;i++)

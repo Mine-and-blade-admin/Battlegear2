@@ -34,7 +34,7 @@ public class GUIAltScroll extends GuiButton {
     protected int max;
 	
 	public GUIAltScroll(int id, int xPos, int yPos, int size, boolean horizontal, int min, int max){
-		super(id, xPos, yPos, size, 14, "");
+		super(id, xPos, yPos, size, size, "");
 		
 		if(max > min){
 			this.max = max;
@@ -51,6 +51,9 @@ public class GUIAltScroll extends GuiButton {
 		if(!horizontal){
 			width = 14;
 			height = size;
+		}else{
+			height = 14;
+			width = size;
 		}
 		
 		this.current = min;
@@ -71,7 +74,9 @@ public class GUIAltScroll extends GuiButton {
 		         this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 108, this.width / 2, this.height);
 		         this.drawTexturedModalRect(this.xPosition + (int)(sliderValue * (float)(this.width - 15)), this.yPosition+1, 39, 147, 15, 12);
 			 }else{
-	            	this.drawTexturedModalRect(this.yPosition+1, this.yPosition + (int)(this.sliderValue * (float)(this.width - 15)), 39, 147, 15, 12);
+				 drawTexturedModalRect(xPosition, yPosition, 242, 0, this.width, this.height/2);
+				 drawTexturedModalRect(xPosition, yPosition + height/2, 242, 200 - this.height/ 2, this.width , this.height/ 2);
+	            this.drawTexturedModalRect(this.xPosition+1, this.yPosition + (int)(this.sliderValue * (float)(this.height- 15)), 30, 132, 12, 15);
 			 }
 			 
 			 this.mouseDragged(minecraft, mouseX, mouseY);
@@ -111,9 +116,7 @@ public class GUIAltScroll extends GuiButton {
                 }
                 
                 current = MathHelper.floor_float(sliderValue*(max-min)+min);                
-            }
-
-            
+            }            
         }
     }
     
@@ -130,23 +133,22 @@ public class GUIAltScroll extends GuiButton {
         	else
         		this.sliderValue = (float)(mouseY -(this.yPosition + 15)) / (float)(this.height - 15);
 
-            if (this.sliderValue < 0.0F)
-            {
+            if (this.sliderValue < 0.0F){
                 this.sliderValue = 0.0F;
             }
 
-            if (this.sliderValue > 0.9999F)
-            {
+            if (this.sliderValue > 0.9999F){
                 this.sliderValue = 0.9999F;
             }
            
-            this.dragging = true;
+            this.dragging = !dragging;
             return true;
         }
         else
         {
             return false;
         }
+        
     }
 	
 	/**
@@ -157,5 +159,7 @@ public class GUIAltScroll extends GuiButton {
         this.dragging = false;
     }
 	
+    
+    
 
 }

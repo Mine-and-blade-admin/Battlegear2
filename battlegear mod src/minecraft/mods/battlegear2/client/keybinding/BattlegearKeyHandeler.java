@@ -78,6 +78,8 @@ public class BattlegearKeyHandeler extends KeyHandler{
 				
 				mc.playerController.updateController();
 			}else if (kb.keyCode == openSigilEditor.keyCode){
+				//send packet to open container on server
+				PacketDispatcher.sendPacketToServer(BattlegearPacketHandeler.generateGUIPacket(BattlegearGUIHandeler.sigilEditor));
 				player.openGui(
 						BattleGear.instance, BattlegearGUIHandeler.sigilEditor, mc.theWorld,
 						(int)player.posX, (int)player.posY, (int)player.posZ); 

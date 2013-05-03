@@ -19,6 +19,8 @@ What does and doesn't work
 * Swinging of offhand items of other players
 * Rendering of offhand weapons on other players
 * Basic Shift Clicking on the inventory screen
+* Initial Configuration Files
+* Basic Heraldry
 
 **Note from nerd-boy:** I am not 100% happy with the way we are syncing items. It works now by sending a packet with all the "battle items" to each player that is viewing a player every 5 ticks. I am not sure if this will be too much or not. Although right now I cannot think of another way to do it that doesn't require more bytecode manipulation. I think we already have enough AccessTransformers planed to keep us busy without adding more that we may in fact not need.
 
@@ -63,4 +65,15 @@ on a windows environment
 Remember to set the exeuction bit to true on the unix enviroment
 
 When the project is in a more mature state I will also include another script (likely an ant script) to retrieve the fully compiled and packaged code
+
+
+
+Some Notes for Texture Pack Makers
+----------------------------------
+
+Some of the item names will change, sorry they currently have not been finalised.
+
+Some of the rendering capabilities of the mod are a little different, especially concerning the heraldry. The following are a few notes.
+* The patterns should only have white. The white section will determine the secondary colour. The primary colour will be the alpha section. Semi transparent sections should also work for better blending.
+* The icons should be greyscale and alpha values. They also require at least 1 pixal border around the whole image that should be kept black. This is the reason all of them are 18x18 pixals (16x16 plus a 1px border all around)
 
