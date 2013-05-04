@@ -6,6 +6,7 @@ import mods.battlegear2.common.items.ItemMace;
 import mods.battlegear2.common.items.ItemShield;
 import mods.battlegear2.common.items.ItemSpear;
 import mods.battlegear2.common.items.ItemWaraxe;
+import mods.battlegear2.common.items.ItemWeapon;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -22,7 +23,7 @@ public class BattlegearConfig {
 	//We use 27 item ids for now, valid weapons ids are from vanilla swords
 	public static int[] setID=new int[8],validWeaponsID={11,12,16,20,27};
 	public static final String[] itemNames=new String[]{"Banner","Quiver","Chain","Waraxe","Mace","Spear","Shield","KnightArmor"};
-	public static Item[] warAxe=new Item[5],mace=new Item[5],spear=new Item[5],shield=new Item[5];
+	public static ItemWeapon[] warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5],shield=new ItemWeapon[5];
 	public static Item chains,quiver,banner,heradricItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[4];
 	
@@ -77,20 +78,21 @@ public class BattlegearConfig {
 			{
 			if (i<2)			
 				GameRegistry.addRecipe(new ItemStack(shield[i]), new Object[]
-						{" L ","LLL"," L ",Character.valueOf('L'),i==0?Item.leather:Block.wood});
+						{" L ","LLL"," L ",Character.valueOf('L'),i==0?Item.leather:Block.planks});
 			else 
 				GameRegistry.addRecipe(new ItemStack(shield[i]), new Object[]
-						{"L L","LLL"," L ",Character.valueOf('L'),i==2?Item.ingotIron:i==3?Item.diamond:Item.ingotGold});
+						{"L L","LLL"," L ",Character.valueOf('L'),new ItemStack(shield[i].getMaterial().getToolCraftingMaterial(),1,0)});
 			GameRegistry.addRecipe(new ItemStack(warAxe[i],1), new Object[]
-					{"L L","LSL"," S ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.wood:i==1?Block.cobblestone:i==2?Item.ingotIron:i==3?Item.diamond:Item.ingotGold});
+					{"L L","LSL"," S ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.wood:new ItemStack(warAxe[i].getMaterial().getToolCraftingMaterial(),1,0)});
 			GameRegistry.addRecipe(new ItemStack(mace[i],1), new Object[]
-					{" LL"," LL","S  ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.wood:i==1?Block.cobblestone:i==2?Item.ingotIron:i==3?Item.diamond:Item.ingotGold});
+					{" LL"," LL","S  ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.wood:new ItemStack(mace[i].getMaterial().getToolCraftingMaterial(),1,0)});
+
 			if (i==0)
 				GameRegistry.addRecipe(new ItemStack(spear[i]), new Object[]
 						{"  S"," S ","S  ",Character.valueOf('S'), Item.stick});
 			else
 				GameRegistry.addRecipe(new ItemStack(spear[i]), new Object[]
-						{"  I"," S ",Character.valueOf('S'), new ItemStack(spear[0],1),Character.valueOf('I'),i==1?Block.cobblestone:i==2?Item.ingotIron:i==3?Item.diamond:Item.ingotGold});
+						{"  I"," S ",Character.valueOf('S'), new ItemStack(spear[0],1),Character.valueOf('I'),new ItemStack(spear[i].getMaterial().getToolCraftingMaterial(),1,0)});
 			
 			}//Chains and chain armor recipes
 		GameRegistry.addShapelessRecipe(new ItemStack(chains,2),new Object[]{Item.ingotIron});

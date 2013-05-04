@@ -1,24 +1,21 @@
 package mods.battlegear2.common.items;
 
-import java.util.Random;
-
 import mods.battlegear2.api.OffhandAttackEvent;
 import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import cpw.mods.fml.relauncher.Side;
 
-public class ItemWaraxe extends TwoHandedWeapon{
+public class ItemDagger extends OneHandedWeapon{
 
-	public ItemWaraxe(int par1, int i) {
-		super(par1,i);
-		this.name="battlegear2:Waraxe-"+i;
+	public ItemDagger(int par1, int i) {
+		super(par1, i);
+		this.name="battlegear2:Dagger-"+i;
 	}
 	@Override
-	public boolean canHarvestBlock(Block par1Block)//Waraxe can harvest logs
+	public boolean canHarvestBlock(Block par1Block)//Daggers can harvest tallgrass and wool
     {
-        return par1Block.blockID == Block.wood.blockID;
+        return par1Block.blockID == Block.tallGrass.blockID||par1Block.blockID == Block.cloth.blockID;
     }
 	
 	@Override
@@ -42,16 +39,10 @@ public class ItemWaraxe extends TwoHandedWeapon{
 	@Override
 	public void performPassiveEffects(Side effectiveSide,
 			ItemStack mainhandItem, ItemStack offhandItem) {
+		if(mainhandItem==offhandItem)//If two daggers are equipped, they dealt more damage
+		{
+			this.addDamagePower(1);
+		}
 	}
-	
-	@Override
-	public int getDamageVsEntity(Entity par1Entity)
-    {
-		Random rand=new Random();
-		//Chance of critical damage depending on material: from 10% for wood to 50% for gold
-		if(rand.nextFloat() * 10 + this.getMaterial().ordinal() + 1 > 10)
-			this.addDamagePower((int) (this.baseDamage * 0.5));
-		//Add damage if entity is sneaking
-		return par1Entity.isSneaking()?this.baseDamage+1:this.baseDamage;
-    }
+
 }
