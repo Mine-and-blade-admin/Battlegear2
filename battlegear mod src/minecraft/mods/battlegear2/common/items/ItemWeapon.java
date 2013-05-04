@@ -14,6 +14,8 @@ public abstract class ItemWeapon extends Item implements IBattlegearWeapon{
 
 	private final EnumToolMaterial material;
 	protected String name;
+	public int baseDamage;
+	
 	public ItemWeapon(int par1, int i) {
 		super(par1);
 		switch(i)
@@ -45,4 +47,14 @@ public abstract class ItemWeapon extends Item implements IBattlegearWeapon{
         return this.material.getToolCraftingMaterial() == par2ItemStack.itemID ? true : super.getIsRepairable(par1ItemStack, par2ItemStack);
     }
 
+	public void addDamagePower(int i)
+	{
+		this.baseDamage+=i;
+	}
+
+	@Override
+	public int getDamageVsEntity(Entity par1Entity)
+    {
+        return this.baseDamage;
+    }
 }

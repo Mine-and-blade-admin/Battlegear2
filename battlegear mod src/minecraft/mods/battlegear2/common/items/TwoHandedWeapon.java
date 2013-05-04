@@ -13,12 +13,6 @@ public abstract class TwoHandedWeapon extends ItemWeapon{
 	}
 	
 	@Override
-	public int getDamageVsEntity(Entity par1Entity)
-    {
-        return this.baseDamage;
-    }
-	
-	@Override
 	public boolean willAllowOffhandWeapon() {
 		return false;
 	}
