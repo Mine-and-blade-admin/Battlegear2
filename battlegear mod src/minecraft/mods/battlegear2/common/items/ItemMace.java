@@ -15,28 +15,25 @@ public class ItemMace extends OneHandedWeapon{
 	@Override
 	public boolean offhandAttackEntity(OffhandAttackEvent event,
 			ItemStack mainhandItem, ItemStack offhandItem) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean offhandClickAir(PlayerInteractEvent event,
 			ItemStack mainhandItem, ItemStack offhandItem) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean offhandClickBlock(PlayerInteractEvent event,
 			ItemStack mainhandItem, ItemStack offhandItem) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void performPassiveEffects(Side effectiveSide,
 			ItemStack mainhandItem, ItemStack offhandItem) {
-		if(mainhandItem==offhandItem)
+		if(mainhandItem==offhandItem)//If two maces are equipped, they dealt less damage
 		{
 			this.addDamagePower(-1);
 		}
