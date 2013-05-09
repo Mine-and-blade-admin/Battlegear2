@@ -63,41 +63,51 @@ public class BattlegearConfig {
 	}
 	public static void registerRecipes() {//Those are old recipes found on your M-B topic
 		for (int i=0;i<15;i++)
-			{//Changing banner "color"	
+		{//Changing banner "color"	
 			for (int j=0;j<15 && i!=j;j++)	
 				GameRegistry.addShapelessRecipe(new ItemStack(banner,1,i), new Object[] 
-						{
-						new ItemStack(banner,1,j), new ItemStack(Item.dyePowder, 1, i)
-						});
+					{
+					new ItemStack(banner,1,j), new ItemStack(Item.dyePowder, 1, i)
+					});
 			//Making a "colored" banner
 		GameRegistry.addRecipe(new ItemStack(banner,1,i), new Object[] 
-				{
-			"B","B","S",Character.valueOf('B'), new ItemStack(Block.cloth,1,i),Character.valueOf('S'), Item.stick});
-				}
+			{"B","B","S",
+			Character.valueOf('B'), new ItemStack(Block.cloth,1,i),
+			Character.valueOf('S'), Item.stick});
+		}
 		GameRegistry.addRecipe(new ItemStack(quiver), new Object[]
-				{"L L","L L","LLL",Character.valueOf('L'),Item.leather});
+				{"L L","L L","LLL",
+			Character.valueOf('L'),Item.leather});
 		for (int i=0;i<5;i++)
-			{
+		{
 			if (i<2)			
 				GameRegistry.addRecipe(new ItemStack(shield[i]), new Object[]
-						{" L ","LLL"," L ",Character.valueOf('L'),i==0?Item.leather:Block.planks});
+						{" L ","LLL"," L ",Character.valueOf('L'),
+					i==0?Item.leather:Block.planks});
 			else 
 				GameRegistry.addRecipe(new ItemStack(shield[i]), new Object[]
-						{"L L","LLL"," L ",Character.valueOf('L'),new ItemStack(shield[i].getMaterial().getToolCraftingMaterial(),1,0)});
+						{"L L","LLL"," L ",Character.valueOf('L'),
+					new ItemStack(shield[i].getMaterial().getToolCraftingMaterial(),1,0)});
+			
+			GameRegistry.addRecipe(new ItemStack(dagger[i]), new Object[] 
+					{"L","S",Character.valueOf('S'), Item.stick,
+				Character.valueOf('L'),i==0?Block.planks:new ItemStack(dagger[i].getMaterial().getToolCraftingMaterial(),1,0)});
 			GameRegistry.addRecipe(new ItemStack(warAxe[i],1), new Object[]
-					{"L L","LSL"," S ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.planks:new ItemStack(warAxe[i].getMaterial().getToolCraftingMaterial(),1,0)});
+					{"L L","LSL"," S ",Character.valueOf('S'), Item.stick,
+				Character.valueOf('L'),i==0?Block.planks:new ItemStack(warAxe[i].getMaterial().getToolCraftingMaterial(),1,0)});
 			GameRegistry.addRecipe(new ItemStack(mace[i],1), new Object[]
-					{" LL"," LL","S  ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.planks:new ItemStack(mace[i].getMaterial().getToolCraftingMaterial(),1,0)});
+					{" LL"," LL","S  ",Character.valueOf('S'), Item.stick,
+				Character.valueOf('L'),i==0?Block.planks:new ItemStack(mace[i].getMaterial().getToolCraftingMaterial(),1,0)});
 
 			if (i==0)
 				GameRegistry.addRecipe(new ItemStack(spear[i]), new Object[]
 						{"  S"," S ","S  ",Character.valueOf('S'), Item.stick});
 			else
 				GameRegistry.addRecipe(new ItemStack(spear[i]), new Object[]
-						{"  I"," S ",Character.valueOf('S'), new ItemStack(spear[0],1),Character.valueOf('I'),new ItemStack(spear[i].getMaterial().getToolCraftingMaterial(),1,0)});
-			GameRegistry.addRecipe(new ItemStack(dagger[i]), new Object[] 
-					{"L","S",Character.valueOf('L'), i==0?Block.planks:new ItemStack(dagger[i].getMaterial().getToolCraftingMaterial(),1,0),Character.valueOf('S'), Item.stick});				
-			}//Chains and chain armor recipes
+						{"  I"," S ",Character.valueOf('S'), new ItemStack(spear[0],1),
+					Character.valueOf('I'),new ItemStack(spear[i].getMaterial().getToolCraftingMaterial(),1,0)});
+							
+		}//Chains and chain armor recipes
 		GameRegistry.addShapelessRecipe(new ItemStack(chains,2),Item.ingotIron);
 		GameRegistry.addRecipe(new ItemStack(Item.helmetChain),  new Object[]
 				{"LLL","L L",Character.valueOf('L'),chains});
@@ -115,13 +125,13 @@ public class BattlegearConfig {
 		LanguageRegistry.instance().addName(chains, itemNames[2]);	
 		for (int i=0;i<5;i++)
 		{
-			LanguageRegistry.instance().addName(dagger[i],itemNames[3]);
-			LanguageRegistry.instance().addName(warAxe[i],itemNames[4]);
-			LanguageRegistry.instance().addName(mace[i],itemNames[5]);
-			LanguageRegistry.instance().addName(spear[i],itemNames[6]);
-			LanguageRegistry.instance().addName(shield[i],itemNames[7]);
+			LanguageRegistry.instance().addName(dagger[i],dagger[i].getMaterial().name().toLowerCase()+" "+ itemNames[3]);
+			LanguageRegistry.instance().addName(warAxe[i],warAxe[i].getMaterial().name().toLowerCase()+" "+ itemNames[4]);
+			LanguageRegistry.instance().addName(mace[i],mace[i].getMaterial().name().toLowerCase()+" "+ itemNames[5]);
+			LanguageRegistry.instance().addName(spear[i],spear[i].getMaterial().name().toLowerCase()+" "+ itemNames[6]);
+			LanguageRegistry.instance().addName(shield[i],shield[i].getMaterial().name().toLowerCase()+" "+ itemNames[7]);
 			/*if(i<4)	
-				LanguageRegistry.addName(knightArmor[i],itemNames[7]);*/
+				LanguageRegistry.addName(knightArmor[i],itemNames[8]);*/
 		}
 	}
 }
