@@ -6,8 +6,8 @@ import net.minecraft.item.ItemStack;
 
 public abstract class OneHandedWeapon extends ItemWeapon{
 
-	public OneHandedWeapon(int par1, int i) {
-		super(par1, i);
+	public OneHandedWeapon(int par1, int i, String named) {
+		super(par1, i, named);
 		this.setMaxDamage(this.getMaterial().getMaxUses() * 2);
 		this.baseDamage=this.getMaterial().getDamageVsEntity()+1;
 	}

@@ -82,11 +82,6 @@ public class ClientProxy extends CommonProxy{
 	}
 
 	@Override
-	public void setSlotIcon(Slot slot, int slotID) {
-		//slot.setBackgroundIconIndex(slotIcons[slotID]);
-	}
-
-	@Override
 	public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {
 
 		if(entityPlayer instanceof EntityClientPlayerMP){

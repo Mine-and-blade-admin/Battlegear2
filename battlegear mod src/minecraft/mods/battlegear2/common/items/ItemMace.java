@@ -8,8 +8,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ItemMace extends OneHandedWeapon{
 
 	public ItemMace(int par1, int i) {
-		super(par1,i);
-		this.name="battlegear2:Mace-"+i;
+		super(par1,i,"Mace-");
 	}
 
 	@Override
@@ -33,7 +32,7 @@ public class ItemMace extends OneHandedWeapon{
 	@Override
 	public void performPassiveEffects(Side effectiveSide,
 			ItemStack mainhandItem, ItemStack offhandItem) {
-		if(mainhandItem==offhandItem)//If two maces are equipped, they dealt less damage
+		if(mainhandItem.getItem() instanceof ItemMace && this.baseDamage>1)//If two maces are equipped, they dealt less damage
 		{
 			this.addDamagePower(-1);
 		}

@@ -2,6 +2,7 @@ package mods.battlegear2.common.items;
 
 import mods.battlegear2.api.OffhandAttackEvent;
 import net.minecraft.block.Block;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -9,8 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ItemDagger extends OneHandedWeapon{
 
 	public ItemDagger(int par1, int i) {
-		super(par1, i);
-		this.name="battlegear2:Dagger-"+i;
+		super(par1, i, "Dagger-");
 	}
 	@Override
 	public boolean canHarvestBlock(Block par1Block)//Daggers can harvest tallgrass and wool
@@ -21,6 +21,11 @@ public class ItemDagger extends OneHandedWeapon{
 	@Override
 	public boolean offhandAttackEntity(OffhandAttackEvent event,
 			ItemStack mainhandItem, ItemStack offhandItem) {
+		if(event.getTarget() instanceof EntityLiving)
+		{
+			((EntityLiving)event.getTarget()).hurtResistantTime=5;//Default is 10
+			((EntityLiving)event.getTarget()).hurtTime=5;
+		}
 		return false;
 	}
 
@@ -39,7 +44,7 @@ public class ItemDagger extends OneHandedWeapon{
 	@Override
 	public void performPassiveEffects(Side effectiveSide,
 			ItemStack mainhandItem, ItemStack offhandItem) {
-		if(mainhandItem==offhandItem)//If two daggers are equipped, they dealt more damage
+		if(mainhandItem.getItem() instanceof ItemDagger && this.baseDamage<5)//If two daggers are equipped, they dealt more damage
 		{
 			this.addDamagePower(1);
 		}

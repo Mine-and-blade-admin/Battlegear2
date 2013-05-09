@@ -15,8 +15,6 @@ public class CommonProxy {
 
 	public void registerKeyHandelers(){}
 
-	public void setSlotIcon(Slot weaponSlot, int slotID) {}
-
 	public void registerTextures() {}
 
 	public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {}

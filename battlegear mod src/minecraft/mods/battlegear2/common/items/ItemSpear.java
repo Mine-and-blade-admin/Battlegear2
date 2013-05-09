@@ -10,8 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ItemSpear extends TwoHandedWeapon{
 
 	public ItemSpear(int par1, int i) {
-		super(par1,i);
-		this.name="battlegear2:Spear-"+i;
+		super(par1,i,"Spear-");
 	}
 	
 	@Override
