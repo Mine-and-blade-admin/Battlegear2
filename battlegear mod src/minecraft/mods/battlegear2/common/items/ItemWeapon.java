@@ -13,10 +13,10 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class ItemWeapon extends Item implements IBattlegearWeapon{
 
 	private final EnumToolMaterial material;
-	protected String name;
+	public String name;
 	public int baseDamage;
 	
-	public ItemWeapon(int par1, int i) {
+	public ItemWeapon(int par1, int i, String named) {
 		super(par1);
 		switch(i)
 		{
@@ -29,6 +29,8 @@ public abstract class ItemWeapon extends Item implements IBattlegearWeapon{
 		}
 		this.setCreativeTab(BattlegearConfig.customTab);
 		this.maxStackSize = 1;
+		this.setUnlocalizedName("battlegear2:"+named+i);
+		this.name="battlegear2:"+named+i;
 	}
 	
 	@SideOnly(Side.CLIENT)
