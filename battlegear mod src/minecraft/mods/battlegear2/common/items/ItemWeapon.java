@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -15,6 +16,8 @@ public abstract class ItemWeapon extends Item implements IBattlegearWeapon{
 	private final EnumToolMaterial material;
 	public String name;
 	public int baseDamage;
+	@SideOnly(Side.CLIENT)
+	public static Icon[] backgroundIcon;
 	
 	public ItemWeapon(int par1, int i, String named) {
 		super(par1);
@@ -37,6 +40,9 @@ public abstract class ItemWeapon extends Item implements IBattlegearWeapon{
     public void updateIcons(IconRegister par1IconRegister)
     {
         this.iconIndex = par1IconRegister.registerIcon(this.name);
+		this.backgroundIcon=new Icon[2];
+        for (int i=0;i<2;i++)
+        	this.backgroundIcon[i]=par1IconRegister.registerIcon("battlegear2:slots/".concat(i==0?"mainhand":"offhand"));
     }
 	
 	public EnumToolMaterial getMaterial() {
@@ -58,5 +64,11 @@ public abstract class ItemWeapon extends Item implements IBattlegearWeapon{
 	public int getDamageVsEntity(Entity par1Entity)
     {
         return this.baseDamage;
+    }
+	
+	@SideOnly(Side.CLIENT)
+    public static Icon getBackground(boolean mainhand)
+    {  
+		return mainhand?backgroundIcon[0]:backgroundIcon[1];
     }
 }

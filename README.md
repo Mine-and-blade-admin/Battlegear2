@@ -27,8 +27,6 @@ What does and doesn't work
 **What does not work**
 * (Most) ASM capabilities*
 * Rendering of sheathed weapons
-* Icons for the main hand and offhand slots on the inventory screen
-
 **ASM Transformers**
 * EntityPlayer (sk) - (12/12 edits)
 * ModelBiped -(2/2 edits)
