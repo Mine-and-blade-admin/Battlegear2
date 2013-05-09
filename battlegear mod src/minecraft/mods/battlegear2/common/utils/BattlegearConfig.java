@@ -1,6 +1,7 @@
 package mods.battlegear2.common.utils;
 
 import mods.battlegear2.common.inventory.CreativeTabMB_B_2;
+import mods.battlegear2.common.items.ItemDagger;
 import mods.battlegear2.common.items.ItemHeradryIcon;
 import mods.battlegear2.common.items.ItemMace;
 import mods.battlegear2.common.items.ItemShield;
@@ -20,10 +21,10 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class BattlegearConfig {
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
 	public static boolean forceBackSheath = false;
-	//We use 27 item ids for now, valid weapons ids are from vanilla swords
+	//Valid weapons ids are from vanilla swords
 	public static int[] setID=new int[8],validWeaponsID={11,12,16,20,27};
-	public static final String[] itemNames=new String[]{"Banner","Quiver","Chain","Waraxe","Mace","Spear","Shield","KnightArmor"};
-	public static ItemWeapon[] warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5],shield=new ItemWeapon[5];
+	public static final String[] itemNames=new String[]{"Banner","Quiver","Chain","Dagger","Waraxe","Mace","Spear","Shield"/*,"KnightArmor"*/};
+	public static ItemWeapon[] dagger=new ItemWeapon[5],warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5],shield=new ItemWeapon[5];
 	public static Item chains,quiver,banner,heradricItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[4];
 	
@@ -48,13 +49,14 @@ public class BattlegearConfig {
 		chains=new Item(setID[2]).setUnlocalizedName("battlegear2:"+itemNames[2]).setCreativeTab(customTab);
 		for (int i=0;i<5;i++)
 		{
-			warAxe[i]=new ItemWaraxe(setID[3]+i,i);//Second parameter for material (see abstract ItemWeapon)
-			mace[i]=new ItemMace(setID[4]+i,i);
-			spear[i]=new ItemSpear(setID[5]+i,i);
-			shield[i]=new ItemShield(setID[6]+i,i);
+			dagger[i]=new ItemDagger(setID[3]+i,i);
+			warAxe[i]=new ItemWaraxe(setID[4]+i,i);//Second parameter for material (see abstract ItemWeapon)
+			mace[i]=new ItemMace(setID[5]+i,i);
+			spear[i]=new ItemSpear(setID[6]+i,i);
+			shield[i]=new ItemShield(setID[7]+i,i);
 			//You might want to use custom armor material and renderer	
 			/*if(i<4)
-			knightArmor[i]=new ItemKnightArmor(setID[7]+i,EnumArmorMaterial.IRON,0,i);*/
+			knightArmor[i]=new ItemKnightArmor(setID[8]+i,EnumArmorMaterial.IRON,0,i);*/
 		}
 		
 		heradricItem = new ItemHeradryIcon(22000-1);
@@ -83,9 +85,9 @@ public class BattlegearConfig {
 				GameRegistry.addRecipe(new ItemStack(shield[i]), new Object[]
 						{"L L","LLL"," L ",Character.valueOf('L'),new ItemStack(shield[i].getMaterial().getToolCraftingMaterial(),1,0)});
 			GameRegistry.addRecipe(new ItemStack(warAxe[i],1), new Object[]
-					{"L L","LSL"," S ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.wood:new ItemStack(warAxe[i].getMaterial().getToolCraftingMaterial(),1,0)});
+					{"L L","LSL"," S ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.planks:new ItemStack(warAxe[i].getMaterial().getToolCraftingMaterial(),1,0)});
 			GameRegistry.addRecipe(new ItemStack(mace[i],1), new Object[]
-					{" LL"," LL","S  ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.wood:new ItemStack(mace[i].getMaterial().getToolCraftingMaterial(),1,0)});
+					{" LL"," LL","S  ",Character.valueOf('S'), Item.stick,Character.valueOf('L'),i==0?Block.planks:new ItemStack(mace[i].getMaterial().getToolCraftingMaterial(),1,0)});
 
 			if (i==0)
 				GameRegistry.addRecipe(new ItemStack(spear[i]), new Object[]
@@ -93,9 +95,10 @@ public class BattlegearConfig {
 			else
 				GameRegistry.addRecipe(new ItemStack(spear[i]), new Object[]
 						{"  I"," S ",Character.valueOf('S'), new ItemStack(spear[0],1),Character.valueOf('I'),new ItemStack(spear[i].getMaterial().getToolCraftingMaterial(),1,0)});
-			
+			GameRegistry.addRecipe(new ItemStack(dagger[i]), new Object[] 
+					{"L","S",Character.valueOf('L'), i==0?Block.planks:new ItemStack(dagger[i].getMaterial().getToolCraftingMaterial(),1,0),Character.valueOf('S'), Item.stick});				
 			}//Chains and chain armor recipes
-		GameRegistry.addShapelessRecipe(new ItemStack(chains,2),new Object[]{Item.ingotIron});
+		GameRegistry.addShapelessRecipe(new ItemStack(chains,2),Item.ingotIron);
 		GameRegistry.addRecipe(new ItemStack(Item.helmetChain),  new Object[]
 				{"LLL","L L",Character.valueOf('L'),chains});
 		GameRegistry.addRecipe(new ItemStack(Item.plateChain),  new Object[]
@@ -107,15 +110,16 @@ public class BattlegearConfig {
 	}
 
 	public static void addNames() {
-		LanguageRegistry.addName(banner, itemNames[0]);
-		LanguageRegistry.addName(quiver, itemNames[1]);
-		LanguageRegistry.addName(chains, itemNames[2]);	
+		LanguageRegistry.instance().addName(banner, itemNames[0]);
+		LanguageRegistry.instance().addName(quiver, itemNames[1]);
+		LanguageRegistry.instance().addName(chains, itemNames[2]);	
 		for (int i=0;i<5;i++)
 		{
-			LanguageRegistry.addName(warAxe[i],itemNames[3]);
-			LanguageRegistry.addName(mace[i],itemNames[4]);
-			LanguageRegistry.addName(spear[i],itemNames[5]);
-			LanguageRegistry.addName(shield[i],itemNames[6]);
+			LanguageRegistry.instance().addName(dagger[i],itemNames[3]);
+			LanguageRegistry.instance().addName(warAxe[i],itemNames[4]);
+			LanguageRegistry.instance().addName(mace[i],itemNames[5]);
+			LanguageRegistry.instance().addName(spear[i],itemNames[6]);
+			LanguageRegistry.instance().addName(shield[i],itemNames[7]);
 			/*if(i<4)	
 				LanguageRegistry.addName(knightArmor[i],itemNames[7]);*/
 		}
