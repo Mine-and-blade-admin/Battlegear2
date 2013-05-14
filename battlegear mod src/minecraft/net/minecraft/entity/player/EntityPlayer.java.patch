@@ -8,7 +8,7 @@
 +import mods.battlegear2.common.BattleGear;
 +import mods.battlegear2.common.BattlegearPacketHandeler;
 +import mods.battlegear2.common.inventory.InventoryPlayerBattle;
-+import mods.battlegear2.common.items.ItemShield;
++//import mods.battlegear2.common.items.ItemShield;
 +import mods.battlegear2.common.utils.BattlegearUtils;
  import net.minecraft.block.Block;
  import net.minecraft.block.BlockBed;
