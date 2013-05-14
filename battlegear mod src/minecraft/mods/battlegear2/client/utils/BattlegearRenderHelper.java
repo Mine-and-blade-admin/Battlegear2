@@ -114,7 +114,7 @@ public class BattlegearRenderHelper {
 	        		}
 	        		
 	        		
-	        		GL11.glRotated(25, 0, 0, 1);
+	        		GL11.glRotatef(25, 0, 0, 1);
 	        		GL11.glRotatef(325+35*MathHelper.sin(player.swingProgress*3.14159F), 0, 1, 0);	        		
 	        		
 	        		
@@ -252,7 +252,7 @@ public class BattlegearRenderHelper {
 		
 		            GL11.glPopMatrix();
 	        	}
-	        }else if (!player.getHasActivePotion())
+	        }else if (!player.isInvisible())
 	        {
 	            GL11.glPushMatrix();
 	            var7 = 0.8F;

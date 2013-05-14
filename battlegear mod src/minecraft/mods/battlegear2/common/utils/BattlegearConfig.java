@@ -4,12 +4,12 @@ import mods.battlegear2.common.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.common.items.ItemDagger;
 import mods.battlegear2.common.items.ItemHeradryIcon;
 import mods.battlegear2.common.items.ItemMace;
-import mods.battlegear2.common.items.ItemShield;
 import mods.battlegear2.common.items.ItemSpear;
 import mods.battlegear2.common.items.ItemWaraxe;
 import mods.battlegear2.common.items.ItemWeapon;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -49,11 +49,14 @@ public class BattlegearConfig {
 		chains=new Item(setID[2]).setUnlocalizedName("battlegear2:"+itemNames[2]).setCreativeTab(customTab);
 		for (int i=0;i<5;i++)
 		{
-			dagger[i]=new ItemDagger(setID[3]+i,i);
-			warAxe[i]=new ItemWaraxe(setID[4]+i,i);//Second parameter for material (see abstract ItemWeapon)
-			mace[i]=new ItemMace(setID[5]+i,i);
-			spear[i]=new ItemSpear(setID[6]+i,i);
-			shield[i]=new ItemShield(setID[7]+i,i);
+			EnumToolMaterial material = EnumToolMaterial.values()[i];
+			dagger[i]=new ItemDagger(setID[3]+i,material, "Dagger-"+i);
+			warAxe[i]=new ItemWaraxe(setID[4]+i,material, "Waraxe-"+i, i==4?2:1);
+			mace[i]=new ItemMace(setID[5]+i,material, "Mace-"+i);
+			spear[i]=new ItemSpear(setID[6]+i,material, "Spear-"+i);
+			
+			//Removed the shield for now
+			//shield[i]=new ItemShield(setID[7]+i,i);
 			//You might want to use custom armor material and renderer	
 			/*if(i<4)
 			knightArmor[i]=new ItemKnightArmor(setID[8]+i,EnumArmorMaterial.IRON,0,i);*/

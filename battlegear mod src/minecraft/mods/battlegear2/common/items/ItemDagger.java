@@ -2,15 +2,17 @@ package mods.battlegear2.common.items;
 
 import mods.battlegear2.api.OffhandAttackEvent;
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import cpw.mods.fml.relauncher.Side;
 
 public class ItemDagger extends OneHandedWeapon{
 
-	public ItemDagger(int par1, int i) {
-		super(par1, i, "Dagger-");
+	public ItemDagger(int par1, EnumToolMaterial material, String name) {
+		super(par1, material, name);
 	}
 	@Override
 	public boolean canHarvestBlock(Block par1Block)//Daggers can harvest tallgrass and wool
@@ -28,26 +30,21 @@ public class ItemDagger extends OneHandedWeapon{
 		}
 		return false;
 	}
-
 	@Override
-	public boolean offhandClickAir(PlayerInteractEvent event,
-			ItemStack mainhandItem, ItemStack offhandItem) {
-		return false;
-	}
-
-	@Override
-	public boolean offhandClickBlock(PlayerInteractEvent event,
-			ItemStack mainhandItem, ItemStack offhandItem) {
-		return false;
-	}
-
-	@Override
-	public void performPassiveEffects(Side effectiveSide,
-			ItemStack mainhandItem, ItemStack offhandItem) {
-		if(mainhandItem.getItem() instanceof ItemDagger && this.baseDamage<5)//If two daggers are equipped, they dealt more damage
-		{
-			this.addDamagePower(1);
+	public int getDamageVsEntity(Entity par1Entity) {
+		//Moved this from the offhand Attack method, should work on both off and mainhand.
+		// This might even be better implemented as a event
+		if(par1Entity instanceof EntityLiving){
+			//The usual is less than half the max hurt resistance time
+			if(((EntityLiving)par1Entity).hurtResistantTime < 
+					((float)((EntityLiving) par1Entity).maxHurtResistantTime) * 0.75F){
+				
+				((EntityLiving)par1Entity).hurtResistantTime = 0;		
+			}
 		}
+		
+		return super.getDamageVsEntity(par1Entity);
 	}
 
+	
 }

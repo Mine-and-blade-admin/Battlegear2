@@ -26,7 +26,7 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem{
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void updateIcons(IconRegister par1IconRegister) {
+	public void registerIcons(IconRegister par1IconRegister) {
 		//super.updateIcons(par1IconRegister);
 		HeraldryPattern.setAllIcon(par1IconRegister);
 		//HeraldryIcon.setAllIcon(par1IconRegister);

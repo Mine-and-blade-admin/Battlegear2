@@ -51,7 +51,7 @@
 +        
          entityotherplayermp.setPositionAndRotation(d0, d1, d2, f, f1);
          this.worldClient.addEntityToWorld(par1Packet20NamedEntitySpawn.entityId, entityotherplayermp);
-         List list = par1Packet20NamedEntitySpawn.func_73509_c();
+         List list = par1Packet20NamedEntitySpawn.getWatchedMetadata();
 @@ -609,8 +627,8 @@
  
      public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)

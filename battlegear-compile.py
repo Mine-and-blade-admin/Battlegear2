@@ -1,7 +1,7 @@
 import os, os.path, shutil
 import zipfile
 
-authors = '["nerd-boy", "GoToLink"]'
+authors = '["nerd-boy", "GoToLink", "apan95"]'
 
 def main(distDir,  mcpDir):
     from sys import path

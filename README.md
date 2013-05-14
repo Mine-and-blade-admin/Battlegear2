@@ -1,8 +1,8 @@
 Mine and Blade : Battlegear - 2
 ===============================
 
-Source is updated for Minecraft 1.5
-
+Source is updated for Minecraft 1.5.2
+
 This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft.
 The mod will have a heavy dependency on the use of ASM (coremod) to edit the bytecode of the minecraft base classess. Currently this feature is not avaliable.
 
@@ -21,12 +21,16 @@ What does and doesn't work
 * Basic Shift Clicking on the inventory screen
 * Initial Configuration Files
 * Basic Heraldry
+* Inital work on the following weapons: waraxe, dagger
 
 **Note from nerd-boy:** I am not 100% happy with the way we are syncing items. It works now by sending a packet with all the "battle items" to each player that is viewing a player every 5 ticks. I am not sure if this will be too much or not. Although right now I cannot think of another way to do it that doesn't require more bytecode manipulation. I think we already have enough AccessTransformers planed to keep us busy without adding more that we may in fact not need.
 
 **What does not work**
 * (Most) ASM capabilities*
 * Rendering of sheathed weapons
+* Spear & Mace
+* Shields
+
 **ASM Transformers**
 * EntityPlayer (sk) - (12/12 edits)
 * ModelBiped -(2/2 edits)

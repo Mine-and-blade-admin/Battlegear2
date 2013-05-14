@@ -29,7 +29,7 @@
      private ModelBiped modelBipedMain;
      private ModelBiped modelArmorChestplate;
      private ModelBiped modelArmor;
-@@ -142,6 +157,7 @@
+@@ -144,6 +159,7 @@
  
      public void renderPlayer(EntityPlayer par1EntityPlayer, double par2, double par4, double par6, float par8, float par9)
      {
@@ -37,7 +37,7 @@
          float f2 = 1.0F;
          GL11.glColor3f(f2, f2, f2);
          ItemStack itemstack = par1EntityPlayer.inventory.getCurrentItem();
-@@ -168,11 +184,19 @@
+@@ -170,11 +186,19 @@
          {
              d3 -= 0.125D;
          }
@@ -58,7 +58,7 @@
      }
  
      /**
-@@ -397,6 +421,10 @@
+@@ -400,6 +424,10 @@
  
              GL11.glPopMatrix();
          }

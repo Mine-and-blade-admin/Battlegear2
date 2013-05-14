@@ -1,0 +1,42 @@
+[img]http://i.imgur.com/vubIaQp.png[/img]
+
+[font=Helvetica, arial, freesans, clean, sans-serif][color=#333333]This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft. This iteration will be opensource with multiple modders contributing. There is currently [/color][/font][color=#ff0000][font=Helvetica, arial, freesans, clean, sans-serif][b]no download available[/b][/font][/color][font=Helvetica, arial, freesans, clean, sans-serif][color=#333333].[/color][/font]
+
+Any person doing the following will be reported[list]
+[*]Asking for an update or asking when a download will be available (update pestering)
+[list]
+[*]If you really want to get an idea of the complexity of what we are doing look at [url="http://www.minecraftforum.net/topic/1722960-wip-mine-blade-battlegear-2-modders-discussions/page__st__100__gopid__21460802#entry21460802"]this post[/url]. But please do not ask for a release date, it is far to early and we have far too much work to give a reliable date
+[/list][*]Posting pointless comments such as "Yay this was my favourite mod" (spam)
+[list]
+[*]I know people will be excited, but these sort of comments add nothing to the discussion and just get in the way of the massive amount of work required
+[/list]
+[/list]
+Also I request [b]please do not ask about compatibility[/b]. It is far to early to know, and most of the time I will not be able to tell you unless I can see the source code (so bug other modders to make their mods opensource)
+
+
+We are currently working on the dual wielding functionality of the mod.
+
+So far the following works[list]
+[*] Dual wielding of weapons and fists
+[*] Switching between normal and battlemode with the 'R' Key
+[*] Attacking entities with both the offhand and mainhand weapons
+[*] Rendering of dual wielding in 1st person view
+[*] 3rd person renderering
+[*] Initial work on the equip screen
+[*] Inital work on an API to allow other modders to define dual wielding weapons
+[*] Swinging of offhand items of other players
+[*] Rendering of offhand weapons on other players
+[*] Basic Shift Clicking on the inventory screen
+[*] Initial Configuration Files
+[*] Basic Heraldry
+[*] Inital work on the following weapons: waraxe, dagger
+[/list]
+
+So far the following still needs to be done[list]
+[*] (Most) ASM capabilities*
+[*] Rendering of sheathed weapons
+[*] Spear & Mace
+[*] Shields
+[/list]
+The code is available on my personal gitnub account [url="https://github.com/amedw/Battlegear2"]here[/url].
+Due to potential legal issues involved in the re-distribution of minecraft's code, all base class edits are distributed as .patch files. I have provided installation instructions and scripts to simplify the installation and retrieval of the source code.
