@@ -14,7 +14,6 @@ import mods.battlegear2.common.BattlegearPacketHandeler;
 import mods.battlegear2.common.BattlegearTickHandeler;
 import mods.battlegear2.common.CommonProxy;
 import mods.battlegear2.common.items.IHeraldryItem;
-import mods.battlegear2.common.items.ItemShield;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.EnumBGAnimations;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -69,9 +68,9 @@ public class ClientProxy extends CommonProxy{
 		for(int i = 0; i < Item.itemsList.length; i++){
 			
 			if(Item.itemsList[i] != null){
-				if(Item.itemsList[i] instanceof ItemShield){
+				//if(Item.itemsList[i] instanceof ItemShield){
 					
-				}else if (Item.itemsList[i] instanceof IHeraldryItem){
+				if (Item.itemsList[i] instanceof IHeraldryItem){
 					MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer());
 				}
 			}

@@ -7,7 +7,7 @@ import javax.jws.Oneway;
 import javax.swing.text.PlainDocument;
 
 import mods.battlegear2.common.inventory.InventoryPlayerBattle;
-import mods.battlegear2.common.items.ItemShield;
+//import mods.battlegear2.common.items.ItemShield;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.BattlegearUtils;
 import net.minecraft.block.Block;
@@ -102,7 +102,7 @@ public class BattlegearRenderHelper {
 	        if (itemRenderer.offHandItemToRender != null)
 	        {
 	        	
-	        	if(itemRenderer.offHandItemToRender.getItem() instanceof ItemShield){
+	        	/*if(itemRenderer.offHandItemToRender.getItem() instanceof ItemShield){
 	        		GL11.glPushMatrix();
 	        		
 	        		var7 = 0.8F;
@@ -124,7 +124,7 @@ public class BattlegearRenderHelper {
 	        		GL11.glPopMatrix();
 	        		
 	        		
-	        	}else{
+	        	}else*/{
 		            GL11.glPushMatrix();
 		            var7 = 0.8F;
 		
