@@ -17,7 +17,7 @@ public class ItemShield extends ItemWeapon implements IHeraldryItem{
 	private Icon backIcon;
 
 	public ItemShield(int par1, int i) {
-		super(par1,i);
+		super(par1,i,"Shield-");
 		this.name="battlegear2:shields/Shield-"+i;
 	}
 	

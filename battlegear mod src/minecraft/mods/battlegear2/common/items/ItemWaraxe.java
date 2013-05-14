@@ -5,6 +5,9 @@ import java.util.Random;
 import mods.battlegear2.api.OffhandAttackEvent;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import cpw.mods.fml.relauncher.Side;
@@ -12,8 +15,7 @@ import cpw.mods.fml.relauncher.Side;
 public class ItemWaraxe extends TwoHandedWeapon{
 
 	public ItemWaraxe(int par1, int i) {
-		super(par1,i);
-		this.name="battlegear2:Waraxe-"+i;
+		super(par1,i,"Waraxe-");
 	}
 	@Override
 	public boolean canHarvestBlock(Block par1Block)//Waraxe can harvest logs
@@ -24,6 +26,11 @@ public class ItemWaraxe extends TwoHandedWeapon{
 	@Override
 	public boolean offhandAttackEntity(OffhandAttackEvent event,
 			ItemStack mainhandItem, ItemStack offhandItem) {
+		if(event.getTarget() instanceof EntityPlayer)//We do additional armor damage
+			((EntityPlayer)event.getTarget()).inventory.damageArmor(1);
+		else if (event.getTarget() instanceof EntityLiving)
+			for (int index=0;index<4;index++)
+				((EntityLiving)event.getTarget()).getCurrentArmor(index).damageItem(1, (EntityLiving) event.getTarget());
 		return false;
 	}
 

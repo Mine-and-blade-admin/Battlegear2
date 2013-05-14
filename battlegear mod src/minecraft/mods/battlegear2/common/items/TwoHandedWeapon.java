@@ -6,8 +6,8 @@ public abstract class TwoHandedWeapon extends ItemWeapon{
 
 	public int baseDamage;
 
-	public TwoHandedWeapon(int par1, int i) {
-		super(par1, i);
+	public TwoHandedWeapon(int par1, int i, String named) {
+		super(par1, i, named);
 		this.setMaxDamage(this.getMaterial().getMaxUses());
 		this.baseDamage=this.getMaterial().getDamageVsEntity() + 2;
 	}

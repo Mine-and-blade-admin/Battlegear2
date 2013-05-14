@@ -1,10 +1,6 @@
 package mods.battlegear2.common.gui;
 
-import cpw.mods.fml.client.FMLClientHandler;
-
-
-
-import mods.battlegear2.common.BattleGear;
+import mods.battlegear2.common.items.ItemWeapon;
 import mods.battlegear2.common.utils.BattlegearUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -18,8 +14,8 @@ public class WeaponSlot extends Slot{
 	public WeaponSlot(IInventory par1iInventory, int par2, int par3, int par4, boolean mainhand) {
 		super(par1iInventory, par2, par3, par4);
 		this.mainHand = mainhand;
+		this.setBackgroundIconIndex(ItemWeapon.getBackground(mainHand));
 		
-		BattleGear.proxy.setSlotIcon(this, mainhand ? 0: 1);
 	}
 	
 	
@@ -63,7 +59,4 @@ public class WeaponSlot extends Slot{
 			}
 		}
 	}
-	
-	
-
 }
