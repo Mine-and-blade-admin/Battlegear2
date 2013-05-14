@@ -135,19 +135,20 @@
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
  
      /**
-@@ -280,6 +381,11 @@
+@@ -280,6 +381,12 @@
          if (this.itemInUse != null)
          {
              ItemStack itemstack = this.inventory.getCurrentItem();
 +            
++            /*
 +            //-----MB-Edited-----
 +            if(itemInUse.getItem() instanceof ItemShield){
 +            	itemstack = ((InventoryPlayerBattle)inventory).getCurrentOffItem();
-+            }
++            }*/
  
              if (itemstack == this.itemInUse)
              {
-@@ -466,11 +572,12 @@
+@@ -466,11 +573,12 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
@@ -162,7 +163,7 @@
                  }
              }
  
-@@ -2335,7 +2442,8 @@
+@@ -2335,7 +2443,8 @@
      {
          if (par1 == 0)
          {
