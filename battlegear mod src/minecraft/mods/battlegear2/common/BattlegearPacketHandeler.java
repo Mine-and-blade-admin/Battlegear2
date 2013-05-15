@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 
-import mods.battlegear2.client.utils.HeraldryItemRenderer;
+import mods.battlegear2.client.heraldry.HeraldryItemRenderer;
 import mods.battlegear2.common.gui.ContainerHeraldry;
 import mods.battlegear2.common.inventory.InventoryPlayerBattle;
 import mods.battlegear2.common.utils.BattlegearUtils;

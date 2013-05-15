@@ -6,17 +6,17 @@ import java.io.IOException;
 import java.util.List;
 
 
+import mods.battlegear2.api.IHeraldryItem;
 import mods.battlegear2.client.gui.BattlegearGUITickHandeler;
+import mods.battlegear2.client.heraldry.HeradryWeponRenderer;
+import mods.battlegear2.client.heraldry.HeraldryItemRenderer;
 import mods.battlegear2.client.heraldry.HeraldryPattern;
+import mods.battlegear2.client.heraldry.SigilRendererTest;
 import mods.battlegear2.client.keybinding.BattlegearKeyHandeler;
-import mods.battlegear2.client.utils.HeradryWeponRenderer;
-import mods.battlegear2.client.utils.HeraldryItemRenderer;
-import mods.battlegear2.client.utils.SigilRendererTest;
 import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.BattlegearPacketHandeler;
 import mods.battlegear2.common.BattlegearTickHandeler;
 import mods.battlegear2.common.CommonProxy;
-import mods.battlegear2.common.items.IHeraldryItem;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;

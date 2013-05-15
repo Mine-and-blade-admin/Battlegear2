@@ -1,4 +1,4 @@
-package mods.battlegear2.common.items;
+package mods.battlegear2.api;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;

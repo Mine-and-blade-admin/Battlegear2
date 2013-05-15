@@ -2,6 +2,7 @@ package mods.battlegear2.common.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import mods.battlegear2.api.IHeraldryItem;
 import mods.battlegear2.client.heraldry.HeraldryIcon;
 import mods.battlegear2.client.heraldry.HeraldryPattern;
 import mods.battlegear2.common.BattleGear;

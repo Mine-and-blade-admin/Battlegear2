@@ -1,4 +1,4 @@
-package mods.battlegear2.client.utils;
+package mods.battlegear2.client.heraldry;
 
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
@@ -6,27 +6,21 @@ import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import mods.battlegear2.client.ClientProxy;
-import mods.battlegear2.client.gui.BattlegearInGameGUI;
+import mods.battlegear2.api.IHeraldryItem;
 import mods.battlegear2.common.BattleGear;
-import mods.battlegear2.common.items.IHeraldryItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
 
-public class SigilRendererTest implements IItemRenderer{
-	
+public class HeraldryItemRenderer implements IItemRenderer{
+
 	Minecraft mc;
-	
-	
 	RenderItem itemRenderer;
 
 	@Override
@@ -37,13 +31,12 @@ public class SigilRendererTest implements IItemRenderer{
 	@Override
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
 			ItemRendererHelper helper) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-		
+
 		if(mc == null){
 			mc = FMLClientHandler.instance().getClient();
 			itemRenderer = new RenderItem();
@@ -52,19 +45,18 @@ public class SigilRendererTest implements IItemRenderer{
 		
 		if(type == ItemRenderType.EQUIPPED){
 			if(item.getItem() instanceof IHeraldryItem && ((IHeraldryItem)item.getItem()).hasHeraldry(item)){
-				drawEquippedShieldHeraldry(item, data);
+				drawEquippedHeraldryItem(item, data);
 			}
 		}
 		
 		if(type == ItemRenderType.INVENTORY){
 			if(item.getItem() instanceof IHeraldryItem && ((IHeraldryItem)item.getItem()).hasHeraldry(item)){
-				drawInventoryShieldHeraldry(item, data);
+				drawInventoryHeraldryItem(item, data);
 			}
 		}
 	}
 	
-	
-	private void drawInventoryShieldHeraldry(ItemStack item, Object[] data) {
+	protected void drawInventoryHeraldryItem(ItemStack item, Object[] data) {
 		this.mc.renderEngine.bindTexture("/gui/items.png");
 		Tessellator tessellator = Tessellator.instance;
 		
@@ -73,7 +65,7 @@ public class SigilRendererTest implements IItemRenderer{
 		
 		Icon icon = heraldryItem.getBaseIcon();
 		
-		float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[5]);
+		float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour1(code)]);
         GL11.glColor4f(colour[2], colour[1], colour[0], 1);
 		itemRenderer.renderIcon(0, 0, icon, 16, 16);
 		
@@ -88,6 +80,7 @@ public class SigilRendererTest implements IItemRenderer{
 	    colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
         GL11.glColor4f(colour[2], colour[1], colour[0], 1);
         
+        
         mc.renderEngine.bindTexture(BattleGear.imageFolder+"/sigil/patterns/pattern-"+SigilHelper.getPattern(code)+".png");
         renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel);
         
@@ -96,7 +89,7 @@ public class SigilRendererTest implements IItemRenderer{
 	    float[] colourIconSconondary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour2(code)]);
 
 	    int pattern = SigilHelper.getIconPos(code);
-	    //pattern = 2;
+	    
 	    for(int i = 0; i < SigilHelper.patternPassess[pattern]; i++){
 	    	float x = SigilHelper.patternSourceX[pattern][i];
 	    	float y = SigilHelper.patternSourceY[pattern][i];
@@ -119,12 +112,14 @@ public class SigilRendererTest implements IItemRenderer{
 	    	}
 	    }
 	    
+	    
 	    GL11.glPopMatrix();
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
         itemRenderer.zLevel += 50.0F;
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
+        
         
         GL11.glColor4f(1, 1, 1, 1);
 	    icon = heraldryItem.getPostRenderIcon();
@@ -134,15 +129,14 @@ public class SigilRendererTest implements IItemRenderer{
         itemRenderer.renderIcon(0, 0, icon, 16, 16);
 		
 	}
-
-	public void drawEquippedShieldHeraldry(ItemStack item, Object... data){
-
+	
+	public void drawEquippedHeraldryItem(ItemStack item, Object... data){
 		this.mc.renderEngine.bindTexture("/gui/items.png");
 		Tessellator tessellator = Tessellator.instance;
 		
 		IHeraldryItem heraldryItem = (IHeraldryItem)item.getItem();
 		int code = heraldryItem.getHeraldryCode(item);
-		
+
 		Icon icon = heraldryItem.getBaseIcon();
 		
         float f = icon.getMinU();
@@ -152,7 +146,7 @@ public class SigilRendererTest implements IItemRenderer{
         float f4 = 0.0F;
         float f5 = 0.3F;
         
-        float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[5]);
+        float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.getColour1(code));
         GL11.glColor4f(colour[2], colour[1], colour[0], 1);
         RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, f1, f2, f, f3, icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F);
         

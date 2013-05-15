@@ -10,7 +10,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import extendedGUI.BasicColourButton;
 import extendedGUI.GUIAltButton;
 import extendedGUI.GUIAltScroll;
-import mods.battlegear2.client.utils.SigilHelper;
+import mods.battlegear2.client.heraldry.SigilHelper;
 import mods.battlegear2.common.BattleGear;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;

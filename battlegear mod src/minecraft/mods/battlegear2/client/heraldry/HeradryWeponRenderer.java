@@ -1,4 +1,4 @@
-package mods.battlegear2.client.utils;
+package mods.battlegear2.client.heraldry;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -6,11 +6,12 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import mods.battlegear2.common.items.IHeraldryItem;
+import mods.battlegear2.api.IHeraldryItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraftforge.client.IItemRenderer;
@@ -36,7 +37,7 @@ public class HeradryWeponRenderer implements IItemRenderer{
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
 
 		if(item.hasTagCompound() && item.getTagCompound().hasKey("colour")){
-			return (type == ItemRenderType.EQUIPPED || type == ItemRenderType.INVENTORY);
+			return (type == ItemRenderType.EQUIPPED || type == ItemRenderType.INVENTORY || type == ItemRenderType.ENTITY);
 		}else{
 			return false;
 		}
@@ -45,7 +46,11 @@ public class HeradryWeponRenderer implements IItemRenderer{
 	@Override
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
 			ItemRendererHelper helper) {
-		return false;
+		return (type == ItemRenderType.ENTITY && 
+				(helper == ItemRendererHelper.ENTITY_BOBBING || 
+				helper == ItemRendererHelper.ENTITY_ROTATION
+				)
+				);
 	}
 	
 	@Override
@@ -64,10 +69,38 @@ public class HeradryWeponRenderer implements IItemRenderer{
 		if(type == ItemRenderType.INVENTORY){
 			drawInventoryHeraldryItem(item, data);
 		}
+		
+		if(type == ItemRenderType.ENTITY){
+			drawIEntityHeraldryItem(item, data);
+		}
 	}
 	
-	protected void drawInventoryHeraldryItem(ItemStack item, Object[] data) {
+	
+	protected void drawIEntityHeraldryItem(ItemStack item, Object[] data) {
+		/*this.mc.renderEngine.bindTexture("/gui/items.png");
+		Tessellator tessellator = Tessellator.instance;
 		
+		int code = item.getTagCompound().getInteger("colour");
+		
+		*/
+		EntityItem entiyItem = (EntityItem)data[1];
+		GL11.glPushMatrix();
+		
+		
+		if(RenderItem.renderInFrame){
+			GL11.glRotatef(-90, 0, 1, 0);
+			GL11.glTranslatef(-0.8F, -0.8F, 0);
+			GL11.glScalef(1.7F, 1.7F, 1F);
+		}else{
+			GL11.glScalef(2, 2, 2);
+			GL11.glTranslatef(-0.5F, 0, 0);
+			
+		}
+		drawEquippedHeraldryItem(item, data);
+		GL11.glPopMatrix();
+	}
+
+	protected void drawInventoryHeraldryItem(ItemStack item, Object[] data) {
 		this.mc.renderEngine.bindTexture("/gui/items.png");
 		Tessellator tessellator = Tessellator.instance;
 		
@@ -139,7 +172,6 @@ public class HeradryWeponRenderer implements IItemRenderer{
         icon = hilt;
         float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour1(code)]);
 	    GL11.glColor4f(colour[2], colour[1], colour[0], 1);
-        System.out.println(colour[2]+","+ colour[1]+","+ colour[0]);
         RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, 
         		icon.getMaxU(), 
         		icon.getMinV(), 

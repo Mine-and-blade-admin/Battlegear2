@@ -4,7 +4,7 @@ import javax.swing.text.rtf.RTFEditorKit;
 
 import com.google.common.collect.ContiguousSet;
 
-import mods.battlegear2.common.items.IHeraldryItem;
+import mods.battlegear2.api.IHeraldryItem;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

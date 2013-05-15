@@ -1,4 +1,4 @@
-package mods.battlegear2.client.utils;
+package mods.battlegear2.client.heraldry;
 
 import java.awt.Color;
 

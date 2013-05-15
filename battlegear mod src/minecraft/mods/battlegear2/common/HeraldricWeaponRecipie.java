@@ -1,6 +1,6 @@
 package mods.battlegear2.common;
 
-import mods.battlegear2.common.items.IHeraldryItem;
+import mods.battlegear2.api.IHeraldryItem;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;

@@ -2,7 +2,7 @@ package extendedGUI;
 
 import org.lwjgl.opengl.GL11;
 
-import mods.battlegear2.client.utils.SigilHelper;
+import mods.battlegear2.client.heraldry.SigilHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
