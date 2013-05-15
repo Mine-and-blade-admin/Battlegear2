@@ -1,7 +1,7 @@
 Battlegear 2 ItemStats
 ======================
 
-**Note: ** "Dual Bonus" refers to a bonus that will be applied when wielding 2 of the same type of weapon. All dual bonus's are currently not implemented. 
+**Note:** "Dual Bonus" refers to a bonus that will be applied when wielding 2 of the same type of weapon. All dual bonus's are currently not implemented. 
 
 Waraxe
 ------
@@ -26,9 +26,9 @@ Waraxe
 	* *Damage:* 3
 	* *Max Uses:* 32
 	* *Ignore Damage Amount:* 2
-** Dual bonus ** Possibly increase "damage" by 1 (bringing it in line with the sword)
+**Dual bonus** Possibly increase "damage" by 1 (bringing it in line with the sword)
 
-**Notes: ** Damage is calculated by the normal damage from a sword - 1. The ignore damage value will not have it's damage mitigated by armour, maening the waraxe will be more effective against armoured enemies.
+**Notes:** Damage is calculated by the normal damage from a sword - 1. The ignore damage value will not have it's damage mitigated by armour, maening the waraxe will be more effective against armoured enemies.
 
 Mace (not implemented)
 ----------------------
@@ -52,9 +52,9 @@ Mace (not implemented)
 	* *Damage:* 3
 	* *Max Uses:* 32
 	* *Daze Chance:* 25%
-** Dual bonus **: maybe incrase daze chance or duration
+**Dual bonus**: maybe incrase daze chance or duration
 
-**Notes: ** Stuns could easily be implemented by applying a confusion, weakness and slowdown potion. We could also make it so when a player or NPC is hit when under the effects of these 3 potions they are removed. This will likely make the mace less effective than the old battlegear mace, but the changes may be required for propper pvp balance. I would think a 3 second stun should be enough
+**Notes:** Stuns could easily be implemented by applying a confusion, weakness and slowdown potion. We could also make it so when a player or NPC is hit when under the effects of these 3 potions they are removed. This will likely make the mace less effective than the old battlegear mace, but the changes may be required for propper pvp balance. I would think a 3 second stun should be enough
 
 
 Dagger
@@ -74,9 +74,9 @@ Dagger
 * **Gold Dagger**
 	* *Damage:* 2
 	* *Max Uses:* 32
-**Dual Bonus: **: Really not sure about this one? Maybe this can be the "backstab" feature?
+**Dual Bonus:**: Really not sure about this one? Maybe this can be the "backstab" feature?
 
-**Notes: ** The dagger will also ignore part of the hitshield, currently it halves the normal hitshield. We may also implement some sort of "sneak" damage?
+**Notes:** The dagger will also ignore part of the hitshield, currently it halves the normal hitshield. We may also implement some sort of "sneak" damage?
 
 Spear
 ------
