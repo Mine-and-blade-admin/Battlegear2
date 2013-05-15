@@ -6,6 +6,7 @@ import mods.battlegear2.common.gui.BattlegearGUIHandeler;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.BattlegearConnectionHandeler;
 import mods.battlegear2.common.utils.BattlegearUtils;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
@@ -16,6 +17,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2", version="dev")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, 
@@ -39,7 +41,6 @@ public class BattleGear {
 	
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event){
-		proxy.registerTextures();
 		instance = this;
 		BattlegearConfig.getConfig(event);
 		BattlegearConfig.setItems();
@@ -58,6 +59,23 @@ public class BattleGear {
 		
 		NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
 		NetworkRegistry.instance().registerConnectionHandler(new BattlegearConnectionHandeler());
+		
+		
+		for (Item item : Item.itemsList) {
+			if(item != null){
+				
+				if(item.itemID == Item.swordWood.itemID ||
+						item.itemID == Item.swordStone.itemID ||
+						item.itemID == Item.swordIron.itemID ||
+						item.itemID == Item.swordDiamond.itemID ||
+						item.itemID == Item.swordGold.itemID){
+					
+					GameRegistry.addRecipe(new HeraldricWeaponRecipie(item));
+				}
+				
+			}
+		}
+		
 	}
 	
 	

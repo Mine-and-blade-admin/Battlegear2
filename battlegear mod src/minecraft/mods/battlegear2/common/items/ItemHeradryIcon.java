@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.client.heraldry.HeraldryIcon;
 import mods.battlegear2.client.heraldry.HeraldryPattern;
+import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
@@ -27,9 +28,7 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister) {
-		//super.updateIcons(par1IconRegister);
-		HeraldryPattern.setAllIcon(par1IconRegister);
-		//HeraldryIcon.setAllIcon(par1IconRegister);
+		BattleGear.proxy.registerTextures(par1IconRegister);
 		base = par1IconRegister.registerIcon("battlegear2:heraldry-base");
 		trim = par1IconRegister.registerIcon("battlegear2:heraldry-trim");
 	}

@@ -10,6 +10,8 @@ public class ItemMace extends OneHandedWeapon{
 
 	public ItemMace(int par1, EnumToolMaterial material, String name) {
 		super(par1,material,name);
+		//set the base damage to that of lower than usual (balance)
+		this.baseDamage = baseDamage-1;
 	}
 
 	//TODO: implement the stunning effects

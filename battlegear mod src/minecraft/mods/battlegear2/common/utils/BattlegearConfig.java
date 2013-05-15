@@ -83,6 +83,7 @@ public class BattlegearConfig {
 			Character.valueOf('L'),Item.leather});
 		for (int i=0;i<5;i++)
 		{
+			/*
 			if (i<2)			
 				GameRegistry.addRecipe(new ItemStack(shield[i]), new Object[]
 						{" L ","LLL"," L ",Character.valueOf('L'),
@@ -91,6 +92,7 @@ public class BattlegearConfig {
 				GameRegistry.addRecipe(new ItemStack(shield[i]), new Object[]
 						{"L L","LLL"," L ",Character.valueOf('L'),
 					new ItemStack(shield[i].getMaterial().getToolCraftingMaterial(),1,0)});
+			*/
 			
 			GameRegistry.addRecipe(new ItemStack(dagger[i]), new Object[] 
 					{"L","S",Character.valueOf('S'), Item.stick,
@@ -132,7 +134,7 @@ public class BattlegearConfig {
 			LanguageRegistry.instance().addName(warAxe[i],warAxe[i].getMaterial().name().toLowerCase()+" "+ itemNames[4]);
 			LanguageRegistry.instance().addName(mace[i],mace[i].getMaterial().name().toLowerCase()+" "+ itemNames[5]);
 			LanguageRegistry.instance().addName(spear[i],spear[i].getMaterial().name().toLowerCase()+" "+ itemNames[6]);
-			LanguageRegistry.instance().addName(shield[i],shield[i].getMaterial().name().toLowerCase()+" "+ itemNames[7]);
+			//LanguageRegistry.instance().addName(shield[i],shield[i].getMaterial().name().toLowerCase()+" "+ itemNames[7]);
 			/*if(i<4)	
 				LanguageRegistry.addName(knightArmor[i],itemNames[8]);*/
 		}

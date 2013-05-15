@@ -22,7 +22,7 @@ public class ItemWaraxe extends OneHandedWeapon{
 		super(par1,material,name);
 		this.ignoreDamageAmount = ignoreDamageAmount;
 		//set the base damage to that of lower than usual (balance)
-		this.baseDamage = baseDamage-ignoreDamageAmount;
+		this.baseDamage = baseDamage-1;
 	}
 	
 	@Override

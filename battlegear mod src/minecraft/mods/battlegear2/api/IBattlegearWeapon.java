@@ -14,6 +14,11 @@ public interface IBattlegearWeapon {
 	public boolean willAllowOffhandWeapon();
 	
 	/**
+	 * Will allow shield
+	 */
+	public boolean willAllowShield();
+	
+	/**
 	 * Returns true if the weapon be dual wielded in the offhand slot
 	 */
 	public boolean isOffhandHandDualWeapon();

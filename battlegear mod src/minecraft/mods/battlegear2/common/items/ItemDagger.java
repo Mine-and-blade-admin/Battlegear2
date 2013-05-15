@@ -13,6 +13,8 @@ public class ItemDagger extends OneHandedWeapon{
 
 	public ItemDagger(int par1, EnumToolMaterial material, String name) {
 		super(par1, material, name);
+		//set the base damage to that of lower than usual (balance)
+		this.baseDamage = baseDamage - 2;
 	}
 	@Override
 	public boolean canHarvestBlock(Block par1Block)//Daggers can harvest tallgrass and wool

@@ -24,6 +24,11 @@ public abstract class OneHandedWeapon extends ItemWeapon{
 	public boolean willAllowOffhandWeapon() {
 		return true;
 	}
+	
+	@Override
+	public boolean willAllowShield() {
+		return true;
+	}
 
 	@Override
 	public boolean isOffhandHandDualWeapon() {

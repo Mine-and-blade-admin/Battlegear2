@@ -19,9 +19,6 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon{
 	protected String name;
 	protected int baseDamage;
 	
-	@SideOnly(Side.CLIENT)
-	public static Icon[] backgroundIcon;
-	
 	public ItemWeapon(int par1, EnumToolMaterial material, String named) {
 		super(par1, material);
 		//May be unsafe, but will allow others to add weapons using custom materials (also more efficent)
@@ -29,27 +26,13 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon{
 		
 		this.setCreativeTab(BattlegearConfig.customTab);
 		this.maxStackSize = 1;
-		this.setUnlocalizedName("battlegear2:"+named+material.ordinal());
-		this.name="battlegear2:"+named+material.ordinal();
+		this.name="battlegear2:"+named;
+		this.setUnlocalizedName(name);
+		
 		
 		this.baseDamage = 4 + material.getDamageVsEntity();
 	}
 	
-	@SideOnly(Side.CLIENT)
-    public void updateIcons(IconRegister par1IconRegister)
-    {
-        this.itemIcon = par1IconRegister.registerIcon(this.name);
-        
-        //Make sure this only does it once
-        if(this.backgroundIcon == null){
-			this.backgroundIcon=new Icon[2];
-	        for (int i=0;i<2;i++){
-	        	this.backgroundIcon[i]=
-	        			par1IconRegister.registerIcon(
-	        					"battlegear2:slots/".concat(i==0?"mainhand":"offhand"));
-	        }
-        }
-    }
 	
 	public EnumToolMaterial getMaterial() {
 		return this.material;
@@ -69,9 +52,4 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon{
         return this.baseDamage;
     }
 	
-	@SideOnly(Side.CLIENT)
-    public static Icon getBackground(boolean mainhand)
-    {  
-		return mainhand?backgroundIcon[0]:backgroundIcon[1];
-    }
 }

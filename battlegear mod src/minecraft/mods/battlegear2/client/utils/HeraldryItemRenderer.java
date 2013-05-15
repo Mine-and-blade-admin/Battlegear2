@@ -136,7 +136,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 		
 		IHeraldryItem heraldryItem = (IHeraldryItem)item.getItem();
 		int code = heraldryItem.getHeraldryCode(item);
-		
+
 		Icon icon = heraldryItem.getBaseIcon();
 		
         float f = icon.getMinU();
@@ -146,7 +146,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         float f4 = 0.0F;
         float f5 = 0.3F;
         
-        float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[5]);
+        float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.getColour1(code));
         GL11.glColor4f(colour[2], colour[1], colour[0], 1);
         RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, f1, f2, f, f3, icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F);
         

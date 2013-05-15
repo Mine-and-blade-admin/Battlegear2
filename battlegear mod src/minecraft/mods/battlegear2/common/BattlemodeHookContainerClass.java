@@ -67,8 +67,6 @@ public class BattlemodeHookContainerClass {
 						BattleGear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
 					}
 					break;
-					
-
 				}else{
 					break;
 				}
