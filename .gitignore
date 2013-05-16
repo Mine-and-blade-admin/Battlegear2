@@ -4,7 +4,6 @@
 *.jar
 *.war
 *.ear
-*~
 
 #Ignore EVERYTHING
 /*
@@ -25,4 +24,9 @@
 !README.md
 !ForumPost
 !ItemStats.md
+
+*~
+*.rej
+*.orig
+
 
