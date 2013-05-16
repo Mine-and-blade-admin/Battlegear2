@@ -15,21 +15,21 @@ import net.minecraft.util.Icon;
 
 public class ItemHeradryIcon extends Item implements IHeraldryItem{
 
-	
 	Icon base;
 	Icon trim;
 	
 	public ItemHeradryIcon(int par1) {
 		super(par1);
-		//temp
-		this.setCreativeTab(BattlegearConfig.customTab);
+		//this.setCreativeTab(BattlegearConfig.customTab);
 		this.setMaxStackSize(1);
+		setUnlocalizedName("battlegear2:heraldric_item");
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister) {
 		BattleGear.proxy.registerTextures(par1IconRegister);
+		this.itemIcon = par1IconRegister.registerIcon("battlegear2:bg-icon");
 		base = par1IconRegister.registerIcon("battlegear2:heraldry-base");
 		trim = par1IconRegister.registerIcon("battlegear2:heraldry-trim");
 	}
@@ -39,8 +39,6 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem{
 		return base;
 	}
 	
-	
-
 	@Override
 	public boolean getShareTag() {
 		return true;
@@ -53,24 +51,19 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem{
 
 	@Override
 	public boolean hasHeraldry(ItemStack stack) {
-		return true;
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey("heraldry");
 	}
-
+	
 	@Override
 	public int getHeraldryCode(ItemStack stack) {
 		if(!stack.hasTagCompound()){
-			stack.setTagCompound(new NBTTagCompound());
+			return 0;
 		}
-		
 		NBTTagCompound compound = stack.getTagCompound();
 		if(compound.hasKey("heraldry")){
 			return compound.getInteger("heraldry");
 		}else{
-			compound.setInteger("heraldry",0);
 			return 0;
 		}
 	}
-	
-	
-
 }

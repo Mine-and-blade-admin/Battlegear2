@@ -2,25 +2,25 @@ package mods.battlegear2.client.heraldry;
 
 public enum HeraldryPositions {
 	
-	SINGLE(1, new float[]{.15F}, new float[]{.15F}, .7F, new boolean[]{false}, new boolean[]{false}),
-	SINGLE_FLIP(1, new float[]{.15F}, new float[]{.15F}, .7F, new boolean[]{true}, new boolean[]{false}),
+	SINGLE(1, new float[]{-.2F}, new float[]{-.2F}, 1.4F, new boolean[]{false}, new boolean[]{false}),
+	SINGLE_FLIP(1, new float[]{-.2F}, new float[]{-.2F}, 1.4F, new boolean[]{true}, new boolean[]{false}),
 	
-	DOUBLE_HORIZ(2, new float[]{.8F, .8F}, new float[]{0F, 0F}, 1F, new boolean[]{false, true}, new boolean[]{false, false}),
-	DOUBLE_HORIZ_FLIP_COLOURS(2, new float[]{.8F, .8F}, new float[]{0F, 0F}, 1F, new boolean[]{false, true}, new boolean[]{true, false}),
+	DOUBLE_HORIZ(2, new float[]{-1.25F, -1.25F}, new float[]{-0.75F, -0.75F}, 2.5F, new boolean[]{false, true}, new boolean[]{false, false}),
+	DOUBLE_HORIZ_FLIP_COLOURS(2, new float[]{-1.25F, -1.25F}, new float[]{-0.75F, -0.75F}, 2.5F, new boolean[]{false, true}, new boolean[]{true, false}),
 	
-	DOUBLE_VERT(2, new float[]{.0F, .0F}, new float[]{.2F, -.2F}, 1F, new boolean[]{false, false}, new boolean[]{false, false}),
-	DOUBLE_VERT_FLIP_COLOURS(2, new float[]{.0F, .0F}, new float[]{.2F, -.2F}, 1F, new boolean[]{false, false}, new boolean[]{false, true}),
+	DOUBLE_VERT(2, new float[]{-0.75F, -0.75F}, new float[]{-.25F, -1.25F}, 2.5F, new boolean[]{false, false}, new boolean[]{false, false}),
+	DOUBLE_VERT_FLIP_COLOURS(2, new float[]{-0.75F, -0.75F}, new float[]{-.25F, -1.25F}, 2.5F, new boolean[]{false, false}, new boolean[]{false, true}),
 	
-	FOUR(4, new float[]{.8F, .8F, .8F, .8F},
-			new float[]{.2F, .2F, -.2F, -.2F},
-			1F, new boolean[] {false, true, false, true},
+	FOUR(4, new float[]{-1.25F, -1.25F, -1.25F, -1.25F},
+			new float[]{-.25F, -1.25F, -1.25F, -.25F},
+			2.5F, new boolean[] {false, true, false, true},
 			new boolean[] {false, false, false, false}
 	),
 	
-	FOUR_FLIP_COLOURS(4, new float[]{.8F, .8F, .8F, .8F},
-			new float[]{.2F, .2F, -.2F, -.2F},
-			1F, new boolean[] {false, true, false, true},
-			new boolean[] {false, true, true, false}
+	FOUR_FLIP_COLOURS(4, new float[]{-1.25F, -1.25F, -1.25F, -1.25F},
+			new float[]{-.25F, -1.25F, -1.25F, -.25F},
+			2.5F, new boolean[] {false, true, false, true},
+			new boolean[] {true, true, false, false}
 	)
 	;
 	private int passess;

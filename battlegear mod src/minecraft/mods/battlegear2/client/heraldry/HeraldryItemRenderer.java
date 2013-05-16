@@ -25,7 +25,9 @@ public class HeraldryItemRenderer implements IItemRenderer{
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return (type == ItemRenderType.EQUIPPED || type == ItemRenderType.INVENTORY);
+		return ((type == ItemRenderType.EQUIPPED || type == ItemRenderType.INVENTORY)
+				&& item.getItem() instanceof IHeraldryItem
+				&& ((IHeraldryItem)item.getItem()).hasHeraldry(item));
 	}
 
 	@Override
@@ -44,15 +46,11 @@ public class HeraldryItemRenderer implements IItemRenderer{
 		
 		
 		if(type == ItemRenderType.EQUIPPED){
-			if(item.getItem() instanceof IHeraldryItem && ((IHeraldryItem)item.getItem()).hasHeraldry(item)){
-				drawEquippedHeraldryItem(item, data);
-			}
+			drawEquippedHeraldryItem(item, data);
 		}
 		
 		if(type == ItemRenderType.INVENTORY){
-			if(item.getItem() instanceof IHeraldryItem && ((IHeraldryItem)item.getItem()).hasHeraldry(item)){
-				drawInventoryHeraldryItem(item, data);
-			}
+			drawInventoryHeraldryItem(item, data);
 		}
 	}
 	
@@ -80,38 +78,60 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	    colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
         GL11.glColor4f(colour[2], colour[1], colour[0], 1);
         
-        
-        mc.renderEngine.bindTexture(BattleGear.imageFolder+"/sigil/patterns/pattern-"+SigilHelper.getPattern(code)+".png");
+        mc.renderEngine.bindTexture(HeraldryPattern.values()[SigilHelper.getPattern(code)].getPath());
         renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel);
         
-        mc.renderEngine.bindTexture(BattleGear.imageFolder+"/sigil/icons/icon-"+"1"+"-0.png");
 	    float[] colourIconPrimary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour1(code)]);
 	    float[] colourIconSconondary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour2(code)]);
 
-	    int pattern = SigilHelper.getIconPos(code);
+	    HeraldryPositions position = HeraldryPositions.values()[SigilHelper.getIconPos(code)];
+	    HeraldryIcon sigil = HeraldryIcon.values()[SigilHelper.getIcon(code)];
 	    
-	    for(int i = 0; i < SigilHelper.patternPassess[pattern]; i++){
-	    	float x = SigilHelper.patternSourceX[pattern][i];
-	    	float y = SigilHelper.patternSourceY[pattern][i];
-	    	float width = SigilHelper.patternWidth[pattern];
-	    	boolean flip = SigilHelper.patternFlip[pattern][i];
-	    	boolean flipColours = SigilHelper.patternAltColours[pattern][i];
-	    	
-	    	GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    	
-	    	if(flipColours){
-	    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
-	    	}else{
-	    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
-	    	}
-
-	    	if(flip){
-	    		renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel-10, x, y, -(width-x), y+width);
-	    	}else{
-	    		renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel-10, x, y, x+width, y+width);
-	    	}
+	    if(! HeraldryIcon.Blank.equals(sigil)){
+		    mc.renderEngine.bindTexture(sigil.getForegroundImagePath());
+		    
+		    for(int i = 0; i < position.getPassess(); i++){
+		    	float x = position.getSourceX(i);
+		    	float y = position.getSourceY(i);
+		    	float width = position.getWidth();
+		    	boolean flip = position.getPatternFlip(i);
+		    	boolean flipColours = position.getAltColours(i);
+		    	
+		    	if(flipColours){
+		    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
+		    	}else{
+		    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+		    	}
+		    	
+		    	if(flip){
+		    		renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel-10, x+width, y, x, y+width);
+		    	}else{
+		    		renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel-10, x, y, x+width, y+width);
+		    	}
+		    }
+		    
+		    mc.renderEngine.bindTexture(sigil.getBackgroundImagePath());
+		    
+		    for(int i = 0; i < position.getPassess(); i++){
+		    	float x = position.getSourceX(i);
+		    	float y = position.getSourceY(i);
+		    	float width = position.getWidth();
+		    	boolean flip = position.getPatternFlip(i);
+		    	boolean flipColours = position.getAltColours(i);
+		    	
+		    	if(! flipColours){
+		    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
+		    	}else{
+		    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+		    	}
+		    	
+		    	if(flip){
+		    		renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel-10, x+width, y, x, y+width);
+		    	}else{
+		    		renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel-10, x, y, x+width, y+width);
+		    	}
+		    }
 	    }
-	    
 	    
 	    GL11.glPopMatrix();
         GL11.glDisable(GL11.GL_BLEND);
@@ -119,8 +139,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         itemRenderer.zLevel += 50.0F;
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
-        
-        
+
         GL11.glColor4f(1, 1, 1, 1);
 	    icon = heraldryItem.getPostRenderIcon();
         
@@ -146,48 +165,80 @@ public class HeraldryItemRenderer implements IItemRenderer{
         float f4 = 0.0F;
         float f5 = 0.3F;
         
-        float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.getColour1(code));
-        GL11.glColor4f(colour[2], colour[1], colour[0], 1);
+        float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour1(code)]);
+        GL11.glColor3f(colour[2], colour[1], colour[0]);
+        
         RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, f1, f2, f, f3, icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F);
+        
+        icon = HeraldryPattern.values()[SigilHelper.getPattern(code)].getIcon();
+        colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
+        GL11.glColor3f(colour[2], colour[1], colour[0]);
         
         GL11.glDepthFunc(GL11.GL_EQUAL);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
-        GL11.glColor4f(colour[2], colour[1], colour[0], 1);
-        
+	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	    
         GL11.glMatrixMode(GL11.GL_TEXTURE);
+        
         GL11.glPushMatrix();
-        mc.renderEngine.bindTexture(BattleGear.imageFolder+"/sigil/patterns/pattern-"+SigilHelper.getPattern(code)+".png");
         
-        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 16, 16, 0.0625F);
+        mc.renderEngine.bindTexture( HeraldryPattern.values()[SigilHelper.getPattern(code)].getPath());
+        renderItemIn2D_2(tessellator, 1, 0, 0, 1, 16, 16, 0.0625F);
         
-        mc.renderEngine.bindTexture(BattleGear.imageFolder+"/sigil/icons/icon-"+"1"+"-0.png");
+        
 	    float[] colourIconPrimary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour1(code)]);
 	    float[] colourIconSconondary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour2(code)]);
-	    GL11.glEnable(GL11.GL_BLEND);
-	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    int pattern = SigilHelper.getIconPos(code);
-	    for(int i = 0; i < SigilHelper.patternPassess[pattern]; i++){
-	    	float x = SigilHelper.patternSourceX[pattern][i];
-	    	float y = SigilHelper.patternSourceY[pattern][i];
-	    	float width = SigilHelper.patternWidth[pattern];
-	    	boolean flip = SigilHelper.patternFlip[pattern][i];
-	    	boolean flipColours = SigilHelper.patternAltColours[pattern][i];
-	    	
-	    	if(flipColours){
-	    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
-	    	}else{
-	    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
-	    	}
-	    	
-	    	if(flip){
-	    		RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, x, y, -(width-x), width+y, 96, 96, 0.0625F);
-	    	}else{
-	    		RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, x, y, x+width, width+y, 96, 96, 0.0625F);
-	    	}
+	    
+	    HeraldryPositions position = HeraldryPositions.values()[SigilHelper.getIconPos(code)];
+	    HeraldryIcon sigil = HeraldryIcon.values()[SigilHelper.getIcon(code)];
+	    
+	    
+	    if(! HeraldryIcon.Blank.equals(sigil)){
+		    mc.renderEngine.bindTexture(sigil.getForegroundImagePath());
+		    
+		    for(int i = 0; i < position.getPassess(); i++){
+		    	float x = position.getSourceX(i);
+		    	float y = position.getSourceY(i);
+		    	float width = position.getWidth();
+		    	boolean flip = position.getPatternFlip(i);
+		    	boolean flipColours = position.getAltColours(i);
+		    	
+		    	if(flipColours){
+		    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
+		    	}else{
+		    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+		    	}
+		    	
+		    	if(flip){
+		    		RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, x+width, y, x, width+y, 16, 16, 0.0625F);
+		    	}else{
+		    		RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, x, y, x+width, width+y, 16, 16, 0.0625F);
+		    	}
+		    }
+		    
+		    mc.renderEngine.bindTexture(sigil.getBackgroundImagePath());
+		    
+		    for(int i = 0; i < position.getPassess(); i++){
+		    	float x = position.getSourceX(i);
+		    	float y = position.getSourceY(i);
+		    	float width = position.getWidth();
+		    	boolean flip = position.getPatternFlip(i);
+		    	boolean flipColours = position.getAltColours(i);
+		    	
+		    	if(! flipColours){
+		    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
+		    	}else{
+		    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+		    	}
+		    	
+		    	if(flip){
+		    		RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, x+width, y, x, width+y, 16, 16, 0.0625F);
+		    	}else{
+		    		RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, x, y, x+width, width+y, 16, 16, 0.0625F);
+		    	}
+		    	
+		    }
 	    }
 	    
         GL11.glPopMatrix();
@@ -195,8 +246,6 @@ public class HeraldryItemRenderer implements IItemRenderer{
         GL11.glDisable(GL11.GL_BLEND);   	    
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
-        GL11.glColor4f(1, 1, 1, 1);
-        
         GL11.glColor4f(1, 1, 1, 1);
 	    icon = heraldryItem.getPostRenderIcon();
         f = icon.getMinU();
@@ -224,5 +273,24 @@ public class HeraldryItemRenderer implements IItemRenderer{
         tessellator.addVertexWithUV((double)(par1 + par4), (double)(par2 + 0), (double)zLevel, (double)maxX, (double)minY);
         tessellator.addVertexWithUV((double)(par1 + 0), (double)(par2 + 0), (double)zLevel, (double)minX, (double)minY);
         tessellator.draw();
+    }
+	
+	public static void renderItemIn2D_2(Tessellator par0Tessellator, float par1, float par2, float par3, float par4, int par5, int par6, float par7)
+    {
+        par0Tessellator.startDrawingQuads();
+        par0Tessellator.setNormal(0.0F, 0.0F, 1.0F);
+        par0Tessellator.addVertexWithUV(0.0D, 0.0D, 0.0D, (double)par1, (double)par4);
+        par0Tessellator.addVertexWithUV(1.0D, 0.0D, 0.0D, (double)par3, (double)par4);
+        par0Tessellator.addVertexWithUV(1.0D, 1.0D, 0.0D, (double)par3, (double)par2);
+        par0Tessellator.addVertexWithUV(0.0D, 1.0D, 0.0D, (double)par1, (double)par2);
+        par0Tessellator.draw();
+        
+        par0Tessellator.startDrawingQuads();
+        par0Tessellator.setNormal(0.0F, 0.0F, -1.0F);
+        par0Tessellator.addVertexWithUV(0.0D, 1.0D, (double)(0.0F - par7), (double)par1, (double)par2);
+        par0Tessellator.addVertexWithUV(1.0D, 1.0D, (double)(0.0F - par7), (double)par3, (double)par2);
+        par0Tessellator.addVertexWithUV(1.0D, 0.0D, (double)(0.0F - par7), (double)par3, (double)par4);
+        par0Tessellator.addVertexWithUV(0.0D, 0.0D, (double)(0.0F - par7), (double)par1, (double)par4);
+        par0Tessellator.draw();
     }
 }

@@ -99,6 +99,8 @@ public class ClientProxy extends CommonProxy{
 	@Override
 	public void registerTickHandelers(){
 		
+		LanguageHelper.loadAllLanguages();
+		
 		super.registerTickHandelers();
 		TickRegistry.registerTickHandler(new BattlegearGUITickHandeler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);

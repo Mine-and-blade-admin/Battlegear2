@@ -43,8 +43,6 @@ public class BattleGear {
 	public void preInit(FMLPreInitializationEvent event){
 		instance = this;
 		BattlegearConfig.getConfig(event);
-		BattlegearConfig.setItems();
-		BattlegearConfig.addNames();
         BattlegearConfig.registerRecipes();       
 	}
 	

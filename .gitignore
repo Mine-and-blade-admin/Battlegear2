@@ -4,6 +4,7 @@
 *.jar
 *.war
 *.ear
+*~
 
 #Ignore EVERYTHING
 /*
@@ -13,6 +14,9 @@
 !/battlegear mod src/
 !battlegear mod src/*
 
+!/battlegear lang files/
+!battlegear lang files/*
+
 #Also don't ignore the install scripts
 !battlegear-*
 
@@ -21,3 +25,4 @@
 !README.md
 !ForumPost
 !ItemStats.md
+

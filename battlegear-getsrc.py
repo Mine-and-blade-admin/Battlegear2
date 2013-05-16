@@ -39,8 +39,19 @@ def generate_patches(src_dir, src_backup_dir, battlegear_dir):
 				
 				if not os.path.exists(copied_parent):
 						os.makedirs(copied_parent)
-				
 				shutil.copy(new_path, copied_parent)
+	print '==================== Moving Battlegear lang files ===================='
+	langPath = os.path.join(os.path.abspath(os.path.join(battlegear_dir, os.pardir)),"battlegear lang files")
+	if not os.path.exists(langPath):
+		os.makedirs(langPath)
+	enUsPath = os.path.join(src_dir, "minecraft", "mods", "battlegear2", "client", "en_US.lang")
+	shutil.copy(enUsPath, langPath)
+	modlangpath = os.path.join(os.path.abspath(os.path.join(src_dir, os.pardir)),"jars", "lang", "Mine & Blade")
+	for root, _, filelist in os.walk(modlangpath, followlinks=True):
+		for cur_file in filelist :
+			print 'Moving '+cur_file
+			shutil.copy(os.path.join(root, cur_file), langPath)
+	
 
 
 def hashfile(afile, hasher, blocksize=65536):

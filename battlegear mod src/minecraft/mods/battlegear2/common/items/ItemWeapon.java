@@ -26,7 +26,14 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon{
 		
 		this.setCreativeTab(BattlegearConfig.customTab);
 		this.maxStackSize = 1;
-		this.name="battlegear2:"+named;
+		
+		if(material == EnumToolMaterial.EMERALD){
+			this.name="battlegear2:"+named+".diamond";
+		}else{
+			this.name="battlegear2:"+named+"."+material.name().toLowerCase();
+		}
+		
+		
 		this.setUnlocalizedName(name);
 		
 		

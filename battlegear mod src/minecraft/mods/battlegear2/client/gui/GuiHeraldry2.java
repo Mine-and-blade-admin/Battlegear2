@@ -215,7 +215,7 @@ public class GuiHeraldry2 extends GuiContainer{
 				}
 			}else if(panelId == 1){
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-				int start = (int)(panelScroll.sliderValue * 11);
+				int start = (int)(panelScroll.sliderValue * 13);
 				for(int y = 0; y < 6; y++){
 					
 					int primaryColour = 0xFF000000 | SigilHelper.colours[selectedColours[2]];
@@ -232,12 +232,12 @@ public class GuiHeraldry2 extends GuiContainer{
 							mc.renderEngine.bindTexture(selected.getForegroundImagePath());
 							GL11.glEnable(GL11.GL_BLEND);
 						    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-						    this.drawTexturedModelRect(guiLeft+25+xSize, y*27+guiTop+19, 26, 26, .33F, .33F, .33F, false);
+						    this.drawTexturedModelRect(guiLeft+25+xSize, y*27+guiTop+19, 26, 26, 0, 0, 1, false);
 						    
 						    colour = SigilHelper.convertColourToARGBArray(secondaryColour);
 							GL11.glColor4f(colour[2], colour[1], colour[0], 1);
 							mc.renderEngine.bindTexture(selected.getBackgroundImagePath());
-							this.drawTexturedModelRect(guiLeft+25+xSize, y*27+guiTop+19, 26, 26, .33F, .33F, .33F, false);
+							this.drawTexturedModelRect(guiLeft+25+xSize, y*27+guiTop+19, 26, 26, 0, 0, 1, false);
 						}
 					}
 					
@@ -451,54 +451,6 @@ public class GuiHeraldry2 extends GuiContainer{
 	    GL11.glDisable(GL11.GL_BLEND);
 	    
 	}
-	
-	/*
-	private void drawSigil() {
-		
-		int offset = 15;
-		this.drawRect(guiLeft+12+offset, guiTop+31, 64+guiLeft+12+offset, 64+guiTop+31,
-				0xFF000000 | SigilHelper.colours[scrolls[1].current]);
-	    
-		mc.renderEngine.bindTexture(BattleGear.imageFolder+"/sigil/patterns/pattern-"+scrolls[0].current+".png");
-	    float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[scrolls[2].current]);
-	    GL11.glEnable(GL11.GL_BLEND);
-	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    GL11.glColor4f(colour[2], colour[1], colour[0], 1);
-	    this.drawTexturedModelRect(guiLeft+12+offset, guiTop+31, 64, 64);
-	    
-	    mc.renderEngine.bindTexture(BattleGear.imageFolder+"/sigil/icons/icon-"+"1"+"-0.png");
-	    float[] colourIconPrimary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[scrolls[5].current]);
-	    float[] colourIconSconondary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[scrolls[6].current]);
-	    GL11.glEnable(GL11.GL_BLEND);
-	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    int pattern = scrolls[4].current;
-	    
-	    
-	    for(int i = 0; i < SigilHelper.patternPassess[pattern]; i++){
-	    	float x = SigilHelper.patternSourceX[pattern][i];
-	    	float y = SigilHelper.patternSourceY[pattern][i];
-	    	float width = SigilHelper.patternWidth[pattern];
-	    	boolean flip = SigilHelper.patternFlip[pattern][i];
-	    	boolean flipColours = SigilHelper.patternAltColours[pattern][i];
-	    	
-	    	if(flipColours){
-	    		GL11.glColor4f(colourIconSconondary[2], colourIconSconondary[1], colourIconSconondary[0], 1);
-	    	}else{
-	    		GL11.glColor4f(colourIconPrimaryp[2], colourIconPrimary[1], colourIconPrimary[0], 1);
-	    	}
-	    	
-	    	this.drawTexturedModelRect(guiLeft+12+offset, guiTop+31, 64, 64, x,y,width, flip);
-	    }
-	    
-	    
-	    /*
-	    colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[scrolls[6].current]);
-	    GL11.glColor4f(colour[2], colour[1], colour[0], 1);
-	    GL11.glEnable(GL11.GL_BLEND);
-	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    this.drawTexturedModalRect(guiLeft+19, guiTop+38, 32, 96, 32, 32);
-	    */
-	//}
 
 	@Override
 	public void drawDefaultBackground() {
@@ -580,7 +532,7 @@ public class GuiHeraldry2 extends GuiContainer{
 				}
 			}else if(panelId == 1){
 				if(xOff >= 0 && xOff <=50 && yOff >= 0 && yOff <= 162){
-					selectedSigil = (yOff/27) + (int)(panelScroll.sliderValue * 11);
+					selectedSigil = (yOff/27) + (int)(panelScroll.sliderValue * (HeraldryIcon.values().length-5));
 				}
 				
 				selectedSigil = Math.max(0, selectedSigil);
@@ -600,7 +552,8 @@ public class GuiHeraldry2 extends GuiContainer{
 				((EntityClientPlayerMP)player).sendQueue.addToSendQueue(
 						BattlegearPacketHandeler.generateHeraldryChangeGUIPacket(
 								SigilHelper.packSigil(
-										selectedPattern, selectedColours[0], selectedColours[1], 0, 0, 0, 0),
+										selectedPattern, selectedColours[0], selectedColours[1],
+										selectedSigil, selectedColours[2],selectedColours[3], selectedPosition),
 										player));
 			}
 		}
@@ -622,7 +575,8 @@ public class GuiHeraldry2 extends GuiContainer{
 					((EntityClientPlayerMP)player).sendQueue.addToSendQueue(
 							BattlegearPacketHandeler.generateHeraldryChangeGUIPacket(
 									SigilHelper.packSigil(
-											selectedPattern, selectedColours[0], selectedColours[1], 0, 0, 0, 0),
+											selectedPattern, selectedColours[0], selectedColours[1],
+											selectedSigil, selectedColours[2],selectedColours[3], selectedPosition),
 											player));
 				}
 			}
@@ -632,7 +586,7 @@ public class GuiHeraldry2 extends GuiContainer{
 	@Override
 	protected void mouseMovedOrUp(int par1, int par2, int par3) {
 		super.mouseMovedOrUp(par1, par2, par3);
-		
+
 		if(!Mouse.isButtonDown(0)){
 			panelScroll.dragging = false;
 		}
