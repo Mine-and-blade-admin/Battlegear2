@@ -76,7 +76,7 @@ public class GuiHeraldry2 extends GuiContainer{
 	private int selectedSigil = 0;
 	private int selectedPosition = 0;
 	
-	private int[] selectedColours = new int[]{0, 8, 16, 24};
+	private int[] selectedColours = new int[]{0, 0, 0, 0};
 	
 	private GUIAltScroll patternScroll;
 	private BasicColourButton[] patternColours;

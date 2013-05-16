@@ -175,7 +175,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         GL11.glColor3f(colour[2], colour[1], colour[0]);
         
         GL11.glDepthFunc(GL11.GL_EQUAL);
-        GL11.glDisable(GL11.GL_LIGHTING);
+        //GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	    
@@ -184,7 +184,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         GL11.glPushMatrix();
         
         mc.renderEngine.bindTexture( HeraldryPattern.values()[SigilHelper.getPattern(code)].getPath());
-        renderItemIn2D_2(tessellator, 1, 0, 0, 1, 16, 16, 0.0625F);
+        renderItemIn2D_2(tessellator, 0, 0, 1, 1, 16, 16, 0.0625F);
         
         
 	    float[] colourIconPrimary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour1(code)]);
@@ -193,7 +193,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	    HeraldryPositions position = HeraldryPositions.values()[SigilHelper.getIconPos(code)];
 	    HeraldryIcon sigil = HeraldryIcon.values()[SigilHelper.getIcon(code)];
 	    
-	    
+	    GL11.glDisable(GL11.GL_LIGHTING);
 	    if(! HeraldryIcon.Blank.equals(sigil)){
 		    mc.renderEngine.bindTexture(sigil.getForegroundImagePath());
 		    

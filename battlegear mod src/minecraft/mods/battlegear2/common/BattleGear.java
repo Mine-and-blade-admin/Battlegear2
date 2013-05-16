@@ -32,6 +32,8 @@ public class BattleGear {
 	 @Instance("MB-Battlegear2")
      public static BattleGear instance;
 	 
+	 public static final boolean debug = true;
+	 
 	
 	@SidedProxy(clientSide="mods.battlegear2.client.ClientProxy",
 			serverSide="mods.battlegear2.common.CommonProxy")
@@ -50,14 +52,9 @@ public class BattleGear {
 	public void postInit(FMLPostInitializationEvent event){
 		BattlegearUtils.scanAndProcessItems();
 		
+		
 		proxy.registerKeyHandelers();
-		proxy.registerTickHandelers();
-		
-		MinecraftForge.EVENT_BUS.register(new BattlemodeHookContainerClass());
-		
 		NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
-		NetworkRegistry.instance().registerConnectionHandler(new BattlegearConnectionHandeler());
-		
 		
 		for (Item item : Item.itemsList) {
 			if(item != null){
@@ -74,6 +71,12 @@ public class BattleGear {
 			}
 		}
 		
+		if(debug){
+			proxy.registerTickHandelers();
+			
+			MinecraftForge.EVENT_BUS.register(new BattlemodeHookContainerClass());
+			NetworkRegistry.instance().registerConnectionHandler(new BattlegearConnectionHandeler());
+		}
 	}
 	
 	

@@ -163,7 +163,15 @@
                  }
              }
  
-@@ -2335,7 +2443,8 @@
+@@ -1300,7 +1408,6 @@
+             if (!par1Entity.func_85031_j(this))
+             {
+                 int i = this.inventory.getDamageVsEntity(par1Entity);
+-
+                 if (this.isPotionActive(Potion.damageBoost))
+                 {
+                     i += 3 << this.getActivePotionEffect(Potion.damageBoost).getAmplifier();
+@@ -2335,7 +2442,8 @@
      {
          if (par1 == 0)
          {

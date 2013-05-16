@@ -1,5 +1,6 @@
 package mods.battlegear2.common.utils;
 
+import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.common.items.ItemDagger;
 import mods.battlegear2.common.items.ItemHeradryIcon;
@@ -21,7 +22,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 public class BattlegearConfig {
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
 	public static boolean forceBackSheath = false;
-	public static final String[] itemNames = new String[] {"heraldic_item","chain","quiver", "dagger","waraxe","mace","spear","shield","knight_armour"};
+	public static final String[] itemNames = new String[] {"heraldric","chain","quiver", "dagger","waraxe","mace","spear","shield","knight_armour"};
 	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
 	public static final int firstDefaultItemIndex = 26201;
 	public static int[] itemOffests = new int[]{0, 1, 2, 5, 10, 15, 20, 25, 30};
@@ -33,7 +34,6 @@ public class BattlegearConfig {
 	public static Item chain,quiver,banner,heradricItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[4];
 	
-	public static final boolean debug = true;
 	
 	
 	
@@ -43,7 +43,7 @@ public class BattlegearConfig {
         
         heradricItem = new ItemHeradryIcon(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());
         
-        if(debug){
+        if(BattleGear.debug){
         	forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
         	
         	chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+1).getInt());

@@ -25,9 +25,9 @@ public class SigilHelper {
 	
 	public static final int[] colours = new int[] {
 		0x191919,
-		0x999999, //extra grey
-		0x808080, //extra grey
 		0x4C4C4C,
+		0x808080, //extra grey
+		0x999999, //extra grey
 		0xFFFFFF,
 		0x800000,
 		0xFF0000,

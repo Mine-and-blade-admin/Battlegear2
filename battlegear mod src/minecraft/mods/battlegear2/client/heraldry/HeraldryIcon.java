@@ -5,28 +5,28 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 
 public enum HeraldryIcon {
-	Blank("blank"),
+	Blank("blank"), //Yes (need gimp file)
 	//16* ASOIAF
-	Wolf("wolf"), //Stark
-	TripDragon("trip-dragon"), //Targaryen
-	Lion("lion"), //Lannister
-	Stag("stag"), //Baratheon
-	Bird("bird"), //Aryn
+	Wolf("wolf"), //Stark Yes
+	TripDragon("trip-dragon"), //Targaryen Yes
+	Lion("lion"), //Lannister Yes
+	Stag("stag"), //Baratheon Yes (need gimp file)
+	Bird("bird"), //Aryn Yes
 	Flower("flower"), //Tyrell
 	Kraken("kraken"), //Greyjoy
-	Fish("fish"), // Tully
+	Fish("fish"), // Tully yes
 	Sun("sun"), //Martell
 	Griffen("griffen"), //Connington
 	Bear("bear"), //Mormont
 	Mermaid("mermaid"), //Manderly
-	Lightning("lightning"), //Dondarion
-	Tower("tower"), //Frey
+	Lightning("lightning"), //Dondarion Yes
+	Tower("tower"), //Frey yes
 	FlayedMan("flay-man"), //Bolton
-	Croc("croc"), //Reed
+	Croc("croc"), //Reed Yes
 	
 	//up to 14 of others
-	BirdHead("birdhead"),
-	Snake("snake"),
+	BirdHead("birdhead"),// Yes
+	//Snake("snake"),
 	;
 	private String name;
 	

@@ -51,7 +51,7 @@ public class BattlegearKeyHandeler extends KeyHandler{
 			
 			EntityClientPlayerMP player = FMLClientHandler.instance().getClient().thePlayer;
 
-			if(kb.keyCode == battleInv.keyCode){
+			if(kb.keyCode == battleInv.keyCode && BattleGear.debug){
 				
 				//send packet to open container on server
 				PacketDispatcher.sendPacketToServer(BattlegearPacketHandeler.generateGUIPacket(BattlegearGUIHandeler.equipID));
@@ -60,7 +60,7 @@ public class BattlegearKeyHandeler extends KeyHandler{
 						BattleGear.instance, BattlegearGUIHandeler.equipID, mc.theWorld,
 						(int)player.posX, (int)player.posY, (int)player.posZ); 
 				
-			}else if (kb.keyCode == drawWeapons.keyCode && tickEnd){
+			}else if (kb.keyCode == drawWeapons.keyCode && tickEnd && BattleGear.debug){
 				
 				InventoryPlayer playerInventory = player.inventory;
 				if(player.isBattlemode()){

@@ -93,18 +93,9 @@ public class ClientProxy extends CommonProxy{
 	@Override
 	public void registerKeyHandelers() {
 		KeyBindingRegistry.registerKeyBinding(new BattlegearKeyHandeler());
-	}
 		
-	
-	@Override
-	public void registerTickHandelers(){
 		
 		LanguageHelper.loadAllLanguages();
-		
-		super.registerTickHandelers();
-		TickRegistry.registerTickHandler(new BattlegearGUITickHandeler(), Side.CLIENT);
-		TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
-		
 		for(int i = 0; i < Item.itemsList.length; i++){
 			
 			if(Item.itemsList[i] != null){
@@ -114,13 +105,38 @@ public class ClientProxy extends CommonProxy{
 					MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer());
 				}
 				
-				if(i == Item.swordIron.itemID){
-					MinecraftForgeClient.registerItemRenderer(i, new HeradryWeponRenderer(swordIcons[2][0], swordIcons[2][1], swordIcons[2][2]));
+				if(i == Item.swordWood.itemID){
+					MinecraftForgeClient.registerItemRenderer(i, 
+							new HeradryWeponRenderer(swordIcons[0][0], 
+									swordIcons[0][1], swordIcons[0][2]));
+				}else if(i == Item.swordStone.itemID){
+					MinecraftForgeClient.registerItemRenderer(i, 
+							new HeradryWeponRenderer(swordIcons[1][0], 
+									swordIcons[1][1], swordIcons[1][2]));
+				}else if(i == Item.swordIron.itemID){
+					MinecraftForgeClient.registerItemRenderer(i, 
+							new HeradryWeponRenderer(swordIcons[2][0], 
+									swordIcons[2][1], swordIcons[2][2]));
+				}else if(i == Item.swordDiamond.itemID){
+					MinecraftForgeClient.registerItemRenderer(i, 
+							new HeradryWeponRenderer(swordIcons[3][0], 
+									swordIcons[3][1], swordIcons[3][2]));
+				}else if(i == Item.swordGold.itemID){
+					MinecraftForgeClient.registerItemRenderer(i, 
+							new HeradryWeponRenderer(swordIcons[4][0], 
+									swordIcons[4][1], swordIcons[4][2]));
 				}
 			}
 			
 		}
+	}
 		
+	
+	@Override
+	public void registerTickHandelers(){
+		super.registerTickHandelers();
+		TickRegistry.registerTickHandler(new BattlegearGUITickHandeler(), Side.CLIENT);
+		TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
 	}
 
 	@Override
@@ -136,6 +152,7 @@ public class ClientProxy extends CommonProxy{
 	
 	@Override
 	public void attackCreatureWithItem(EntityPlayer entityPlayer, Entity target) {
+		System.out.println("Attacking creature");
 		FMLClientHandler.instance().getClient().playerController.attackEntity(entityPlayer, target);
 	}
 

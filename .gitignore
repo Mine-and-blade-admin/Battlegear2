@@ -16,6 +16,13 @@
 !/battlegear lang files/
 !battlegear lang files/*
 
+!battlegear gimp files/
+!battlegear gimp files/*
+
+!battlegear dist/
+!battlegear dist/*
+
+
 #Also don't ignore the install scripts
 !battlegear-*
 

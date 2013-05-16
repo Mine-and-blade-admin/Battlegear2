@@ -22,7 +22,7 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem{
 		super(par1);
 		//this.setCreativeTab(BattlegearConfig.customTab);
 		this.setMaxStackSize(1);
-		setUnlocalizedName("battlegear2:heraldric_item");
+		setUnlocalizedName("battlegear2:heraldric");
 	}
 	
 	@Override
@@ -42,6 +42,17 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem{
 	@Override
 	public boolean getShareTag() {
 		return true;
+	}
+	
+	
+	@Override
+	public boolean hasContainerItem(){
+		return true;
+	}
+	
+	@Override
+	public ItemStack getContainerItemStack(ItemStack itemStack) {
+		return itemStack;
 	}
 
 	@Override

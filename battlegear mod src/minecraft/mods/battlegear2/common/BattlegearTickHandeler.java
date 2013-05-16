@@ -42,15 +42,17 @@ public class BattlegearTickHandeler implements ITickHandler{
 			
 			//If we JUST swung an Item
 			if(entityPlayer.swingProgressInt == 1){
+				System.out.println("Just swung");
 				ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
 				if(mainhand != null && mainhand.getItem() instanceof IExtendedReachWeapon){
 					float extendedReach = ((IExtendedReachWeapon)mainhand.getItem()).getreachInBlocks(mainhand);
-					MovingObjectPosition mouseOver = BattleGear.proxy.getMouseOver(0, extendedReach);
+					MovingObjectPosition mouseOver = BattleGear.proxy.getMouseOver(0, 100);
 					if(mouseOver != null && mouseOver.typeOfHit == EnumMovingObjectType.ENTITY){
 						Entity target = mouseOver.entityHit;
 						if(target instanceof EntityLiving){
-							if(((EntityLiving) target).hurtTime != 0){
+							if(target.hurtResistantTime != ((EntityLiving) target).maxHurtResistantTime){
 								BattleGear.proxy.attackCreatureWithItem(entityPlayer, target);
+								entityPlayer.attackTargetEntityWithCurrentItem(target);
 							}
 						}
 					}
