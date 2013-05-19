@@ -27,7 +27,8 @@ public class HeraldricWeaponRecipie implements IRecipe{
 			ItemStack stack = inventorycrafting.getStackInSlot(i);
 			
 			if(stack != null){
-				if(stack.getItem().itemID == BattlegearConfig.heradricItem.itemID){
+				if(stack.getItem().itemID == BattlegearConfig.heradricItem.itemID ||
+						stack.getItem().itemID == Item.bucketWater.itemID){
 					if(iconFound)
 						return false;
 					else
@@ -59,6 +60,8 @@ public class HeraldricWeaponRecipie implements IRecipe{
 					icon = stack;
 				}else if (stack.getItem().itemID == heraldricWeapon.itemID){
 					item = stack;
+				}else if (stack.getItem().itemID == Item.bucketWater.itemID){
+					icon = stack;
 				}
 			}
 			
@@ -69,10 +72,15 @@ public class HeraldricWeaponRecipie implements IRecipe{
 			compound = new NBTTagCompound();
 		}
 		
-		int code = ((IHeraldryItem)icon.getItem()).getHeraldryCode(icon);
-		System.out.println(code);
-		compound.setInteger("colour", code);
-		item.setTagCompound(compound);
+		if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
+			int code = ((IHeraldryItem)icon.getItem()).getHeraldryCode(icon);
+			compound.setInteger("colour", code);
+			item.setTagCompound(compound);
+		}else{ // should be a bucket
+			if(compound.hasKey("colour")){
+				compound.removeTag("colour");
+			}
+		}
 		
 		return item;
 	}

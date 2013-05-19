@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraftforge.client.IItemRenderer;
@@ -25,7 +26,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return ((type == ItemRenderType.EQUIPPED || type == ItemRenderType.INVENTORY)
+		return ((type == ItemRenderType.EQUIPPED || type == ItemRenderType.INVENTORY || type == ItemRenderType.ENTITY)
 				&& item.getItem() instanceof IHeraldryItem
 				&& ((IHeraldryItem)item.getItem()).hasHeraldry(item));
 	}
@@ -33,7 +34,11 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	@Override
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
 			ItemRendererHelper helper) {
-		return false;
+		return (type == ItemRenderType.ENTITY && 
+				(helper == ItemRendererHelper.ENTITY_BOBBING || 
+				helper == ItemRendererHelper.ENTITY_ROTATION
+				)
+				);
 	}
 
 	@Override
@@ -52,6 +57,25 @@ public class HeraldryItemRenderer implements IItemRenderer{
 		if(type == ItemRenderType.INVENTORY){
 			drawInventoryHeraldryItem(item, data);
 		}
+		
+		if(type == ItemRenderType.ENTITY){
+			drawIEntityHeraldryItem(item, data);
+		}
+	}
+	
+	protected void drawIEntityHeraldryItem(ItemStack item, Object[] data) {
+		EntityItem entiyItem = (EntityItem)data[1];
+		GL11.glPushMatrix();
+		
+		
+		if(RenderItem.renderInFrame){
+			GL11.glScalef(1.2F, 1.2F, 1);
+			GL11.glTranslatef(-0.5F, -0.375F, 0);
+		}else{
+			GL11.glTranslatef(-0.5F, 0, 0);
+		}
+		drawEquippedHeraldryItem(item, data);
+		GL11.glPopMatrix();
 	}
 	
 	protected void drawInventoryHeraldryItem(ItemStack item, Object[] data) {

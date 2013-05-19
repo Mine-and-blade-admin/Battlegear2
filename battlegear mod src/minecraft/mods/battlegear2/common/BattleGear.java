@@ -21,7 +21,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2", version="dev")
+@Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2", version="HeraldPrev - 0.2")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, 
 	channels={
 		BattlegearPacketHandeler.guiPackets,
@@ -80,7 +80,6 @@ public class BattleGear {
 		
 		if(debug){
 			proxy.registerTickHandelers();
-			
 			MinecraftForge.EVENT_BUS.register(new BattlemodeHookContainerClass());
 			NetworkRegistry.instance().registerConnectionHandler(new BattlegearConnectionHandeler());
 		}
