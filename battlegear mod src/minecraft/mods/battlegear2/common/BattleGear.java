@@ -3,6 +3,7 @@ package mods.battlegear2.common;
 
 
 import mods.battlegear2.common.gui.BattlegearGUIHandeler;
+import mods.battlegear2.common.items.ItemHeradryIcon;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.BattlegearConnectionHandeler;
 import mods.battlegear2.common.utils.BattlegearUtils;
@@ -13,6 +14,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.Mod.PostInit;
 import cpw.mods.fml.common.Mod.PreInit;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
@@ -32,7 +34,7 @@ public class BattleGear {
 	 @Instance("MB-Battlegear2")
      public static BattleGear instance;
 	 
-	 public static final boolean debug = true;
+	 public static final boolean debug = false;
 	 
 	
 	@SidedProxy(clientSide="mods.battlegear2.client.ClientProxy",
@@ -46,6 +48,11 @@ public class BattleGear {
 		instance = this;
 		BattlegearConfig.getConfig(event);
         BattlegearConfig.registerRecipes();       
+	}
+	
+	@cpw.mods.fml.common.Mod.Init
+	public void Init(FMLInitializationEvent event){
+		
 	}
 	
 	@PostInit

@@ -16,7 +16,9 @@ public class CommonProxy {
 
 	public void registerKeyHandelers(){}
 
-	public void registerTextures(Object iconRegister) {}
+	public void registerTextures(Object iconRegister) {
+		
+	}
 
 	public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {}
 

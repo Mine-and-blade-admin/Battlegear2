@@ -8,7 +8,7 @@ import java.util.List;
 
 import mods.battlegear2.api.IHeraldryItem;
 import mods.battlegear2.client.gui.BattlegearGUITickHandeler;
-import mods.battlegear2.client.heraldry.HeradryWeponRenderer;
+import mods.battlegear2.client.heraldry.HeradrySwordRenderer;
 import mods.battlegear2.client.heraldry.HeraldryItemRenderer;
 import mods.battlegear2.client.heraldry.HeraldryPattern;
 import mods.battlegear2.client.heraldry.SigilRendererTest;
@@ -47,7 +47,7 @@ public class ClientProxy extends CommonProxy{
 
 	public static RenderEngine renderEngine = FMLClientHandler.instance().getClient().renderEngine;
 	public static Icon[] backgroundIcon;
-	public static Icon[][] swordIcons; 
+	public static Icon[][] swordIcons;
 	
 	@Override
 	public void registerTextures(Object iconRegister){
@@ -55,6 +55,7 @@ public class ClientProxy extends CommonProxy{
 		IconRegister register = (IconRegister)iconRegister;
 		HeraldryPattern.setAllIcon(register);
 		
+		System.out.println("register");
 		this.backgroundIcon=new Icon[2];
         for (int i=0;i<2;i++){
         	this.backgroundIcon[i]=
@@ -74,14 +75,7 @@ public class ClientProxy extends CommonProxy{
         			register.registerIcon(
         					"battlegear2:sword-heraldry/sword-gem-"+i);
         }
-        
-        System.out.println("Icon: "+swordIcons[2][1]);
-        
-		/*
-		 * TODO: I find out how to do something about the slotIcons
-		 * I did get it working by using the IconRegister in an items method,
-		 * may have to wait until we implement items and register then.
-		 */
+       
 	}
 	
 	@Override
@@ -105,26 +99,22 @@ public class ClientProxy extends CommonProxy{
 					MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer());
 				}
 				
+				
 				if(i == Item.swordWood.itemID){
 					MinecraftForgeClient.registerItemRenderer(i, 
-							new HeradryWeponRenderer(swordIcons[0][0], 
-									swordIcons[0][1], swordIcons[0][2]));
+							new HeradrySwordRenderer(0));
 				}else if(i == Item.swordStone.itemID){
 					MinecraftForgeClient.registerItemRenderer(i, 
-							new HeradryWeponRenderer(swordIcons[1][0], 
-									swordIcons[1][1], swordIcons[1][2]));
+							new HeradrySwordRenderer(1));
 				}else if(i == Item.swordIron.itemID){
 					MinecraftForgeClient.registerItemRenderer(i, 
-							new HeradryWeponRenderer(swordIcons[2][0], 
-									swordIcons[2][1], swordIcons[2][2]));
+							new HeradrySwordRenderer(2));
 				}else if(i == Item.swordDiamond.itemID){
 					MinecraftForgeClient.registerItemRenderer(i, 
-							new HeradryWeponRenderer(swordIcons[3][0], 
-									swordIcons[3][1], swordIcons[3][2]));
+							new HeradrySwordRenderer(3));
 				}else if(i == Item.swordGold.itemID){
 					MinecraftForgeClient.registerItemRenderer(i, 
-							new HeradryWeponRenderer(swordIcons[4][0], 
-									swordIcons[4][1], swordIcons[4][2]));
+							new HeradrySwordRenderer(4));
 				}
 			}
 			
