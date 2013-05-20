@@ -59,7 +59,7 @@ def main(distDir,  mcpDir):
     
     coremod_bin = os.path.join(mcpDir, 'bin', 'minecraft', coremod_dir)
     
-    core_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - core', mcVersion, version)), 'w')
+    core_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - Core', mcVersion, version)), 'w')
 
     for root, _, filelist in os.walk(coremod_bin, followlinks=True):
 		if(root.find(coremod_dir) > -1):
@@ -89,7 +89,7 @@ def main(distDir,  mcpDir):
     print '================ Creating Battlegear jar ==================='
     os.chdir(defaultWD)
     
-    bg_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - mod', mcVersion, version)), 'w')
+    bg_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - Mod', mcVersion, version)), 'w')
     
     print 'Packing McMod Info'
 	
@@ -113,15 +113,39 @@ def main(distDir,  mcpDir):
     
     
     for root, _, filelist in os.walk(reob_bin, followlinks=True):
-		if(root.find(coremod_dir) == -1):
+            if(root.find(coremod_dir) == -1 and root.find(os.path.join('net','minecraft')) == -1):
 			for cur_file in filelist :
 				class_file = os.path.join(root.replace(os.path.join(reob_bin,'minecraft'), ''),cur_file)
 				print 'Packing Class File : '+class_file
 				bg_jar.write(os.path.join(root,cur_file), class_file)
-				
+    os.chdir(mcpDir)
+    cmd = './reobfuscate.sh'
+    
+    if (os.name == 'nt'): 
+		cmd = 'reobfuscate.bat'
+
+    
+    os.system(cmd)    
+    os.chdir(defaultWD)
+    
+    print '================ Creating Base class edit zip ==================='	
+    os.chdir(defaultWD)
+    baseclass_zip = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - Base Class', mcVersion, version)), 'w')
+    
+    for files in os.listdir(os.path.join(reob_bin, 'minecraft')):
+        if files.endswith(".class"):
+            print files
+            baseclass_zip.write(os.path.join(reob_bin, 'minecraft', files), files)
+    
+    baseclass_zip.write(os.path.join(reob_bin,'minecraft','net', 'minecraft','client', 'Minecraft.class'), os.path.join('net','minecraft','client', 'Minecraft.class'))
+    
+
 
 def generateJarName(name, mcVersion, version):
 	return '['+mcVersion+'] '+name+' ('+version.replace('"','')+').jar'
+
+def generateZipName(name, mcVersion, version):
+     return '['+mcVersion+'] '+name+' ('+version.replace('"','')+').zip'
 	
 def packMcModInfo(bg_jar, modid, version, modname):
 	temp = open('temp', 'w')
@@ -131,7 +155,7 @@ def packMcModInfo(bg_jar, modid, version, modname):
 	temp.write('  "description": "Minecraft Combat Evolved",\n')
 	temp.write('  "version": '+version+',\n')
 	temp.write('  "logoFile": "/bg-logo.png",\n')
-	temp.write('  "url": "http://www.minecraftforum.net/topic/1722960-wip-mine-blade-battlegear-2-modders-discussions/",\n')
+	temp.write('  "url": "http://www.minecraftforum.net/topic/1722960-wip-mine-blade-battlegear-2",\n')
 	temp.write('  "authors": '+authors+'\n')
 	temp.write('}\n]')
 	

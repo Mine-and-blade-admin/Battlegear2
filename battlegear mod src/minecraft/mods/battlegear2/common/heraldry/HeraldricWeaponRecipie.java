@@ -1,4 +1,4 @@
-package mods.battlegear2.common;
+package mods.battlegear2.common.heraldry;
 
 import mods.battlegear2.api.IHeraldryItem;
 import mods.battlegear2.common.utils.BattlegearConfig;

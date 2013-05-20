@@ -4,6 +4,8 @@ import java.awt.Color;
 
 public class SigilHelper {
 	
+	public static final int defaultSigil = packSigil(0, 0, 4, 3, 6, 21, 0);
+	
 	public static final int[] colours_16 = new int[] {
 		0x191919,
 		0xCC4C4C,

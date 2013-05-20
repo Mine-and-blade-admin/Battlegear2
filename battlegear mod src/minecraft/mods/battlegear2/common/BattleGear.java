@@ -3,11 +3,15 @@ package mods.battlegear2.common;
 
 
 import mods.battlegear2.common.gui.BattlegearGUIHandeler;
+import mods.battlegear2.common.heraldry.HeraldricWeaponRecipie;
 import mods.battlegear2.common.items.ItemHeradryIcon;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.BattlegearConnectionHandeler;
 import mods.battlegear2.common.utils.BattlegearUtils;
+import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.EnumHelper;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Instance;
@@ -34,7 +38,9 @@ public class BattleGear {
 	 @Instance("MB-Battlegear2")
      public static BattleGear instance;
 	 
-	 public static final boolean debug = false;
+	 public static final boolean debug = true;
+	 
+	 public static EnumArmorMaterial knightArmourMaterial;
 	 
 	
 	@SidedProxy(clientSide="mods.battlegear2.client.ClientProxy",
@@ -46,6 +52,8 @@ public class BattleGear {
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event){
 		instance = this;
+		//Knights armour is not as durable as diamond, provides 2 armour points less protection and is more enchantable
+		knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
 		BattlegearConfig.getConfig(event);
         BattlegearConfig.registerRecipes();       
 	}

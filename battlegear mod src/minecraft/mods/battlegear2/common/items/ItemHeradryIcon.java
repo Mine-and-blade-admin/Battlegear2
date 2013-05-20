@@ -3,8 +3,10 @@ package mods.battlegear2.common.items;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.IHeraldryItem;
+import mods.battlegear2.api.IHeraldryItem.HeraldryRenderPassess;
 import mods.battlegear2.client.heraldry.HeraldryIcon;
 import mods.battlegear2.client.heraldry.HeraldryPattern;
+import mods.battlegear2.client.heraldry.SigilHelper;
 import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -40,6 +42,11 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem{
 	}
 	
 	@Override
+	public Icon getTrimIcon() {
+		return null;
+	}
+
+	@Override
 	public boolean getShareTag() {
 		return true;
 	}
@@ -68,13 +75,27 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem{
 	@Override
 	public int getHeraldryCode(ItemStack stack) {
 		if(!stack.hasTagCompound()){
-			return 0;
+			return SigilHelper.defaultSigil;
 		}
 		NBTTagCompound compound = stack.getTagCompound();
 		if(compound.hasKey("heraldry")){
 			return compound.getInteger("heraldry");
 		}else{
-			return 0;
+			return SigilHelper.defaultSigil;
 		}
+	}
+
+	@Override
+	public void setHeraldryCode(ItemStack stack, int code) {
+		if(!stack.hasTagCompound()){
+			stack.setTagCompound(new NBTTagCompound());
+		}
+		
+		stack.getTagCompound().setInteger("heraldry", code);
+	}
+
+	@Override
+	public boolean shouldDoPass(HeraldryRenderPassess pass) {
+		return ! pass.equals(HeraldryRenderPassess.SecondaryColourTrim);
 	}
 }
