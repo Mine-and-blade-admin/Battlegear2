@@ -26,6 +26,7 @@ public enum HeraldryIcon {
 	
 	//up to 14 of others
 	BirdHead("birdhead"),// Yes
+	Tree("tree"),// Yes
 	//Snake("snake"),
 	;
 	private String name;

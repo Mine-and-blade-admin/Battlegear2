@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import mods.battlegear2.api.IHeraldryItem;
+import mods.battlegear2.api.IHeraldyItem;
 import mods.battlegear2.client.ClientProxy;
 import mods.battlegear2.common.BattleGear;
 import net.minecraft.client.Minecraft;

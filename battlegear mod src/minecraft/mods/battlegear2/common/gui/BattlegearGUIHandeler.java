@@ -1,7 +1,6 @@
 package mods.battlegear2.common.gui;
 
 import mods.battlegear2.client.gui.BattleEquipGUI;
-import mods.battlegear2.client.gui.GuiHeraldry;
 import mods.battlegear2.client.gui.GuiHeraldry2;
 import mods.battlegear2.common.BattlegearPacketHandeler;
 import net.minecraft.client.gui.inventory.GuiInventory;

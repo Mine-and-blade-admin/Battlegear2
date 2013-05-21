@@ -2,10 +2,10 @@ package mods.battlegear2.common.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mods.battlegear2.api.IHeraldryItem;
-import mods.battlegear2.api.IHeraldryItem.HeraldryRenderPassess;
+import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.api.IHeraldyItem.HeraldyRenderPassess;
 import mods.battlegear2.client.heraldry.HeraldryIcon;
-import mods.battlegear2.client.heraldry.HeraldryPattern;
+import mods.battlegear2.client.heraldry.HeraldyPattern;
 import mods.battlegear2.client.heraldry.SigilHelper;
 import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.utils.BattlegearConfig;
@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Icon;
 
-public class ItemHeradryIcon extends Item implements IHeraldryItem{
+public class ItemHeradryIcon extends Item implements IHeraldyItem{
 
 	Icon base;
 	Icon trim;
@@ -93,9 +93,16 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem{
 		
 		stack.getTagCompound().setInteger("heraldry", code);
 	}
+	
+	
 
 	@Override
-	public boolean shouldDoPass(HeraldryRenderPassess pass) {
-		return ! pass.equals(HeraldryRenderPassess.SecondaryColourTrim);
+	public boolean useDefaultRenderer() {
+		return false;
+	}
+
+	@Override
+	public boolean shouldDoPass(HeraldyRenderPassess pass) {
+		return ! pass.equals(HeraldyRenderPassess.SecondaryColourTrim);
 	}
 }

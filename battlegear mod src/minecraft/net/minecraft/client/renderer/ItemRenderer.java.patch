@@ -8,7 +8,7 @@
  import net.minecraft.block.Block;
  import net.minecraft.block.material.Material;
  import net.minecraft.client.Minecraft;
-@@ -32,6 +33,25 @@
+@@ -33,6 +34,25 @@
  @SideOnly(Side.CLIENT)
  public class ItemRenderer
  {
@@ -34,7 +34,7 @@
      /** A reference to the Minecraft object. */
      private Minecraft mc;
      private ItemStack itemToRender = null;
-@@ -242,7 +262,7 @@
+@@ -255,7 +275,7 @@
       */
      public void renderItemInFirstPerson(float par1)
      {
@@ -43,7 +43,7 @@
          EntityClientPlayerMP entityclientplayermp = this.mc.thePlayer;
          float f2 = entityclientplayermp.prevRotationPitch + (entityclientplayermp.rotationPitch - entityclientplayermp.prevRotationPitch) * par1;
          GL11.glPushMatrix();
-@@ -528,6 +548,9 @@
+@@ -541,6 +561,9 @@
  
          GL11.glDisable(GL12.GL_RESCALE_NORMAL);
          RenderHelper.disableStandardItemLighting();
@@ -53,7 +53,7 @@
      }
  
      /**
-@@ -725,6 +748,9 @@
+@@ -738,6 +761,9 @@
              this.itemToRender = itemstack;
              this.equippedItemSlot = entityclientplayermp.inventory.currentItem;
          }

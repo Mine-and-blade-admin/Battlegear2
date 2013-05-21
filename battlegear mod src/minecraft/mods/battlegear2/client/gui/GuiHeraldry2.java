@@ -13,7 +13,7 @@ import extendedGUI.GUIAltButton;
 import extendedGUI.GUIAltScroll;
 import mods.battlegear2.client.heraldry.HeraldryIcon;
 import mods.battlegear2.client.heraldry.HeraldryItemRenderer;
-import mods.battlegear2.client.heraldry.HeraldryPattern;
+import mods.battlegear2.client.heraldry.HeraldyPattern;
 import mods.battlegear2.client.heraldry.HeraldryPositions;
 import mods.battlegear2.client.heraldry.SigilHelper;
 import mods.battlegear2.common.BattleGear;
@@ -32,6 +32,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetServerHandler;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.StringTranslate;
 
 public class GuiHeraldry2 extends GuiContainer{
 	
@@ -54,15 +55,15 @@ public class GuiHeraldry2 extends GuiContainer{
     protected int guiTop;
 	
 	private String[] displayString = new String[]{
-			"Pattern",
-			"Sigil",
-			"Sigil Position",
+			"sigil.pattern.title",
+			"sigil.icon.title",
+			"sigil.icon_pos.title",
 			"",
 			"",
-			"Colour 1",
-			"Colour 2",
-			"Sigil%Colour 1",
-			"Sigil%Colour 2",
+			"sigil.colour1.title",
+			"sigil.colour2.title",
+			"sigil.icon_colour1.title",
+			"sigil.icon_colour2.title",
 	};
 	
 	private String patternTitle = "sigil.pattern.title";
@@ -72,11 +73,15 @@ public class GuiHeraldry2 extends GuiContainer{
 	
 	private BasicColourButton[] colourButtons;
 	
-	private int selectedPattern = 0;
-	private int selectedSigil = 0;
-	private int selectedPosition = 0;
+	private int selectedPattern = SigilHelper.getPattern(SigilHelper.defaultSigil);
+	private int selectedSigil = SigilHelper.getIcon(SigilHelper.defaultSigil);
+	private int selectedPosition = SigilHelper.getIconPos(SigilHelper.defaultSigil);
 	
-	private int[] selectedColours = new int[]{0, 0, 0, 0};
+	private int[] selectedColours = new int[]{
+			SigilHelper.getColour1(SigilHelper.defaultSigil),
+			SigilHelper.getColour2(SigilHelper.defaultSigil),
+			SigilHelper.getIconColour1(SigilHelper.defaultSigil),
+			SigilHelper.getIconColour2(SigilHelper.defaultSigil)};
 	
 	private GUIAltScroll patternScroll;
 	private BasicColourButton[] patternColours;
@@ -200,7 +205,7 @@ public class GuiHeraldry2 extends GuiContainer{
 				    mc.renderEngine.bindTexture("/gui/items.png");
 				    GL11.glEnable(GL11.GL_BLEND);
 				    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				    this.drawTexturedModelRectFromIcon(guiLeft+25+xSize, y*27+guiTop+19, HeraldryPattern.values()[y+start].getIcon(), 26, 26);
+				    this.drawTexturedModelRectFromIcon(guiLeft+25+xSize, y*27+guiTop+19, HeraldyPattern.values()[y+start].getIcon(), 26, 26);
 				    GL11.glDisable(GL11.GL_BLEND);
 				    
 				    if(y+start == selectedPattern){					
@@ -215,7 +220,7 @@ public class GuiHeraldry2 extends GuiContainer{
 				}
 			}else if(panelId == 1){
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-				int start = (int)(panelScroll.sliderValue * 13);
+				int start = (int)(panelScroll.sliderValue * (HeraldryIcon.values().length-5));
 				for(int y = 0; y < 6; y++){
 					
 					int primaryColour = 0xFF000000 | SigilHelper.colours[selectedColours[2]];
@@ -318,7 +323,8 @@ public class GuiHeraldry2 extends GuiContainer{
 			}
 			//GL11.glColor4f(1.0F, 1.0F, 0.0F, 1.0F);
 			
-			String[] split = displayString[panelId].split("%");
+			
+			String[] split = StringTranslate.getInstance().translateKey(displayString[panelId]).split("%n");
 			for(int i = 0; i < split.length; i++){
 				this.drawCenteredString(this.fontRenderer, split[i], guiLeft+43+xSize, guiTop+4+i*10, 0xFFFF40);
 			}
@@ -399,7 +405,7 @@ public class GuiHeraldry2 extends GuiContainer{
 	    mc.renderEngine.bindTexture("/gui/items.png");
 	    GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    this.drawTexturedModelRectFromIcon(startX, startY, HeraldryPattern.values()[selectedPattern].getIcon(), 64, 64);
+	    this.drawTexturedModelRectFromIcon(startX, startY, HeraldyPattern.values()[selectedPattern].getIcon(), 64, 64);
 
 	    HeraldryPositions position = HeraldryPositions.values()[selectedPosition];
 	    
@@ -528,7 +534,7 @@ public class GuiHeraldry2 extends GuiContainer{
 					selectedPattern = (yOff/27) + (int)(panelScroll.sliderValue * 11);
 					
 					selectedPattern = Math.max(0, selectedPattern);
-					selectedPattern = Math.min(selectedPattern, HeraldryPattern.values().length-1);
+					selectedPattern = Math.min(selectedPattern, HeraldyPattern.values().length-1);
 				}
 			}else if(panelId == 1){
 				if(xOff >= 0 && xOff <=50 && yOff >= 0 && yOff <= 162){

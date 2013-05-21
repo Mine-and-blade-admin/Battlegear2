@@ -2,13 +2,18 @@ package mods.battlegear2.common.items;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mods.battlegear2.api.IHeraldryItem;
+import mods.battlegear2.api.IHeraldyArmour;
+import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.client.heraldry.HeraldryArmourModel;
+import mods.battlegear2.client.heraldry.HeraldyPattern;
 import mods.battlegear2.client.heraldry.SigilHelper;
 import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.gui.ArmourSlot;
 import mods.battlegear2.common.utils.BattlegearConfig;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -16,7 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Icon;
 import net.minecraftforge.common.IArmorTextureProvider;
 
-public class ItemKnightArmour extends ItemArmor implements IHeraldryItem, IArmorTextureProvider{
+public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmorTextureProvider{
 	
 	private Icon baseIcon;
 	private Icon postRenderIcon;
@@ -25,6 +30,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldryItem, IArmor
 	public ItemKnightArmour(int id, int armourType) {
 		super(id, BattleGear.knightArmourMaterial, 1, armourType);
 		this.setCreativeTab(BattlegearConfig.customTab);
+		setUnlocalizedName("battlegear2:knights_armour."+BattlegearConfig.armourTypes[armourType]);
 	}
 	
 	@Override
@@ -81,27 +87,67 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldryItem, IArmor
 	}
 
 	@Override
-	public boolean shouldDoPass(HeraldryRenderPassess pass) {
-		if(armorType == 1){
-			return ! pass.equals(HeraldryRenderPassess.SecondaryColourTrim);
-		}
-		else if (armorType == 2){
-			return pass.equals(HeraldryRenderPassess.PrimaryColourBase) || pass.equals(HeraldryRenderPassess.SecondaryColourTrim);
-		}else{
-			return pass.equals(HeraldryRenderPassess.PrimaryColourBase);
-		}
+	public boolean shouldDoPass(HeraldyRenderPassess pass) {
+		
+		if(pass.equals(HeraldyRenderPassess.PrimaryColourBase) || 
+				pass.equals(HeraldyRenderPassess.SecondaryColourTrim) ||
+				pass.equals(HeraldyRenderPassess.PostRenderIcon)){
+			return true;
+		}else
+			return armorType==1;
+		
 	}
+	
+	
+
 
 	@Override
 	public String getArmorTextureFile(ItemStack itemstack) {
-		// TODO Auto-generated method stub
 		return null;
+		//return BattleGear.imageFolder+"armours/knights/knights-"+(slot==2?1:0)+".png";
+	}
+
+	@Override
+	public boolean useDefaultRenderer() {
+		return true;
 	}
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, int layer) {
 		return BattleGear.imageFolder+"armours/knights/knights-"+(slot==2?1:0)+".png";
 	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public ModelBiped getArmorModel(EntityLiving entityLiving,
+			ItemStack itemStack, int armorSlot) {
+		//TODO: Possibly not the most efficiant, maybe we should change this to using static references for better preformance
+		HeraldryArmourModel model = new HeraldryArmourModel(armorSlot);
+		model.setItemStack(itemStack);
+		model.bipedHead.showModel = armorSlot == 0;
+
+		model.bipedHeadwear.showModel = armorSlot == 0;
+		model.bipedBody.showModel = armorSlot == 1 || armorSlot == 2;
+		model.bipedRightArm.showModel = armorSlot == 1;
+		model.bipedLeftArm.showModel = armorSlot == 1;
+		model.bipedRightLeg.showModel = armorSlot == 2 || armorSlot == 3;
+		model.bipedLeftLeg.showModel = armorSlot == 2 || armorSlot == 3;
+		
+		return model;
+	}
+
+	@Override
+	public String getBaseArmourPath(int armourSlot) {
+		return BattleGear.imageFolder+"armours/knights/knights-base-"+(armourSlot==2?1:0)+".png";
+	}
+
+	@Override
+	public String getPatternArmourPath(HeraldyPattern pattern, int armourSlot) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 	
 	
 

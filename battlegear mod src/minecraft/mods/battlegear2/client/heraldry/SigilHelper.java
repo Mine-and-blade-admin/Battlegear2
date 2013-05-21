@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class SigilHelper {
 	
-	public static final int defaultSigil = packSigil(0, 0, 4, 3, 6, 21, 0);
+	public static final int defaultSigil = packSigil(2, 1, 17, 0, 6, 21, 0);
 	
 	public static final int[] colours_16 = new int[] {
 		0x191919,
@@ -61,62 +61,7 @@ public class SigilHelper {
 		//still have room for 1 more colour, maybe transparent?
 	};
 	
-	public static final int[] patternPassess = new int[]{1,1,2,2,2,2,4,4};
 	
-	public static final float[][] patternSourceX = new float[][]{
-		new float[]{.15F},
-		new float[]{.15F},
-		new float[]{.175F, .175F},
-		new float[]{.175F, .175F},
-		new float[]{.0F, .0F},
-		new float[]{.0F, .01F},
-		new float[]{.175F, -.175F, .175F, -.175F},
-		new float[]{.175F, .175F, .175F, .175F},
-	};
-	
-	public static final float[][] patternSourceY = new float[][]{
-		new float[]{.15F},
-		new float[]{.15F},
-		new float[]{0F, 0F},
-		new float[]{0F, 0F},
-		new float[]{.175F, -.175F},
-		new float[]{.175F, -.175F},
-		new float[]{.175F, .175F, -.175F, -.175F},
-		new float[]{.175F, .175F, -.175F, -.175F}
-	};
-	
-	public static final float[] patternWidth = new float[]{
-		.7F,
-		.7F,
-		1F,
-		1F,
-		1F,
-		1F,
-		1F,
-		1F,
-	};
-	
-	public static final boolean[][] patternFlip = new boolean[][]{
-		new boolean[] {false},
-		new boolean[] {true},
-		new boolean[] {false, true},
-		new boolean[] {false, true},
-		new boolean[] {false, false},
-		new boolean[] {false, false},
-		new boolean[] {false, false, false, false},
-		new boolean[] {false, true, false, true},
-	};
-	
-	public static final boolean[][] patternAltColours = new boolean[][]{
-		new boolean[]{false},
-		new boolean[]{false},
-		new boolean[]{false, false},
-		new boolean[]{false, true},
-		new boolean[]{false, false},
-		new boolean[]{false, true},
-		new boolean[] {false, false, false, false},
-		new boolean[] {false, true, true, false},
-	};
 	
 	
 	public static float[] convertColourToARGBArray(int value){

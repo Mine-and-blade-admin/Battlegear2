@@ -28,3 +28,16 @@ item.spear.stone.name=Stone Spear
 item.spear.iron.name=Iron Spear
 item.spear.diamond.name=Diamond Spear
 item.spear.gold.name=Gold Spear
+
+item.knights_armour.helmet.name=Knight's Helmet
+item.knights_armour.plate.name=Knight's Plate
+item.knights_armour.legs.name=Knight's Leggings
+item.knights_armour.boots.name=Knight's Boots
+
+sigil.pattern.title=Pattern
+sigil.icon.title=Sigil
+sigil.icon_pos.title=Sigil Position
+sigil.colour1.title=Color 1
+sigil.colour2.title=Color 2
+sigil.icon_colour1.title=Sigil%nColor 1
+sigil.icon_colour2.title=Sigil%nColor 2

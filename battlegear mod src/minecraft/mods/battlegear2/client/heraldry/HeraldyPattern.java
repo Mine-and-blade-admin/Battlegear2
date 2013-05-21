@@ -6,7 +6,7 @@ import mods.battlegear2.common.BattleGear;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.Icon;
 
-public enum HeraldryPattern {
+public enum HeraldyPattern {
 	
 	VERICAL_BLOCK("pattern-0"),
 	HORIZONTAL_BLOCK("pattern-1"),
@@ -28,12 +28,12 @@ public enum HeraldryPattern {
 	private Icon icon;
 	private String name;
 	
-	private HeraldryPattern(String name){
+	private HeraldyPattern(String name){
 		this.name = name;
 	}
 	
 	public static void setAllIcon(IconRegister register){
-		for (HeraldryPattern pattern : HeraldryPattern.values()) {
+		for (HeraldyPattern pattern : HeraldyPattern.values()) {
 			pattern.setIcon(register.registerIcon("battlegear2:heraldry/patterns/"+pattern.name));
 		}
 	}

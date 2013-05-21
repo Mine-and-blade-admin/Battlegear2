@@ -6,8 +6,8 @@ import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import mods.battlegear2.api.IHeraldryItem;
-import mods.battlegear2.api.IHeraldryItem.HeraldryRenderPassess;
+import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.api.IHeraldyItem.HeraldyRenderPassess;
 import mods.battlegear2.common.BattleGear;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
@@ -25,12 +25,21 @@ public class HeraldryItemRenderer implements IItemRenderer{
 
 	Minecraft mc;
 	RenderItem itemRenderer;
+	private float trimZRaiseFactor;
+
+	
+	public HeraldryItemRenderer(){
+		this(1);
+	}
+	public HeraldryItemRenderer(float trimZRaiseFactor) {
+		this.trimZRaiseFactor = trimZRaiseFactor;
+	}
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
 		return ((type == ItemRenderType.EQUIPPED || type == ItemRenderType.INVENTORY || type == ItemRenderType.ENTITY)
-				&& item.getItem() instanceof IHeraldryItem
-				&& ((IHeraldryItem)item.getItem()).hasHeraldry(item));
+				&& item.getItem() instanceof IHeraldyItem
+				&& ((IHeraldyItem)item.getItem()).hasHeraldry(item));
 	}
 
 	@Override
@@ -85,14 +94,14 @@ public class HeraldryItemRenderer implements IItemRenderer{
 		this.mc.renderEngine.bindTexture("/gui/items.png");
 		Tessellator tessellator = Tessellator.instance;
 		
-		IHeraldryItem heraldryItem = (IHeraldryItem)item.getItem();
+		IHeraldyItem heraldryItem = (IHeraldyItem)item.getItem();
 		int code = heraldryItem.getHeraldryCode(item);
 		
 		Icon icon = heraldryItem.getBaseIcon();
 		
 		float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour1(code)]);
         GL11.glColor4f(colour[2], colour[1], colour[0], 1);
-        if(heraldryItem.shouldDoPass(HeraldryRenderPassess.PrimaryColourBase))
+        if(heraldryItem.shouldDoPass(HeraldyRenderPassess.PrimaryColourBase) && icon!=null)
         	itemRenderer.renderIcon(0, 0, icon, 16, 16);
 		
 		GL11.glDepthFunc(GL11.GL_GREATER);
@@ -106,8 +115,8 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	    colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
         GL11.glColor4f(colour[2], colour[1], colour[0], 1);
         
-        mc.renderEngine.bindTexture(HeraldryPattern.values()[SigilHelper.getPattern(code)].getPath());
-        if(heraldryItem.shouldDoPass(HeraldryRenderPassess.SecondaryColourPatter))
+        mc.renderEngine.bindTexture(HeraldyPattern.values()[SigilHelper.getPattern(code)].getPath());
+        if(heraldryItem.shouldDoPass(HeraldyRenderPassess.SecondaryColourPattern))
         	renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel);
         
 	    float[] colourIconPrimary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour1(code)]);
@@ -116,7 +125,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	    HeraldryPositions position = HeraldryPositions.values()[SigilHelper.getIconPos(code)];
 	    HeraldryIcon sigil = HeraldryIcon.values()[SigilHelper.getIcon(code)];
 	    
-	    if(! HeraldryIcon.Blank.equals(sigil) && heraldryItem.shouldDoPass(HeraldryRenderPassess.Sigil)){
+	    if(! HeraldryIcon.Blank.equals(sigil) && heraldryItem.shouldDoPass(HeraldyRenderPassess.Sigil)){
 		    mc.renderEngine.bindTexture(sigil.getForegroundImagePath());
 		    
 		    for(int i = 0; i < position.getPassess(); i++){
@@ -172,7 +181,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
         GL11.glColor4f(colour[2], colour[1], colour[0], 1);
         icon = heraldryItem.getTrimIcon();
-        if(heraldryItem.shouldDoPass(HeraldryRenderPassess.SecondaryColourTrim)){
+        if(heraldryItem.shouldDoPass(HeraldyRenderPassess.SecondaryColourTrim) && icon!=null){
         	itemRenderer.renderIcon(0, 0, icon, 16, 16);
         }
         
@@ -187,7 +196,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 		this.mc.renderEngine.bindTexture("/gui/items.png");
 		Tessellator tessellator = Tessellator.instance;
 		
-		IHeraldryItem heraldryItem = (IHeraldryItem)item.getItem();
+		IHeraldyItem heraldryItem = (IHeraldyItem)item.getItem();
 		int code = heraldryItem.getHeraldryCode(item);
 
 		Icon icon = heraldryItem.getBaseIcon();
@@ -202,10 +211,10 @@ public class HeraldryItemRenderer implements IItemRenderer{
         float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour1(code)]);
         GL11.glColor3f(colour[2], colour[1], colour[0]);
         
-        if(heraldryItem.shouldDoPass(HeraldryRenderPassess.PrimaryColourBase))
+        if(heraldryItem.shouldDoPass(HeraldyRenderPassess.PrimaryColourBase)&& icon!=null)
         	RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, f1, f2, f, f3, icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F);
         
-        icon = HeraldryPattern.values()[SigilHelper.getPattern(code)].getIcon();
+        icon = HeraldyPattern.values()[SigilHelper.getPattern(code)].getIcon();
         colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
         GL11.glColor3f(colour[2], colour[1], colour[0]);
 
@@ -219,8 +228,8 @@ public class HeraldryItemRenderer implements IItemRenderer{
         
         GL11.glPushMatrix();
         
-        mc.renderEngine.bindTexture(HeraldryPattern.values()[SigilHelper.getPattern(code)].getPath());
-        if(heraldryItem.shouldDoPass(HeraldryRenderPassess.SecondaryColourPatter))
+        mc.renderEngine.bindTexture(HeraldyPattern.values()[SigilHelper.getPattern(code)].getPath());
+        if(heraldryItem.shouldDoPass(HeraldyRenderPassess.SecondaryColourPattern)&& icon!=null)
         	renderItemIn2D_2(tessellator, 0, 0, 1, 1, 16, 16, 0.0625F);
         
         
@@ -231,7 +240,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	    HeraldryIcon sigil = HeraldryIcon.values()[SigilHelper.getIcon(code)];	    
 	    
 	    GL11.glDisable(GL11.GL_LIGHTING);
-	    if(! HeraldryIcon.Blank.equals(sigil) && heraldryItem.shouldDoPass(HeraldryRenderPassess.Sigil)){
+	    if(! HeraldryIcon.Blank.equals(sigil) && heraldryItem.shouldDoPass(HeraldyRenderPassess.Sigil)){
 		    mc.renderEngine.bindTexture(sigil.getForegroundImagePath());
 		    
 		    for(int i = 0; i < position.getPassess(); i++){
@@ -289,13 +298,13 @@ public class HeraldryItemRenderer implements IItemRenderer{
         colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
         GL11.glColor3f(colour[2], colour[1], colour[0]);
         icon = heraldryItem.getTrimIcon();
-        if(heraldryItem.shouldDoPass(HeraldryRenderPassess.SecondaryColourTrim))
-        	RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F);
+        if(heraldryItem.shouldDoPass(HeraldyRenderPassess.SecondaryColourTrim) && icon!=null)
+        	RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F*trimZRaiseFactor);
 
         GL11.glColor4f(1, 1, 1, 1);
 	    icon = heraldryItem.getPostRenderIcon();
 
-        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F);
+        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F*trimZRaiseFactor);
 	}
 	
 	public void renderTexturedQuad(int par1, int par2, int par4, int par5, float zLevel){

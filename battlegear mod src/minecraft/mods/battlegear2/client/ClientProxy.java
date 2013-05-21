@@ -6,16 +6,16 @@ import java.io.IOException;
 import java.util.List;
 
 
-import mods.battlegear2.api.IHeraldryItem;
+import mods.battlegear2.api.IHeraldyItem;
 import mods.battlegear2.client.gui.BattlegearGUITickHandeler;
 import mods.battlegear2.client.heraldry.HeradrySwordRenderer;
 import mods.battlegear2.client.heraldry.HeraldryItemRenderer;
-import mods.battlegear2.client.heraldry.HeraldryPattern;
-import mods.battlegear2.client.heraldry.SigilRendererTest;
+import mods.battlegear2.client.heraldry.HeraldyPattern;
 import mods.battlegear2.client.keybinding.BattlegearKeyHandeler;
 import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.BattlegearPacketHandeler;
 import mods.battlegear2.common.BattlegearTickHandeler;
+import mods.battlegear2.common.BattlemodeHookContainerClass;
 import mods.battlegear2.common.CommonProxy;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.EnumBGAnimations;
@@ -37,6 +37,7 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -53,7 +54,7 @@ public class ClientProxy extends CommonProxy{
 	public void registerTextures(Object iconRegister){
 
 		IconRegister register = (IconRegister)iconRegister;
-		HeraldryPattern.setAllIcon(register);
+		HeraldyPattern.setAllIcon(register);
 		
 		System.out.println("register");
 		this.backgroundIcon=new Icon[2];
@@ -94,9 +95,17 @@ public class ClientProxy extends CommonProxy{
 			
 			if(Item.itemsList[i] != null){
 				//if(Item.itemsList[i] instanceof ItemShield){
+				
+				Item item = Item.itemsList[i];
+				
+				if (item instanceof IHeraldyItem){
 					
-				if (Item.itemsList[i] instanceof IHeraldryItem){
-					MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer());
+					if(((IHeraldyItem) item).useDefaultRenderer()){
+						MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer());
+					}else if(i == BattlegearConfig.heradricItem.itemID){
+						MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer(1.5F));
+					}
+					
 				}
 				
 				
@@ -125,7 +134,8 @@ public class ClientProxy extends CommonProxy{
 	@Override
 	public void registerTickHandelers(){
 		super.registerTickHandelers();
-		TickRegistry.registerTickHandler(new BattlegearGUITickHandeler(), Side.CLIENT);
+		MinecraftForge.EVENT_BUS.register(new BattlegearClientHookContainer());
+		//TickRegistry.registerTickHandler(new BattlegearGUITickHandeler(), Side.CLIENT);
 		TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
 	}
 

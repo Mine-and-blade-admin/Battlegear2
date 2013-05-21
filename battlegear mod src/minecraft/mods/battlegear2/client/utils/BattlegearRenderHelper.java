@@ -3,9 +3,6 @@ package mods.battlegear2.client.utils;
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
-import javax.jws.Oneway;
-import javax.swing.text.PlainDocument;
-
 import mods.battlegear2.common.inventory.InventoryPlayerBattle;
 //import mods.battlegear2.common.items.ItemShield;
 import mods.battlegear2.common.utils.BattlegearConfig;
@@ -22,6 +19,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.EnumAction;
@@ -353,7 +351,7 @@ public class BattlegearRenderHelper {
 
 
 	public static void postRenderSpecials(EntityPlayer entityPlayer, RenderManager renderManager,
-			ModelBiped modelBipedMain, ModelBiped modelArmour, ModelBiped modelArmorChestplate, float frame){
+			ModelBiped modelBipedMain, ModelBiped modelArmour, ModelBiped modelArmorChestplate, double frame){
 		
 		//Update the swing progress variables
 		
@@ -409,7 +407,7 @@ public class BattlegearRenderHelper {
 
 
 	public static void renderItemIn3rdPerson(EntityPlayer par1EntityPlayer, RenderManager renderManager,
-			ModelBiped modelBipedMain, ModelBiped modelArmour, ModelBiped modelArmorChestplate, float frame){
+			ModelBiped modelBipedMain, ModelBiped modelArmour, ModelBiped modelArmorChestplate, double frame){
 		
 		ItemStack var21 = par1EntityPlayer.inventory.getStackInSlot(par1EntityPlayer.inventory.currentItem+3);
 
@@ -524,53 +522,37 @@ public class BattlegearRenderHelper {
 
 
 	
-	public static void moveOffHandArm(ModelBiped biped){
-		 if (biped.onGroundOffhand > 0.0F)
-	     { 
-			 biped.bipedBody.rotateAngleY = -MathHelper.sin(MathHelper.sqrt_float(biped.onGroundOffhand) * 3.141593F * 2.0F) * 0.2F;
-	            
-			 biped.bipedRightArm.rotationPointZ = MathHelper.sin(biped.bipedBody.rotateAngleY) * 5F;
-			 biped.bipedRightArm.rotationPointX = -MathHelper.cos(biped.bipedBody.rotateAngleY) * 5F;
-			 
-			 biped.bipedLeftArm.rotationPointZ = -MathHelper.sin(biped.bipedBody.rotateAngleY) * 5F;
-			 biped.bipedLeftArm.rotationPointX = MathHelper.cos(biped.bipedBody.rotateAngleY) * 5F;
-	            
-			 biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY;
-			 biped.bipedRightArm.rotateAngleY += biped.bipedBody.rotateAngleY;
-			 biped.bipedRightArm.rotateAngleX += biped.bipedBody.rotateAngleY;
-	            float f6 = 1.0F - biped.onGroundOffhand;
-	            f6 *= f6;
-	            f6 *= f6;
-	            f6 = 1.0F - f6;
-	            float f8 = MathHelper.sin(f6 * 3.141593F);
-	            float f10 = MathHelper.sin(biped.onGroundOffhand * 3.141593F) * -(biped.bipedHead.rotateAngleX - 0.7F) * 0.75F;
-	            biped.bipedLeftArm.rotateAngleX -= (double)f8 * 1.2D + (double)f10;
-	            biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY * 2.0F;
-	            biped.bipedLeftArm.rotateAngleZ = MathHelper.sin(biped.onGroundOffhand * 3.141593F) * -0.4F;
-	     }
-	}
-
-
-	public static void preRenderLiving(EntityPlayer player, ModelBiped modelBipedMain,
-			ModelBiped modelArmor, ModelBiped modelArmorChestplate, float frame) {
-		
-		
-			modelBipedMain.onGroundOffhand = modelArmor.onGroundOffhand = modelBipedMain.onGroundOffhand = 
-					player.getOffSwingProgress(frame);
+	public static void moveOffHandArm(Entity entity, ModelBiped biped, float frame){
+		if(entity instanceof EntityPlayer){
+			EntityPlayer player = (EntityPlayer)entity;
+			float offhandSwing = player.getOffSwingProgress(frame);
 			
-			if(player.inventory.getStackInSlot(player.inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS) != null)
-				modelArmor.heldItemLeft = modelArmorChestplate.heldItemLeft = modelBipedMain.heldItemLeft = 1;
-
+			biped.heldItemLeft = player.inventory.getStackInSlot(player.inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS) == null?0:1;
+			
+			if (offhandSwing > 0.0F)
+		    { 
+				 biped.bipedBody.rotateAngleY = -MathHelper.sin(MathHelper.sqrt_float(offhandSwing) * 3.141593F * 2.0F) * 0.2F;
+		            
+				 biped.bipedRightArm.rotationPointZ = MathHelper.sin(biped.bipedBody.rotateAngleY) * 5F;
+				 biped.bipedRightArm.rotationPointX = -MathHelper.cos(biped.bipedBody.rotateAngleY) * 5F;
+				 
+				 biped.bipedLeftArm.rotationPointZ = -MathHelper.sin(biped.bipedBody.rotateAngleY) * 5F;
+				 biped.bipedLeftArm.rotationPointX = MathHelper.cos(biped.bipedBody.rotateAngleY) * 5F;
+		            
+				 biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY;
+				 biped.bipedRightArm.rotateAngleY += biped.bipedBody.rotateAngleY;
+				 biped.bipedRightArm.rotateAngleX += biped.bipedBody.rotateAngleY;
+		            float f6 = 1.0F - offhandSwing;
+		            f6 *= f6;
+		            f6 *= f6;
+		            f6 = 1.0F - f6;
+		            float f8 = MathHelper.sin(f6 * 3.141593F);
+		            float f10 = MathHelper.sin(offhandSwing * 3.141593F) * -(biped.bipedHead.rotateAngleX - 0.7F) * 0.75F;
+		            biped.bipedLeftArm.rotateAngleX -= (double)f8 * 1.2D + (double)f10;
+		            biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY * 2.0F;
+		            biped.bipedLeftArm.rotateAngleZ = MathHelper.sin(offhandSwing * 3.141593F) * -0.4F;
+		    }
+		}
 	}
 
-
-	public static void postRenderLiving(EntityPlayer par1EntityPlayer,
-			ModelBiped modelBipedMain, ModelBiped modelArmor,
-			ModelBiped modelArmorChestplate, float par9) {
-
-		modelArmor.heldItemLeft = modelArmorChestplate.heldItemLeft = modelBipedMain.heldItemLeft = 0;
-		modelBipedMain.onGroundOffhand = modelArmor.onGroundOffhand = modelBipedMain.onGroundOffhand = 0;
-		
-	}
-	
 }
