@@ -1,10 +1,10 @@
-package mods.battlegear2.client.heraldry;
+package mods.battlegear2.common.heraldry;
 
-import java.awt.Color;
 
 public class SigilHelper {
 	
-	public static final int defaultSigil = packSigil(2, 1, 17, 0, 6, 21, 0);
+	//public static final int defaultSigil = packSigil(2, 1, 17, 0, 6, 21, 0);
+	public static final int defaultSigil = packSigil(0, 4, 4, 0, 0, 0, 0);
 	
 	public static final int[] colours_16 = new int[] {
 		0x191919,

@@ -57,6 +57,11 @@ public interface IHeraldyItem {
 	public void setHeraldryCode(ItemStack stack, int code);
 	
 	/**
+	 * Removes the heraldy code from the item
+	 */
+	public void removeHeraldry(ItemStack item);
+	
+	/**
 	 * Returns true if the default renderer should perform the given render pass
 	 */
 	public boolean shouldDoPass(HeraldyRenderPassess pass);

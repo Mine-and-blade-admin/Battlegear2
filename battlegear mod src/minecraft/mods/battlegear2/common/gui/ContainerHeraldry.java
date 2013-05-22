@@ -5,7 +5,7 @@ import javax.swing.text.rtf.RTFEditorKit;
 import com.google.common.collect.ContiguousSet;
 
 import mods.battlegear2.api.IHeraldyItem;
-import mods.battlegear2.client.heraldry.SigilHelper;
+import mods.battlegear2.common.heraldry.SigilHelper;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;

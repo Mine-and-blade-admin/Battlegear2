@@ -6,14 +6,17 @@ import mods.battlegear2.api.IHeraldyArmour;
 import mods.battlegear2.api.IHeraldyItem;
 import mods.battlegear2.client.heraldry.HeraldryArmourModel;
 import mods.battlegear2.client.heraldry.HeraldyPattern;
-import mods.battlegear2.client.heraldry.SigilHelper;
 import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.gui.ArmourSlot;
+import mods.battlegear2.common.heraldry.SigilHelper;
+import mods.battlegear2.common.inventory.InventoryPlayerBattle;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -87,6 +90,13 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 	}
 
 	@Override
+	public void removeHeraldry(ItemStack item) {
+		if(item.hasTagCompound()){
+			item.getTagCompound().setInteger("heraldry", SigilHelper.defaultSigil);
+		}
+	}
+
+	@Override
 	public boolean shouldDoPass(HeraldyRenderPassess pass) {
 		
 		if(pass.equals(HeraldyRenderPassess.PrimaryColourBase) || 
@@ -97,9 +107,6 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 			return armorType==1;
 		
 	}
-	
-	
-
 
 	@Override
 	public String getArmorTextureFile(ItemStack itemstack) {
@@ -126,12 +133,29 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 		model.setItemStack(itemStack);
 		model.bipedHead.showModel = armorSlot == 0;
 
-		model.bipedHeadwear.showModel = armorSlot == 0;
+		model.bipedHeadwear.showModel = false;
 		model.bipedBody.showModel = armorSlot == 1 || armorSlot == 2;
 		model.bipedRightArm.showModel = armorSlot == 1;
 		model.bipedLeftArm.showModel = armorSlot == 1;
 		model.bipedRightLeg.showModel = armorSlot == 2 || armorSlot == 3;
 		model.bipedLeftLeg.showModel = armorSlot == 2 || armorSlot == 3;
+		
+		model.heldItemRight = entityLiving.getHeldItem() == null?0:1;
+		if(entityLiving instanceof EntityPlayer){
+			if (entityLiving.getHeldItem() != null &&  ((EntityPlayer)entityLiving).getItemInUseCount() > 0){
+				EnumAction enumaction = entityLiving.getHeldItem().getItemUseAction();
+				if (enumaction == EnumAction.block){
+	                model.heldItemRight = 3;
+	            }
+				model.aimedBow = enumaction == EnumAction.bow;
+	        }
+			
+			model.heldItemLeft = ((EntityPlayer)entityLiving).inventory.getStackInSlot(
+					((EntityPlayer)entityLiving).inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS) == null?0:1;
+			
+		}
+		model.isSneak = entityLiving.isSneaking();
+		
 		
 		return model;
 	}
@@ -143,8 +167,8 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 
 	@Override
 	public String getPatternArmourPath(HeraldyPattern pattern, int armourSlot) {
-		// TODO Auto-generated method stub
-		return null;
+		//return BattleGear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-"+pattern.ordinal()+".png";
+		return BattleGear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-0.png";
 	}
 	
 	

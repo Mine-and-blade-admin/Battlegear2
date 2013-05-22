@@ -9,6 +9,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.api.IHeraldyItem;
 import mods.battlegear2.api.IHeraldyItem.HeraldyRenderPassess;
 import mods.battlegear2.common.BattleGear;
+import mods.battlegear2.common.heraldry.SigilHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -37,7 +38,10 @@ public class HeraldryItemRenderer implements IItemRenderer{
 
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return ((type == ItemRenderType.EQUIPPED || type == ItemRenderType.INVENTORY || type == ItemRenderType.ENTITY)
+		return ((type == ItemRenderType.EQUIPPED || 
+				type == ItemRenderType.EQUIPPED_FIRST_PERSON ||
+				type == ItemRenderType.INVENTORY || 
+				type == ItemRenderType.ENTITY)
 				&& item.getItem() instanceof IHeraldyItem
 				&& ((IHeraldyItem)item.getItem()).hasHeraldry(item));
 	}
@@ -61,7 +65,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 		}
 		
 		if(item != null){
-			if(type == ItemRenderType.EQUIPPED){
+			if(type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON){
 				drawEquippedHeraldryItem(item, data);
 			}
 			

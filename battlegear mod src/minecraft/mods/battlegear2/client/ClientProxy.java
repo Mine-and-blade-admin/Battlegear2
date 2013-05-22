@@ -87,6 +87,7 @@ public class ClientProxy extends CommonProxy{
 
 	@Override
 	public void registerKeyHandelers() {
+		super.registerKeyHandelers();
 		KeyBindingRegistry.registerKeyBinding(new BattlegearKeyHandeler());
 		
 		

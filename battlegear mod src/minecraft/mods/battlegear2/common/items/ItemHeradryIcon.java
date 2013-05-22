@@ -6,8 +6,8 @@ import mods.battlegear2.api.IHeraldyItem;
 import mods.battlegear2.api.IHeraldyItem.HeraldyRenderPassess;
 import mods.battlegear2.client.heraldry.HeraldryIcon;
 import mods.battlegear2.client.heraldry.HeraldyPattern;
-import mods.battlegear2.client.heraldry.SigilHelper;
 import mods.battlegear2.common.BattleGear;
+import mods.battlegear2.common.heraldry.SigilHelper;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
@@ -82,6 +82,13 @@ public class ItemHeradryIcon extends Item implements IHeraldyItem{
 			return compound.getInteger("heraldry");
 		}else{
 			return SigilHelper.defaultSigil;
+		}
+	}
+
+	@Override
+	public void removeHeraldry(ItemStack item) {
+		if(item.hasTagCompound()){
+			item.getTagCompound().removeTag("heraldry");
 		}
 	}
 
