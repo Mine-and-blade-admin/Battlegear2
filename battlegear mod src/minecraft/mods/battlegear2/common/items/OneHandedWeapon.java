@@ -15,12 +15,6 @@ public abstract class OneHandedWeapon extends ItemWeapon{
 	}
 	
 	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack)
-    {
-        return EnumAction.block;
-    }
-	
-	@Override
 	public boolean willAllowOffhandWeapon() {
 		return true;
 	}
