@@ -97,7 +97,7 @@ public class LanguageHelper {
 	 */
 	private static File getOrGenerateLangFolder() {
 		File dir = FMLClientHandler.instance().getClient().getMinecraftDir();
-		File MBLang = new File(dir.getAbsolutePath()+File.separator+"lang"+File.separator+"Mine & Blade");
+		File MBLang = new File(dir.getAbsolutePath()+File.separator+"lang"+File.separator+"MB-Battlegear 2");
 		if(!MBLang.exists()){
 			System.out.println("Mine & Blade: Generating Language Folder");
 			MBLang.mkdirs();

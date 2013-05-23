@@ -70,8 +70,12 @@ def main(mcp_dir, battlegearCode_dir, runtime_dir):
 	langPath = os.path.join(os.path.abspath(os.path.join(battlegearCode_dir, os.pardir)),"battlegear lang files")
 	if not os.path.exists(langPath):
 		os.makedirs(langPath)
-	enUsPath = os.path.join(langPath, "en_US.lang")
-	shutil.copy(enUsPath, os.path.join(mcp_dir, "src", "minecraft", "mods", "battlegear2", "client"))
+	#enUsPath = os.path.join(langPath, "en_US.lang")
+	#shutil.copy(enUsPath, os.path.join(mcp_dir, "src", "minecraft", "mods", "battlegear2", "client"))
+	for files in os.listdir(langPath):
+         if files.endswith(".lang"):
+             if not files.startswith("en_US.lang"):
+                 shutil.copy(os.path.join(langPath, files), os.path.join(mcp_dir, "jars", "lang", "MB-Battlegear 2", files))
 	
 	print '================ Copy Battlegear Files Done==================='
 	

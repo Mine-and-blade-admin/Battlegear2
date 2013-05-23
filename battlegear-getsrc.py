@@ -46,11 +46,12 @@ def generate_patches(src_dir, src_backup_dir, battlegear_dir):
 		os.makedirs(langPath)
 	enUsPath = os.path.join(src_dir, "minecraft", "mods", "battlegear2", "client", "en_US.lang")
 	shutil.copy(enUsPath, langPath)
-	modlangpath = os.path.join(os.path.abspath(os.path.join(src_dir, os.pardir)),"jars", "lang", "Mine & Blade")
-	for root, _, filelist in os.walk(modlangpath, followlinks=True):
-		for cur_file in filelist :
-			print 'Moving '+cur_file
-			shutil.copy(os.path.join(root, cur_file), langPath)
+ 
+	modlangpath = os.path.join(os.path.abspath(os.path.join(src_dir, os.pardir)),"jars", "lang", "MB-Battlegear 2")
+	for cur_file in os.listdir(modlangpath):
+           if cur_file.endswith(".lang"):
+               print 'Moving '+cur_file
+               shutil.copy(os.path.join(modlangpath, cur_file), langPath)
 	
 
 

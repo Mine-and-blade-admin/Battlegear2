@@ -20,6 +20,7 @@ import net.minecraft.util.Icon;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
+import net.minecraftforge.common.MinecraftForge;
 
 //TODO: allow this to ignore passess if required
 public class HeraldryItemRenderer implements IItemRenderer{
@@ -51,9 +52,8 @@ public class HeraldryItemRenderer implements IItemRenderer{
 			ItemRendererHelper helper) {
 		return (type == ItemRenderType.ENTITY && 
 				(helper == ItemRendererHelper.ENTITY_BOBBING || 
-				helper == ItemRendererHelper.ENTITY_ROTATION
-				)
-				);
+					(helper == ItemRendererHelper.ENTITY_ROTATION && Minecraft.isFancyGraphicsEnabled())
+				));
 	}
 
 	@Override
@@ -89,6 +89,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 			GL11.glTranslatef(-0.5F, -0.375F, 0);
 		}else{
 			GL11.glTranslatef(-0.5F, 0, 0);
+			GL11.glRotatef(-mc.renderViewEntity.rotationYaw, 0, 1, 0);
 		}
 		drawEquippedHeraldryItem(item, data);
 		GL11.glPopMatrix();
@@ -112,7 +113,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	    itemRenderer.zLevel -= 50.0F;
+	    //itemRenderer.zLevel -= 50.0F;
 
 	    GL11.glPushMatrix();
 	    
@@ -178,7 +179,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	    GL11.glPopMatrix();
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glDepthMask(true);
-        itemRenderer.zLevel += 50.0F;
+        //itemRenderer.zLevel += 50.0F;
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
         this.mc.renderEngine.bindTexture("/gui/items.png");
@@ -309,7 +310,14 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	    icon = heraldryItem.getPostRenderIcon();
 
         RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getSheetWidth(), icon.getSheetHeight(), 0.0625F*trimZRaiseFactor);
-	}
+	
+	    
+	    if (item != null && item.hasEffect()){
+        	renderEnchantmentEffects(tessellator);
+        }
+	    
+	    
+	 }
 	
 	public void renderTexturedQuad(int par1, int par2, int par4, int par5, float zLevel){
 		renderTexturedQuad(par1, par2, par4, par5, zLevel, 0,0,1,1);
@@ -344,4 +352,34 @@ public class HeraldryItemRenderer implements IItemRenderer{
         par0Tessellator.addVertexWithUV(0.0D, 0.0D, (double)(0.0F - par7), (double)par1, (double)par4);
         par0Tessellator.draw();
     }
+	
+	public static void renderEnchantmentEffects(Tessellator tessellator) {
+        GL11.glDepthFunc(GL11.GL_EQUAL);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture("%blur%/misc/glint.png");
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+        float f7 = 0.76F;
+        GL11.glColor4f(0.5F * f7, 0.25F * f7, 0.8F * f7, 1.0F);
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glPushMatrix();
+        float f8 = 0.125F;
+        GL11.glScalef(f8, f8, f8);
+        float f9 = (float)(Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
+        GL11.glTranslatef(f9, 0.0F, 0.0F);
+        GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
+        GL11.glPopMatrix();
+        GL11.glPushMatrix();
+        GL11.glScalef(f8, f8, f8);
+        f9 = (float)(Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
+        GL11.glTranslatef(-f9, 0.0F, 0.0F);
+        GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
+        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
+        GL11.glPopMatrix();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glDepthFunc(GL11.GL_LEQUAL);
+	}
 }

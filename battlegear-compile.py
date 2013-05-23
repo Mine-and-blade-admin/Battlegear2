@@ -12,6 +12,15 @@ def main(distDir,  mcpDir):
     from runtime.commands import Commands, CLIENT, SIDE_NAME
     from runtime.mcp import reobfuscate_side, recompile_side
     
+    print '================ Removing Old versions ================'
+    for the_file in os.listdir(distDir):
+        file_path = os.path.join(distDir, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception, e:
+            print e
+    
     print '================ Generating Details ==================='
     
     file_bin = os.path.join(mcpDir, 'src', 'minecraft')
@@ -130,7 +139,7 @@ def main(distDir,  mcpDir):
     
     print '================ Creating Base class edit zip ==================='	
     os.chdir(defaultWD)
-    baseclass_zip = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - Base Class', mcVersion, version)), 'w')
+    baseclass_zip = zipfile.ZipFile(os.path.join(distDir,generateZipName('M&B Battlegear2 - Base Class', mcVersion, version)), 'w')
     
     for files in os.listdir(os.path.join(reob_bin, 'minecraft')):
         if files.endswith(".class"):
@@ -139,6 +148,40 @@ def main(distDir,  mcpDir):
     
     baseclass_zip.write(os.path.join(reob_bin,'minecraft','net', 'minecraft','client', 'Minecraft.class'), os.path.join('net','minecraft','client', 'Minecraft.class'))
     
+    print '================ Creating Language Packs ==================='
+    os.chdir(defaultWD)
+    lang_zip = zipfile.ZipFile(os.path.join(distDir,'M&B Battlegear2 - Language Packs'), 'w')
+    
+    for files in os.listdir(os.path.join(defaultWD, 'battlegear lang files')):
+        if files.endswith(".lang"):
+            if not files.startswith("en_US"):
+                print 'Moving '+files
+                lang_zip.write(os.path.join(defaultWD, 'battlegear lang files', files), os.path.join('MB-Battlegear 2', files))
+                
+    print '================ Creating Texture Packs ==================='
+    tex_folder = os.path.join(defaultWD, 'battlegear gimp files')
+    tex_dist = os.path.join(distDir, "Texture Packs")
+    if not os.path.exists(tex_dist):
+        os.makedirs(tex_dist)
+        
+    for the_file in os.listdir(tex_dist):
+        file_path = os.path.join(tex_dist, the_file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception, e:
+            print e
+        
+    for files in os.listdir(tex_folder):
+       if os.path.isdir(os.path.join(tex_folder,files)):
+           print "Creating Pack: "+files
+           texture_zip = zipfile.ZipFile(os.path.join(tex_dist,'M&B Battlegear2 - Texture -'+files+".zip"), 'w')
+           for root, _, filelist in os.walk(os.path.join(tex_folder,files), followlinks=True):
+                for cur_file in filelist:
+                    dest_path = root.replace(os.path.join(tex_folder, files), '')
+                    dest_path = os.sep+'mods'+os.sep+'battlegear2'+os.sep+'textures'+os.sep+dest_path
+                    dest_path = os.path.join(dest_path,cur_file)
+                    texture_zip.write(os.path.join(root,cur_file), dest_path)
 
 
 def generateJarName(name, mcVersion, version):
