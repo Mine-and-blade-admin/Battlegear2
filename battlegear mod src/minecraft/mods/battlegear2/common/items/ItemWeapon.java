@@ -44,14 +44,6 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon{
 	public EnumToolMaterial getMaterial() {
 		return this.material;
 	}
-	
-	
-	
-	@Override
-	public boolean getIsRepairable(ItemStack par1ItemStack, ItemStack par2ItemStack)
-    {
-        return this.material.getToolCraftingMaterial() == par2ItemStack.itemID ? true : super.getIsRepairable(par1ItemStack, par2ItemStack);
-    }
 
 	@Override
 	public int getDamageVsEntity(Entity par1Entity)
