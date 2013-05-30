@@ -167,8 +167,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 
 	@Override
 	public String getPatternArmourPath(HeraldyPattern pattern, int armourSlot) {
-		//return BattleGear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-"+pattern.ordinal()+".png";
-		return BattleGear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-0.png";
+		return BattleGear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-"+pattern.ordinal()+".png";
 	}
 	
 	

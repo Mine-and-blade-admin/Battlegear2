@@ -22,7 +22,6 @@ import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
 import net.minecraftforge.common.MinecraftForge;
 
-//TODO: allow this to ignore passess if required
 public class HeraldryItemRenderer implements IItemRenderer{
 
 	Minecraft mc;
@@ -109,7 +108,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         if(heraldryItem.shouldDoPass(HeraldyRenderPassess.PrimaryColourBase) && icon!=null)
         	itemRenderer.renderIcon(0, 0, icon, 16, 16);
 		
-		GL11.glDepthFunc(GL11.GL_GREATER);
+		GL11.glDepthFunc(GL11.GL_GEQUAL);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

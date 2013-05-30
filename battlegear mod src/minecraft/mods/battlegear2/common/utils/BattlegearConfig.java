@@ -1,6 +1,7 @@
 package mods.battlegear2.common.utils;
 
 import mods.battlegear2.common.BattleGear;
+import mods.battlegear2.common.heraldry.KnightArmourRecipie;
 import mods.battlegear2.common.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.common.items.ItemDagger;
 import mods.battlegear2.common.items.ItemHeradryIcon;
@@ -44,23 +45,28 @@ public class BattlegearConfig {
 		Configuration config = new Configuration(event.getSuggestedConfigurationFile(),true);
         config.load();
         
+        heradricItem = new ItemHeradryIcon(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());
         
+        chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
+    	chain.setUnlocalizedName("battlegear2:chain");
+    	
+    	for(int i = 0; i < armourTypes.length; i++){
+	    	knightArmor[i] = new ItemKnightArmour(
+	    			config.get(config.CATEGORY_ITEM, itemNames[8]+"."+armourTypes[i],
+	    					firstDefaultItemIndex+itemOffests[8]+i).getInt(),
+	    					i);
+    	}
+    	
+    	for(int i = 0; i < 5; i++){
+    		EnumToolMaterial material = EnumToolMaterial.values()[i];
+    		warAxe[i]=new ItemWaraxe(
+					config.get(config.CATEGORY_ITEM, itemNames[4]+toolTypes[i], firstDefaultItemIndex+itemOffests[4]+i).getInt(),
+					material, itemNames[4], i==4?2:1);
+    	}
+    		
+    	
     	
         if(BattleGear.debug){
-        	
-        	heradricItem = new ItemHeradryIcon(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());
-            
-            chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
-        	chain.setUnlocalizedName("chain");
-        	
-        	for(int i = 0; i < armourTypes.length; i++){
-    	    	knightArmor[i] = new ItemKnightArmour(
-    	    			config.get(config.CATEGORY_ITEM, itemNames[8]+"."+armourTypes[i],
-    	    					firstDefaultItemIndex+itemOffests[8]+i).getInt(),
-    	    					i);
-        	}
-        	
-        	
         	
         	forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
         	
@@ -76,9 +82,7 @@ public class BattlegearConfig {
         		dagger[i]=new ItemDagger(
         				config.get(config.CATEGORY_ITEM, itemNames[3]+"_"+toolTypes[i], firstDefaultItemIndex+itemOffests[3]+i).getInt(),
         				material, itemNames[3]);
-    			warAxe[i]=new ItemWaraxe(
-    					config.get(config.CATEGORY_ITEM, itemNames[4]+toolTypes[i], firstDefaultItemIndex+itemOffests[4]+i).getInt(),
-    					material, itemNames[4], i==4?2:1);
+    			
     			mace[i]=new ItemMace(
     					config.get(config.CATEGORY_ITEM, itemNames[5]+toolTypes[i], firstDefaultItemIndex+itemOffests[5]+i).getInt(),
     					material, itemNames[5]);
@@ -87,8 +91,6 @@ public class BattlegearConfig {
     					material, itemNames[6]);
         	}
         }
-        
-        
         
         //validWeaponsID=config.get(config.CATEGORY_GENERAL, "Valid Weapon IDs",new int[]{11,12,16,20,27}).getIntList();
         if (config.hasChanged())
@@ -99,23 +101,41 @@ public class BattlegearConfig {
 
 	public static void registerRecipes() {//Those are old recipes found on your M-B topic
 		
+		//2 Iron ingots = 3 chain. This is because the chain armour has increased in damage resistance
+		
+		GameRegistry.addShapedRecipe(new ItemStack(chain, 3), new Object[]{
+			"I", "I", Character.valueOf('I'), Item.ingotIron
+		});
+		
+		GameRegistry.addRecipe(new ItemStack(Item.helmetChain),  new Object[]
+				{"LLL","L L",Character.valueOf('L'),chain});
+		GameRegistry.addRecipe(new ItemStack(Item.plateChain),  new Object[]
+				{"L L","LLL","LLL",Character.valueOf('L'),chain});
+		GameRegistry.addRecipe(new ItemStack(Item.legsChain),  new Object[]
+				{"LLL","L L","L L",Character.valueOf('L'),chain});
+		GameRegistry.addRecipe(new ItemStack(Item.bootsChain),  new Object[]
+				{"L L","L L",Character.valueOf('L'),chain});
+		
+
+		for(int i = 0; i < 5; i++){
+			Item craftingMaterial = Item.itemsList[EnumToolMaterial.values()[i].getToolCraftingMaterial()];
+			GameRegistry.addRecipe(
+					new ItemStack(warAxe[i]), 
+					new Object[] {"L L","LSL"," S ",
+						Character.valueOf('S'), Item.stick,
+						Character.valueOf('L'), 
+						craftingMaterial
+				});
+		}
+		
+		for(int i = 0; i < 4; i++){
+			GameRegistry.addRecipe(new KnightArmourRecipie(i));
+		}
 		
 		
 		if(BattleGear.debug){
-			//2 Iron ingots = 3 chain. This is because the chain armour has increased in damage resistance
 			
-			GameRegistry.addShapedRecipe(new ItemStack(chain, 3), new Object[]{
-				"II", Character.valueOf('I'), Item.ingotIron
-			});
-			
-			GameRegistry.addRecipe(new ItemStack(Item.helmetChain),  new Object[]
-					{"LLL","L L",Character.valueOf('L'),chain});
-			GameRegistry.addRecipe(new ItemStack(Item.plateChain),  new Object[]
-					{"L L","LLL","LLL",Character.valueOf('L'),chain});
-			GameRegistry.addRecipe(new ItemStack(Item.legsChain),  new Object[]
-					{"LLL","L L","L L",Character.valueOf('L'),chain});
-			GameRegistry.addRecipe(new ItemStack(Item.bootsChain),  new Object[]
-					{"L L","L L",Character.valueOf('L'),chain});
+
 			
 		}
 		

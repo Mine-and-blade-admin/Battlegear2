@@ -25,7 +25,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
-@Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2", version="HeraldPrev - 0.2")
+@Mod(modid="MB-Battlegear2", name="Mine & Blade: Battlegear 2", version="HeraldPrev - 0.3")
 @NetworkMod(clientSideRequired=true, serverSideRequired=false, 
 	channels={
 		BattlegearPacketHandeler.guiPackets,
@@ -38,7 +38,7 @@ public class BattleGear {
 	 @Instance("MB-Battlegear2")
      public static BattleGear instance;
 	 
-	 public static final boolean debug = true;
+	 public static final boolean debug = false;
 	 
 	 public static EnumArmorMaterial knightArmourMaterial;
 	 

@@ -16,12 +16,12 @@ public enum HeraldyPattern {
 	HORIZONTAL_BAR("pattern-5"),
 	VERTICAL_BAR("pattern-6"),
 	SMALL_CHECKERED("pattern-7"),
-	DIAG_DOWN("bpattern-8"),
+	DIAG_DOWN("pattern-8"),
 	DIAG_UP("pattern-9"),
 	LOWER_TRIANGLE("pattern-10"),
 	UPPER_TRIANGLE("pattern-11"),
 	VERTICAL_TRIANGLES("pattern-12"),
-	HORIZONTAL_TRIANGLES("pattern-13"),
+	UP_ARROW("pattern-13"),
 	CROSS("pattern-14"),
 	DIAG_CROSS("pattern-15");
 	

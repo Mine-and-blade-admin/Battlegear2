@@ -1,6 +1,5 @@
 name.title=M&B Battlegear 2
 
-
 item.heraldric.name=Heraldic Icon
 item.chain.name=Chain
 item.quiver.name=Quiver
@@ -28,6 +27,12 @@ item.spear.stone.name=Stone Spear
 item.spear.iron.name=Iron Spear
 item.spear.diamond.name=Diamond Spear
 item.spear.gold.name=Gold Spear
+
+item.shield.wood.name=Wood Shield
+item.shield.hide.name=Hide Shield
+item.shield.iron.name=Iron Shield
+item.shield.diamond.name=Diamond Shield
+item.shield.gold.name=Gold Shield
 
 item.knights_armour.helmet.name=Knight's Helmet
 item.knights_armour.plate.name=Knight's Plate

@@ -123,7 +123,7 @@ public class HeraldryArmourModel extends ModelBiped{
 		            	float[] colourIconSecondary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour2(code)]);
 		            	
 		            	GL11.glPushMatrix();
-		            	HelaldyArmourPositions pos = HelaldyArmourPositions.values()[SigilHelper.getIcon(code)];
+		            	HelaldyArmourPositions pos = HelaldyArmourPositions.values()[SigilHelper.getIconPos(code)];
 		            	
 		            	bipedBody.postRender(0.0625F);
 		            	GL11.glTranslatef(-5*0.0625F, 0.0625F, -3*0.0625F-0.001F);

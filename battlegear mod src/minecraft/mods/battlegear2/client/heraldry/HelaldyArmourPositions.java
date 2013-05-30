@@ -18,7 +18,7 @@ public enum HelaldyArmourPositions {
 			new float[]{0, 0, -1F, -1F},
 			new float[]{-1, 1, -1, 1},
 			new float[]{2, 2, 1, 1},
-			new boolean[] {true, false, false, true}
+			new boolean[] {false, true, true, false}
 	);
 	
 	private int passess;

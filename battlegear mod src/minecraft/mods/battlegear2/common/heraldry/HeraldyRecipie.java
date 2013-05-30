@@ -64,6 +64,8 @@ public class HeraldyRecipie implements IRecipe{
 			
 		}
 		
+		item=item.copy();
+		
 		if(heraldricWeapon instanceof IHeraldyItem){
 			int code = SigilHelper.defaultSigil;
 			if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){

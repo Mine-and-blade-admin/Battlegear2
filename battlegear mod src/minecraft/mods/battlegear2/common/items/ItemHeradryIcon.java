@@ -100,8 +100,11 @@ public class ItemHeradryIcon extends Item implements IHeraldyItem{
 		
 		stack.getTagCompound().setInteger("heraldry", code);
 	}
-	
-	
+
+	@Override
+	public boolean doesContainerItemLeaveCraftingGrid(ItemStack par1ItemStack) {
+		return false;
+	}
 
 	@Override
 	public boolean useDefaultRenderer() {

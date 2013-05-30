@@ -46,7 +46,6 @@ public class KnightArmourRecipie implements IRecipe{
 		
 		boolean chainFound = false;
 		boolean ironFound = false;
-		boolean iconFound = false;
 		
 		for(int i = 0; i < inventorycrafting.getSizeInventory();i ++){
 			ItemStack stack = inventorycrafting.getStackInSlot(i);
@@ -61,24 +60,18 @@ public class KnightArmourRecipie implements IRecipe{
 						return false;
 					else
 						ironFound = true;
-				}else if(stack.getItem().itemID == BattlegearConfig.heradricItem.itemID){
-					if(iconFound || !stack.hasTagCompound() || !stack.getTagCompound().hasKey("heraldry"))
-						return false;
-					else
-						iconFound =true;
 				}else
 					return false;
 			}
 		}
 		
-		return chainFound && iconFound && ironFound;
+		return chainFound && ironFound;
 	}
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inventorycrafting) {
 		ItemStack chain = null;
 		ItemStack iron = null;
-		ItemStack icon = null;
 		
 		for(int i = 0; i < inventorycrafting.getSizeInventory();i ++){
 			ItemStack stack = inventorycrafting.getStackInSlot(i);
@@ -87,14 +80,13 @@ public class KnightArmourRecipie implements IRecipe{
 					chain = stack;
 				}else if(stack.getItem().itemID == ironArmourId){
 					iron = stack;
-				}else if(stack.getItem().itemID == BattlegearConfig.heradricItem.itemID){
-					icon = stack;
 				}
 			}
 		}
 		
-		float damage =  (1 - ((float)iron.getItemDamage() / (float)iron.getMaxDamage())) * 0.67F +
-				(1 - ((float)chain.getItemDamage() / (float)chain.getMaxDamage())) * 0.33F;
+		float damage =  1 - ((1 - ((float)iron.getItemDamage() / (float)iron.getMaxDamage())) * 0.67F +
+				(1 - ((float)chain.getItemDamage() / (float)chain.getMaxDamage())) * 0.33F);
+		System.out.println(damage);
 		
 		ItemStack kArmourStack = new ItemStack(knightArmour, 1, (int)(knightArmour.getMaxDamage() * damage));
 		if(iron.hasTagCompound()){
@@ -104,8 +96,7 @@ public class KnightArmourRecipie implements IRecipe{
 			kArmourStack.setTagCompound(new NBTTagCompound());
 		}
 		
-		((ItemKnightArmour)kArmourStack.getItem()).setHeraldryCode(kArmourStack, 
-				((ItemHeradryIcon)icon.getItem()).getHeraldryCode(kArmourStack));
+		((ItemKnightArmour)kArmourStack.getItem()).setHeraldryCode(kArmourStack, SigilHelper.defaultSigil);
 		
 		return kArmourStack;
 		
@@ -113,7 +104,7 @@ public class KnightArmourRecipie implements IRecipe{
 
 	@Override
 	public int getRecipeSize() {
-		return 3;
+		return 2;
 	}
 
 	@Override

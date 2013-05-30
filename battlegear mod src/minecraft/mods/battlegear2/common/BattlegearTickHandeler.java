@@ -1,5 +1,6 @@
 package mods.battlegear2.common;
 
+import java.beans.FeatureDescriptor;
 import java.util.EnumSet;
 
 import mods.battlegear2.api.IExtendedReachWeapon;
@@ -13,6 +14,7 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -46,13 +48,12 @@ public class BattlegearTickHandeler implements ITickHandler{
 				ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
 				if(mainhand != null && mainhand.getItem() instanceof IExtendedReachWeapon){
 					float extendedReach = ((IExtendedReachWeapon)mainhand.getItem()).getreachInBlocks(mainhand);
-					MovingObjectPosition mouseOver = BattleGear.proxy.getMouseOver(0, 100);
+					MovingObjectPosition mouseOver = BattleGear.proxy.getMouseOver(0, extendedReach);
 					if(mouseOver != null && mouseOver.typeOfHit == EnumMovingObjectType.ENTITY){
 						Entity target = mouseOver.entityHit;
 						if(target instanceof EntityLiving){
 							if(target.hurtResistantTime != ((EntityLiving) target).maxHurtResistantTime){
-								BattleGear.proxy.attackCreatureWithItem(entityPlayer, target);
-								entityPlayer.attackTargetEntityWithCurrentItem(target);
+								FMLClientHandler.instance().getClient().playerController.attackEntity(entityPlayer, target);
 							}
 						}
 					}
@@ -71,7 +72,5 @@ public class BattlegearTickHandeler implements ITickHandler{
 	public String getLabel() {
 		return "battlegear.ticks";
 	}
-	
-	
 
 }
