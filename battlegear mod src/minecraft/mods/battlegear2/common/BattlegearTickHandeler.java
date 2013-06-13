@@ -36,15 +36,16 @@ public class BattlegearTickHandeler implements ITickHandler{
 			EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
 			
 			if(entityPlayer.worldObj instanceof WorldServer && entityPlayer.ticksExisted%5 ==0){
+				/*
 				((WorldServer)entityPlayer.worldObj)
 				.getEntityTracker().sendPacketToAllPlayersTrackingEntity(
 						entityPlayer, BattlegearPacketHandeler.generateSyncBattleItemsPacket(entityPlayer.username, entityPlayer.inventory)
 						);
+						*/
 			}
 			
 			//If we JUST swung an Item
 			if(entityPlayer.swingProgressInt == 1){
-				System.out.println("Just swung");
 				ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
 				if(mainhand != null && mainhand.getItem() instanceof IExtendedReachWeapon){
 					float extendedReach = ((IExtendedReachWeapon)mainhand.getItem()).getreachInBlocks(mainhand);

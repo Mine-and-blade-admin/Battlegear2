@@ -1,4 +1,4 @@
-package extendedGUI;
+package guiToolkit;
 
 import java.awt.Color;
 
@@ -43,20 +43,19 @@ public class RadioButtonControl extends GuiButton{
         if (this.drawButton)
         {
             FontRenderer var4 = minecraft.fontRenderer;
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/extendedGUI/image/GUI Controls.png"));
+            minecraft.renderEngine.bindTexture("/guiToolkit/Toolkit.png");
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean mouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(mouseX, mouseY);
-                        
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/extendedGUI/image/GUI Controls.png"));
+
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             
             
             for(int i = 0; i < options.length; i++){
             	if(i == selected){
-            		this.drawTexturedModalRect(this.xPosition, this.yPosition+12*i, 44, 123, 8, 8);
+            		this.drawTexturedModalRect(this.xPosition, this.yPosition+12*i, 30, 33, 8, 8);
             	}else{
-            		this.drawTexturedModalRect(this.xPosition, this.yPosition + 12*i, 31, 123, 8, 8);
+            		this.drawTexturedModalRect(this.xPosition, this.yPosition + 12*i, 30, 25, 8, 8);
             	}
             }
             

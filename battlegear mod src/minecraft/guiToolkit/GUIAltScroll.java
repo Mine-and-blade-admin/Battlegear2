@@ -1,5 +1,6 @@
-package extendedGUI;
+package guiToolkit;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
@@ -66,20 +67,24 @@ public class GUIAltScroll extends GuiButton {
 		 if (this.drawButton)
 	     {
 			 FontRenderer var4 = minecraft.fontRenderer;
-			 GL11.glBindTexture(GL11.GL_TEXTURE_2D, minecraft.renderEngine.getTexture("/extendedGUI/image/GUI Controls.png"));
+			 minecraft.renderEngine.bindTexture("/guiToolkit/Toolkit.png");
 			 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			 
 			 if(horizonatal){
-				 this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, 108, this.width / 2, this.height);
-		         this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, 108, this.width / 2, this.height);
-		         this.drawTexturedModalRect(this.xPosition + (int)(sliderValue * (float)(this.width - 15)), this.yPosition+1, 39, 147, 15, 12);
+				 this.drawTexturedModalRect(this.xPosition, this.yPosition, 42, 52, this.width / 2, this.height);
+		         this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2 + 42, 52, this.width / 2, this.height);
+		         this.drawTexturedModalRect(this.xPosition + (int)(sliderValue * (float)(this.width - 15)), this.yPosition+1, 39, 0, 24, 12);
 			 }else{
 				 drawTexturedModalRect(xPosition, yPosition, 242, 0, this.width, this.height/2);
 				 drawTexturedModalRect(xPosition, yPosition + height/2, 242, 200 - this.height/ 2, this.width , this.height/ 2);
-	            this.drawTexturedModalRect(this.xPosition+1, this.yPosition + (int)(this.sliderValue * (float)(this.height- 15)), 30, 132, 12, 15);
+				 this.drawTexturedModalRect(this.xPosition+1, this.yPosition + (int)(this.sliderValue * (float)(this.height- 15)), 0, 36, 12, 15);
 			 }
 			 
-			 this.mouseDragged(minecraft, mouseX, mouseY);
+			 if(Mouse.isButtonDown(0))
+				 this.mouseDragged(minecraft, mouseX, mouseY);
+			 else{
+				 mouseReleased(mouseX, mouseY);
+			 }
 			 
 			 if(this.displayString != null && this.displayString.length()>0){
 				 
@@ -89,9 +94,11 @@ public class GUIAltScroll extends GuiButton {
 
 
 
+	 
     /**
      * Fired when the mouse button is dragged. Equivalent of MouseListener.mouseDragged(MouseEvent e).
      */
+	 
     @Override
     protected void mouseDragged(Minecraft minecraft, int mouseX, int mouseY)
     {

@@ -18,15 +18,11 @@ public class SlotHeraldryItem extends Slot{
 		return par1ItemStack != null && par1ItemStack.itemID == BattlegearConfig.heradricItem.itemID;
 	}
 	
-	
 
 	@Override
 	public void onPickupFromSlot(EntityPlayer par1EntityPlayer,
 			ItemStack par2ItemStack) {
-		
-		
 		this.inventory.setInventorySlotContents(0, par2ItemStack);
-		
 	}
 
 	

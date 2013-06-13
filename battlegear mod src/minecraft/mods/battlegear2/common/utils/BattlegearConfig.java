@@ -1,6 +1,9 @@
 package mods.battlegear2.common.utils;
 
 import mods.battlegear2.common.BattleGear;
+import mods.battlegear2.common.blocks.BlockBanner;
+import mods.battlegear2.common.blocks.BlockItemBanner;
+import mods.battlegear2.common.blocks.TileEntityBanner;
 import mods.battlegear2.common.heraldry.KnightArmourRecipie;
 import mods.battlegear2.common.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.common.items.ItemDagger;
@@ -15,6 +18,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -35,7 +39,9 @@ public class BattlegearConfig {
 	public static int[] setID=new int[8],validWeaponsID={11,12,16,20,27};
 	
 	public static ItemWeapon[] dagger=new ItemWeapon[5],warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5],shield=new ItemWeapon[5];
-	public static Item chain,quiver,banner,heradricItem;
+	public static Item chain,quiver,heradricItem;
+	public static Block banner;
+	public static ItemBlock bannerItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[4];
 	
 	
@@ -64,12 +70,18 @@ public class BattlegearConfig {
 					material, itemNames[4], i==4?2:1);
     	}
     		
-    	
-    	
+    	//banner = new BlockBanner(config.get(config.CATEGORY_BLOCK, "Banner", 425).getInt());
+    	banner = new BlockBanner(config.getBlock("Banner", 2650).getInt());
+    	GameRegistry.registerBlock(banner, "Banner");
+		GameRegistry.registerTileEntity(TileEntityBanner.class, "MBBanner");
+		
+		Item.itemsList[banner.blockID] = null;
+		Item.itemsList[banner.blockID] = (new BlockItemBanner(banner.blockID-256));
+		
+		
         if(BattleGear.debug){
         	
         	forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
-        	
         	
         	quiver = new Item(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
         	quiver.setUnlocalizedName("quiver");

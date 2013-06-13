@@ -1,5 +1,6 @@
 package mods.battlegear2.client.heraldry;
 
+import java.awt.Color;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
@@ -62,22 +63,22 @@ public class HeraldryArmourModel extends ModelBiped{
 		}else{
 			IHeraldyArmour heraldryItem = (IHeraldyArmour)stack.getItem();
 			if(stack != null && heraldryItem.hasHeraldry(stack)){
-				int code = heraldryItem.getHeraldryCode(stack);
+				byte[] code = heraldryItem.getHeraldryCode(stack);
 				
 				Tessellator tess = new Tessellator();
 				//if helmet
 				if(armourSlot == 0){
-					renderHelmDecoration(tess, par1Entity.getRotationYawHead());
+					if(par1Entity == null){
+						renderHelmDecoration(tess, 0);
+					}else{
+						renderHelmDecoration(tess, par1Entity.getRotationYawHead());
+					}
 				}
 				
 				
 				FMLClientHandler.instance().getClient().renderEngine.bindTexture(heraldryItem.getBaseArmourPath(armourSlot));
-				float[] colour = SigilHelper.convertColourToARGBArray(
-									SigilHelper.colours[
-						                    SigilHelper.getColour1(code)]
-								);
-				GL11.glColor3f(colour[2], colour[1], colour[0]);
-				
+				float[] colour = SigilHelper.getPrimaryColourArray(code);
+				GL11.glColor3f(colour[0], colour[1], colour[2]);
 				this.bipedHead.render(par7);
 	            this.bipedBody.render(par7);
 	            this.bipedRightArm.render(par7);
@@ -87,13 +88,15 @@ public class HeraldryArmourModel extends ModelBiped{
 	            this.bipedHeadwear.render(par7);
 	            
 	            if(armourSlot == 0){
-					renderHelmDecoration(tess, par1Entity.getRotationYawHead());
+	            	if(par1Entity == null){
+						renderHelmDecoration(tess, 0);
+					}else{
+						renderHelmDecoration(tess, par1Entity.getRotationYawHead());
+					}
 				}
 	
-	            colour = SigilHelper.convertColourToARGBArray(
-						SigilHelper.colours[SigilHelper.getColour2(code)]
-					);
-	            GL11.glColor3f(colour[2], colour[1], colour[0]);
+	            colour = SigilHelper.getSecondaryColourArray(code);
+	            GL11.glColor3f(colour[0], colour[1], colour[2]);
 	            
 	            GL11.glEnable(GL11.GL_BLEND);
 	            GL11.glDepthFunc(GL11.GL_LEQUAL);
@@ -102,7 +105,7 @@ public class HeraldryArmourModel extends ModelBiped{
 	            GL11.glMatrixMode(GL11.GL_TEXTURE);
 	            
 	            FMLClientHandler.instance().getClient().renderEngine.bindTexture(
-	            		heraldryItem.getPatternArmourPath(HeraldyPattern.values()[SigilHelper.getPattern(code)], armourSlot));
+	            		heraldryItem.getPatternArmourPath(SigilHelper.getPattern(code), armourSlot));
 	            GL11.glLoadIdentity();
 	            
 	            GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -117,13 +120,13 @@ public class HeraldryArmourModel extends ModelBiped{
 	            GL11.glDisable(GL11.GL_LIGHTING);
 	            //If chestplate
 	            if(armourSlot == 1){
-	            	HeraldryIcon sigil = HeraldryIcon.values()[SigilHelper.getIcon(code)];
+	            	HeraldryIcon sigil = SigilHelper.getSigil(code);
 	            	if(!sigil.equals(HeraldryIcon.Blank)){
-		            	float[] colourIconPrimary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour1(code)]);
-		            	float[] colourIconSecondary = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getIconColour2(code)]);
+		            	float[] colourIconPrimary = SigilHelper.getSigilPrimaryColourArray(code);
+		            	float[] colourIconSecondary = SigilHelper.getSigilSecondaryColourArray(code);
 		            	
 		            	GL11.glPushMatrix();
-		            	HelaldyArmourPositions pos = HelaldyArmourPositions.values()[SigilHelper.getIconPos(code)];
+		            	HelaldyArmourPositions pos = HelaldyArmourPositions.values()[SigilHelper.getSigilPosition(code).ordinal()];
 		            	
 		            	bipedBody.postRender(0.0625F);
 		            	GL11.glTranslatef(-5*0.0625F, 0.0625F, -3*0.0625F-0.001F);
@@ -144,9 +147,13 @@ public class HeraldryArmourModel extends ModelBiped{
 					    	boolean flipColours = pos.getAltColours(pass);
 					    	
 					    	if(flipColours){
-					    		GL11.glColor4f(colourIconSecondary[2], colourIconSecondary[1], colourIconSecondary[0], 1);
+					    		GL11.glColor3f(colourIconSecondary[0],
+					    				colourIconSecondary[1],
+					    				colourIconSecondary[2]);
 					    	}else{
-					    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+					    		GL11.glColor3f(colourIconPrimary[0],
+					    				colourIconPrimary[1],
+					    				colourIconPrimary[2]);
 					    	}
 					    	
 				            
@@ -170,10 +177,14 @@ public class HeraldryArmourModel extends ModelBiped{
 					    	float yEnd = pos.getYEnd(pass);
 					    	boolean flipColours = pos.getAltColours(pass);
 					    	
-					    	if(flipColours){
-					    		GL11.glColor4f(colourIconPrimary[2], colourIconPrimary[1], colourIconPrimary[0], 1);
+					    	if(!flipColours){
+					    		GL11.glColor3f(colourIconSecondary[0],
+					    				colourIconSecondary[1],
+					    				colourIconSecondary[2]);
 					    	}else{
-					    		GL11.glColor4f(colourIconSecondary[2], colourIconSecondary[1], colourIconSecondary[0], 1);
+					    		GL11.glColor3f(colourIconPrimary[0],
+					    				colourIconPrimary[1],
+					    				colourIconPrimary[2]);
 					    	}
 					    	
 					    	renderTexturedQuad(tess,

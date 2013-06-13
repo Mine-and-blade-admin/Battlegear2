@@ -73,12 +73,12 @@ public class HeraldricWeaponRecipie implements IRecipe{
 		}
 		
 		if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
-			int code = ((IHeraldyItem)icon.getItem()).getHeraldryCode(icon);
-			compound.setInteger("colour", code);
+			byte[] code = ((IHeraldyItem)icon.getItem()).getHeraldryCode(icon);
+			compound.setByteArray("hc2", code);
 			item.setTagCompound(compound);
 		}else{ // should be a bucket
-			if(compound.hasKey("colour")){
-				compound.removeTag("colour");
+			if(compound.hasKey("hc2")){
+				compound.removeTag("hc2");
 			}
 		}
 		
@@ -94,7 +94,7 @@ public class HeraldricWeaponRecipie implements IRecipe{
 	public ItemStack getRecipeOutput() {
 		ItemStack stack = new ItemStack(heraldricWeapon, 1);
 		stack.setTagCompound(new NBTTagCompound());
-		stack.getTagCompound().setInteger("colour", 0);
+		stack.getTagCompound().setByteArray("hc2", SigilHelper.defaultSigil);
 		return stack;
 	}
 

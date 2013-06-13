@@ -9,7 +9,9 @@ import java.util.List;
 
 
 import mods.battlegear2.client.heraldry.HeraldryItemRenderer;
+import mods.battlegear2.common.blocks.TileEntityBanner;
 import mods.battlegear2.common.gui.ContainerHeraldry;
+import mods.battlegear2.common.heraldry.SigilHelper;
 import mods.battlegear2.common.inventory.InventoryPlayerBattle;
 import mods.battlegear2.common.utils.BattlegearUtils;
 import mods.battlegear2.common.utils.EnumBGAnimations;
@@ -30,10 +32,11 @@ import cpw.mods.fml.relauncher.Side;
 
 public class BattlegearPacketHandeler implements IPacketHandler {
 	
-	public static final String guiPackets = "MB-GUI";
-	public static final String syncBattlePackets = "MB-SyncAllItems";
-	public static final String mbAnimation = "MB-animation";
-	public static final String guiHeraldryIconChange = "MB-HeraldChange";
+	public static final String guiPackets = "MB|GUI";
+	public static final String syncBattlePackets = "MB|SyncAllItems";
+	public static final String mbAnimation = "MB|Animation";
+	public static final String guiHeraldryIconChange = "MB|HeraldChange";
+	public static final String bannerUpdate = "MB|Banner";
 
 	@Override
 	public void onPacketData(INetworkManager manager,
@@ -47,16 +50,38 @@ public class BattlegearPacketHandeler implements IPacketHandler {
 			processOffHandAnimationPacket(packet, ((EntityPlayer)player).worldObj);
 		}else if(packet.channel.equals(guiHeraldryIconChange)){
 			processHeraldryChangePacket(packet, (EntityPlayer)player);
+		}else if(packet.channel.equals(bannerUpdate)){
+			processBannerUpdatePacket(packet, (EntityPlayer)player);
 		}
 		
 	}
 	
-	public static Packet250CustomPayload generateHeraldryChangeGUIPacket(int code, EntityPlayer player){
-		ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
+	private void processBannerUpdatePacket(Packet250CustomPayload packet,
+			EntityPlayer player) {
+		DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
+		try {
+			byte state = inputStream.readByte();
+			byte[] heraldry = new byte[SigilHelper.length];
+			inputStream.read(heraldry);
+			
+			((EntityPlayer)player).worldObj.setBlockTileEntity(
+					inputStream.readInt(), 
+					inputStream.readInt(), 
+					inputStream.readInt(), 
+						new TileEntityBanner(state,heraldry));
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+
+	public static Packet250CustomPayload generateHeraldryChangeGUIPacket(byte[] code, EntityPlayer player){
+		ByteArrayOutputStream bos = new ByteArrayOutputStream(4+SigilHelper.length);
 		DataOutputStream outputStream = new DataOutputStream(bos);
 		try {
 			outputStream.writeInt(player.openContainer.windowId);
-			outputStream.writeInt(code);
+			outputStream.write(code);
 		}catch (Exception ex) {
 	        ex.printStackTrace();
 		}
@@ -73,23 +98,23 @@ public class BattlegearPacketHandeler implements IPacketHandler {
 		DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 		
 		int windowID = 0;
-		int code = 0;
+		byte[] code = new byte[SigilHelper.length];
 		try{
 			windowID = inputStream.readInt();
-			code = inputStream.readInt();
+			inputStream.read(code);
 		}catch (IOException e) {
             e.printStackTrace();
             return;
 		}
-		
-		System.out.println(player.openContainer.windowId +", "+ windowID);
 		
 		if(player.openContainer.windowId == windowID &&
 				player.openContainer.isPlayerNotUsingContainer(player)){
 			
 			((ContainerHeraldry)player.openContainer).setCode(code);
 			player.openContainer.detectAndSendChanges();
+			System.out.println(SigilHelper.bytesToHex(code));
 		}
+		
 		
 	}
 

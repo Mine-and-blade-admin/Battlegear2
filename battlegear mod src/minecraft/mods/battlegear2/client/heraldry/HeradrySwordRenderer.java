@@ -2,6 +2,8 @@ package mods.battlegear2.client.heraldry;
 
 import static org.lwjgl.opengl.GL11.*;
 
+import java.awt.Color;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -112,26 +114,22 @@ public class HeradrySwordRenderer implements IItemRenderer{
 		this.mc.renderEngine.bindTexture("/gui/items.png");
 		Tessellator tessellator = Tessellator.instance;
 		
-		int code = item.getTagCompound().getInteger("colour");
+		byte[] code = item.getTagCompound().getByteArray("hc2");
 		
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		itemRenderer.renderIcon(0, 0, getIcon(swordType, 0), 16, 16);
-		
 	    GL11.glPushMatrix();
 	    
-	    float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour1(code)]);
-	    GL11.glColor4f(colour[2], colour[1], colour[0], 1);
+	    float[] colour = SigilHelper.getPrimaryColourArray(code);
+	    GL11.glColor3f(colour[0], colour[1], colour[2]);
 	    itemRenderer.renderIcon(0, 0, getIcon(swordType, 1), 16, 16);
 	    
-	    colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
-	    GL11.glColor4f(colour[2], colour[1], colour[0], 1);
+	    colour = SigilHelper.getSecondaryColourArray(code);
+	    GL11.glColor3f(colour[0], colour[1], colour[2]);
 	    itemRenderer.renderIcon(0, 0, getIcon(swordType, 2), 16, 16);
 	    
 	    GL11.glPopMatrix();
-	    
 
-        
-        
         GL11.glColor4f(1, 1, 1, 1);
 		
 	}
@@ -141,7 +139,7 @@ public class HeradrySwordRenderer implements IItemRenderer{
 		this.mc.renderEngine.bindTexture("/gui/items.png");
 		Tessellator tessellator = Tessellator.instance;
 		
-		int code = item.getTagCompound().getInteger("colour");
+		byte[] code = item.getTagCompound().getByteArray("hc2");
 		
 		GL11.glColor4f(1F, 1F, 1F, 1F);
 		
@@ -165,8 +163,8 @@ public class HeradrySwordRenderer implements IItemRenderer{
         GL11.glPushMatrix();
         
         icon = getIcon(swordType, 1);
-        float[] colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour1(code)]);
-	    GL11.glColor4f(colour[2], colour[1], colour[0], 1);
+        float[] colour = SigilHelper.getPrimaryColourArray(code);
+        GL11.glColor3f(colour[0], colour[1], colour[2]);
         RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, 
         		icon.getMaxU(), 
         		icon.getMinV(), 
@@ -178,8 +176,8 @@ public class HeradrySwordRenderer implements IItemRenderer{
         
         
         icon = getIcon(swordType, 2);
-        colour = SigilHelper.convertColourToARGBArray(SigilHelper.colours[SigilHelper.getColour2(code)]);
-	    GL11.glColor4f(colour[2], colour[1], colour[0], 1);
+        colour = SigilHelper.getSecondaryColourArray(code);
+        GL11.glColor3f(colour[0], colour[1], colour[2]);
         RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, 
         		icon.getMaxU(), 
         		icon.getMinV(), 

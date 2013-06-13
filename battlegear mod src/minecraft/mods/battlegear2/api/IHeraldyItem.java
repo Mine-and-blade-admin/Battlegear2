@@ -31,15 +31,15 @@ public interface IHeraldyItem {
 	/**
 	 * Returns the "base" icon. This icon will be coloured the primary colour
 	 */
-	public Icon getBaseIcon();
+	public Icon getBaseIcon(ItemStack stack);
 	/**
 	 * Returns the trim icon, This will be coloured the secondary colour
 	 */
-	public Icon getTrimIcon();
+	public Icon getTrimIcon(ItemStack stack);
 	/**
 	 * Returns the post render icon, this Icon will render after all other rendering passess in it's default colour
 	 */
-	public Icon getPostRenderIcon();
+	public Icon getPostRenderIcon(ItemStack stack);
 	
 	
 	/**
@@ -49,12 +49,12 @@ public interface IHeraldyItem {
 	/**
 	 * Returns the current heraldy code, this will only be called on ItemStacks that have been found to have heraldry using the hasHeraldryMethod 
 	 */
-	public int getHeraldryCode(ItemStack stack);
+	public byte[] getHeraldryCode(ItemStack stack);
 	
 	/**
 	 * Saves the given heraldy code in the given stack. It is recommended to use the stacks NBT Tag compound for this
 	 */
-	public void setHeraldryCode(ItemStack stack, int code);
+	public void setHeraldryCode(ItemStack stack, byte[] code);
 	
 	/**
 	 * Removes the heraldy code from the item

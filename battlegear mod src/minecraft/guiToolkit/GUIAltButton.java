@@ -1,4 +1,4 @@
-package extendedGUI;
+package guiToolkit;
 
 import org.lwjgl.opengl.GL11;
 
@@ -30,12 +30,12 @@ public class GUIAltButton extends GuiButton {
         if (this.drawButton)
         {
             FontRenderer var4 = minecraft.fontRenderer;
-            minecraft.renderEngine.bindTexture("/extendedGUI/image/GUI Controls.png");
+            minecraft.renderEngine.bindTexture("/guiToolkit/Toolkit.png");
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean mouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(mouseOver);
-            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, hoverState * 18, this.width / 2, this.height);
-            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2, hoverState * 18, this.width / 2, this.height);
+            this.drawTexturedModalRect(this.xPosition, this.yPosition, 0+42, hoverState * 18, this.width / 2, this.height);
+            this.drawTexturedModalRect(this.xPosition + this.width / 2, this.yPosition, 200 - this.width / 2 +42, hoverState * 18, this.width / 2, this.height);
             this.mouseDragged(minecraft, mouseX, mouseY);
             
             int colour = 14737632;

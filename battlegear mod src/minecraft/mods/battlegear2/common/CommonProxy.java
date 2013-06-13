@@ -29,6 +29,10 @@ public class CommonProxy {
 		}
 		
 	}
+	
+	public void throwDependencyError(String[] dependencies){}
+	
+	public void throwError(String message1, String message2){};
 
 	public void registerTextures(Object iconRegister) {}
 
