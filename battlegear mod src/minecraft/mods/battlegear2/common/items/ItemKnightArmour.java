@@ -103,8 +103,8 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 		}
 		
 		if(!stack.getTagCompound().hasKey("hc2")){
-			stack.getTagCompound().setByteArray("hc2", SigilHelper.defaultSigil);
-			return SigilHelper.defaultSigil;
+			stack.getTagCompound().setByteArray("hc2", SigilHelper.getDefault());
+			return SigilHelper.getDefault();
 		}else{
 			return stack.getTagCompound().getByteArray("hc2");
 		}
@@ -121,7 +121,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 	@Override
 	public void removeHeraldry(ItemStack item) {
 		if(item.hasTagCompound()){
-			item.getTagCompound().setByteArray("hc2", SigilHelper.defaultSigil);
+			item.getTagCompound().setByteArray("hc2", SigilHelper.getDefault());
 		}
 	}
 

@@ -20,7 +20,7 @@ public class ContainerHeraldry extends Container {
 
 	SlotHeraldryItem heraldrySlot;
 	//SlotHeraldryItem[] heraldrySlots;
-	public byte[] code = SigilHelper.defaultSigil;
+	public byte[] code = SigilHelper.getDefault();
 	
 	public boolean isLocalWorld = false;
 	private final EntityPlayer thePlayer;

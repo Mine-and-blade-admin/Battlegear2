@@ -94,7 +94,7 @@ public class HeraldricWeaponRecipie implements IRecipe{
 	public ItemStack getRecipeOutput() {
 		ItemStack stack = new ItemStack(heraldricWeapon, 1);
 		stack.setTagCompound(new NBTTagCompound());
-		stack.getTagCompound().setByteArray("hc2", SigilHelper.defaultSigil);
+		stack.getTagCompound().setByteArray("hc2", SigilHelper.getDefault());
 		return stack;
 	}
 

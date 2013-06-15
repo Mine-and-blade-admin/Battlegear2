@@ -133,19 +133,9 @@ public class BlockBanner extends BlockContainer{
 			return ((TileEntityBanner)e).getHeraldry();
 		}
 		
-		return SigilHelper.defaultSigil;
+		return SigilHelper.getDefault();
 	}
 
-	
-
-	/*
-	@Override
-	@SideOnly(Side.CLIENT)
-	public boolean addBlockDestroyEffects(World world, int x, int y, int z,
-			int meta, EffectRenderer effectRenderer) {
-		//TODO: Create break effects
-		return true;
-	}*/
 
 	@Override
 	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y,
@@ -196,10 +186,18 @@ public class BlockBanner extends BlockContainer{
 
 		//remove self
 		world.setBlockTileEntity(x, y, z, null);
-
 		super.breakBlock(world, x, y, z, p, a);
 	 }
+
+	@Override
+	public boolean canPlaceTorchOnTop(World world, int x, int y, int z) {
+		return false;
+	}
 	
+	
+	
+	 
+	 
 	
 		
 }

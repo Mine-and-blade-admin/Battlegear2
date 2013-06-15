@@ -7,6 +7,7 @@ import java.util.List;
 
 
 import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.client.blocks.BannerBlockRenderer;
 import mods.battlegear2.client.gui.BattlegearGUITickHandeler;
 import mods.battlegear2.client.heraldry.HeradrySwordRenderer;
 import mods.battlegear2.client.heraldry.HeraldryItemRenderer;
@@ -17,6 +18,7 @@ import mods.battlegear2.common.BattlegearPacketHandeler;
 import mods.battlegear2.common.BattlegearTickHandeler;
 import mods.battlegear2.common.BattlemodeHookContainerClass;
 import mods.battlegear2.common.CommonProxy;
+import mods.battlegear2.common.blocks.TileEntityBanner;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;
@@ -42,6 +44,7 @@ import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.CustomModLoadingErrorDisplayException;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -164,6 +167,8 @@ public class ClientProxy extends CommonProxy{
 			}
 			
 		}
+		
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBanner.class, new BannerBlockRenderer());
 	}
 		
 	

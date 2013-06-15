@@ -3,6 +3,7 @@ package mods.battlegear2.common.blocks;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 
+import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.BattlegearPacketHandeler;
 import mods.battlegear2.common.gui.ContainerBattle;
 import mods.battlegear2.common.heraldry.SigilHelper;
@@ -22,7 +23,7 @@ public class TileEntityBanner extends TileEntity {
 	
 	public TileEntityBanner(){
 		state = 0;
-		heraldry = SigilHelper.defaultSigil;
+		heraldry = SigilHelper.getDefault();
 	}
 
 	public TileEntityBanner(byte state, byte[] heraldry) {
@@ -45,6 +46,10 @@ public class TileEntityBanner extends TileEntity {
 	public boolean isOnWall(){
 		return state > 15;
 	}
+	
+	public boolean isAngled(){
+		return isOnGround() & state%2 == 1;
+	}
 
 	public int getState() {
 		return state;
@@ -56,6 +61,21 @@ public class TileEntityBanner extends TileEntity {
 	
 	public byte[] getHeraldry() {
 		return heraldry;
+	}
+	
+	public float getAngle(){
+		if(isOnGround()){
+			if(isBase())
+				return state * 45;
+			else
+				 return (state-8) * 45;
+		}else{
+			return (state - 16) * -90 - 90;
+		}
+	}
+	
+	public String getBannerBasePath(){
+		return String.format("%sblocks/banner/banner-%s.png",BattleGear.imageFolder, SigilHelper.getBanner(heraldry));
 	}
 	
 	

@@ -16,9 +16,13 @@ public class SigilHelper {
 	public static final int COLOUR_SIGIL_PRIMARY = 2;
 	public static final int COLOUR_SIGIL_SECONDARY = 3;
 	
-	public static final byte[] defaultSigil = packSigil(
+	private static final byte[] defaultSigil = packSigil(
 			HeraldyPattern.VERICAL_BLOCK, (byte)0, (byte)0, new Color(0xFFFFFFFF), new Color(0xFFFFFFFF),
 			HeraldryIcon.Blank, HeraldryPositions.SINGLE, new Color(0xFF000000), new Color(0xFF000000));
+	
+	public static byte[] getDefault(){
+		return defaultSigil.clone();
+	}
 	
 	public static final int length = 8;
 
@@ -40,12 +44,12 @@ public class SigilHelper {
 			byte sigil, short sigilPos, short sigilColour1, short sigilColour2){
 		
 		byte[] bytes = new byte[length];
-		bytes[0] = (byte)(pattern << 4 & 0xF0 | (helm << 2 & 0b1100 | banner &0b0011)); //Pattern + helm + banner
+		bytes[0] = (byte)(pattern << 4 & 0xF0 | (helm << 2 & 12 | banner & 3)); //Pattern + helm + banner (12 = 0b1100, 3 = 0b11)
 		bytes[1] = (byte)(colour1 >> 4 & 0xFF); //Colour 1 (R&G)
 		bytes[2] = (byte)(colour1<<4 & 0xF0 | colour1>>8 & 0xF); //colour 1 (B) & Colour 2(R)
 		bytes[3] = (byte)(colour2 & 0xFF); //colour 2 (G&B)
 		
-		bytes[4] = (byte)(sigil<<3 & 0b11111000 | sigilPos & 0b00000111);
+		bytes[4] = (byte)(sigil<<3 & 248 | sigilPos & 7);   //(248 = 0b11111000, 7 = 0b00000111)
 		bytes[5] = (byte)(sigilColour1 >> 4 & 0xFF); //Colour 3 (R&G)
 		bytes[6] = (byte)(sigilColour1<<4 & 0xF0 | sigilColour2>>8 & 0xF); //colour 3 (B) & Colour 4(R)
 		bytes[7] = (byte)(sigilColour2 & 0xFF); //colour 3 (G&B)
@@ -104,12 +108,12 @@ public class SigilHelper {
 	
 	//TODO: Still have to test this
 	public static byte getHelm(byte[] code){
-		return (byte)(code[0] >> 2 & 0xb0011);
+		return (byte)(code[0] >> 2 & 3);
 	}
 	
 	//TODO: Still have to test this
 	public static byte getBanner(byte[] code){
-		return (byte)(code[0] & 0xb0011);
+		return (byte)(code[0] & 3);
 	}
 	
 	public static Color getPrimaryColour(byte[] code){
@@ -143,11 +147,11 @@ public class SigilHelper {
 	}
 	
 	public static HeraldryIcon getSigil(byte[] code){
-		return HeraldryIcon.values()[code[4] >> 3 & 0b11111];
+		return HeraldryIcon.values()[code[4] >> 3 & 31]; //248 = 0b11111000
 	}
 	
 	public static HeraldryPositions getSigilPosition(byte[] code){
-		return HeraldryPositions.values()[code[4] & 0b00000111];
+		return HeraldryPositions.values()[code[4] & 7]; //7 = 0b111
 	}
 	
 	public static Color getSigilPrimaryColour(byte[] code){
@@ -217,23 +221,23 @@ public class SigilHelper {
 	
 	//TODO Test this
 	public static byte[] updateHelm(byte[] code, byte helm){
-		code[0] = (byte)((code[0] & 0b11110011) | (helm << 2 &0b00001100));
+		code[0] = (byte)((code[0] & 243) | (helm << 2 & 12)); //243 = 0b11110011, 12 = 0b00001100
 		return code;
 	}
 	
 	//TODO Test this
 	public static byte[] updateBanner(byte[] code, byte banner){
-		code[0] = (byte)((code[0] & 0b11111100) | (banner & 0b00000011));
+		code[0] = (byte)((code[0] & 252) | (banner & 3)); //252 = 0b11111100, 3= 0b00000011
 		return code;
 	}
 	
 	public static byte[] updateSigil(byte[] code, HeraldryIcon newIcon){
-		code[4] = (byte)(newIcon.ordinal() << 3 & 0b11111000 | code[4] & 0b00000111);
+		code[4] = (byte)(newIcon.ordinal() << 3 & 248 | code[4] & 7);//248 = 0b11111000, 7 = 0b0000011
 		return code;
 	}
 	
 	public static byte[] updateSigilPos(byte[] code, HeraldryPositions newPos){
-		code[4] = (byte)(code[4] & 0b11111000 | newPos.ordinal() & 0b00000111);
+		code[4] = (byte)(code[4] & 248 | newPos.ordinal() & 7);//248 = 0b11111000, 7 = 0b0000011
 		return code;
 	}
 	

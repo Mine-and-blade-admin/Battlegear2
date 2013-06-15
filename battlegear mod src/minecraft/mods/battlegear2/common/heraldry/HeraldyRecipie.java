@@ -67,7 +67,7 @@ public class HeraldyRecipie implements IRecipe{
 		item=item.copy();
 		
 		if(heraldricWeapon instanceof IHeraldyItem){
-			byte[] code = SigilHelper.defaultSigil;
+			byte[] code = SigilHelper.getDefault();
 			if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
 				code = ((IHeraldyItem)icon.getItem()).getHeraldryCode(icon);
 			}
@@ -100,10 +100,10 @@ public class HeraldyRecipie implements IRecipe{
 	public ItemStack getRecipeOutput() {
 		ItemStack stack = new ItemStack(heraldricWeapon, 1);
 		if(heraldricWeapon instanceof IHeraldyItem){
-			((IHeraldyItem)heraldricWeapon).setHeraldryCode(stack, SigilHelper.defaultSigil);
+			((IHeraldyItem)heraldricWeapon).setHeraldryCode(stack, SigilHelper.getDefault());
 		}else{
 			stack.setTagCompound(new NBTTagCompound());
-			stack.getTagCompound().setByteArray("hc", SigilHelper.defaultSigil);
+			stack.getTagCompound().setByteArray("hc", SigilHelper.getDefault());
 		}
 		return stack;
 	}

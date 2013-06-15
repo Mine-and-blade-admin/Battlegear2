@@ -20,6 +20,8 @@ import java.util.jar.JarFile;
 import javax.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
+import mods.battlegear2.client.blocks.BannerBlockRenderer;
+import mods.battlegear2.common.blocks.TileEntityBanner;
 import mods.battlegear2.common.gui.BattlegearGUIHandeler;
 import mods.battlegear2.common.heraldry.HeraldricWeaponRecipie;
 import mods.battlegear2.common.items.ItemHeradryIcon;
@@ -124,6 +126,9 @@ public class BattleGear {
 				proxy.throwError("Mine & Blade 2 Consistency Check Failed", e.getMessage());
 			}
 		}
+		
+		
+		GameRegistry.registerTileEntity(TileEntityBanner.class, "banner");
 	}	
 
 	@PostInit

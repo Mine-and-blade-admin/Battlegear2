@@ -22,6 +22,7 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 	public BlockItemBanner(int par1) {
 		super(par1);
 		
+		this.setMaxStackSize(1);
 		this.setCreativeTab(BattlegearConfig.customTab);
 		this.setHasSubtypes(true);
 		this.setUnlocalizedName("battlegear2:banner");
@@ -33,7 +34,6 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 		super.registerIcons(par1IconRegister);
 		
 		for(int i = 0; i < 4; i++){
-			//not sure if this will work
 			baseIcons[i] = par1IconRegister.registerIcon(String.format("battlegear2:banner/banner-base-%s",i));
 			postIcons[i] = par1IconRegister.registerIcon(String.format("battlegear2:banner/banner-post-%s",i));
 		}
@@ -55,7 +55,7 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 				world.setBlock(x, y+1, z, BattlegearConfig.banner.blockID);
 				
 
-				float angle = player.rotationYaw + 45+180;
+				float angle = player.rotationYaw + (45F/2)-90;
 				while(angle < 0)
 					angle =angle+360;
 				while (angle>360)
@@ -63,6 +63,8 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 
 				byte state = (byte) (angle / 45);
 				byte[] code = getHeraldryCode(stack);
+				
+				
 				
 				world.setBlockTileEntity(x, y, z, new TileEntityBanner(state, code));
 				world.setBlockTileEntity(x, y+1, z, new TileEntityBanner((byte) (state+8), code));
@@ -72,8 +74,18 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 				return false;
 
 
-		}else if (side != 0){
+		}else if (side != 0){ //If on a side
+			
+			boolean placed = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ,  i);
+			world.setBlock(x, y-1, z, BattlegearConfig.banner.blockID);
 
+			byte state = (byte) (side+14);
+			byte[] code = getHeraldryCode(stack);
+			
+			System.out.println(side);
+			
+			world.setBlockTileEntity(x, y, z, new TileEntityBanner((byte)(state+4), code));
+			world.setBlockTileEntity(x, y-1, z, new TileEntityBanner(state, code));
 		}
 		return false;
 
@@ -102,13 +114,13 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 	@Override
 	public byte[] getHeraldryCode(ItemStack stack) {
 		if(!stack.hasTagCompound()){
-			return SigilHelper.defaultSigil;
+			return SigilHelper.getDefault();
 		}
 		NBTTagCompound compound = stack.getTagCompound();
 		if(compound.hasKey("hc2")){
 			return compound.getByteArray("hc2");
 		}else{
-			return SigilHelper.defaultSigil;
+			return SigilHelper.getDefault();
 		}
 	}
 

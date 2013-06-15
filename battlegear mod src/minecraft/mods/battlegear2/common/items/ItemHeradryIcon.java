@@ -84,13 +84,13 @@ public class ItemHeradryIcon extends Item implements IHeraldyItem{
 	@Override
 	public byte[] getHeraldryCode(ItemStack stack) {
 		if(!stack.hasTagCompound()){
-			return SigilHelper.defaultSigil;
+			return SigilHelper.getDefault();
 		}
 		NBTTagCompound compound = stack.getTagCompound();
 		if(compound.hasKey("hc2")){
 			return compound.getByteArray("hc2");
 		}else{
-			return SigilHelper.defaultSigil;
+			return SigilHelper.getDefault();
 		}
 	}
 
