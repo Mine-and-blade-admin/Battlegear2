@@ -28,6 +28,8 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 		this.setUnlocalizedName("battlegear2:banner");
 	}
 	
+	
+	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister) {
@@ -39,8 +41,6 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 		}
 	}
 	
-	
-
 	@Override
 	public boolean placeBlockAt(ItemStack stack, EntityPlayer player,
 			World world, int x, int y, int z, 
@@ -76,10 +76,19 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 
 		}else if (side != 0){ //If on a side
 			
+			
 			boolean placed = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ,  i);
 			world.setBlock(x, y-1, z, BattlegearConfig.banner.blockID);
 
-			byte state = (byte) (side+14);
+			byte state = 0;
+			
+			switch(side){
+			case 2:state = 16;break;
+			case 3:state = 18;break;
+			case 4: state = 17; break;
+			case 5: state = 19; break;
+			}
+			
 			byte[] code = getHeraldryCode(stack);
 			
 			System.out.println(side);

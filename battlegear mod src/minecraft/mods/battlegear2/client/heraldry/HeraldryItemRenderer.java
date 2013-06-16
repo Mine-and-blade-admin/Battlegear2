@@ -90,7 +90,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 			GL11.glTranslatef(-0.5F, -0.375F, 0);
 		}else{
 			GL11.glTranslatef(-0.5F, 0, 0);
-			GL11.glRotatef(-mc.renderViewEntity.rotationYaw, 0, 1, 0);
+			//GL11.glRotatef(-mc.renderViewEntity.rotationYaw, 0, 1, 0);
 		}
 		drawEquippedHeraldryItem(item, data);
 		GL11.glPopMatrix();

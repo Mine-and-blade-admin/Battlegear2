@@ -38,26 +38,28 @@ public class SigilHelper {
 	 * 39    Free (Future use to increase Sigil Positions to 16)
 	 * 40-51 Sigil Primary Colour (4096)
 	 * 52-63 Sigil Secondary Colour (4096)
-	 */	
+	 *
 	public static byte[] packSigil(byte pattern, byte helm, byte banner, 
 			short colour1, short colour2,
 			byte sigil, short sigilPos, short sigilColour1, short sigilColour2){
 		
 		byte[] bytes = new byte[length];
 		bytes[0] = (byte)(pattern << 4 & 0xF0 | (helm << 2 & 12 | banner & 3)); //Pattern + helm + banner (12 = 0b1100, 3 = 0b11)
-		bytes[1] = (byte)(colour1 >> 4 & 0xFF); //Colour 1 (R&G)
-		bytes[2] = (byte)(colour1<<4 & 0xF0 | colour1>>8 & 0xF); //colour 1 (B) & Colour 2(R)
-		bytes[3] = (byte)(colour2 & 0xFF); //colour 2 (G&B)
+		//bytes[1] = (byte)(colour1 >> 4 & 0xFF); //Colour 1 (R&G)
+		//bytes[2] = (byte)(colour1<<4 & 0xF0 | colour1>>8 & 0x0F); //colour 1 (B) & Colour 2(R)
+		//bytes[3] = (byte)(colour2 & 0xFF); //colour 2 (G&B)
 		
 		bytes[4] = (byte)(sigil<<3 & 248 | sigilPos & 7);   //(248 = 0b11111000, 7 = 0b00000111)
-		bytes[5] = (byte)(sigilColour1 >> 4 & 0xFF); //Colour 3 (R&G)
-		bytes[6] = (byte)(sigilColour1<<4 & 0xF0 | sigilColour2>>8 & 0xF); //colour 3 (B) & Colour 4(R)
-		bytes[7] = (byte)(sigilColour2 & 0xFF); //colour 3 (G&B)
+		//bytes[5] = (byte)(sigilColour1 >> 4 & 0xFF); //Colour 3 (R&G)
+		//bytes[6] = (byte)(sigilColour1<<4 & 0xF0 | sigilColour2>>8 & 0xF); //colour 3 (B) & Colour 4(R)
+		//bytes[7] = (byte)(sigilColour2 & 0xFF); //colour 3 (G&B)
+		
+		updateColour(c, rgb, colour)
 		
 		return bytes;
 		
 		
-	}
+	}*/
 	
 	public static short get12bitRGB(int rgb){
 		return (short)(
@@ -66,26 +68,25 @@ public class SigilHelper {
 	            (rgb & 0x000000f0) >> 4);
 	}
 	
-	public static byte[] packSigil(byte pattern, byte helm, byte banner, 
-			Color colour1, Color colour2,
-			byte sigil, short sigilPos, Color sigilColour1, Color sigilColour2){
-		
-		short colour1_12 = get12bitRGB(colour1.getRGB());
-		
-		short colour2_12 = get12bitRGB(colour2.getRGB());
-		
-		short sigilColour1_12 = get12bitRGB(sigilColour1.getRGB());
-		
-		short sigilColour2_12 = get12bitRGB(sigilColour2.getRGB());
-		
-		return packSigil(pattern, helm, banner, colour1_12, colour2_12, sigil, sigilPos, sigilColour1_12, sigilColour2_12);
-	}
+	
 	
 	public static byte[] packSigil(HeraldyPattern pattern, byte helm, byte banner, Color colour1, Color colour2,
 			HeraldryIcon sigil, HeraldryPositions sigilPos, Color sigilColour1, Color sigilColour2){
-		return packSigil((byte)pattern.ordinal(), helm, banner, 
-				colour1, colour2, (byte)sigil.ordinal(), (byte)sigilPos.ordinal(), 
-				sigilColour1, sigilColour2);
+		
+		byte[] code = new byte[length];
+		updatePattern(code, pattern);
+		updateHelm(code, helm);
+		updateBanner(code, banner);
+		updateColour(code, colour1.getRGB(), COLOUR_PRIMARY);
+		updateColour(code, colour2.getRGB(), COLOUR_SECONDARY);
+		
+		
+		updateColour(code, sigilColour1.getRGB(), COLOUR_SIGIL_PRIMARY);
+		updateColour(code, sigilColour2.getRGB(), COLOUR_SIGIL_SECONDARY);
+		
+		
+		
+		return code;
 	}
 	
 	
@@ -322,8 +323,10 @@ public class SigilHelper {
 		Color c4 = new Color(colourTranslationMap[extractBitInt(code, 24, 28)]);
 		byte sigilPos = (byte) extractBitInt(code, 29, 31);
 		
-		return packSigil(pattern, (byte)0, (byte)0, c1, c2, sigil, sigilPos, c3, c4);
+		return packSigil(HeraldyPattern.values()[pattern], (byte)0, (byte)0, 
+				c1, c2, HeraldryIcon.values()[sigil], HeraldryPositions.values()[sigilPos], c3, c4);
 	}
+	
 	
 	
 	

@@ -539,6 +539,9 @@ public class GUIHeraldry extends GuiContainer{
 			}
 		}else if (par1GuiButton.id == 22 && panelId >=5 && panelId<10){ //select colour
 			int newColour = colourPicker.getRGB();
+			
+			
+			
 			colourButtons[panelId-5].colour = new Color(newColour);
 			setCode(SigilHelper.updateColour(getCode(), newColour, panelId-5));
 		}
