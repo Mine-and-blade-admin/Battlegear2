@@ -31,8 +31,8 @@ import net.minecraftforge.common.IArmorTextureProvider;
 
 public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmorTextureProvider{
 	
-	private Icon baseIcon;
-	private Icon postRenderIcon;
+	private Icon baseIcon[];
+	private Icon postRenderIcon[];
 	private Icon trimRenderIcon;
 	
 	private Object modelObject;
@@ -47,8 +47,20 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister) {
 		//super.registerIcons(par1IconRegister);
-		baseIcon = par1IconRegister.registerIcon("battlegear2:armours/knight-base-"+BattlegearConfig.armourTypes[armorType]);
-		postRenderIcon = par1IconRegister.registerIcon("battlegear2:armours/knight-post-"+BattlegearConfig.armourTypes[armorType]);
+		
+		if(armorType == 0){
+			baseIcon = new Icon[4];
+			postRenderIcon = new Icon[4];
+			for(int i = 0; i < 4; i ++){
+				baseIcon[i] = par1IconRegister.registerIcon("battlegear2:armours/knight-base-"+BattlegearConfig.armourTypes[armorType]+"-"+i);
+				postRenderIcon[i] =  par1IconRegister.registerIcon("battlegear2:armours/knight-post-"+BattlegearConfig.armourTypes[armorType]+"-"+i);
+			}
+		}else{
+			baseIcon = new Icon[1];
+			postRenderIcon = new Icon[1];
+			baseIcon[0] = par1IconRegister.registerIcon("battlegear2:armours/knight-base-"+BattlegearConfig.armourTypes[armorType]);
+			postRenderIcon[0] = par1IconRegister.registerIcon("battlegear2:armours/knight-post-"+BattlegearConfig.armourTypes[armorType]);
+		}
 	
 		if(armorType == 2){
 			trimRenderIcon = par1IconRegister.registerIcon("battlegear2:armours/knight-trim-"+BattlegearConfig.armourTypes[armorType]);
@@ -57,12 +69,18 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 
 	@Override
 	public Icon getBaseIcon(ItemStack stack) {
-		return baseIcon;
+		if(armorType == 0){
+			return baseIcon[SigilHelper.getHelm(((IHeraldyItem)stack.getItem()).getHeraldryCode(stack))];
+		}else
+			return baseIcon[0];
 	}
 
 	@Override
 	public Icon getPostRenderIcon(ItemStack stack) {
-		return postRenderIcon;
+		if(armorType == 0){
+			return postRenderIcon[SigilHelper.getHelm(((IHeraldyItem)stack.getItem()).getHeraldryCode(stack))];
+		}else 
+			return postRenderIcon[0];
 	}
 	
 	@Override
@@ -157,7 +175,6 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 	@SideOnly(Side.CLIENT)
 	public ModelBiped getArmorModel(EntityLiving entityLiving,
 			ItemStack itemStack, int armorSlot) {
-		//TODO: Possibly not the most efficiant, maybe we should change this to using static references for better preformance
 		
 		if(modelObject == null){
 			modelObject = new HeraldryArmourModel(armorType);

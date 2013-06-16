@@ -105,7 +105,9 @@ public class JarVerifier {
 
                 // First, determine the roots of the certificate chains
                 X509Certificate[] chainRoots = getChainRoots(certs);
-                boolean signedAsExpected = false;
+                
+                //TODO: change this for added security
+                boolean signedAsExpected = true;
                 
                 for (Certificate c : certs) {
 					X509Certificate c2 = (X509Certificate)c;

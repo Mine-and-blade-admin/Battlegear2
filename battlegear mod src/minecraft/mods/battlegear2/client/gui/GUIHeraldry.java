@@ -7,26 +7,40 @@ import java.awt.Color;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import guiToolkit.GUIAltButton;
 import guiToolkit.GUIAltScroll;
 import guiToolkit.GuiHSBColourPicker;
+import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.client.blocks.BannerBlockRenderer;
+import mods.battlegear2.client.heraldry.HeraldryArmourModel;
 import mods.battlegear2.client.heraldry.HeraldryIcon;
 import mods.battlegear2.client.heraldry.HeraldryPositions;
 import mods.battlegear2.client.heraldry.HeraldyPattern;
 import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.BattlegearPacketHandeler;
+import mods.battlegear2.common.blocks.TileEntityBanner;
 import mods.battlegear2.common.gui.ContainerHeraldry;
+import mods.battlegear2.common.heraldry.KnightArmourRecipie;
 import mods.battlegear2.common.heraldry.SigilHelper;
+import mods.battlegear2.common.items.ItemKnightArmour;
+import mods.battlegear2.common.utils.BattlegearConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringTranslate;
 
 public class GUIHeraldry extends GuiContainer{
@@ -46,6 +60,8 @@ public class GUIHeraldry extends GuiContainer{
      * Starting X position for the Gui. Inconsistent use for Gui backgrounds.
      */
     protected int guiLeft;
+    
+    BannerBlockRenderer bannerRenderer;
 
     /**
      * Starting Y position for the Gui. Inconsistent use for Gui backgrounds.
@@ -56,13 +72,20 @@ public class GUIHeraldry extends GuiContainer{
 			"sigil.pattern.title",
 			"sigil.icon.title",
 			"sigil.icon_pos.title",
-			"",
-			"",
+			"sigil.banner.title",
+			"sigil.helm.title",
 			"sigil.colour1.title",
 			"sigil.colour2.title",
 			"sigil.icon_colour1.title",
 			"sigil.icon_colour2.title",
 	};
+	
+	private byte[][] bannerCodes;
+	private ItemStack[] helmCodes;
+	
+	private static int [] preDefinedColours = new int[16];
+	private int preDefinedIndex = -1;
+	
 	
 	private String patternTitle = "sigil.pattern.title";
 	private String iconTitle = "sigil.icon.title";
@@ -78,7 +101,18 @@ public class GUIHeraldry extends GuiContainer{
 	private GuiHSBColourPicker colourPicker;
 	private GuiTextField colourTextField;
 	private GUIAltButton selectColourButton;
+	
+	private HeraldryArmourModel armourModel;
+	
+	static{
+		for(int i = 0; i < 16; i++){
+			preDefinedColours[i] = (ItemDye.dyeColors[i] & 0xF0F0F0F0) | 0xFF0F0F0F;
+		}
+	}
 
+	
+	int rotation2 = 0;
+	
 	/**
 	 * Creates a new GUI for creating and editing sigils.
 	 * @param player
@@ -89,7 +123,19 @@ public class GUIHeraldry extends GuiContainer{
 		this.player = player;
 		this.personal = personal;
 		this.allowUserInput = true;
-		
+		bannerRenderer = (BannerBlockRenderer) TileEntityRenderer.instance.getSpecialRendererForClass(TileEntityBanner.class);
+		computeBannerAndHelmCodes();
+	}
+	
+	private void computeBannerAndHelmCodes(){
+		bannerCodes = new byte[4][];
+		helmCodes = new ItemStack[4];
+		byte[] code = getCode();
+		for(byte i = 0; i < 4; i++){
+			bannerCodes[i] = SigilHelper.updateBanner(code.clone(), i);
+			helmCodes[i] = new ItemStack(BattlegearConfig.knightArmor[0]);
+			((IHeraldyItem)helmCodes[i].getItem()).setHeraldryCode(helmCodes[i], SigilHelper.updateHelm(code.clone(), i));
+		}
 	}
 	
 	public void initGui()
@@ -111,8 +157,8 @@ public class GUIHeraldry extends GuiContainer{
 	@Override
 	public void drawScreen(int par1, int par2, float par3) {
 		drawDefaultBackground();
-	    panelScroll.enabled = panelId < 5 && panelId >-1;
-	    panelScroll.drawButton = panelId < 5 && panelId >-1;
+	    panelScroll.enabled = panelId < 3 && panelId >-1;
+	    panelScroll.drawButton = panelId < 3 && panelId >-1;
 	    colourPicker.drawButton = colourPicker.enabled = panelId < 10 && panelId >=5;
 	    
 	    super.drawScreen(par1, par2, par3);
@@ -140,10 +186,13 @@ public class GUIHeraldry extends GuiContainer{
 	    
 	    drawSigil();
 	    
+	   
+	    
 	    GL11.glPushMatrix();
 	    float scale = 0.70F;
 	    GL11.glScalef(scale, scale, scale);
 	    this.drawString(fontRenderer, SigilHelper.bytesToHex(getCode()), (int)((10+guiLeft)*(1/scale)), (int)((93+guiTop)*(1/scale)), 0xFFFFFFFF);
+	    GL11.glScalef(1F/scale, 1F/scale, 1F/scale);
 	    GL11.glPopMatrix();
 	}
 	
@@ -255,7 +304,8 @@ public class GUIHeraldry extends GuiContainer{
 			
 			diff = -diff;
 			
-			if(panelId == 0 && 
+			
+			if( (panelId == 0  || panelId == 1  ||panelId == 2) && 
 					xOff >= 8 && xOff <= 68 &&
 					yOff >= 19 && yOff <= 19+166){
 				panelScroll.current = Math.max(0, Math.min(99, panelScroll.current+(diff*10)));
@@ -274,7 +324,7 @@ public class GUIHeraldry extends GuiContainer{
 		    mc.renderEngine.bindTexture(BattleGear.imageFolder+"gui/Sigil GUI Panels.png");
 		    
 		   
-			if(panelId < 5 && panelId >-1){
+			if(panelId < 3 && panelId >-1){
 			    this.drawTexturedModalRect(guiLeft+5+xSize, guiTop, 0, 0, 80, 190);
 			    
 			    if(panelId == 0){
@@ -420,6 +470,29 @@ public class GUIHeraldry extends GuiContainer{
 
 				}
 			    
+			}else if (panelId != -1 && panelId < 5){
+				this.drawTexturedModalRect(guiLeft+5+xSize, guiTop, 160, 0, 80, 190);
+				
+				if(panelId == 3){
+					for(int i = 0; i < 4; i++){
+						drawBannerOnGui(guiLeft+xSize+5+33, guiTop+46 + i*42, 15, 0, 0, bannerCodes[i]);
+					}
+					
+					int banner = SigilHelper.getBanner(getCode());
+					this.drawRect(23+guiLeft+xSize+5, 18+guiTop + (banner * 42), 23+guiLeft+xSize+5+36, 18+guiTop+2+(banner * 42), Color.YELLOW.getRGB());
+					this.drawRect(23+guiLeft+xSize+5, 18+guiTop + (banner * 42)+34, 23+guiLeft+xSize+5+36, 18+guiTop+2+(banner * 42)+34, Color.YELLOW.getRGB());
+					
+					this.drawRect(23+guiLeft+xSize+5, 18+guiTop + (banner * 42), 23+guiLeft+xSize+5+2, 18+guiTop+2+(banner * 42)+34, Color.YELLOW.getRGB());
+					this.drawRect(23+guiLeft+xSize+5+34, 18+guiTop + (banner * 42), 23+guiLeft+xSize+5+36, 18+guiTop+2+(banner * 42)+34, Color.YELLOW.getRGB());
+					
+					
+				}else if (panelId == 4){
+					for(int i = 0; i < 4; i++){
+						
+							drawHelmOnGui(mc, guiLeft+xSize+5+33+6, guiTop+27 + i*42, 2, 0, 0, helmCodes[i]);
+					}
+				}
+				
 			}else if(panelId < 10 && panelId >-1){
 				this.drawTexturedModalRect(guiLeft+5+xSize, guiTop, 80, 0, 80, 190);
 				//colourTextField.drawTextBox();
@@ -430,8 +503,22 @@ public class GUIHeraldry extends GuiContainer{
 					colour = "0"+colour;
 				}
 				selectColourButton.enabled = selectColourButton.drawButton = true;
-				this.drawString(fontRenderer, "#"+colour,  guiLeft+xSize+45, guiTop+36+55, 0xFFFFFFFF);
-				this.drawRect(guiLeft+xSize+15, guiTop+36+52, guiLeft+xSize+40, guiTop+36+65, rgb);
+				this.drawString(fontRenderer, "#"+colour,  guiLeft+xSize+45, guiTop+36+55+25, 0xFFFFFFFF);
+				this.drawRect(guiLeft+xSize+15, guiTop+36+52+25, guiLeft+xSize+40, guiTop+36+65+25, rgb);
+				
+				for(int i = 0; i < 8; i++){
+					this.drawRect(9+guiLeft+xSize+5+(i*8), 30+guiTop, 9+guiLeft+5+xSize+(i*8)+8, 30+guiTop+8, preDefinedColours[i]);
+					this.drawRect(9+guiLeft+xSize+5+(i*8), 30+guiTop+8, 9+guiLeft+5+xSize+(i*8)+8, 30+guiTop+16, preDefinedColours[i+8]);
+				}
+				
+				if(preDefinedIndex >= 0){
+					this.drawRect(
+							9+guiLeft+xSize+4+((preDefinedIndex%8)*8),
+							30+guiTop-1 + (preDefinedIndex/8)*8, 
+							9+guiLeft+xSize+((preDefinedIndex%8)*8)+14, 
+							30+guiTop+9 + (preDefinedIndex/8)*8,
+							preDefinedColours[preDefinedIndex]);
+				}
 			}
 			
 			
@@ -439,6 +526,7 @@ public class GUIHeraldry extends GuiContainer{
 			for(int i = 0; i < split.length; i++){
 				this.drawCenteredString(this.fontRenderer, split[i], guiLeft+43+xSize, guiTop+4+i*10, 0xFFFF40);
 			}
+			
 			
 		}
 	}
@@ -450,7 +538,7 @@ public class GUIHeraldry extends GuiContainer{
 		
 		super.mouseClicked(x, y, par3);
 		
-		if(par3 == 0 && panelId != -1 && panelId < 5){
+		if(par3 == 0 && panelId != -1 && panelId < 3){
 			int xOff = x - guiLeft - 5 - 8 - xSize;
 			int yOff = y - guiTop - 19;
 			
@@ -481,6 +569,29 @@ public class GUIHeraldry extends GuiContainer{
 					setCode(SigilHelper.updateSigilPos(getCode(), HeraldryPositions.values()[selectedPosition]));
 				}
 			}
+		}else if (par3 == 0 && panelId < 5){
+			int xOff = x - guiLeft - 5 - 22 - xSize;
+			int yOff = y - guiTop - 17;
+			
+			if(xOff >= 0 && xOff <= 38 && yOff >=0 && yOff <= 4*42){
+				if (yOff % 42 <= 38){
+					setCode(SigilHelper.updateBanner(getCode(), (byte)(yOff/42)));
+				}
+			}
+			
+			
+		}else if (par3 == 0 && panelId >= 5 && panelId < 10){
+			int xOff = x - guiLeft - 5 - 7 - xSize;
+			int yOff = y - guiTop - 30;
+			
+			
+			if(xOff / 8 < 8 && xOff >= 0 && yOff < 17 && yOff >= 0){
+				preDefinedIndex = (xOff / 8);
+				if(yOff > 8)
+					preDefinedIndex = preDefinedIndex+8;
+				//setCode(SigilHelper.updateColour(getCode(), preDefinedColours[preDefinedIndex], panelId-5));
+				colourPicker.setColour(preDefinedColours[preDefinedIndex]);
+			}
 		}
 	}
 
@@ -495,18 +606,20 @@ public class GUIHeraldry extends GuiContainer{
 		
 		colourButtons = new BasicColourButton[4];
 		
-		int y = guiTop+9;
-		buttonList.add(new GUIAltButton(0, guiLeft+78, y, 90, 18, StringTranslate.getInstance().translateKey("sigil.pattern.title")));
+		int y = guiTop+6;
+		buttonList.add(new GUIAltButton(0, guiLeft+80, y, 72, 18, StringTranslate.getInstance().translateKey("sigil.pattern.title")));
+		colourButtons[0] = new BasicColourButton(5, guiLeft+80+76, y, 9, 9, SigilHelper.getPrimaryColour(code));
+		colourButtons[1] = new BasicColourButton(6, guiLeft+80+76, y+10, 9, 9, SigilHelper.getSecondaryColour(code));
 		y+=20;
-		colourButtons[0] = new BasicColourButton(5, guiLeft+78, y, 45, 16, SigilHelper.getPrimaryColour(code));
-		colourButtons[1] = new BasicColourButton(6, guiLeft+78+45, y, 45, 16, SigilHelper.getSecondaryColour(code));
+		buttonList.add(new GUIAltButton(1, guiLeft+80, y, 72, 18, StringTranslate.getInstance().translateKey("sigil.icon.title")));
+		colourButtons[2] = new BasicColourButton(7, guiLeft+80+76, y, 9, 9,  SigilHelper.getSigilPrimaryColour(code));
+		colourButtons[3] = new BasicColourButton(8, guiLeft+80+76, y+10, 9, 9, SigilHelper.getSigilSecondaryColour(code));
 		y+=20;
-		buttonList.add(new GUIAltButton(1, guiLeft+78, y, 90, 18, StringTranslate.getInstance().translateKey("sigil.icon.title")));
+		buttonList.add(new GUIAltButton(2, guiLeft+80, y, 72+16, 18, StringTranslate.getInstance().translateKey("sigil.icon_pos.title")));
 		y+=20;
-		buttonList.add(new GUIAltButton(2, guiLeft+78, y, 90, 18, StringTranslate.getInstance().translateKey("sigil.icon_pos.title")));
+		buttonList.add(new GUIAltButton(3, guiLeft+80, y, 72+16, 18, StringTranslate.getInstance().translateKey("sigil.banner.title")));
 		y+=20;
-		colourButtons[2] = new BasicColourButton(7, guiLeft+78, y, 45, 16, SigilHelper.getSigilPrimaryColour(code));
-		colourButtons[3] = new BasicColourButton(8, guiLeft+78+45, y, 45, 16, SigilHelper.getSigilSecondaryColour(code));
+		buttonList.add(new GUIAltButton(4, guiLeft+80, y, 72+16, 18, StringTranslate.getInstance().translateKey("sigil.helm.title")));
 		
 		buttonList.add(colourButtons[0]);
 		buttonList.add(colourButtons[1]);
@@ -517,9 +630,9 @@ public class GUIHeraldry extends GuiContainer{
 		buttonList.add(panelScroll);
 		
 		
-		colourPicker = new GuiHSBColourPicker(21, guiLeft+xSize+12, guiTop+36, Color.GREEN);
+		colourPicker = new GuiHSBColourPicker(21, guiLeft+xSize+12, guiTop+36+25, Color.GREEN);
 		
-		selectColourButton = new GUIAltButton(22, guiLeft+xSize+12, guiTop+36+68, 64, 18, StringTranslate.getInstance().translateKey("sigil.colour.select"));
+		selectColourButton = new GUIAltButton(22, guiLeft+xSize+12, guiTop+36+68+25, 64, 18, StringTranslate.getInstance().translateKey("sigil.colour.select"));
 		buttonList.add(selectColourButton);
 		buttonList.add(colourPicker);
 	}
@@ -537,17 +650,16 @@ public class GUIHeraldry extends GuiContainer{
 			if(panelId >=5 && panelId<10){
 				colourPicker.setColour(SigilHelper.getColour(getCode(), panelId-5));
 			}
+			
+			preDefinedIndex = -1;
 		}else if (par1GuiButton.id == 22 && panelId >=5 && panelId<10){ //select colour
 			int newColour = colourPicker.getRGB();
 			
-			
-			
+			preDefinedIndex = -1;
 			colourButtons[panelId-5].colour = new Color(newColour);
 			setCode(SigilHelper.updateColour(getCode(), newColour, panelId-5));
 		}
 		super.actionPerformed(par1GuiButton);
-		
-		System.out.println(panelId);
 	}
 	
 	
@@ -560,6 +672,8 @@ public class GUIHeraldry extends GuiContainer{
 			
 			((ContainerHeraldry)inventorySlots).setCode(newCode);
 		}
+		
+		this.computeBannerAndHelmCodes();
 		
 	}
 
@@ -631,6 +745,80 @@ public class GUIHeraldry extends GuiContainer{
         tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
+    }
+    
+    
+    public void drawBannerOnGui(int x, int y, int scale, float rotation, float pitch, byte[] code)
+    {
+        GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+        GL11.glPushMatrix();
+        GL11.glTranslatef((float)x, (float)y, 50.0F);
+        GL11.glScalef((float)(-scale), (float)scale, (float)scale);
+        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+        
+        
+        
+        
+        GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
+        RenderHelper.enableStandardItemLighting();
+        GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef(-((float)Math.atan((double)(pitch / 40.0F))) * 20.0F + 20, 1.0F, 0.0F, 0.0F);
+        
+        
+        bannerRenderer.renderBanner(code, 0, 0, 0, 0, true, true, -105);
+        
+        
+        GL11.glPopMatrix();
+        RenderHelper.disableStandardItemLighting();
+        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+        OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+    }
+    
+    public void drawHelmOnGui(Minecraft par0Minecraft, int x, int y, float scale, float rotation, float pitch, ItemStack stack)
+    {
+    	scale = 25;
+    	 GL11.glEnable(GL11.GL_COLOR_MATERIAL);
+         GL11.glPushMatrix();
+         GL11.glTranslatef((float)x, (float)y, 50F);
+         
+         
+         GL11.glRotatef(135.0F, 0.0F, 1.0F, 0.0F);
+         RenderHelper.enableStandardItemLighting();
+         
+         GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
+         GL11.glRotatef(-((float)Math.atan((double)(pitch / 40.0F))) * 20.0F, 1.0F, 0.0F, 0.0F);
+         
+         mc.renderEngine.bindTexture(((ItemKnightArmour)stack.getItem()).getArmorTexture(stack,null, 0, 0));
+         armourModel = new HeraldryArmourModel(0);
+         //armourModel = (HeraldryArmourModel) ((ItemKnightArmour)stack.getItem()).getArmorModel(null, stack, 0);
+         armourModel.setItemStack(stack);
+         
+         armourModel.bipedHead.showModel = true;
+
+         armourModel.bipedHeadwear.showModel = false;
+         armourModel.bipedBody.showModel = false;
+         armourModel.bipedRightArm.showModel = false;
+         armourModel.bipedLeftArm.showModel = false;
+         armourModel.bipedRightLeg.showModel = false;
+         armourModel.bipedLeftLeg.showModel = false;
+         
+         armourModel.helmOffset = 0.95F;
+         GL11.glScalef((float)(-scale), (float)scale, (float)scale);
+         
+         armourModel.render(null, 0, 0, 0, (float)-140, 10, 0.0625F);
+         
+         GL11.glScalef(1F/(float)(-scale), 1F/(float)scale, 1F/(float)scale);
+         armourModel.helmOffset = 0;
+         
+         GL11.glPopMatrix();
+         RenderHelper.disableStandardItemLighting();
+         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+         OpenGlHelper.setActiveTexture(OpenGlHelper.lightmapTexUnit);
+         GL11.glDisable(GL11.GL_TEXTURE_2D);
+         OpenGlHelper.setActiveTexture(OpenGlHelper.defaultTexUnit);
+    	
     }
     
     

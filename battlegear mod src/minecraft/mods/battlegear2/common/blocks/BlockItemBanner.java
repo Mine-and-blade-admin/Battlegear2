@@ -47,7 +47,7 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 			int side, float hitX, float hitY, float hitZ, int i) {
 
 		if(side == 1){ // on top of a block
-			if(world.getBlockId(x, y+1, z) == 0)
+			if(world.isAirBlock(x, y+1, z))
 			{
 
 				boolean placed = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ,  i);
@@ -65,7 +65,6 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 				byte[] code = getHeraldryCode(stack);
 				
 				
-				
 				world.setBlockTileEntity(x, y, z, new TileEntityBanner(state, code));
 				world.setBlockTileEntity(x, y+1, z, new TileEntityBanner((byte) (state+8), code));
 
@@ -76,25 +75,26 @@ public class BlockItemBanner extends ItemBlock implements IHeraldyItem{
 
 		}else if (side != 0){ //If on a side
 			
-			
-			boolean placed = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ,  i);
-			world.setBlock(x, y-1, z, BattlegearConfig.banner.blockID);
-
-			byte state = 0;
-			
-			switch(side){
-			case 2:state = 16;break;
-			case 3:state = 18;break;
-			case 4: state = 17; break;
-			case 5: state = 19; break;
+			if(world.isAirBlock(x, y-1, z)){
+				boolean placed = super.placeBlockAt(stack, player, world, x, y, z, side, hitX, hitY, hitZ,  i);
+				world.setBlock(x, y-1, z, BattlegearConfig.banner.blockID);
+	
+				byte state = 0;
+				
+				switch(side){
+				case 2:state = 16;break;
+				case 3:state = 18;break;
+				case 4: state = 17; break;
+				case 5: state = 19; break;
+				}
+				
+				byte[] code = getHeraldryCode(stack);
+				
+				System.out.println(side);
+				
+				world.setBlockTileEntity(x, y, z, new TileEntityBanner((byte)(state+4), code));
+				world.setBlockTileEntity(x, y-1, z, new TileEntityBanner(state, code));
 			}
-			
-			byte[] code = getHeraldryCode(stack);
-			
-			System.out.println(side);
-			
-			world.setBlockTileEntity(x, y, z, new TileEntityBanner((byte)(state+4), code));
-			world.setBlockTileEntity(x, y-1, z, new TileEntityBanner(state, code));
 		}
 		return false;
 

@@ -48,6 +48,8 @@ sigil.colour1.title=Color 1
 sigil.colour2.title=Color 2
 sigil.icon_colour1.title=Sigil%nColor 1
 sigil.icon_colour2.title=Sigil%nColor 2
+sigil.banner.title=Banner
+sigil.helm.title=Helmet
 sigil.colour.select=Select
 
 tooltip.attack=Attack Damage

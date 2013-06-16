@@ -74,9 +74,6 @@ public class TileEntityBanner extends TileEntity {
 		}
 	}
 	
-	public String getBannerBasePath(){
-		return String.format("%sblocks/banner/banner-%s.png",BattleGear.imageFolder, SigilHelper.getBanner(heraldry));
-	}
 	
 	
 	@Override

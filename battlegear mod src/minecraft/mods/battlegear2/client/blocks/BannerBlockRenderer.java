@@ -40,16 +40,23 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
         this.blockRenderer = new RenderBlocks(par1World);
     }
     
-   
+    public String getBannerPath(byte[] heraldry){
+    	return String.format("%sblocks/banner/banner-%s.png",BattleGear.imageFolder, SigilHelper.getBanner(heraldry));
+    }
     
     public void renderTileEntityAt(TileEntity tileentity, double par2, double par4,
 			double par6, float f) {
-    	Block block = tileentity.blockType;
 		TileEntityBanner bannerEntity = (TileEntityBanner)tileentity;
 		
-		
-		
-		if(bannerEntity.isBase()){
+		renderBanner(bannerEntity.getHeraldry(), par2, par4, par6, f, bannerEntity.isBase(), bannerEntity.isOnGround(), -bannerEntity.getAngle());
+    }
+    
+    public void renderBanner(byte[] code, double par2, double par4,
+			double par6, float f,
+    		boolean isBase, boolean isOnGound, float angle){
+    	
+    	
+    	if(isBase){
 			Tessellator tessellator = Tessellator.instance;
 			double x1, x2, y1, y2, z1, z2;
 
@@ -66,12 +73,12 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
 	        {
 	            GL11.glShadeModel(GL11.GL_FLAT);
 	        }
-	        float angle = -bannerEntity.getAngle();
+	        //float angle = -bannerEntity.getAngle();
 	        GL11.glPushMatrix();
 	        GL11.glTranslatef((float)par2+0.5F, (float)par4, (float)par6+0.5F);
 	        GL11.glRotatef(angle+90, 0, 1, 0);
 	        
-			if(bannerEntity.isOnGround()){
+			if(isOnGound){
 			
 				
 		        
@@ -244,7 +251,7 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
 	        x2 = 7.5/16F;
 	        y1 = 28.5 / 16F;
 	        y2 = 29.5F / 16F;
-	        if(bannerEntity.isOnGround()){
+	        if(isOnGound){
 	        	z1 = 0F;
 	        	z2 = 1/16F;
 	        }else{
@@ -281,11 +288,11 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
 	        y1 = y2 - 14F/16F * 2;
 	        z2 = z2 + 0.1F/16F;
 	        
-	        float[] colour = SigilHelper.getPrimaryColourArray(bannerEntity.getHeraldry());
+	        float[] colour = SigilHelper.getPrimaryColourArray(code);
 	        
 	        tessellator.startDrawingQuads();
 	        GL11.glColor3f(colour[0], colour[1], colour[2]);
-	        this.bindTextureByName(bannerEntity.getBannerBasePath());
+	        this.bindTextureByName(getBannerPath(code));
 	        tessellator.addVertexWithUV(x1, y1, z2, 0, 1);
 	        tessellator.addVertexWithUV(x2, y1, z2, 1, 1);
 	        tessellator.addVertexWithUV(x2, y2, z2, 1, 0);
@@ -299,24 +306,24 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
 	        GL11.glEnable(GL11.GL_BLEND);
 		    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		    
-		    colour = SigilHelper.getSecondaryColourArray(bannerEntity.getHeraldry());
+		    colour = SigilHelper.getSecondaryColourArray(code);
 	        
 	        
 	        GL11.glColor3f(colour[0], colour[1], colour[2]);
-	        this.bindTextureByName(String.format("%sblocks/banner/pattern/banner-pattern-%s.png", BattleGear.imageFolder, SigilHelper.getPattern(bannerEntity.getHeraldry()).ordinal()));
+	        this.bindTextureByName(String.format("%sblocks/banner/pattern/banner-pattern-%s.png", BattleGear.imageFolder, SigilHelper.getPattern(code).ordinal()));
 	        tessellator.startDrawingQuads();
-	        tessellator.addVertexWithUV(x1, y1, z2, 0, 1);
-	        tessellator.addVertexWithUV(x2, y1, z2, 1, 1);
-	        tessellator.addVertexWithUV(x2, y2, z2, 1, 0);
-	        tessellator.addVertexWithUV(x1, y2, z2, 0, 0);
+	        tessellator.addVertexWithUV(x1, y1, z2, 1, 1);
+	        tessellator.addVertexWithUV(x2, y1, z2, 0, 1);
+	        tessellator.addVertexWithUV(x2, y2, z2, 0, 0);
+	        tessellator.addVertexWithUV(x1, y2, z2, 1, 0);
 	        tessellator.draw();
 	        
 	        
-	        float[] colourIconPrimary = SigilHelper.getSigilPrimaryColourArray(bannerEntity.getHeraldry());
-		    float[] colourIconSecondary = SigilHelper.getSigilSecondaryColourArray(bannerEntity.getHeraldry());
+	        float[] colourIconPrimary = SigilHelper.getSigilPrimaryColourArray(code);
+		    float[] colourIconSecondary = SigilHelper.getSigilSecondaryColourArray(code);
 		    
-		    HeraldryBannerPositions position = HeraldryBannerPositions.values()[SigilHelper.getSigilPosition(bannerEntity.getHeraldry()).ordinal()];
-		    HeraldryIcon sigil = SigilHelper.getSigil(bannerEntity.getHeraldry());	
+		    HeraldryBannerPositions position = HeraldryBannerPositions.values()[SigilHelper.getSigilPosition(code).ordinal()];
+		    HeraldryIcon sigil = SigilHelper.getSigil(code);	
 		    
 		    
 		    
@@ -430,7 +437,15 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
 	        
 	        
 	        GL11.glPopMatrix();
-		}
 	        
+	        GL11.glColor3f(1F, 1F, 1F);
+		}
+    	
+    	
+    	
     }
+    
+   
+    
+    
 }

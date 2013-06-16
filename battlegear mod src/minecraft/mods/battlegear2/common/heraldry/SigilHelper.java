@@ -17,7 +17,7 @@ public class SigilHelper {
 	public static final int COLOUR_SIGIL_SECONDARY = 3;
 	
 	private static final byte[] defaultSigil = packSigil(
-			HeraldyPattern.VERICAL_BLOCK, (byte)0, (byte)0, new Color(0xFFFFFFFF), new Color(0xFFFFFFFF),
+			HeraldyPattern.VERICAL_BLOCK, (byte)3, (byte)0, new Color(0xFFFFFFFF), new Color(0xFFFFFFFF),
 			HeraldryIcon.Blank, HeraldryPositions.SINGLE, new Color(0xFF000000), new Color(0xFF000000));
 	
 	public static byte[] getDefault(){
@@ -323,7 +323,7 @@ public class SigilHelper {
 		Color c4 = new Color(colourTranslationMap[extractBitInt(code, 24, 28)]);
 		byte sigilPos = (byte) extractBitInt(code, 29, 31);
 		
-		return packSigil(HeraldyPattern.values()[pattern], (byte)0, (byte)0, 
+		return packSigil(HeraldyPattern.values()[pattern], (byte)1, (byte)0, 
 				c1, c2, HeraldryIcon.values()[sigil], HeraldryPositions.values()[sigilPos], c3, c4);
 	}
 	

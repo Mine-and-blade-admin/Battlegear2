@@ -266,8 +266,6 @@ public class BlockBanner extends BlockContainer{
 	    				maxX = maxZ = 13F/16F;
 					}
     		}else{
-    			
-    			System.out.println((banner.getState() - 16) % 4);
     			switch ((banner.getState() - 16) % 4) {
     			case 0:
 					minX = 0F/16F;

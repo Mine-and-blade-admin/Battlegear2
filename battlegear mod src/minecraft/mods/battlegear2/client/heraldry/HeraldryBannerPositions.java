@@ -7,10 +7,10 @@ public enum HeraldryBannerPositions {
 	SINGLE_FLIP(1, new float[]{-0.4F}, new float[]{.4F}, new float[]{1.4F}, new float[]{0.6F},  new boolean[]{true}, new boolean[]{false}),
 	
 	DOUBLE_HORIZ(2, new float[]{-0.45F, 0.05F}, new float[]{0.05F, 0.45F}, new float[]{1.2F, 1.2F}, new float[]{0.8F, 0.8F},  new boolean[]{true, false}, new boolean[]{false, false}),
-	DOUBLE_HORIZ_FLIP(2, new float[]{-0.45F, 0.05F}, new float[]{0.05F, 0.45F}, new float[]{1.2F, 1.2F}, new float[]{0.8F, 0.8F},  new boolean[]{true, false}, new boolean[]{true, false}),
+	DOUBLE_HORIZ_FLIP(2, new float[]{-0.45F, 0.05F}, new float[]{0.05F, 0.45F}, new float[]{1.2F, 1.2F}, new float[]{0.8F, 0.8F},  new boolean[]{true, false}, new boolean[]{false, true}),
 	
 	DOUBLE_VERT(2, new float[]{-0.25F, -0.25F}, new float[]{0.25F, 0.25F}, new float[]{1.55F, .95F}, new float[]{1.05F, 0.45F},  new boolean[]{false, false}, new boolean[]{false, false}),
-	DOUBLE_VERT_FLIP(2, new float[]{-0.25F, -0.25F}, new float[]{0.25F, 0.25F}, new float[]{1.55F, .95F}, new float[]{1.05F, 0.45F},  new boolean[]{false, false}, new boolean[]{true, false}),
+	DOUBLE_VERT_FLIP(2, new float[]{-0.25F, -0.25F}, new float[]{0.25F, 0.25F}, new float[]{1.55F, .95F}, new float[]{1.05F, 0.45F},  new boolean[]{false, false}, new boolean[]{false, true}),
 	
 	FOUR(4,
 			new float[]{-0.45F, 0.05F, -0.45F, 0.05F},
@@ -26,7 +26,7 @@ public enum HeraldryBannerPositions {
 			new float[]{1.45F, 1.45F, .95F, .95F},
 			new float[]{1.05F, 1.05F, .55F, .55F},
 			new boolean[] {true, false, true, false},
-			new boolean[] {true, false, false, true})
+			new boolean[] {false, true, true, false})
 			
 	;
 	

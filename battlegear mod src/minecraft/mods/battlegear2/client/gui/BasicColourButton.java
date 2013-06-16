@@ -27,13 +27,13 @@ public class BasicColourButton extends GuiButton{
 				 minecraft.renderEngine.bindTexture(BattleGear.imageFolder+"gui/Sigil GUI.png");
 				 GL11.glColor3ub((byte)colour.getRed(), (byte)colour.getGreen(), (byte)colour.getBlue());
 
-				 int x = this.xPosition + (width - 16) / 2;
-				 int y = this.yPosition + (height - 16) /2;
+				 int x = this.xPosition;
+				 int y = this.yPosition;
 				 
-				 this.drawTexturedModalRect(x, y, 66, 240, 16, 16);
+				 this.drawTexturedModalRect(x, y, 75, 247, 9, 9);
 				 
 				 GL11.glColor4f(1, 1, 1, 1);
-				 this.drawTexturedModalRect(x, yPosition, 82, 240, 16, 16);
+				 this.drawTexturedModalRect(x, yPosition, 66, 247, 9, 9);
 				 
 			 }
 			 
