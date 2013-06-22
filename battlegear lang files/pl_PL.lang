@@ -1,0 +1,47 @@
+
+item.heraldric.name=Ikona herbu
+item.chain.name=Lancuch
+item.quiver.name=Kolczan
+
+item.dagger.wood.name=Drewniany Sztylet
+item.dagger.stone.name=Kamienny Sztylet
+item.dagger.iron.name=Zelazny Sztylet
+item.dagger.diamond.name=Diamentowy Sztylet
+item.dagger.gold.name=Zloty Sztylet
+
+item.waraxe.wood.name=Drewaniany Topor Bojowy
+item.waraxe.stone.name=Kamienny Topor Bojowy
+item.waraxe.iron.name=Zelazny Topor Bojowy
+item.waraxe.diamond.name=Diamentowy Topor Bojowy
+item.waraxe.gold.name=Zloty Topor Bojowy
+
+item.mace.wood.name=Drewniana Maczeta
+item.mace.stone.name=Kamienna Maczeta
+item.mace.iron.name=Zelazna Maczeta
+item.mace.diamond.name=Diametnowa Maczeta
+item.mace.gold.name=Zlota Maczeta
+
+item.spear.wood.name=Drewniana Wlocznia
+item.spear.stone.name=Kamienna Wlocznia
+item.spear.iron.name=Zelazna Wlocznia
+item.spear.diamond.name=Diamentowa Wlocznia
+item.spear.gold.name=Zlota Wlocznia
+
+item.shield.wood.name=Drewniana Tarcza
+item.shield.hide.name=Okragla Tarcza
+item.shield.iron.name=Zelazna Tarcza
+item.shield.diamond.name=Diamentowa Tarcza
+item.shield.gold.name=Zlota Tarcza
+
+item.knights_armour.helmet.name=Ryserski Helm
+item.knights_armour.plate.name=Rycerski Napiersnik
+item.knights_armour.legs.name=Ryserskie Getry
+item.knights_armour.boots.name=Rycerskie Buty
+
+sigil.pattern.title=Model
+sigil.icon.title=Pieczec
+sigil.icon_pos.title=Miejsce Pieczeci
+sigil.colour1.title=Kolor 1
+sigil.colour2.title=Kolor 2
+sigil.icon_colour1.title=Kolor%nPieczeci 1
+sigil.icon_colour2.title=Kolor%nPieczeci 2

@@ -68,7 +68,7 @@ def main(distDir,  mcpDir):
     
     coremod_bin = os.path.join(mcpDir, 'bin', 'minecraft', coremod_dir)
     
-    core_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - Core', mcVersion, version)), 'w')
+    core_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear 2 - Core', mcVersion, version)), 'w')
 
     for root, _, filelist in os.walk(coremod_bin, followlinks=True):
 		if(root.find(coremod_dir) > -1):
@@ -98,7 +98,7 @@ def main(distDir,  mcpDir):
     print '================ Creating Battlegear jar ==================='
     os.chdir(defaultWD)
     
-    bg_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear2 - Mod', mcVersion, version)), 'w')
+    bg_jar = zipfile.ZipFile(os.path.join(distDir,generateJarName('M&B Battlegear 2 - Mod', mcVersion, version)), 'w')
     
     print 'Packing McMod Info'
 	
@@ -107,19 +107,17 @@ def main(distDir,  mcpDir):
     print 'Packing Logo'
     bg_jar.write(os.path.join(file_bin,'bg-logo.png'), 'bg-logo.png')
     
-    file_bin = os.path.join(mcpDir, 'src', 'minecraft', 'mods')
+    file_bin = os.path.join(mcpDir, 'src', 'minecraft')
     
     
     for root, _, filelist in os.walk(file_bin, followlinks=True):
 		if root.find(coremod_dir) == -1:
-			if not root.find('battlegear2') == -1:
+			if (not root.find('battlegear2') == -1) or (not root.find('extendedGUI') == -1):
 				for cur_file in filelist :
 					if not (cur_file.endswith('.java') or cur_file.endswith('.orig')):
-						class_file = os.path.join(root.replace(file_bin, 'mods'),cur_file)
+						class_file = os.path.join(root.replace(file_bin, ''),cur_file)
 						print 'Packing File : '+class_file
 						bg_jar.write(os.path.join(root,cur_file), class_file)
-    
-    
     
     for root, _, filelist in os.walk(reob_bin, followlinks=True):
             if(root.find(coremod_dir) == -1 and root.find(os.path.join('net','minecraft')) == -1):
@@ -139,7 +137,7 @@ def main(distDir,  mcpDir):
     
     print '================ Creating Base class edit zip ==================='	
     os.chdir(defaultWD)
-    baseclass_zip = zipfile.ZipFile(os.path.join(distDir,generateZipName('M&B Battlegear2 - Base Class', mcVersion, version)), 'w')
+    baseclass_zip = zipfile.ZipFile(os.path.join(distDir,generateZipName('M&B Battlegear 2 - Base Class', mcVersion, version)), 'w')
     
     for files in os.listdir(os.path.join(reob_bin, 'minecraft')):
         if files.endswith(".class"):

@@ -37,12 +37,12 @@ public class ItemHeradryIcon extends Item implements IHeraldyItem{
 	}
 	
 	@Override
-	public Icon getBaseIcon() {
+	public Icon getBaseIcon(ItemStack stack) {
 		return base;
 	}
 	
 	@Override
-	public Icon getTrimIcon() {
+	public Icon getTrimIcon(ItemStack stack) {
 		return null;
 	}
 
@@ -63,42 +63,51 @@ public class ItemHeradryIcon extends Item implements IHeraldyItem{
 	}
 
 	@Override
-	public Icon getPostRenderIcon() {
+	public Icon getPostRenderIcon(ItemStack stack) {
 		return trim;
 	}
 
 	@Override
 	public boolean hasHeraldry(ItemStack stack) {
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey("heraldry");
+		
+		if(stack.hasTagCompound()){
+			if(stack.getTagCompound().hasKey("heraldry")){
+				int oldcode = stack.getTagCompound().getInteger("heraldry");
+				stack.getTagCompound().setByteArray("hc2", SigilHelper.translate(oldcode));
+				stack.getTagCompound().removeTag("heraldry");
+			}
+		}
+		
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey("hc2");
 	}
 	
 	@Override
-	public int getHeraldryCode(ItemStack stack) {
+	public byte[] getHeraldryCode(ItemStack stack) {
 		if(!stack.hasTagCompound()){
-			return SigilHelper.defaultSigil;
+			return SigilHelper.getDefault();
 		}
 		NBTTagCompound compound = stack.getTagCompound();
-		if(compound.hasKey("heraldry")){
-			return compound.getInteger("heraldry");
+		if(compound.hasKey("hc2")){
+			return compound.getByteArray("hc2");
 		}else{
-			return SigilHelper.defaultSigil;
+			return SigilHelper.getDefault();
 		}
 	}
 
 	@Override
 	public void removeHeraldry(ItemStack item) {
 		if(item.hasTagCompound()){
-			item.getTagCompound().removeTag("heraldry");
+			item.getTagCompound().removeTag("hc2");
 		}
 	}
 
 	@Override
-	public void setHeraldryCode(ItemStack stack, int code) {
+	public void setHeraldryCode(ItemStack stack, byte[] code) {
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		stack.getTagCompound().setInteger("heraldry", code);
+		stack.getTagCompound().setByteArray("hc2", code);
 	}
 
 	@Override

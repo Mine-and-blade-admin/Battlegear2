@@ -67,7 +67,7 @@ public class HeraldyRecipie implements IRecipe{
 		item=item.copy();
 		
 		if(heraldricWeapon instanceof IHeraldyItem){
-			int code = SigilHelper.defaultSigil;
+			byte[] code = SigilHelper.getDefault();
 			if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
 				code = ((IHeraldyItem)icon.getItem()).getHeraldryCode(icon);
 			}
@@ -79,12 +79,12 @@ public class HeraldyRecipie implements IRecipe{
 				compound = new NBTTagCompound();
 			}
 			if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
-				int code = ((IHeraldyItem)icon.getItem()).getHeraldryCode(icon);
-				compound.setInteger("heraldry", code);
+				byte[] code = ((IHeraldyItem)icon.getItem()).getHeraldryCode(icon);
+				compound.setByteArray("hc2", code);
 				item.setTagCompound(compound);
 			}else{ // should be a bucket
-				if(compound.hasKey("heraldry")){
-					compound.removeTag("heraldry");
+				if(compound.hasKey("hc2")){
+					compound.removeTag("hc2");
 				}
 			}
 		}
@@ -99,8 +99,12 @@ public class HeraldyRecipie implements IRecipe{
 	@Override
 	public ItemStack getRecipeOutput() {
 		ItemStack stack = new ItemStack(heraldricWeapon, 1);
-		stack.setTagCompound(new NBTTagCompound());
-		stack.getTagCompound().setInteger("heraldry", SigilHelper.defaultSigil);
+		if(heraldricWeapon instanceof IHeraldyItem){
+			((IHeraldyItem)heraldricWeapon).setHeraldryCode(stack, SigilHelper.getDefault());
+		}else{
+			stack.setTagCompound(new NBTTagCompound());
+			stack.getTagCompound().setByteArray("hc", SigilHelper.getDefault());
+		}
 		return stack;
 	}
 	

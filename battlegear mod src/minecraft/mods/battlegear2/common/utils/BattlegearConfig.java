@@ -1,7 +1,17 @@
 package mods.battlegear2.common.utils;
 
+import java.awt.Color;
+
+import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.client.heraldry.HeraldryIcon;
+import mods.battlegear2.client.heraldry.HeraldryPositions;
+import mods.battlegear2.client.heraldry.HeraldyPattern;
 import mods.battlegear2.common.BattleGear;
+import mods.battlegear2.common.blocks.BlockBanner;
+import mods.battlegear2.common.blocks.BlockItemBanner;
+import mods.battlegear2.common.blocks.TileEntityBanner;
 import mods.battlegear2.common.heraldry.KnightArmourRecipie;
+import mods.battlegear2.common.heraldry.SigilHelper;
 import mods.battlegear2.common.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.common.items.ItemDagger;
 import mods.battlegear2.common.items.ItemHeradryIcon;
@@ -15,6 +25,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -35,7 +47,9 @@ public class BattlegearConfig {
 	public static int[] setID=new int[8],validWeaponsID={11,12,16,20,27};
 	
 	public static ItemWeapon[] dagger=new ItemWeapon[5],warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5],shield=new ItemWeapon[5];
-	public static Item chain,quiver,banner,heradricItem;
+	public static Item chain,quiver,heradricItem;
+	public static Block banner;
+	public static ItemBlock bannerItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[4];
 	
 	
@@ -64,12 +78,20 @@ public class BattlegearConfig {
 					material, itemNames[4], i==4?2:1);
     	}
     		
-    	
-    	
+    	//banner = new BlockBanner(config.get(config.CATEGORY_BLOCK, "Banner", 425).getInt());
+    	banner = new BlockBanner(config.getBlock("Banner", 2650).getInt());
+    	GameRegistry.registerBlock(banner, "Banner");
+		GameRegistry.registerTileEntity(TileEntityBanner.class, "MBBanner");
+		
+		
+		Item.itemsList[banner.blockID] = null;
+		bannerItem = (new BlockItemBanner(banner.blockID-256));
+		Item.itemsList[banner.blockID] = bannerItem;
+		
+		
         if(BattleGear.debug){
         	
         	forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
-        	
         	
         	quiver = new Item(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
         	quiver.setUnlocalizedName("quiver");
@@ -131,6 +153,27 @@ public class BattlegearConfig {
 		for(int i = 0; i < 4; i++){
 			GameRegistry.addRecipe(new KnightArmourRecipie(i));
 		}
+		
+		for(int x = 0; x < 16; x++){
+			for(int y = 0; y < 16; y++){
+				ItemStack bannerStack = new ItemStack(bannerItem);
+				((IHeraldyItem)bannerStack.getItem()).setHeraldryCode(bannerStack, 
+						SigilHelper.packSigil(HeraldyPattern.HORIZONTAL_BLOCK, (byte)0, (byte)0, 
+								new Color(ItemDye.dyeColors[15-x]), new Color(ItemDye.dyeColors[15-y]),
+								HeraldryIcon.Blank, HeraldryPositions.SINGLE, Color.WHITE, Color.WHITE)
+						);
+				GameRegistry.addRecipe(bannerStack,  new Object[]
+						{" a "," b ", " S ",
+						Character.valueOf('a'), new ItemStack(Block.cloth,0, x),
+						Character.valueOf('b'), new ItemStack(Block.cloth,0, y),
+						Character.valueOf('S'), Item.stick
+						}
+				);
+			}
+		}
+		
+		GameRegistry.addRecipe(new ItemStack(bannerItem),  new Object[]
+				{" W "," W ", " S ",Character.valueOf('W'),Block.cloth, Character.valueOf('S'), Item.stick});
 		
 		
 		if(BattleGear.debug){

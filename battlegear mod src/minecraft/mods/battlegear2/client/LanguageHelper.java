@@ -40,6 +40,8 @@ public class LanguageHelper {
 		    	if(split.length == 2){
 		    		if(split[0].startsWith("item.")){
 		    			split[0] = split[0].replace("item.", "item.battlegear2:");
+		    		}else if (split[0].startsWith("tile.")){
+		    			split[0] = split[0].replace("tile.", "tile.battlegear2:");
 		    		}
 		    		LanguageRegistry.instance().addStringLocalization(split[0], split[1]);
 		    	}

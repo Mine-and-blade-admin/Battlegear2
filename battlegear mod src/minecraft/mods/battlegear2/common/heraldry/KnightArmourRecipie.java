@@ -96,7 +96,7 @@ public class KnightArmourRecipie implements IRecipe{
 			kArmourStack.setTagCompound(new NBTTagCompound());
 		}
 		
-		((ItemKnightArmour)kArmourStack.getItem()).setHeraldryCode(kArmourStack, SigilHelper.defaultSigil);
+		((ItemKnightArmour)kArmourStack.getItem()).setHeraldryCode(kArmourStack, SigilHelper.getDefault());
 		
 		return kArmourStack;
 		

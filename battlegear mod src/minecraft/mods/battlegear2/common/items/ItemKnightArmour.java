@@ -1,5 +1,7 @@
 package mods.battlegear2.common.items;
 
+import java.util.List;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.IHeraldyArmour;
@@ -8,6 +10,7 @@ import mods.battlegear2.client.heraldry.HeraldryArmourModel;
 import mods.battlegear2.client.heraldry.HeraldyPattern;
 import mods.battlegear2.common.BattleGear;
 import mods.battlegear2.common.gui.ArmourSlot;
+import mods.battlegear2.common.heraldry.KnightArmourRecipie;
 import mods.battlegear2.common.heraldry.SigilHelper;
 import mods.battlegear2.common.inventory.InventoryPlayerBattle;
 import mods.battlegear2.common.utils.BattlegearConfig;
@@ -21,14 +24,18 @@ import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
+import net.minecraft.util.StringTranslate;
 import net.minecraftforge.common.IArmorTextureProvider;
 
 public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmorTextureProvider{
 	
-	private Icon baseIcon;
-	private Icon postRenderIcon;
+	private Icon baseIcon[];
+	private Icon postRenderIcon[];
 	private Icon trimRenderIcon;
+	
+	private Object modelObject;
 
 	public ItemKnightArmour(int id, int armourType) {
 		super(id, BattleGear.knightArmourMaterial, 1, armourType);
@@ -40,8 +47,20 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister) {
 		//super.registerIcons(par1IconRegister);
-		baseIcon = par1IconRegister.registerIcon("battlegear2:armours/knight-base-"+BattlegearConfig.armourTypes[armorType]);
-		postRenderIcon = par1IconRegister.registerIcon("battlegear2:armours/knight-post-"+BattlegearConfig.armourTypes[armorType]);
+		
+		if(armorType == 0){
+			baseIcon = new Icon[4];
+			postRenderIcon = new Icon[4];
+			for(int i = 0; i < 4; i ++){
+				baseIcon[i] = par1IconRegister.registerIcon("battlegear2:armours/knight-base-"+BattlegearConfig.armourTypes[armorType]+"-"+i);
+				postRenderIcon[i] =  par1IconRegister.registerIcon("battlegear2:armours/knight-post-"+BattlegearConfig.armourTypes[armorType]+"-"+i);
+			}
+		}else{
+			baseIcon = new Icon[1];
+			postRenderIcon = new Icon[1];
+			baseIcon[0] = par1IconRegister.registerIcon("battlegear2:armours/knight-base-"+BattlegearConfig.armourTypes[armorType]);
+			postRenderIcon[0] = par1IconRegister.registerIcon("battlegear2:armours/knight-post-"+BattlegearConfig.armourTypes[armorType]);
+		}
 	
 		if(armorType == 2){
 			trimRenderIcon = par1IconRegister.registerIcon("battlegear2:armours/knight-trim-"+BattlegearConfig.armourTypes[armorType]);
@@ -49,50 +68,78 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 	}
 
 	@Override
-	public Icon getBaseIcon() {
-		return baseIcon;
+	public Icon getBaseIcon(ItemStack stack) {
+		if(armorType == 0){
+			return baseIcon[SigilHelper.getHelm(((IHeraldyItem)stack.getItem()).getHeraldryCode(stack))];
+		}else
+			return baseIcon[0];
 	}
 
 	@Override
-	public Icon getPostRenderIcon() {
-		return postRenderIcon;
+	public Icon getPostRenderIcon(ItemStack stack) {
+		if(armorType == 0){
+			return postRenderIcon[SigilHelper.getHelm(((IHeraldyItem)stack.getItem()).getHeraldryCode(stack))];
+		}else 
+			return postRenderIcon[0];
 	}
 	
 	@Override
-	public Icon getTrimIcon() {
+	public Icon getTrimIcon(ItemStack stack) {
 		return trimRenderIcon;
 	}
 
 	@Override
 	public boolean hasHeraldry(ItemStack stack) {
+		
+		if(stack.hasTagCompound()){
+			if(stack.getTagCompound().hasKey("heraldry")){
+				int oldcode = stack.getTagCompound().getInteger("heraldry");
+				stack.getTagCompound().setByteArray("hc2", SigilHelper.translate(oldcode));
+				stack.getTagCompound().removeTag("heraldry");
+			}
+		}
+		
 		return true;
+	}
+	
+	
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack par1ItemStack,
+			EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
+		par3List.add(String.format("%s +%d %s", 
+				EnumChatFormatting.BLUE, this.damageReduceAmount,
+				StringTranslate.getInstance().translateKey("tooltip.armour.points")));
 	}
 
 	@Override
-	public int getHeraldryCode(ItemStack stack) {
+	public byte[] getHeraldryCode(ItemStack stack) {
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 		}
 		
-		if(!stack.getTagCompound().hasKey("heraldry")){
-			stack.getTagCompound().setInteger("heraldry", SigilHelper.defaultSigil);
-			return SigilHelper.defaultSigil;
+		if(!stack.getTagCompound().hasKey("hc2")){
+			stack.getTagCompound().setByteArray("hc2", SigilHelper.getDefault());
+			return SigilHelper.getDefault();
 		}else{
-			return stack.getTagCompound().getInteger("heraldry");
+			return stack.getTagCompound().getByteArray("hc2");
 		}
 	}
 	
-	public void setHeraldryCode(ItemStack stack, int code){
+	@Override
+	public void setHeraldryCode(ItemStack stack, byte[] code){
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 		}
-		stack.getTagCompound().setInteger("heraldry", code);
+		stack.getTagCompound().setByteArray("hc2", code);
 	}
 
 	@Override
 	public void removeHeraldry(ItemStack item) {
 		if(item.hasTagCompound()){
-			item.getTagCompound().setInteger("heraldry", SigilHelper.defaultSigil);
+			item.getTagCompound().setByteArray("hc2", SigilHelper.getDefault());
 		}
 	}
 
@@ -128,8 +175,14 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 	@SideOnly(Side.CLIENT)
 	public ModelBiped getArmorModel(EntityLiving entityLiving,
 			ItemStack itemStack, int armorSlot) {
-		//TODO: Possibly not the most efficiant, maybe we should change this to using static references for better preformance
-		HeraldryArmourModel model = new HeraldryArmourModel(armorSlot);
+		
+		if(modelObject == null){
+			modelObject = new HeraldryArmourModel(armorType);
+		}
+		
+		HeraldryArmourModel model = (HeraldryArmourModel)modelObject;
+		
+		
 		model.setItemStack(itemStack);
 		model.bipedHead.showModel = armorSlot == 0;
 
@@ -140,21 +193,23 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 		model.bipedRightLeg.showModel = armorSlot == 2 || armorSlot == 3;
 		model.bipedLeftLeg.showModel = armorSlot == 2 || armorSlot == 3;
 		
-		model.heldItemRight = entityLiving.getHeldItem() == null?0:1;
-		if(entityLiving instanceof EntityPlayer){
-			if (entityLiving.getHeldItem() != null &&  ((EntityPlayer)entityLiving).getItemInUseCount() > 0){
-				EnumAction enumaction = entityLiving.getHeldItem().getItemUseAction();
-				if (enumaction == EnumAction.block){
-	                model.heldItemRight = 3;
-	            }
-				model.aimedBow = enumaction == EnumAction.bow;
-	        }
-			
-			model.heldItemLeft = ((EntityPlayer)entityLiving).inventory.getStackInSlot(
-					((EntityPlayer)entityLiving).inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS) == null?0:1;
-			
+		if(entityLiving != null){
+			model.heldItemRight = entityLiving.getHeldItem() == null?0:1;
+			if(entityLiving instanceof EntityPlayer){
+				if (entityLiving.getHeldItem() != null &&  ((EntityPlayer)entityLiving).getItemInUseCount() > 0){
+					EnumAction enumaction = entityLiving.getHeldItem().getItemUseAction();
+					if (enumaction == EnumAction.block){
+		                model.heldItemRight = 3;
+		            }
+					model.aimedBow = enumaction == EnumAction.bow;
+		        }
+				
+				model.heldItemLeft = ((EntityPlayer)entityLiving).inventory.getStackInSlot(
+						((EntityPlayer)entityLiving).inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS) == null?0:1;
+				
+			}
+			model.isSneak = entityLiving.isSneaking();
 		}
-		model.isSneak = entityLiving.isSneaking();
 		
 		
 		return model;
@@ -170,8 +225,4 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, IArmo
 		return BattleGear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-"+pattern.ordinal()+".png";
 	}
 	
-	
-	
-	
-
 }

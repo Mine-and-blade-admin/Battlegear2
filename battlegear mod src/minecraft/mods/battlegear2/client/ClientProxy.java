@@ -7,6 +7,7 @@ import java.util.List;
 
 
 import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.client.blocks.BannerBlockRenderer;
 import mods.battlegear2.client.gui.BattlegearGUITickHandeler;
 import mods.battlegear2.client.heraldry.HeradrySwordRenderer;
 import mods.battlegear2.client.heraldry.HeraldryItemRenderer;
@@ -17,10 +18,13 @@ import mods.battlegear2.common.BattlegearPacketHandeler;
 import mods.battlegear2.common.BattlegearTickHandeler;
 import mods.battlegear2.common.BattlemodeHookContainerClass;
 import mods.battlegear2.common.CommonProxy;
+import mods.battlegear2.common.blocks.TileEntityBanner;
 import mods.battlegear2.common.utils.BattlegearConfig;
 import mods.battlegear2.common.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.client.renderer.texture.StitchSlot;
@@ -38,7 +42,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
+import cpw.mods.fml.client.CustomModLoadingErrorDisplayException;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -83,7 +89,39 @@ public class ClientProxy extends CommonProxy{
 	public Icon getBackgroundIcon(int i){
 		return backgroundIcon[i];
 	}
+
 	
+
+	@Override
+	public void throwDependencyError(String[] dependencies) {
+		throw new BattlegearDependencyException(dependencies);
+	}
+	
+	@Override
+	public void throwError(String message1, String message2) {
+		
+		final String m = message1;
+		final String m2 = message2;
+		
+		throw new CustomModLoadingErrorDisplayException() {
+			@Override
+			public void initGui(GuiErrorScreen errorScreen, FontRenderer fontRenderer) {}
+			
+			@Override
+			public void drawScreen(GuiErrorScreen errorScreen,
+					FontRenderer fontRenderer, int mouseRelX, int mouseRelY,
+					float tickTime) {
+				
+				errorScreen.drawCenteredString(
+						fontRenderer, m,
+						errorScreen.width / 2, (errorScreen.height)/2-20, 0xFFFF00);
+				errorScreen.drawCenteredString(
+						fontRenderer, m2,
+						errorScreen.width / 2, (errorScreen.height)/2, 0xFFFFFF);
+				
+			}
+		};
+	}
 
 	@Override
 	public void registerKeyHandelers() {
@@ -129,6 +167,8 @@ public class ClientProxy extends CommonProxy{
 			}
 			
 		}
+		
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityBanner.class, new BannerBlockRenderer());
 	}
 		
 	
