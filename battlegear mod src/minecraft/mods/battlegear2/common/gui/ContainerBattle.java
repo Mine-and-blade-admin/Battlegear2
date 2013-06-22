@@ -71,8 +71,7 @@ public class ContainerBattle extends Container{
     	    if (slotIndex<4||slotIndex>39)
     	    {//we are in weapon/armor slots, so we transfer to normal
     	    	//chose from the up left slot in the inventory to the right slot in bar 	
-    	    	if(!this.mergeItemStack(itemStack1, 4, 39, false))
-    	    		return null; 
+    	    	this.mergeItemStack(itemStack1, 4, 39, false);
     	    }
     	    else //we are in normal inventory
     	    {
