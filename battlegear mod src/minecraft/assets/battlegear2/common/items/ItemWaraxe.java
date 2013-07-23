@@ -1,25 +1,13 @@
 package assets.battlegear2.common.items;
 
 import java.util.List;
-import java.util.Random;
-
-import assets.battlegear2.api.IHeraldyItem;
-import assets.battlegear2.api.OffhandAttackEvent;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
-import net.minecraft.util.StringTranslate;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraft.util.StatCollector;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -55,8 +43,8 @@ public class ItemWaraxe extends OneHandedWeapon{ // implements IHeraldyItem{ Don
 
 		par3List.add(String.format("%s %s %s", 
 				EnumChatFormatting.DARK_GREEN, 
-				StringTranslate.getInstance().translateKey("tooltip.armour.penetrate"), 
-				StringTranslate.getInstance().translateKey("enchantment.level."+ignoreDamageAmount)));
+				StatCollector.translateToLocal("tooltip.armour.penetrate"), 
+				StatCollector.translateToLocal("enchantment.level."+ignoreDamageAmount)));
 		
 	}
 

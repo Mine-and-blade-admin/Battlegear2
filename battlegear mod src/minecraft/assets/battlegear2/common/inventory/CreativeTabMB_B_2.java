@@ -1,11 +1,11 @@
 package assets.battlegear2.common.inventory;
 
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.StatCollector;
 import assets.battlegear2.common.utils.BattlegearConfig;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.StringTranslate;
 
 public class CreativeTabMB_B_2 extends CreativeTabs{
 
@@ -17,7 +17,7 @@ public class CreativeTabMB_B_2 extends CreativeTabs{
 	@SideOnly(Side.CLIENT)
     public String getTranslatedTabLabel()
     {
-        return StringTranslate.getInstance().translateKey("name.title");
+        return StatCollector.translateToLocal("name.title");
     }
 	@Override
 	public ItemStack getIconItemStack() {

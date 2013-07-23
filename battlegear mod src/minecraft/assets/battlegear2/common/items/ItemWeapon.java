@@ -3,19 +3,6 @@ package assets.battlegear2.common.items;
 import java.util.List;
 import java.util.Random;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import assets.battlegear2.api.IBackStabbable;
-import assets.battlegear2.api.IBattlegearWeapon;
-import assets.battlegear2.api.ILowHitTime;
-import assets.battlegear2.api.IPenetrateWeapon;
-import assets.battlegear2.api.ISpecialEffect;
-import assets.battlegear2.common.utils.BattlegearConfig;
-
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -27,8 +14,17 @@ import net.minecraft.item.ItemSword;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
-import net.minecraft.util.StringTranslate;
+import net.minecraft.util.StatCollector;
+import assets.battlegear2.api.IBackStabbable;
+import assets.battlegear2.api.IBattlegearWeapon;
+import assets.battlegear2.api.ILowHitTime;
+import assets.battlegear2.api.IPenetrateWeapon;
+import assets.battlegear2.api.ISpecialEffect;
+import assets.battlegear2.common.utils.BattlegearConfig;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -72,7 +68,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon{
 		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
 		//TODO Change/Remove this when 1.6 is released
 		par3List.add(String.format("%s +%d %s", EnumChatFormatting.BLUE, (baseDamage-1), 
-				StringTranslate.getInstance().translateKey("tooltip.attack")));
+				StatCollector.translateToLocal("tooltip.attack")));
 	}
 	
 	@Override

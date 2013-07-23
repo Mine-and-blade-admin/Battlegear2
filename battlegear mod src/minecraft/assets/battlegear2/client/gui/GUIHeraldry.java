@@ -2,8 +2,26 @@ package assets.battlegear2.client.gui;
 
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
 import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import guiToolkit.GUIAltButton;
+import guiToolkit.GUIAltScroll;
+import guiToolkit.GuiHSBColourPicker;
 
 import java.awt.Color;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -19,31 +37,10 @@ import assets.battlegear2.common.BattleGear;
 import assets.battlegear2.common.BattlegearPacketHandeler;
 import assets.battlegear2.common.blocks.TileEntityBanner;
 import assets.battlegear2.common.gui.ContainerHeraldry;
-import assets.battlegear2.common.heraldry.KnightArmourRecipie;
 import assets.battlegear2.common.heraldry.SigilHelper;
 import assets.battlegear2.common.items.ItemKnightArmour;
 import assets.battlegear2.common.utils.BattlegearConfig;
-
 import cpw.mods.fml.client.FMLClientHandler;
-import guiToolkit.GUIAltButton;
-import guiToolkit.GUIAltScroll;
-import guiToolkit.GuiHSBColourPicker;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.item.ItemDye;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StringTranslate;
 
 public class GUIHeraldry extends GuiContainer{
 	
@@ -105,7 +102,7 @@ public class GUIHeraldry extends GuiContainer{
 	private GUIAltButton selectColourButton;
 	
 	private HeraldryArmourModel armourModel;
-	private static StringTranslate translator = new StringTranslate();
+
 	public static final ResourceLocation panels = new ResourceLocation(BattleGear.imageFolder+"gui/Sigil GUI Panels.png");
 	
 	static{
@@ -526,7 +523,7 @@ public class GUIHeraldry extends GuiContainer{
 			}
 			
 			
-			String[] split = translator.translateKey(displayString[panelId]).split("%n");
+			String[] split = StatCollector.translateToLocal(displayString[panelId]).split("%n");
 			for(int i = 0; i < split.length; i++){
 				this.drawCenteredString(this.fontRenderer, split[i], guiLeft+43+xSize, guiTop+4+i*10, 0xFFFF40);
 			}
@@ -611,19 +608,19 @@ public class GUIHeraldry extends GuiContainer{
 		colourButtons = new BasicColourButton[4];
 		
 		int y = guiTop+6;
-		buttonList.add(new GUIAltButton(0, guiLeft+80, y, 72, 18, translator.translateKey("sigil.pattern.title")));
+		buttonList.add(new GUIAltButton(0, guiLeft+80, y, 72, 18, StatCollector.translateToLocal("sigil.pattern.title")));
 		colourButtons[0] = new BasicColourButton(5, guiLeft+80+76, y, 9, 9, SigilHelper.getPrimaryColour(code));
 		colourButtons[1] = new BasicColourButton(6, guiLeft+80+76, y+10, 9, 9, SigilHelper.getSecondaryColour(code));
 		y+=20;
-		buttonList.add(new GUIAltButton(1, guiLeft+80, y, 72, 18, translator.translateKey("sigil.icon.title")));
+		buttonList.add(new GUIAltButton(1, guiLeft+80, y, 72, 18, StatCollector.translateToLocal("sigil.icon.title")));
 		colourButtons[2] = new BasicColourButton(7, guiLeft+80+76, y, 9, 9,  SigilHelper.getSigilPrimaryColour(code));
 		colourButtons[3] = new BasicColourButton(8, guiLeft+80+76, y+10, 9, 9, SigilHelper.getSigilSecondaryColour(code));
 		y+=20;
-		buttonList.add(new GUIAltButton(2, guiLeft+80, y, 72+16, 18, translator.translateKey("sigil.icon_pos.title")));
+		buttonList.add(new GUIAltButton(2, guiLeft+80, y, 72+16, 18, StatCollector.translateToLocal("sigil.icon_pos.title")));
 		y+=20;
-		buttonList.add(new GUIAltButton(3, guiLeft+80, y, 72+16, 18, translator.translateKey("sigil.banner.title")));
+		buttonList.add(new GUIAltButton(3, guiLeft+80, y, 72+16, 18, StatCollector.translateToLocal("sigil.banner.title")));
 		y+=20;
-		buttonList.add(new GUIAltButton(4, guiLeft+80, y, 72+16, 18, translator.translateKey("sigil.helm.title")));
+		buttonList.add(new GUIAltButton(4, guiLeft+80, y, 72+16, 18, StatCollector.translateToLocal("sigil.helm.title")));
 		
 		buttonList.add(colourButtons[0]);
 		buttonList.add(colourButtons[1]);
@@ -636,7 +633,7 @@ public class GUIHeraldry extends GuiContainer{
 		
 		colourPicker = new GuiHSBColourPicker(21, guiLeft+xSize+12, guiTop+36+25, Color.GREEN);
 		
-		selectColourButton = new GUIAltButton(22, guiLeft+xSize+12, guiTop+36+68+25, 64, 18, translator.translateKey("sigil.colour.select"));
+		selectColourButton = new GUIAltButton(22, guiLeft+xSize+12, guiTop+36+68+25, 64, 18, StatCollector.translateToLocal("sigil.colour.select"));
 		buttonList.add(selectColourButton);
 		buttonList.add(colourPicker);
 	}

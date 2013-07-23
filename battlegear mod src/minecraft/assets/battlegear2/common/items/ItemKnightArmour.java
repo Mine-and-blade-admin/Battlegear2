@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
-import net.minecraft.util.StringTranslate;
+import net.minecraft.util.StatCollector;
 import assets.battlegear2.api.IHeraldyArmour;
 import assets.battlegear2.api.IHeraldyItem;
 import assets.battlegear2.client.heraldry.HeraldryArmourModel;
@@ -105,7 +105,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour/*, IAr
 		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
 		par3List.add(String.format("%s +%d %s", 
 				EnumChatFormatting.BLUE, this.damageReduceAmount,
-				StringTranslate.getInstance().translateKey("tooltip.armour.points")));
+				StatCollector.translateToLocal("tooltip.armour.points")));
 	}
 
 	@Override
