@@ -1,0 +1,60 @@
+name.title=M&B Battlegear 2
+
+item.heraldric.name=Blason
+item.chain.name=Chaine
+item.quiver.name=Carquois
+
+item.dagger.wood.name=Dague en bois
+item.dagger.stone.name=Dague en pierre
+item.dagger.iron.name=Dague en fer
+item.dagger.diamond.name=Dague en diamant
+item.dagger.gold.name=Dague en or
+
+item.waraxe.wood.name=Hache de guerre en bois
+item.waraxe.stone.name=Hache de guerre en pierre
+item.waraxe.iron.name=Hache de guerre en fer
+item.waraxe.diamond.name=Hache de guerre en diamant
+item.waraxe.gold.name=Hache de guerre en or
+
+item.mace.wood.name=Massue en bois
+item.mace.stone.name=Massue en bois
+item.mace.iron.name=Massue en bois
+item.mace.diamond.name=Massue en bois
+item.mace.gold.name=Massue en or
+
+item.spear.wood.name=Lance en bois
+item.spear.stone.name=Lance en pierre
+item.spear.iron.name=Lance en fer
+item.spear.diamond.name=Lance en diamant
+item.spear.gold.name=Lance en or
+
+item.shield.wood.name=Bouclier de bois
+item.shield.hide.name=Bouclier en peau
+item.shield.iron.name=Bouclier de fer
+item.shield.diamond.name=Bouclier de diamant
+item.shield.gold.name=Bouclier en or
+
+item.knights_armour.helmet.name=Heaume de chevalier
+item.knights_armour.plate.name=Cuirasse de chevalier
+item.knights_armour.legs.name=Jambiere de chevalier
+item.knights_armour.boots.name=Bottes de chevalier
+
+tile.banner.name=Etendard
+
+sigil.pattern.title=Motif
+sigil.icon.title=Symbole
+sigil.icon_pos.title=Position du symbole
+sigil.colour1.title=Couleur 1
+sigil.colour2.title=Couleur 2
+sigil.icon_colour1.title=Symbole%nCouleur 1
+sigil.icon_colour2.title=Symbole%nCouleur 2
+sigil.banner.title=Banniere
+sigil.helm.title=Heaume
+sigil.colour.select=Selection
+
+tooltip.attack=Degats
+tooltip.armour.penetrate=Penetration d'armure
+tooltip.reach=Allonge
+tooltip.daze=Etourdissement
+tooltip.quick=Rapide
+tooltip.armour.points=Points d'armure
