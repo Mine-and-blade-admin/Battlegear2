@@ -51,7 +51,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon{
 		
 		
 		this.setUnlocalizedName("battlegear2:"+name);
-		
+		this.func_111206_d("battlegear2:"+name);
 		
 		this.baseDamage = 4 + material.getDamageVsEntity();
 	}
@@ -67,7 +67,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon{
 			EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
 		super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
 		//TODO Change/Remove this when 1.6 is released
-		par3List.add(String.format("%s +%d %s", EnumChatFormatting.BLUE, (baseDamage-1), 
+		par3List.add(String.format("%s +%d %s", EnumChatFormatting.BLUE, (int)(baseDamage), 
 				StatCollector.translateToLocal("tooltip.attack")));
 	}
 	

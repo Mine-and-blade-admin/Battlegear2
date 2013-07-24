@@ -33,6 +33,7 @@ import java.security.cert.X509Certificate;
 
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
+import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ForgeVersion;
@@ -76,23 +77,26 @@ public class BattleGear {
 			serverSide="assets.battlegear2.common.CommonProxy")
 	public static CommonProxy proxy;
 	
-	public static final String imageFolder = "battlegear2:";
+	public static final String imageFolder = "battlegear2:/textures/";
 	
-	private static final int[] ForgeMinVersion = new int[]{7,8,0,704};
+	private static final int[] ForgeMinVersion = new int[]{9,10,0,789};
+	
+	private static Configuration config;
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event){
 		instance = this;
 		//Knights armour is not as durable as diamond, provides 2 armour points less protection and is more enchantable
 		knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
-		
-		BattlegearConfig.getConfig(event);
-        BattlegearConfig.registerRecipes();       
+		config = new Configuration(event.getSuggestedConfigurationFile(),true);
+        config.load();       
 	}
 	
 	@EventHandler
 	public void Init(FMLInitializationEvent event){
-		
+
+		BattlegearConfig.getConfig(config);
+        BattlegearConfig.registerRecipes();
 		jarCheck();
 		
 		if(ForgeVersion.getMajorVersion() != ForgeMinVersion[0] ||

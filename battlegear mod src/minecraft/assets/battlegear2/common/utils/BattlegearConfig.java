@@ -53,14 +53,12 @@ public class BattlegearConfig {
 	
 	
 	
-	public static void getConfig(FMLPreInitializationEvent event) {
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile(),true);
-        config.load();
-        
+	public static void getConfig(Configuration config) {
+		
         heradricItem = new ItemHeradryIcon(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());
         
         chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
-    	chain.setUnlocalizedName("battlegear2:chain");
+    	chain.setUnlocalizedName("battlegear2:chain").func_111206_d("battlegear2:chain");
     	
     	for(int i = 0; i < armourTypes.length; i++){
 	    	knightArmor[i] = new ItemKnightArmour(
