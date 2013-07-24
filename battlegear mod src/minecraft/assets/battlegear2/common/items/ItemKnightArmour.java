@@ -162,7 +162,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour/*, IAr
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, int layer) {
-		return "/textures/armours/knights/knights-"+(slot==2?1:0)+".png";
+		return BattleGear.imageFolder+"armours/knights/knights-"+(slot==2?1:0)+".png";
 	}
 
 	@Override

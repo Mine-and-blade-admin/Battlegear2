@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -112,7 +113,7 @@ public class HeradrySwordRenderer implements IItemRenderer{
 	}
 
 	protected void drawInventoryHeraldryItem(ItemStack item, Object[] data) {
-		//this.mc.renderEngine.bindTexture("/gui/items.png");
+		this.mc.renderEngine.func_110577_a(TextureMap.field_110576_c);//.bindTexture("/gui/items.png");
 		Tessellator tessellator = Tessellator.instance;
 		
 		byte[] code = item.getTagCompound().getByteArray("hc2");
@@ -137,7 +138,7 @@ public class HeradrySwordRenderer implements IItemRenderer{
 	
 
 	public void drawEquippedHeraldryItem(ItemStack item, Object... data){
-		//this.mc.renderEngine.bindTexture("/gui/items.png");
+		this.mc.renderEngine.func_110577_a(TextureMap.field_110576_c);//.bindTexture("/gui/items.png");
 		Tessellator tessellator = Tessellator.instance;
 		
 		byte[] code = item.getTagCompound().getByteArray("hc2");

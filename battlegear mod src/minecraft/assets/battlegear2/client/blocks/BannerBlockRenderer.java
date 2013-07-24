@@ -19,9 +19,11 @@ import net.minecraft.client.model.ModelSign;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import cpw.mods.fml.client.registry.ISimpleBlockRenderingHandler;
@@ -41,8 +43,8 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
         this.blockRenderer = new RenderBlocks(par1World);
     }
     
-    public String getBannerPath(byte[] heraldry){
-    	return String.format("%sblocks/banner/banner-%s.png",BattleGear.imageFolder, SigilHelper.getBanner(heraldry));
+    public ResourceLocation getBannerPath(byte[] heraldry){
+    	return new ResourceLocation(String.format("%sblocks/banner/banner-%s.png", BattleGear.imageFolder, SigilHelper.getBanner(heraldry)));
     }
     
     public void renderTileEntityAt(TileEntity tileentity, double par2, double par4,
@@ -61,7 +63,8 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
 			Tessellator tessellator = Tessellator.instance;
 			double x1, x2, y1, y2, z1, z2;
 
-			this.bindTextureByName("/terrain.png");
+			this.func_110628_a(TextureMap.field_110575_b);
+			//this.bindTextureByName("/terrain.png");
 	        RenderHelper.disableStandardItemLighting();
 	        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	        GL11.glEnable(GL11.GL_BLEND);
@@ -293,7 +296,7 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
 	        
 	        tessellator.startDrawingQuads();
 	        GL11.glColor3f(colour[0], colour[1], colour[2]);
-	        this.bindTextureByName(getBannerPath(code));
+	        this.func_110628_a(getBannerPath(code));
 	        tessellator.addVertexWithUV(x1, y1, z2, 0, 1);
 	        tessellator.addVertexWithUV(x2, y1, z2, 1, 1);
 	        tessellator.addVertexWithUV(x2, y2, z2, 1, 0);
@@ -311,7 +314,7 @@ public class BannerBlockRenderer extends TileEntitySpecialRenderer{
 	        
 	        
 	        GL11.glColor3f(colour[0], colour[1], colour[2]);
-	        this.bindTextureByName(String.format("%sblocks/banner/pattern/banner-pattern-%s.png", BattleGear.imageFolder, SigilHelper.getPattern(code).ordinal()));
+	        this.func_110628_a(new ResourceLocation(String.format("%sblocks/banner/pattern/banner-pattern-%s.png", BattleGear.imageFolder, SigilHelper.getPattern(code).ordinal())));
 	        tessellator.startDrawingQuads();
 	        tessellator.addVertexWithUV(x1, y1, z2, 1, 1);
 	        tessellator.addVertexWithUV(x2, y1, z2, 0, 1);

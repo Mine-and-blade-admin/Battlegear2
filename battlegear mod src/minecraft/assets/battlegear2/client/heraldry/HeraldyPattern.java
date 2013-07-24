@@ -40,7 +40,7 @@ public enum HeraldyPattern {
 	}
 	
 	public String getPath(){
-		return BattleGear.imageFolder.concat("items/heraldry/patterns/"+name+".png");
+		return BattleGear.imageFolder+"items/heraldry/patterns/"+name+".png";
 	}
 
 	public Icon getIcon() {

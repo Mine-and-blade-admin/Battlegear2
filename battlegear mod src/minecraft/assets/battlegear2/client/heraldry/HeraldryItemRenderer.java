@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
@@ -100,7 +101,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	
 	protected void drawInventoryHeraldryItem(ItemStack item, Object[] data) {
 		
-		//this.mc.renderEngine.bindTexture(item.getItemSpriteNumber() == 0 ? "/terrain.png" : "/gui/items.png");
+		this.mc.renderEngine.func_110577_a(item.getItemSpriteNumber() == 0 ? TextureMap.field_110575_b : TextureMap.field_110576_c);
 		
 		Tessellator tessellator = Tessellator.instance;
 		
@@ -114,7 +115,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         if(heraldryItem.shouldDoPass(HeraldyRenderPassess.PrimaryColourBase) && icon!=null)
         	itemRenderer.renderIcon(0, 0, icon, 16, 16);
 		
-        //this.mc.renderEngine.bindTexture("/gui/items.png");
+        this.mc.renderEngine.func_110577_a(TextureMap.field_110576_c);//.bindTexture("/gui/items.png");
 		GL11.glDepthFunc(GL11.GL_GEQUAL);
         GL11.glDisable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_BLEND);
@@ -196,8 +197,8 @@ public class HeraldryItemRenderer implements IItemRenderer{
         //itemRenderer.zLevel += 50.0F;
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
-        //this.mc.renderEngine.bindTexture(item.getItemSpriteNumber() == 0 ? "/terrain.png" : "/gui/items.png");
-        colour = SigilHelper.getSecondaryColourArray(code);
+        this.mc.renderEngine.func_110577_a(item.getItemSpriteNumber() == 0 ? TextureMap.field_110575_b : TextureMap.field_110576_c);
+		 colour = SigilHelper.getSecondaryColourArray(code);
         GL11.glColor3f(colour[0], colour[1], colour[2]);
         icon = heraldryItem.getTrimIcon(item);
         if(heraldryItem.shouldDoPass(HeraldyRenderPassess.SecondaryColourTrim) && icon!=null){
@@ -212,7 +213,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	}
 	
 	public void drawEquippedHeraldryItem(ItemStack item, Object... data){
-		//this.mc.renderEngine.bindTexture(item.getItemSpriteNumber() == 0 ? "/terrain.png" : "/gui/items.png");
+		this.mc.renderEngine.func_110577_a(item.getItemSpriteNumber() == 0 ? TextureMap.field_110575_b : TextureMap.field_110576_c);
 		Tessellator tessellator = Tessellator.instance;
 		
 		IHeraldyItem heraldryItem = (IHeraldyItem)item.getItem();
@@ -234,8 +235,8 @@ public class HeraldryItemRenderer implements IItemRenderer{
         if(heraldryItem.shouldDoPass(HeraldyRenderPassess.PrimaryColourBase)&& icon!=null)
         	RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, f1, f2, f, f3, icon.getOriginX(), icon.getOriginY(), 0.0625F);
         
-        //this.mc.renderEngine.bindTexture("/gui/items.png");
-        icon = SigilHelper.getPattern(code).getIcon();
+        this.mc.renderEngine.func_110577_a(TextureMap.field_110576_c);//.bindTexture("/gui/items.png");
+		icon = SigilHelper.getPattern(code).getIcon();
         colour = SigilHelper.getSecondaryColourArray(code);
         GL11.glColor3f(colour[0], colour[1], colour[2]);
 
@@ -322,8 +323,8 @@ public class HeraldryItemRenderer implements IItemRenderer{
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
         
-        //this.mc.renderEngine.bindTexture(item.getItemSpriteNumber() == 0 ? "/terrain.png" : "/gui/items.png");
-        colour = SigilHelper.getSecondaryColourArray(code);
+        this.mc.renderEngine.func_110577_a(item.getItemSpriteNumber() == 0 ? TextureMap.field_110575_b : TextureMap.field_110576_c);
+		colour = SigilHelper.getSecondaryColourArray(code);
         GL11.glColor3f(colour[0], colour[1], colour[2]);
         icon = heraldryItem.getTrimIcon(item);
         if(heraldryItem.shouldDoPass(HeraldyRenderPassess.SecondaryColourTrim) && icon!=null)

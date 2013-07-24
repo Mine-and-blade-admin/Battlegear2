@@ -16,6 +16,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDye;
@@ -221,6 +222,7 @@ public class GUIHeraldry extends GuiContainer{
 		GL11.glColor3f((float)secondaryColour.getRed()  / 256F,
 				(float)secondaryColour.getGreen() / 256F,
 				(float)secondaryColour.getBlue() / 256F);
+		mc.renderEngine.func_110577_a(TextureMap.field_110576_c);
 	    //mc.renderEngine.bindTexture("/gui/items.png");
 	    GL11.glEnable(GL11.GL_BLEND);
 	    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -343,6 +345,7 @@ public class GUIHeraldry extends GuiContainer{
 					    GL11.glColor4f((float)secondaryColor.getRed() /255F,
 					    			(float)secondaryColor.getGreen() /255F,
 					    			(float)secondaryColor.getBlue() /255F, 1);
+					    mc.renderEngine.func_110577_a(TextureMap.field_110576_c);
 					    //mc.renderEngine.bindTexture("/gui/items.png");
 					    GL11.glEnable(GL11.GL_BLEND);
 					    GL11.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
