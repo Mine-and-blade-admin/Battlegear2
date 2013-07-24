@@ -12,7 +12,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
 
-import cpw.mods.fml.common.asm.transformers.deobf.ZipInputSupplier;
+import cpw.mods.fml.common.asm.transformers.deobf.LZMAInputSupplier;
 import cpw.mods.fml.relauncher.IFMLCallHook;
 
 public class BattleGearTranslator implements IFMLCallHook {
@@ -45,7 +45,7 @@ public class BattleGearTranslator implements IFMLCallHook {
 
 		ZipFile mapZip = new ZipFile(deobFile);
         ZipEntry classData = mapZip.getEntry("joined.srg");
-        ZipInputSupplier zis = new ZipInputSupplier(mapZip, classData);
+        LZMAInputSupplier zis = new LZMAInputSupplier(mapZip.getInputStream(classData));
         InputSupplier<InputStreamReader> srgSupplier = CharStreams.newReaderSupplier(zis,Charsets.UTF_8);
         List<String> srgList = CharStreams.readLines(srgSupplier);
         

@@ -76,7 +76,7 @@ public class BattleGear {
 			serverSide="assets.battlegear2.common.CommonProxy")
 	public static CommonProxy proxy;
 	
-	public static final String imageFolder = "/assets/battlegear2/textures/";
+	public static final String imageFolder = "battlegear2:";
 	
 	private static final int[] ForgeMinVersion = new int[]{7,8,0,704};
 	

@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
 import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
@@ -125,7 +126,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 	    colour = SigilHelper.getSecondaryColourArray(code);
 	    GL11.glColor3f(colour[0], colour[1], colour[2]);
         
-        mc.renderEngine.func_110577_a(SigilHelper.getPattern(code).getPath());
+        mc.renderEngine.func_110577_a(new ResourceLocation(SigilHelper.getPattern(code).getPath()));
         if(heraldryItem.shouldDoPass(HeraldyRenderPassess.SecondaryColourPattern))
         	renderTexturedQuad(0, 0, 16, 16, itemRenderer.zLevel);
 
@@ -248,7 +249,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         
         GL11.glPushMatrix();
         
-        mc.renderEngine.func_110577_a(SigilHelper.getPattern(code).getPath());
+        mc.renderEngine.func_110577_a(new ResourceLocation(SigilHelper.getPattern(code).getPath()));
         if(heraldryItem.shouldDoPass(HeraldyRenderPassess.SecondaryColourPattern)&& icon!=null)
         	renderItemIn2D_2(tessellator, 0, 0, 1, 1, 16, 16, 0.0625F);
         
@@ -374,11 +375,12 @@ public class HeraldryItemRenderer implements IItemRenderer{
         par0Tessellator.addVertexWithUV(0.0D, 0.0D, (double)(0.0F - par7), (double)par1, (double)par4);
         par0Tessellator.draw();
     }
-	
+	public static final ResourceLocation GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+    
 	public static void renderEnchantmentEffects(Tessellator tessellator) {
         GL11.glDepthFunc(GL11.GL_EQUAL);
         GL11.glDisable(GL11.GL_LIGHTING);
-        FMLClientHandler.instance().getClient().renderEngine.bindTexture("%blur%/misc/glint.png");
+        FMLClientHandler.instance().getClient().renderEngine.func_110577_a(GLINT);//.bindTexture("%blur%/misc/glint.png");
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
         float f7 = 0.76F;
