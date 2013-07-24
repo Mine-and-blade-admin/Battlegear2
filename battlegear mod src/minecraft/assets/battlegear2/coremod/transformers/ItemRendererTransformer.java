@@ -1,12 +1,16 @@
 package assets.battlegear2.coremod.transformers;
 
-import static org.objectweb.asm.Opcodes.*;
-
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.ASM4;
+import static org.objectweb.asm.Opcodes.FLOAD;
+import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.util.Iterator;
 
-import javax.print.DocFlavor.READER;
-
+import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -21,8 +25,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import assets.battlegear2.coremod.BattleGearTranslator;
 import assets.battlegear2.coremod.BattlegearLoadingPlugin;
-
-import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class ItemRendererTransformer implements IClassTransformer{
 	

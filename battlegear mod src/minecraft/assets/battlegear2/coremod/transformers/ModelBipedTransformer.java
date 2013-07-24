@@ -1,10 +1,14 @@
 package assets.battlegear2.coremod.transformers;
 
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.ASM4;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.RETURN;
+
 import java.util.Iterator;
 
+import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -18,11 +22,6 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import assets.battlegear2.coremod.BattleGearTranslator;
 import assets.battlegear2.coremod.BattlegearLoadingPlugin;
-
-import cpw.mods.fml.common.asm.transformers.deobf.FMLDeobfuscatingRemapper;
-import cpw.mods.fml.relauncher.IClassTransformer;
-
-import static org.objectweb.asm.Opcodes.*;
 
 public class ModelBipedTransformer implements IClassTransformer{
 	

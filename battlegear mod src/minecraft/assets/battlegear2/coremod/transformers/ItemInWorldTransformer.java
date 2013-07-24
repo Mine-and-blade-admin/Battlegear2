@@ -1,9 +1,12 @@
 package assets.battlegear2.coremod.transformers;
 
-import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.Opcodes.AASTORE;
+import static org.objectweb.asm.Opcodes.ASM4;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
 
 import java.util.Iterator;
 
+import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -14,11 +17,8 @@ import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import assets.battlegear2.common.utils.BattlegearUtils;
 import assets.battlegear2.coremod.BattleGearTranslator;
 import assets.battlegear2.coremod.BattlegearLoadingPlugin;
-
-import cpw.mods.fml.relauncher.IClassTransformer;
 
 public class ItemInWorldTransformer implements IClassTransformer{
 

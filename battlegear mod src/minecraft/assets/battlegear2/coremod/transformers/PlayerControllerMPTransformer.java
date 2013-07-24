@@ -1,12 +1,7 @@
 package assets.battlegear2.coremod.transformers;
 
-
 import static org.objectweb.asm.Opcodes.ASM4;
-
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-
+import net.minecraft.launchwrapper.IClassTransformer;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -15,8 +10,6 @@ import org.objectweb.asm.tree.MethodNode;
 
 import assets.battlegear2.coremod.BattleGearTranslator;
 import assets.battlegear2.coremod.BattlegearLoadingPlugin;
-
-import cpw.mods.fml.relauncher.IClassTransformer;
 
 
 public class PlayerControllerMPTransformer implements IClassTransformer{
