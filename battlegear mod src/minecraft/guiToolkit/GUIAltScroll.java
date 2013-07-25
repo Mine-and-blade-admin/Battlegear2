@@ -62,7 +62,7 @@ public class GUIAltScroll extends GuiButton {
 	
 	
 	
-	 @Override
+	@Override
 	public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
 		 if (this.drawButton)
 	     {

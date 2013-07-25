@@ -1,13 +1,15 @@
 package guiToolkit;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.ResourceLocation;
+
+import org.lwjgl.opengl.GL11;
 
 public class GUIAltButton extends GuiButton {
 
+	private static final ResourceLocation toolkit = new ResourceLocation("/guiToolkit/Toolkit.png");
 	/**
 	 * Creates a new button
 	 * @param id The button ID
@@ -30,7 +32,7 @@ public class GUIAltButton extends GuiButton {
         if (this.drawButton)
         {
             FontRenderer var4 = minecraft.fontRenderer;
-            minecraft.renderEngine.bindTexture("/guiToolkit/Toolkit.png");
+            minecraft.renderEngine.func_110577_a(toolkit);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             boolean mouseOver = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(mouseOver);
