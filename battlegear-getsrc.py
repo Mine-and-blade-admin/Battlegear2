@@ -44,7 +44,7 @@ def generate_patches(src_dir, src_backup_dir, battlegear_dir):
 	langPath = os.path.join(os.path.abspath(os.path.join(battlegear_dir, os.pardir)),"battlegear lang files")
 	if not os.path.exists(langPath):
 		os.makedirs(langPath)
-	enUsPath = os.path.join(src_dir, "minecraft", "mods", "battlegear2", "client", "en_US.lang")
+	enUsPath = os.path.join(src_dir, "minecraft", "assets", "battlegear2", "client", "en_US.lang")
 	shutil.copy(enUsPath, langPath)
  
 	modlangpath = os.path.join(os.path.abspath(os.path.join(src_dir, os.pardir)),"jars", "lang", "MB-Battlegear 2")

@@ -71,7 +71,7 @@ def main(mcp_dir, battlegearCode_dir, runtime_dir):
 	if not os.path.exists(langPath):
 		os.makedirs(langPath)
 	#enUsPath = os.path.join(langPath, "en_US.lang")
-	#shutil.copy(enUsPath, os.path.join(mcp_dir, "src", "minecraft", "mods", "battlegear2", "client"))
+	#shutil.copy(enUsPath, os.path.join(mcp_dir, "src", "minecraft", "assets", "battlegear2", "client"))
 	for files in os.listdir(langPath):
          if files.endswith(".lang"):
              if not files.startswith("en_US.lang"):
@@ -121,10 +121,10 @@ def cmdsplit(args):
 
 if  __name__ =='__main__':
 	if not os.path.exists('forge.py'):
-		print 'Invalid Instalation, battlegear-installer must be in the forge directory'
+		print 'Invalid Installation, battlegear-installer must be in the forge directory'
 	elif os.path.isfile(os.path.join('..', 'runtime', 'commands.py')):
-		print 'Invalid Instalation, Minecraft Forge must not be inside the mcp directory'
+		print 'Invalid Installation, Minecraft Forge must not be inside the mcp directory'
 	elif not os.path.isdir('battlegear mod src'):
-		print "Invalid Instalation, can't find battlegear pathchs"
+		print "Invalid Installation, can't find battlegear patchs"
 	else:
 		main(os.path.abspath('mcp'), os.path.abspath('battlegear mod src'),os.path.abspath(os.path.join('mcp', 'runtime')))
