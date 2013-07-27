@@ -53,7 +53,7 @@ public class BattlegearTickHandeler implements ITickHandler{
 			}
 			
 			//If we JUST swung an Item
-			if(entityPlayer.swingProgressInt == 1){
+			if(entityPlayer.field_110158_av == 1){
 				ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
 				if(mainhand != null && mainhand.getItem() instanceof IExtendedReachWeapon){
 					float extendedReach = ((IExtendedReachWeapon)mainhand.getItem()).getreachInBlocks(mainhand);
