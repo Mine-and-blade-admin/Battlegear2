@@ -26,16 +26,18 @@ public class ItemDagger extends OneHandedWeapon implements IBackStabbable,ILowHi
     }
 
 	@Override
-	public int getHitTime(ItemStack stack,EntityLivingBase target) {
+	public int getHitTime(ItemStack stack,EntityLivingBase target) 
+	{
 		return 0;
 	}
 	
 	@Override//Here we simply cause more damage (hit will touch twice, one here and the other called vanilla)
-	public void onBackStab(EntityLivingBase entityHit, EntityLivingBase entityHitting) 
+	public boolean onBackStab(EntityLivingBase entityHit, EntityLivingBase entityHitting) 
 	{
 		if(entityHitting instanceof EntityPlayer)
 			entityHit.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)entityHitting), this.baseDamage);
 		else
 			entityHit.attackEntityFrom(DamageSource.causeMobDamage(entityHitting), this.baseDamage);
+		return true;
 	}
 }

@@ -11,15 +11,9 @@ import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
-import assets.battlegear2.api.IBackStabbable;
-import assets.battlegear2.api.IBattlegearWeapon;
-import assets.battlegear2.api.ILowHitTime;
-import assets.battlegear2.api.IPenetrateWeapon;
-import assets.battlegear2.api.ISpecialEffect;
 import assets.battlegear2.common.utils.BattlegearConfig;
 
 import com.google.common.collect.HashMultimap;

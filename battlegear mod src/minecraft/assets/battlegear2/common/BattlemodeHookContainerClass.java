@@ -1,11 +1,14 @@
 package assets.battlegear2.common;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import assets.battlegear2.api.IBackStabbable;
 import assets.battlegear2.api.IBattlegearWeapon;
 import assets.battlegear2.api.ILowHitTime;
 import assets.battlegear2.api.IPenetrateWeapon;
+import assets.battlegear2.api.IPotionEffect;
 import assets.battlegear2.api.ISpecialEffect;
 import assets.battlegear2.api.OffhandAttackEvent;
 import assets.battlegear2.common.utils.BattlegearUtils;
@@ -152,7 +155,13 @@ public class BattlemodeHookContainerClass {
 					}
 					if(weapon.getItem() instanceof ISpecialEffect)
 					{
-						performEffects((ISpecialEffect)weapon.getItem(), entityHit, entityHitting);
+						boolean tempHit = ((ISpecialEffect)weapon.getItem()).performEffects(entityHit,entityHitting);
+						if(!hit)
+							hit = tempHit;
+					}
+					if(weapon.getItem() instanceof IPotionEffect)
+					{
+						performEffects(((IPotionEffect)weapon.getItem()).getEffectsOnHit(entityHit, entityHitting), entityHit);
 					}
 					if(weapon.getItem() instanceof ILowHitTime)
 					{
@@ -186,11 +195,10 @@ public class BattlemodeHookContainerClass {
 		return false;
 	}
 
-	protected void performEffects(ISpecialEffect item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
-		PotionEffect[] effects= item.getEffectsOnHit(entityHit, entityHit);
-		for(PotionEffect effect:effects){
-			//add effects if they aren't already applied, with a 10% chance
-			if(!entityHit.isPotionActive(effect.getPotionID()) && new Random().nextFloat() * 10>9)
+	protected void performEffects(Map<PotionEffect, Short> map, EntityLivingBase entityHit) {
+		for(PotionEffect effect:map.keySet()){
+			//add effects if they aren't already applied, with corresponding chance factor
+			if(!entityHit.isPotionActive(effect.getPotionID()) && (new Random().nextFloat()+map.get(effect)/100)>1)
 				entityHit.addPotionEffect(effect);
 		}
 	}
