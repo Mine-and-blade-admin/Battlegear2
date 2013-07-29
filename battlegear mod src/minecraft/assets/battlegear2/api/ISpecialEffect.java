@@ -1,16 +1,16 @@
 package assets.battlegear2.api;
 
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 
 public interface ISpecialEffect {
+
 	/**
-	 * 
-	 * @param entityHit The entity the effect will be applied to.
-	 * @param entityHitting 
-	 * @return The array of {@link PotionEffect} that will be dealt to the entityHit
+	 * Action to perform on entityHitting attacking entityHit
+	 * @param entityHit
+	 * @param entityHitting
+	 * @return 
+	 * @return true if it adds an hitting action
 	 */
-	public PotionEffect[] getEffectsOnHit(EntityLivingBase entityHit, EntityLivingBase entityHitting);
+	public boolean performEffects(EntityLivingBase entityHit, EntityLivingBase entityHitting);
+
 }

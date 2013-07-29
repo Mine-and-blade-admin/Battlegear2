@@ -40,7 +40,7 @@ def main(distDir,  mcpDir):
     version = ''
     modName = ''
     
-    with open(os.path.join(file_bin, 'mods', 'battlegear2', 'common', 'BattleGear.java'), 'rb') as mainClass:
+    with open(os.path.join(file_bin, 'assets', 'battlegear2', 'common', 'BattleGear.java'), 'rb') as mainClass:
 		for line in mainClass:
 			if(line.startswith('@Mod(')):
 				line = line.replace('@Mod(','')
@@ -64,7 +64,7 @@ def main(distDir,  mcpDir):
     print '================ Creating coremod jar ==================='
     os.chdir(defaultWD)
     
-    coremod_dir = os.path.join('mods','battlegear2','coremod')
+    coremod_dir = os.path.join('assets','battlegear2','coremod')
     
     coremod_bin = os.path.join(mcpDir, 'bin', 'minecraft', coremod_dir)
     
@@ -77,7 +77,7 @@ def main(distDir,  mcpDir):
 				print('Packing '+jar_path)
 				core_jar.write(os.path.join(root,cur_file), jar_path)
     
-    write_core_manifest(core_jar, 'mods.battlegear2.coremod.BattlegearLoadingPlugin')
+    write_core_manifest(core_jar, 'assets.battlegear2.coremod.BattlegearLoadingPlugin')
     
     core_jar.close()
     
@@ -177,7 +177,7 @@ def main(distDir,  mcpDir):
            for root, _, filelist in os.walk(os.path.join(tex_folder,files), followlinks=True):
                 for cur_file in filelist:
                     dest_path = root.replace(os.path.join(tex_folder, files), '')
-                    dest_path = os.sep+'mods'+os.sep+'battlegear2'+os.sep+'textures'+os.sep+dest_path
+                    dest_path = os.sep+'assets'+os.sep+'battlegear2'+os.sep+'textures'+os.sep+dest_path
                     dest_path = os.path.join(dest_path,cur_file)
                     texture_zip.write(os.path.join(root,cur_file), dest_path)
 

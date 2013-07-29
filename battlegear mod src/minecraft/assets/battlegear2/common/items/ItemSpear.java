@@ -29,20 +29,17 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 	public boolean willAllowShield() {
 		return true;
 	}
-
-	@Override
-	public PotionEffect[] getEffectsOnHit(EntityLivingBase entityHit, EntityLivingBase entityHitting) {
-		return null;
-	}
 	
 	@Override
-	protected void performEffects(ISpecialEffect item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
+	public boolean performEffects(EntityLivingBase entityHit, EntityLivingBase entityHitting) {
 		if(entityHit.isRiding() || entityHit.isSprinting() || entityHitting.isSneaking())
 		{
 			if(entityHitting instanceof EntityPlayer)
 				entityHit.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)entityHitting), this.baseDamage - 2);
 			else
 				entityHit.attackEntityFrom(DamageSource.causeMobDamage(entityHitting), this.baseDamage - 2);
+			return true;
 		}
+		return false;
 	}
 }
