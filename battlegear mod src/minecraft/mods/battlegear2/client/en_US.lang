@@ -1,0 +1,66 @@
+name.title=M&B Battlegear 2
+
+item.heraldric.name=Heraldic Icon
+item.chain.name=Chain
+item.quiver.name=Quiver
+
+item.dagger.wood.name=Wood Dagger
+item.dagger.stone.name=Stone Dagger
+item.dagger.iron.name=Iron Dagger
+item.dagger.diamond.name=Diamond Dagger
+item.dagger.gold.name=Gold Dagger
+
+item.waraxe.wood.name=Wood Waraxe
+item.waraxe.stone.name=Stone Waraxe
+item.waraxe.iron.name=Iron Waraxe
+item.waraxe.diamond.name=Diamond Waraxe
+item.waraxe.gold.name=Gold Waraxe
+
+item.mace.wood.name=Wood Mace
+item.mace.stone.name=Stone Mace
+item.mace.iron.name=Iron Mace
+item.mace.diamond.name=Diamond Mace
+item.mace.gold.name=Gold Mace
+
+item.spear.wood.name=Wood Spear
+item.spear.stone.name=Stone Spear
+item.spear.iron.name=Iron Spear
+item.spear.diamond.name=Diamond Spear
+item.spear.gold.name=Gold Spear
+
+item.shield.wood.name=Wood Shield
+item.shield.hide.name=Hide Shield
+item.shield.iron.name=Iron Shield
+item.shield.diamond.name=Diamond Shield
+item.shield.gold.name=Gold Shield
+
+item.knights_armour.helmet.name=Knight's Helmet
+item.knights_armour.plate.name=Knight's Plate
+item.knights_armour.legs.name=Knight's Leggings
+item.knights_armour.boots.name=Knight's Boots
+
+item.cloak.name=Cloak
+
+enchantment.slow_fall=Slow Fall
+enchantment.super_jump=Super Jump
+
+tile.banner.name=Banner
+
+sigil.pattern.title=Pattern
+sigil.icon.title=Sigil
+sigil.icon_pos.title=Sigil Position
+sigil.colour1.title=Color 1
+sigil.colour2.title=Color 2
+sigil.icon_colour1.title=Sigil%nColor 1
+sigil.icon_colour2.title=Sigil%nColor 2
+sigil.banner.title=Banner
+sigil.helm.title=Helmet
+sigil.colour.select=Select
+
+
+attribute.name.weapon.penetrateArmor=Armor Penetration
+attribute.name.weapon.daze=Daze
+attribute.name.weapon.extendedReach=Reach
+attribute.name.weapon.attackSpeed=Attack Speed
+attribute.name.weapon.backstab=Backstab
+attribute.name.weapon.mountedBonus=Mounted Damage

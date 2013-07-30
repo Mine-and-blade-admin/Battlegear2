@@ -1,27 +1,15 @@
 --- 
 +++ 
-@@ -7,6 +7,12 @@
- import java.util.Collection;
- import java.util.Iterator;
+@@ -10,6 +10,8 @@
  import java.util.List;
-+
-+import mods.battlegear2.common.BattleGear;
-+import mods.battlegear2.common.BattlegearPacketHandeler;
-+import mods.battlegear2.common.inventory.InventoryPlayerBattle;
-+//import mods.battlegear2.common.items.ItemShield;
-+import mods.battlegear2.common.utils.BattlegearUtils;
+ import java.util.Map.Entry;
+ 
++import mods.battlegear2.inventory.InventoryPlayerBattle;
++import mods.battlegear2.utils.BattlegearUtils;
  import net.minecraft.block.Block;
  import net.minecraft.block.BlockBed;
  import net.minecraft.block.material.Material;
-@@ -39,6 +45,7 @@
- import net.minecraft.item.ItemStack;
- import net.minecraft.nbt.NBTTagCompound;
- import net.minecraft.nbt.NBTTagList;
-+import net.minecraft.network.packet.Packet18Animation;
- import net.minecraft.potion.Potion;
- import net.minecraft.scoreboard.Score;
- import net.minecraft.scoreboard.ScoreObjective;
-@@ -64,6 +71,7 @@
+@@ -67,6 +69,7 @@
  import net.minecraft.util.Vec3;
  import net.minecraft.world.EnumGameType;
  import net.minecraft.world.World;
@@ -29,9 +17,9 @@
  import net.minecraft.world.chunk.IChunkProvider;
  
  import net.minecraftforge.common.ForgeHooks;
-@@ -80,11 +88,104 @@
+@@ -83,9 +86,96 @@
  
- public abstract class EntityPlayer extends EntityLiving implements ICommandSender
+ public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
  {
 +	/*
 +	 * Mine & Blade: Notes Edits made by: nerd-boy
@@ -47,22 +35,23 @@
 +	 * 
 +	 * The method in OnUpdate has not been added in the transfomer yet
 +	 */
-+
++	
 +	// -----MB-addFilds-----
 +	public float offHandSwingProgress;
 +	public float prevOffHandSwingProgress;
 +	public int offHandSwingProgressInt;
 +	public boolean isOffHandSwingInProgress;
-+
++	
 +	// -----MB-AddMethod-----
 +	public void attackTargetEntityWithCurrentOffItem(Entity target) {
-+		inventory.currentItem = inventory.currentItem
++
++        inventory.currentItem = inventory.currentItem
 +				+ InventoryPlayerBattle.WEAPON_SETS;
 +		attackTargetEntityWithCurrentItem(target);
 +		inventory.currentItem = inventory.currentItem
 +				- InventoryPlayerBattle.WEAPON_SETS;
 +	}
-+
++	
 +	// -----MB-AddMethod-----
 +	public void swingOffItem() {
 +		if (!this.isOffHandSwingInProgress
@@ -71,21 +60,18 @@
 +				|| this.offHandSwingProgressInt < 0) {
 +			this.offHandSwingProgressInt = -1;
 +			this.isOffHandSwingInProgress = true;
-+
-+		}
++			}
 +	}
-+
++	
 +	// -----MB-AddMethod-----
 +	public float getOffSwingProgress(float frame) {
 +		float diff = this.offHandSwingProgress - this.prevOffHandSwingProgress;
-+
 +		if (diff < 0.0F) {
 +			++diff;
 +		}
-+
 +		return this.prevOffHandSwingProgress + diff * frame;
 +	}
-+
++	
 +	// -----MB-AddMethod-----
 +	private int getArmSwingAnimationEndCopy() {
 +		return this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this
@@ -94,48 +80,42 @@
 +						.getActivePotionEffect(Potion.digSlowdown)
 +						.getAmplifier()) * 2 : 6);
 +	}
-+
++	
 +	// -----MB-AddMethod----- (Overridden)
 +	@Override
 +	protected void updateArmSwingProgress() {
 +		super.updateArmSwingProgress();
-+
++	
 +		this.prevOffHandSwingProgress = this.offHandSwingProgress;
-+
-+		int var1 = this.getArmSwingAnimationEndCopy();
-+
-+		if (this.isOffHandSwingInProgress) {
++			int var1 = this.getArmSwingAnimationEndCopy();
++			if (this.isOffHandSwingInProgress) {
 +			++this.offHandSwingProgressInt;
-+
-+			if (this.offHandSwingProgressInt >= var1) {
++				if (this.offHandSwingProgressInt >= var1) {
 +				this.offHandSwingProgressInt = 0;
 +				this.isOffHandSwingInProgress = false;
 +			}
 +		} else {
 +			this.offHandSwingProgressInt = 0;
 +		}
-+
-+		this.offHandSwingProgress = (float) this.offHandSwingProgressInt
++			this.offHandSwingProgress = (float) this.offHandSwingProgressInt
 +				/ (float) var1;
 +	}
-+
++	
 +	// -----MB-AddMethod-----
 +	public boolean isBattlemode() {
 +		return ((InventoryPlayerBattle) inventory).isBattlemode();
 +	}
 +	
-+	
++		
      public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
-     public int maxHealth = 20;
- 
      /** Inventory of the player */
 -    public InventoryPlayer inventory = new InventoryPlayer(this);
 +    //-----MB-Edited-----
-+    public final InventoryPlayer inventory = new InventoryPlayerBattle(this);
++    public final InventoryPlayer inventory = BattlegearUtils.replaceInventory(this);
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
  
      /**
-@@ -280,6 +381,12 @@
+@@ -282,6 +372,12 @@
          if (this.itemInUse != null)
          {
              ItemStack itemstack = this.inventory.getCurrentItem();
@@ -148,7 +128,7 @@
  
              if (itemstack == this.itemInUse)
              {
-@@ -466,11 +573,12 @@
+@@ -468,11 +564,12 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
@@ -163,15 +143,7 @@
                  }
              }
  
-@@ -1300,7 +1408,6 @@
-             if (!par1Entity.func_85031_j(this))
-             {
-                 int i = this.inventory.getDamageVsEntity(par1Entity);
--
-                 if (this.isPotionActive(Potion.damageBoost))
-                 {
-                     i += 3 << this.getActivePotionEffect(Potion.damageBoost).getAmplifier();
-@@ -2335,7 +2442,8 @@
+@@ -2385,7 +2482,8 @@
      {
          if (par1 == 0)
          {

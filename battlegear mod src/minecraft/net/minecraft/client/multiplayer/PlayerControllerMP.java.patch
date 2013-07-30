@@ -4,11 +4,11 @@
  
  import cpw.mods.fml.relauncher.Side;
  import cpw.mods.fml.relauncher.SideOnly;
-+import mods.battlegear2.common.utils.BattlegearUtils;
++import mods.battlegear2.utils.BattlegearUtils;
  import net.minecraft.block.Block;
  import net.minecraft.client.Minecraft;
  import net.minecraft.client.entity.EntityClientPlayerMP;
-@@ -27,6 +28,16 @@
+@@ -29,6 +30,16 @@
  @SideOnly(Side.CLIENT)
  public class PlayerControllerMP
  {
@@ -25,7 +25,7 @@
      /** The Minecraft instance. */
      private final Minecraft mc;
      private final NetClientHandler netClientHandler;
-@@ -428,11 +439,13 @@
+@@ -433,11 +444,13 @@
          }
          else
          {
