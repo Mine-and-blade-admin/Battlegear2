@@ -10,7 +10,12 @@ def main(mcp_dir, battlegearCode_dir, runtime_dir):
 	
 	print '================ Battlegear src Instalation ==================='
 	print 'Installing Minceraft Forge'
-	install.main(mcp_dir)
+	
+	cmd = './install.sh'
+	if (os.name == 'nt'):
+		cmd = 'install.bat'
+	os.system(cmd)
+
 	print '================ Clone src ==================='
 	src_dir = os.path.join(mcp_dir, 'src')
 	src_backup_dir = os.path.join(mcp_dir, 'src_backup')
