@@ -2,22 +2,27 @@ package mods.battlegear2.client;
 
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
+import mods.battlegear2.client.renderer.SpearRenderer;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
+import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.List;
@@ -45,6 +50,17 @@ public class ClientProxy extends CommonProxy {
             ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
                     BattlegearAnimationPacket.generatePacket(animation, entityPlayer.username));
         }
+    }
+
+    @Override
+    public void registerItemRenderers() {
+
+        SpearRenderer spearRenderer =  new SpearRenderer();
+
+        for(Item spear: BattlegearConfig.spear){
+            MinecraftForgeClient.registerItemRenderer(spear.itemID, spearRenderer);
+        }
+
     }
 
     @Override

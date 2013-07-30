@@ -22,4 +22,7 @@ public class CommonProxy {
     public Icon getSlotIcon(int index) {return null;}
 
     public MovingObjectPosition getMouseOver(int i, float v) { return null; }
+
+    public void registerItemRenderers() {
+    }
 }

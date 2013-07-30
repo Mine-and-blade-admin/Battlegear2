@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="minecraft_server.1.6.2" level="project" />
+    <orderEntry type="library" name="1.6.2" level="project" />
+    <orderEntry type="library" name="launchwrapper-1.3" level="project" />
+    <orderEntry type="library" name="temp" level="project" />
+    <orderEntry type="library" name="bin" level="project" />
+    <orderEntry type="library" name="14.0" level="project" />
+    <orderEntry type="library" name="4.1" level="project" />
+    <orderEntry type="library" name="2.9.02" level="project" />
+    <orderEntry type="module" module-name="fml" />
+    <orderEntry type="module" module-name="src_backup" />
+    <orderEntry type="module" module-name="Mb-battlegear" />
+    <orderEntry type="module" module-name="mcp" />
+    <orderEntry type="module" module-name="mcp1" />
+  </component>
+</module>
+

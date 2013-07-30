@@ -47,13 +47,15 @@ public class BattlegearConfig {
         
         chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
     	chain.setUnlocalizedName("battlegear2:chain").func_111206_d("battlegear2:chain");
-    	
+
+        /*
     	for(int i = 0; i < armourTypes.length; i++){
 	    	knightArmor[i] = new ItemKnightArmour(
 	    			config.get(config.CATEGORY_ITEM, itemNames[8]+"."+armourTypes[i],
 	    					firstDefaultItemIndex+itemOffests[8]+i).getInt(),
 	    					i);
     	}
+    	/*
     	
     	for(int i = 0; i < 5; i++){
     		EnumToolMaterial material = EnumToolMaterial.values()[i];
@@ -86,6 +88,9 @@ public class BattlegearConfig {
         for(int i = 0; i < 5; i++){
         	EnumToolMaterial material = EnumToolMaterial.values()[i];
 
+            warAxe[i]=new ItemWaraxe(
+                    config.get(config.CATEGORY_ITEM, itemNames[4]+toolTypes[i], firstDefaultItemIndex+itemOffests[4]+i).getInt(),
+                    material, itemNames[4], i==4?2:1);
 
         	dagger[i]=new ItemDagger(
         			config.get(config.CATEGORY_ITEM, itemNames[3]+"_"+toolTypes[i], firstDefaultItemIndex+itemOffests[3]+i).getInt(),
@@ -93,7 +98,7 @@ public class BattlegearConfig {
 
     		mace[i]=new ItemMace(
     				config.get(config.CATEGORY_ITEM, itemNames[5]+toolTypes[i], firstDefaultItemIndex+itemOffests[5]+i).getInt(),
-    				material, itemNames[5]);
+    				material, itemNames[5], 0.05F + 0.05F*i);
     		spear[i]=new ItemSpear(
     				config.get(config.CATEGORY_ITEM, itemNames[6]+toolTypes[i], firstDefaultItemIndex+itemOffests[6]+i).getInt(),
     				material, itemNames[6]);
@@ -128,18 +133,47 @@ public class BattlegearConfig {
 		for(int i = 0; i < 5; i++){
 			Item craftingMaterial = Item.itemsList[EnumToolMaterial.values()[i].getToolCraftingMaterial()];
 			GameRegistry.addRecipe(
-					new ItemStack(warAxe[i]), 
+					new ItemStack(warAxe[i]),
 					new Object[] {"L L","LSL"," S ",
 						Character.valueOf('S'), Item.stick,
-						Character.valueOf('L'), 
+						Character.valueOf('L'),
 						craftingMaterial
 				});
+            GameRegistry.addRecipe(
+                    new ItemStack(mace[i]),
+                    new Object[] {" LL"," LL","S  ",
+                            Character.valueOf('S'), Item.stick,
+                            Character.valueOf('L'),
+                            craftingMaterial
+                    });
+            GameRegistry.addRecipe(
+                    new ItemStack(dagger[i]),
+                    new Object[] {"L","S",
+                            Character.valueOf('S'), Item.stick,
+                            Character.valueOf('L'),
+                            craftingMaterial
+                    });
+            if(i == 0){
+                GameRegistry.addRecipe(
+                        new ItemStack(spear[i]),
+                        new Object[] {"  S"," S ","S  ",
+                                Character.valueOf('S'), Item.stick
+                        });
+            }else{
+                GameRegistry.addRecipe(
+                        new ItemStack(spear[i]),
+                        new Object[] {" L","S ",
+                                Character.valueOf('S'), Item.stick,
+                                Character.valueOf('L'), spear[0]
+                        });
+            }
 		}
 		
 		for(int i = 0; i < 4; i++){
 			//GameRegistry.addRecipe(new KnightArmourRecipie(i));
 		}
-		
+
+        /*
 		for(int x = 0; x < 16; x++){
 			for(int y = 0; y < 16; y++){
 				ItemStack bannerStack = new ItemStack(bannerItem);
@@ -160,7 +194,7 @@ public class BattlegearConfig {
 		
 		GameRegistry.addRecipe(new ItemStack(bannerItem),  new Object[]
 				{" W "," W ", " S ",Character.valueOf('W'),Block.cloth, Character.valueOf('S'), Item.stick});
-		
+		*/
 		
 
 	}

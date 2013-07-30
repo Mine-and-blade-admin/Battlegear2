@@ -7,7 +7,7 @@ public interface IPenetrateWeapon {
 	/**
 	 * The amount of damage bypassing armor
 	 * @param stack The {@link net.minecraft.item.ItemStack} representative of the item dealing the hit.
-	 * @return
+	 * @return the amount of damage that bypasses armour
 	 */
 	public int getPenetratingPower(ItemStack stack);
 }

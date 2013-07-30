@@ -24,7 +24,7 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
 
 
-@Mod(modid = "battlegear2", name = "Mine & Blade: Battlegear 2", version = "2.0")
+@Mod(modid="battlegear2", name="Mine & Blade: Battlegear 2", version="0.5 dev")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         channels = {
                 BattlegearAnimationPacket.packetName,
@@ -69,6 +69,7 @@ public class Battlegear {
         BattlegearUtils.scanAndProcessItems();
         proxy.registerKeyHandelers();
         proxy.registerTickHandelers();
+        proxy.registerItemRenderers();
 
         NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
     }

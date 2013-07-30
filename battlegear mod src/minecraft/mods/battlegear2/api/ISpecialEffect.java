@@ -10,7 +10,7 @@ public interface ISpecialEffect {
 	 * 
 	 * @param entityHit The entity the effect will be applied to.
 	 * @param entityHitting 
-	 * @return The array of {@link net.minecraft.potion.PotionEffect} that will be dealt to the entityHit
+	 * @return true if it adds an hitting action
 	 */
-	public PotionEffect[] getEffectsOnHit(EntityLivingBase entityHit, EntityLivingBase entityHitting);
+    public boolean performEffects(EntityLivingBase entityHit, EntityLivingBase entityHitting);
 }

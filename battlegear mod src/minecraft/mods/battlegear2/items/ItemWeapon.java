@@ -80,72 +80,8 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 
         return map;
     }
-	
-	@Override
-	public boolean hitEntity(ItemStack stack, EntityLivingBase entityHit, EntityLivingBase entityHitting)
-    {
-       /*
-        if(stack.getItem() instanceof IExtendedReachWeapon){
-            float reachMod = ((IExtendedReachWeapon) stack.getItem()).getReachModifierInBlocks(stack);
-            if(reachMod < 0){
-                System.out.println(entityHitting.getDistanceToEntity(entityHit));
-                System.out.println(reachMod + 2 < entityHitting.getDistanceToEntity(entityHit));
-                if(reachMod + 2 < entityHitting.getDistanceToEntity(entityHit)){
-                    return false;
-                }
-            }
-        }
-        */
 
-		if(stack.getItem() instanceof IPenetrateWeapon)
-		{
-			//Attack using the "generic" damage type (ignores armour)
-			entityHit.attackEntityFrom(DamageSource.generic, ((IPenetrateWeapon)stack.getItem()).getPenetratingPower(stack));
-		}
-		if(stack.getItem() instanceof IBackStabbable)
-		{
-			performBackStab(stack.getItem(), entityHit, entityHitting);
-		}
-		if(stack.getItem() instanceof ISpecialEffect)
-		{
-			performEffects((ISpecialEffect)stack.getItem(), entityHit, entityHitting);
-		}
-		if(stack.getItem() instanceof IHitTimeModifier)
-		{
-            //int hurtTimeTemp = entityHit.hurtTime;
-            //int hurtResistanceTimeTemp = entityHit.hurtResistantTime;
 
-			//The usual is less than half the max hurt resistance time
-			if(entityHit.hurtResistantTime < (float)(entityHit.maxHurtResistantTime) * (0.5) + ((IHitTimeModifier)this).getHitTime(stack, entityHit))
-			{
-				entityHit.hurtResistantTime = ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit);
-			}else{
-                entityHit.hurtResistantTime = entityHit.maxHurtResistantTime + ((IHitTimeModifier)this).getHitTime(stack, entityHit);
-            }
-		}
-        return super.hitEntity(stack, entityHit, entityHitting);
-    }
-	
-	protected void performBackStab(Item item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
-		//Get victim and murderer vector views at hit time
-		double[] victimView = new double[]{entityHit.getLookVec().xCoord,entityHit.getLookVec().zCoord};
-		double[] murdererView = new double[]{entityHitting.getLookVec().xCoord,entityHitting.getLookVec().zCoord};
-		//back-stab conditions: vectors are closely enough aligned, (fuzzy parameter might need testing)
-		//but not in opposite directions (face to face or sideways)
-		if(Math.abs(victimView[0]*murdererView[1]-victimView[1]*murdererView[0])<0.01 && Math.signum(victimView[0])==Math.signum(murdererView[0]) && Math.signum(victimView[1])==Math.signum(murdererView[1]))
-		{
-			((IBackStabbable)item).onBackStab(entityHit, entityHitting);//Perform back stab effect
-		}
-	}
-
-	protected void performEffects(ISpecialEffect item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
-		PotionEffect[] effects= item.getEffectsOnHit(entityHit, entityHit);
-		for(PotionEffect effect:effects){
-			//add effects if they aren't already applied, with a 10% chance
-			if(!entityHit.isPotionActive(effect.getPotionID()) && new Random().nextFloat() * 10>9)
-				entityHit.addPotionEffect(effect);
-		}
-	}
 
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {

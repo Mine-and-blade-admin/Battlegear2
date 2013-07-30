@@ -15,6 +15,7 @@ public class WeaponSlot extends Slot {
         super(par1iInventory, par2, par3, par4);
 
         this.setBackgroundIcon(Battlegear.proxy.getSlotIcon(mainhand ? 0 : 1));
+        this.mainHand = mainhand;
 
     }
 

@@ -39,6 +39,11 @@ item.knights_armour.plate.name=Knight's Plate
 item.knights_armour.legs.name=Knight's Leggings
 item.knights_armour.boots.name=Knight's Boots
 
+item.cloak.name=Cloak
+
+enchantment.slow_fall=Slow Fall
+enchantment.super_jump=Super Jump
+
 tile.banner.name=Banner
 
 sigil.pattern.title=Pattern
@@ -52,9 +57,10 @@ sigil.banner.title=Banner
 sigil.helm.title=Helmet
 sigil.colour.select=Select
 
-tooltip.attack=Attack Damage
-tooltip.armour.penetrate=Armor Penetration
-tooltip.reach=Extended Reach
-tooltip.daze=Daze
-tooltip.quick=Quick
-tooltip.armour.points=Armor Points
+
+attribute.name.weapon.penetrateArmor=Armor Penetration
+attribute.name.weapon.daze=Daze
+attribute.name.weapon.extendedReach=Reach
+attribute.name.weapon.attackSpeed=Attack Speed
+attribute.name.weapon.backstab=Backstab
+attribute.name.weapon.mountedBonus=Mounted Damage
