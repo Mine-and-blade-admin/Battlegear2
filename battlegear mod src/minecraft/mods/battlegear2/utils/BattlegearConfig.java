@@ -18,6 +18,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BattlegearConfig {
@@ -42,12 +43,13 @@ public class BattlegearConfig {
 	
 	
 	public static void getConfig(Configuration config) {
-		System.out.println("Config");
+		//System.out.println("Config");
+		config.load();
         heradricItem = new ItemHeradryIcon(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());
         
         chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
-    	chain.setUnlocalizedName("battlegear2:chain").func_111206_d("battlegear2:chain");
-
+    	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).func_111206_d("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
+		
         /*
     	for(int i = 0; i < armourTypes.length; i++){
 	    	knightArmor[i] = new ItemKnightArmour(
@@ -55,15 +57,6 @@ public class BattlegearConfig {
 	    					firstDefaultItemIndex+itemOffests[8]+i).getInt(),
 	    					i);
     	}
-    	/*
-    	
-    	for(int i = 0; i < 5; i++){
-    		EnumToolMaterial material = EnumToolMaterial.values()[i];
-    		warAxe[i]=new ItemWaraxe(
-					config.get(config.CATEGORY_ITEM, itemNames[4]+toolTypes[i], firstDefaultItemIndex+itemOffests[4]+i).getInt(),
-					material, itemNames[4], i==4?2:1);
-    	}
-
         /*
     	//banner = new BlockBanner(config.get(config.CATEGORY_BLOCK, "Banner", 425).getInt());
     	banner = new BlockBanner(config.getBlock("Banner", 2650).getInt());
@@ -82,7 +75,7 @@ public class BattlegearConfig {
 
 
         quiver = new Item(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
-        quiver.setUnlocalizedName("quiver");
+        quiver.func_111206_d("battlegear2:"+itemNames[2]).setUnlocalizedName(itemNames[2]).setCreativeTab(customTab);
         	
         	
         for(int i = 0; i < 5; i++){
@@ -109,7 +102,7 @@ public class BattlegearConfig {
         if (config.hasChanged())
         {        
       	  config.save();     	
-        } 
+        }
 	}
 
 	public static void registerRecipes() {//Those are old recipes found on your M-B topic
@@ -129,7 +122,7 @@ public class BattlegearConfig {
 		GameRegistry.addRecipe(new ItemStack(Item.bootsChain),  new Object[]
 				{"L L","L L",Character.valueOf('L'),chain});
 		
-
+		ItemStack woodStack = new ItemStack(Block.planks.blockID,1,OreDictionary.WILDCARD_VALUE);
 		for(int i = 0; i < 5; i++){
 			Item craftingMaterial = Item.itemsList[EnumToolMaterial.values()[i].getToolCraftingMaterial()];
 			GameRegistry.addRecipe(
@@ -137,21 +130,21 @@ public class BattlegearConfig {
 					new Object[] {"L L","LSL"," S ",
 						Character.valueOf('S'), Item.stick,
 						Character.valueOf('L'),
-						craftingMaterial
+						i!=0?craftingMaterial:woodStack
 				});
             GameRegistry.addRecipe(
                     new ItemStack(mace[i]),
                     new Object[] {" LL"," LL","S  ",
                             Character.valueOf('S'), Item.stick,
                             Character.valueOf('L'),
-                            craftingMaterial
+                            i!=0?craftingMaterial:woodStack
                     });
             GameRegistry.addRecipe(
                     new ItemStack(dagger[i]),
                     new Object[] {"L","S",
                             Character.valueOf('S'), Item.stick,
                             Character.valueOf('L'),
-                            craftingMaterial
+                            i!=0?craftingMaterial:woodStack
                     });
             if(i == 0){
                 GameRegistry.addRecipe(
@@ -163,8 +156,8 @@ public class BattlegearConfig {
                 GameRegistry.addRecipe(
                         new ItemStack(spear[i]),
                         new Object[] {" L","S ",
-                                Character.valueOf('S'), Item.stick,
-                                Character.valueOf('L'), spear[0]
+                                Character.valueOf('S'), spear[0],
+                                Character.valueOf('L'), craftingMaterial
                         });
             }
 		}
