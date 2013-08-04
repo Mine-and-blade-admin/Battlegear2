@@ -1,27 +1,28 @@
 package mods.battlegear2;
 
 
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.FMLInjectionData;
 import mods.battlegear2.client.LanguageHelper;
+import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.BattlegearGUIPacket;
 import mods.battlegear2.packet.BattlegearPacketHandeler;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
-import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
+import cpw.mods.fml.common.Mod;
+import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.FMLInjectionData;
 
 
 @Mod(modid="battlegear2", name="Mine & Blade: Battlegear 2", version="0.5 dev")
@@ -47,21 +48,21 @@ public class Battlegear {
     public static EnumArmorMaterial knightArmourMaterial;
 
     @EventHandler
-    public void postInit(FMLPreInitializationEvent event) {
+    public void preInit(FMLPreInitializationEvent event) {
         //Set up the Translator
         BattlegearTranslator.setup("/deobfuscation_data-" + FMLInjectionData.data()[4] + ".lzma");
 
         LanguageHelper.loadAllLanguages();
 
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
-        System.out.println("Config File");
+        //System.out.println("Config File");
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
 
     }
 
     @EventHandler
-    public void init(FMLPreInitializationEvent event) {
-        //BattlegearConfig.registerRecipes();
+    public void init(FMLInitializationEvent event) {
+        BattlegearConfig.registerRecipes();
     }
 
     @EventHandler
