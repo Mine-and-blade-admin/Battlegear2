@@ -1,6 +1,6 @@
 #zh_CN
 
-name.title=\u6316\u77ff\u4e0e\u780d\u6740\u4e4b\u6218\u5907\u53cc\u63012
+name.title=\u6316\u77ff\u4e0e\u780d\u6740|\u6218\u5907\u53cc\u63012
 
 item.heraldric.name=\u7eb9\u7ae0\u56fe\u6807
 item.chain.name=\u94c1\u94fe
@@ -41,6 +41,11 @@ item.knights_armour.plate.name=\u9a91\u58eb\u80f8\u7532
 item.knights_armour.legs.name=\u9a91\u58eb\u62a4\u817f
 item.knights_armour.boots.name=\u9a91\u58eb\u9774\u5b50
 
+item.cloak.name=\u62ab\u98ce
+
+enchantment.slow_fall=\u7fbd\u843d
+enchantment.super_jump=\u68af\u4e91\u7eb5
+
 tile.banner.name=\u65d7\u5e1c
 
 sigil.pattern.title=\u56fe\u6848
@@ -53,9 +58,10 @@ sigil.icon_colour2.title=\u5370\u7ae0%n\u989c\u82722
 sigil.banner.title=\u65d7\u5e1c
 sigil.helm.title=\u5934\u76d4
 sigil.colour.select=\u9009\u62e9
-tooltip.attack=\u653b\u51fb\u4f24\u5bb3
-tooltip.armour.penetrate=\u7834\u7532\u4f24\u5bb3
-tooltip.reach=\u989d\u5916\u8ddd\u79bb
-tooltip.daze=\u51fb\u6655
-tooltip.quick=\u8fc5\u901f
-tooltip.armour.points=\u88c5\u7532\u503c
+
+attribute.name.weapon.penetrateArmor=\u7834\u7532
+attribute.name.weapon.daze=\u51fb\u6655
+attribute.name.weapon.extendedReach=\u653b\u51fb\u8ddd\u79bb
+attribute.name.weapon.attackSpeed=\u653b\u51fb\u901f\u5ea6
+attribute.name.weapon.backstab=\u80cc\u523a
+attribute.name.weapon.mountedBonus=\u9a91\u5175\u989d\u5916\u4f24\u5bb3
