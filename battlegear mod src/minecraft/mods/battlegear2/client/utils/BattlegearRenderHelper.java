@@ -1,7 +1,11 @@
 package mods.battlegear2.client.utils;
 
 
+import mods.battlegear2.api.IBattlegearWeapon;
+import mods.battlegear2.client.BattlegearKeyHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.items.ItemSpear;
+import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -13,14 +17,12 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -462,7 +464,120 @@ public class BattlegearRenderHelper {
                     model.heldItemLeft = 0;
                 }
             }
+
+            if(!par1EntityPlayer.isBattlemode())
+                renderSheathedItems(par1EntityPlayer, modelBipedMain, frame);
         }
+    }
+
+    private static void renderSheathedItems(EntityPlayer par1EntityPlayer, ModelBiped modelBipedMain, double frame) {
+
+        ItemStack mainhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearKeyHandeler.previousBattlemode);
+        ItemStack offhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearKeyHandeler.previousBattlemode+InventoryPlayerBattle.WEAPON_SETS);
+
+        ModelBiped chestModel = null;
+        ModelBiped legsModel = null;
+        ItemStack chest =  par1EntityPlayer.getCurrentItemOrArmor(2);
+        if(chest != null){
+            chestModel = chest.getItem().getArmorModel(par1EntityPlayer, chest, 1);
+        }
+        ItemStack legs =  par1EntityPlayer.getCurrentItemOrArmor(3);
+        if(legs != null){
+            legsModel = legs.getItem().getArmorModel(par1EntityPlayer, legs, 2);
+        }
+
+        int backCount = 0;
+
+        if(mainhandSheathed != null){
+
+            boolean onBack = BattlegearConfig.forceBackSheath;
+            if(mainhandSheathed.getItem() instanceof IBattlegearWeapon){
+                onBack = ((IBattlegearWeapon) mainhandSheathed.getItem()).sheatheOnBack();
+            }else if (mainhandSheathed.getItem() instanceof ItemBow){
+                onBack = true;
+            }
+
+            ModelBiped target = modelBipedMain;
+            if(chestModel != null){
+                target = chestModel;
+            }else if(legsModel != null && !onBack){
+                target = legsModel;
+            }
+
+
+            GL11.glPushMatrix();
+
+            if(onBack){
+                target.bipedBody.postRender(0.0625F);
+                if(mainhandSheathed.getItem() instanceof ItemSpear){
+                    GL11.glScalef(0.6F, -0.6F, 0.6F);
+                    GL11.glTranslatef(0, -1, 0);
+                }else
+                    GL11.glScalef(0.6F, 0.6F, 0.6F);
+                GL11.glTranslatef(-8F / 16F, 0, 6F / 16F);
+                GL11.glRotatef(-5F, 0.0F, 0.0F, 1.0F);
+                GL11.glRotatef(40.0F+90, 0.0F, 1.0F, 0.0F);
+                GL11.glTranslatef(0, 0, 4F/16F);
+                backCount++;
+            }else{
+                target.bipedBody.postRender(0.0625F);
+                GL11.glScalef(0.6F, 0.6F, 0.6F);
+                GL11.glTranslatef(8F/16F, 1, -4F/16F);
+                GL11.glRotatef(35F, 1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
+            }
+
+
+            RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, mainhandSheathed, 0);
+
+            GL11.glPopMatrix();
+
+
+        }
+
+        if(offhandSheathed != null){
+            boolean onBack = BattlegearConfig.forceBackSheath;
+            if(offhandSheathed.getItem() instanceof IBattlegearWeapon){
+                onBack = ((IBattlegearWeapon) offhandSheathed.getItem()).sheatheOnBack();
+            }
+
+            ModelBiped target = modelBipedMain;
+            if(chestModel != null){
+                target = chestModel;
+            }else if(legsModel != null && !onBack){
+                target = legsModel;
+            }
+
+
+            GL11.glPushMatrix();
+
+            if(onBack){
+                target.bipedBody.postRender(0.0625F);
+                if(mainhandSheathed.getItem() instanceof ItemSpear){
+                    GL11.glScalef(-0.6F, -0.6F, 0.6F);
+                    GL11.glTranslatef(0, -1, 0);
+                }else
+                    GL11.glScalef(-0.6F, 0.6F, 0.6F);
+                GL11.glTranslatef(-8F / 16F, 0, 6F / 16F);
+                GL11.glRotatef(-5F, 0.0F, 0.0F, 1.0F);
+                GL11.glRotatef(40.0F+90, 0.0F, 1.0F, 0.0F);
+                GL11.glTranslatef(0, 0, 4F/16F - backCount*2F/16F);
+                backCount++;
+            }else{
+                target.bipedBody.postRender(0.0625F);
+                GL11.glScalef(0.6F, 0.6F, 0.6F);
+                GL11.glTranslatef(-7F/16F, 1, -4F/16F);
+                GL11.glRotatef(35F, 1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
+
+            }
+
+
+            RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, offhandSheathed, 0);
+
+            GL11.glPopMatrix();
+        }
+
     }
 
 }

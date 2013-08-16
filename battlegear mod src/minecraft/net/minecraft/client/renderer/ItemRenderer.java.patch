@@ -53,7 +53,7 @@
          RenderHelper.disableStandardItemLighting();
 +        
 +        //-----MB-Edited-----
-+        mods.battlegear2.client.utils.BattlegearRenderHelper.renderItemInFirstPerson(par1, mc, this, offHandItemToRender);
++        BattlegearRenderHelper.renderItemInFirstPerson(par1, mc, this, offHandItemToRender);
      }
  
      /**

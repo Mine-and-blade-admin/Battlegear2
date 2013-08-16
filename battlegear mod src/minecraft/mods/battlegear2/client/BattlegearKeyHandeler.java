@@ -10,6 +10,7 @@ import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearGUIPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.InventoryPlayer;
 import org.lwjgl.input.Keyboard;
@@ -25,7 +26,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
     //public static KeyBinding openSigilEditor = new KeyBinding("Open Sigil Editor", Keyboard.KEY_P);
 
     private static int previousNormal = 0;
-    private static int previousBattlemode = InventoryPlayerBattle.OFFSET;
+    public static int previousBattlemode = InventoryPlayerBattle.OFFSET;
 
     public BattlegearKeyHandeler() {
         //super(new KeyBinding[]{battleInv, drawWeapons, openSigilEditor}, new boolean[]{false, false, false});
@@ -56,10 +57,6 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
                 //send packet to open container on server
                 PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.equipID));
                 //Also open on client
-                System.out.println(player);
-                System.out.println(Battlegear.INSTANCE);
-                System.out.println(mc.theWorld);
-
                 player.openGui(
                         Battlegear.INSTANCE, BattlegearGUIHandeler.equipID, mc.theWorld,
                         (int) player.posX, (int) player.posY, (int) player.posZ);
@@ -81,13 +78,14 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 
                 }
                 mc.playerController.updateController();
-            } /*else if (kb.keyCode == openSigilEditor.keyCode) {
+            /*else if (kb.keyCode == openSigilEditor.keyCode) {
                 //send packet to open container on server
                 PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.sigilEditor));
                 player.openGui(
                         BattleGear.instance, BattlegearGUIHandeler.sigilEditor, mc.theWorld,
                         (int) player.posX, (int) player.posY, (int) player.posZ);
             }*/
+            }
         }
     }
 

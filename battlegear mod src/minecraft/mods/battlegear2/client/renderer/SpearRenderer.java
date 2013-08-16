@@ -72,7 +72,7 @@ public class SpearRenderer implements IItemRenderer {
 
             GL11.glColor4f(1F, 1F, 1F, 1F);
             //GL11.glRotatef(90, 0, 0, 1);
-            itemRenderer.renderIcon(0, -16, item.getIconIndex(), 16, 16);
+            itemRenderer.renderIcon(0, 0, item.getIconIndex(), 16, 16);
 
         }else if (type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
             Icon icon = item.getIconIndex();

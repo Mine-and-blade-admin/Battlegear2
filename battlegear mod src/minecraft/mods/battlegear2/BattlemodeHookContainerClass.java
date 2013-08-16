@@ -5,11 +5,15 @@ import cpw.mods.fml.common.network.Player;
 import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.IExtendedReachWeapon;
 import mods.battlegear2.api.OffhandAttackEvent;
+import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.utils.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet19EntityAction;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -35,7 +39,6 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void attackEntity(AttackEntityEvent event){
-
         ItemStack mainhand = event.entityPlayer.getCurrentEquippedItem();
         if(mainhand != null){
             if(mainhand.getItem() instanceof IExtendedReachWeapon){
@@ -52,7 +55,6 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void playerInterect(PlayerInteractEvent event) {
-
         if (event.entityPlayer.isBattlemode()) {
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = event.entityPlayer.inventory.getStackInSlot(event.entityPlayer.inventory.currentItem + 3);
@@ -71,6 +73,8 @@ public class BattlemodeHookContainerClass {
                             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                         }
 
+                    }else if (offhandItem.getItem() instanceof ItemShield){
+                        event.useItem = Result.DENY;
                     } else {
                         event.entityPlayer.swingOffItem();
                         Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
@@ -92,7 +96,9 @@ public class BattlemodeHookContainerClass {
                                 Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                             }
 
-                        } else {
+                        } else if (offhandItem.getItem() instanceof ItemShield){
+                            event.useItem = Result.DENY;
+                        }else{
                             event.entityPlayer.swingOffItem();
                             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                         }
@@ -130,7 +136,9 @@ public class BattlemodeHookContainerClass {
                     }
                 }
 
-            } else{
+            } else if (offhandItem.getItem() instanceof ItemShield){
+                event.setCanceled(true);
+            }else{
                 if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem.itemID)){
                     event.setCanceled(true);
                     event.entityPlayer.swingOffItem();

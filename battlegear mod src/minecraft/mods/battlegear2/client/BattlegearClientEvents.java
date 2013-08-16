@@ -27,6 +27,9 @@ public class BattlegearClientEvents {
 
     @ForgeSubscribe
     public void render3rdPersonBattlemode(RenderPlayerEvent.Specials.Post event){
+
+
+        System.out.println(event.entityPlayer.isBlockingWithShield());
         BattlegearRenderHelper.renderItemIn3rdPerson(
                 event.entityPlayer,
                 getModelBiped(event.renderer, 1),
