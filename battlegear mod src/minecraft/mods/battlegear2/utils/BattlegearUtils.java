@@ -5,6 +5,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.items.ItemShield;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.*;
@@ -44,6 +45,13 @@ public class BattlegearUtils {
     private static boolean[] mainHandDualWeapons;
     private static boolean[] offhandDualWeapons;
 
+
+    public static boolean isBlockingWithShield(EntityPlayer player){
+        //TODO: Change this so it will check the offhand item
+        return player.isSneaking() &&
+                player.getCurrentEquippedItem() != null &&
+                player.getCurrentEquippedItem().getItem() instanceof ItemShield;
+    }
 
     public static boolean isPlayerInBattlemode(EntityPlayer player) {
         return player.inventory instanceof InventoryPlayerBattle && ((InventoryPlayerBattle) player.inventory).isBattlemode();

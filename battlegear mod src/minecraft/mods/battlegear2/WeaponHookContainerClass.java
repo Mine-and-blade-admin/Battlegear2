@@ -74,8 +74,8 @@ public class WeaponHookContainerClass {
                     if(stack.getItem() instanceof IHitTimeModifier)
                     {
                         //If the hurt resistance time is under the modified hurt resistance time, set it to the modified hurt resistance time
-                        if(entityHit.hurtResistantTime < (float)(entityHit.maxHurtResistantTime) * (0.5) + ((IHitTimeModifier)this).getHitTime(stack, entityHit)){
-                            entityHit.hurtResistantTime += ((IHitTimeModifier)this).getHitTime(stack, entityHit);
+                        if(entityHit.hurtResistantTime < (float)(entityHit.maxHurtResistantTime) * (0.5) + ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit)){
+                            entityHit.hurtResistantTime += ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit);
                         }else{ //if not cancel the attack
                             event.setCanceled(true);
                         }

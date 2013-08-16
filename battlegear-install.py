@@ -13,7 +13,7 @@ def main(mcp_dir, battlegearCode_dir, runtime_dir):
 	
 	cmd = './install.sh'
 	if (os.name == 'nt'):
-		cmd = 'install.bat'
+		cmd = 'install.cmd'
 	os.system(cmd)
 
 	print '================ Clone src ==================='
@@ -77,11 +77,11 @@ def main(mcp_dir, battlegearCode_dir, runtime_dir):
 		os.makedirs(langPath)
 	#enUsPath = os.path.join(langPath, "en_US.lang")
 	#shutil.copy(enUsPath, os.path.join(mcp_dir, "src", "minecraft", "mods", "battlegear2", "client"))
-	for files in os.listdir(langPath):
-         if files.endswith(".lang"):
-             if not files.startswith("en_US.lang"):
-                 shutil.copy(os.path.join(langPath, files), os.path.join(mcp_dir, "jars", "lang", "MB-Battlegear 2", files))
-	
+	#for files in os.listdir(langPath):
+        # if files.endswith(".lang"):
+        #     if not files.startswith("en_US.lang"):
+        #         shutil.copy(os.path.join(langPath, files), os.path.join(mcp_dir, "jars", "lang", "MB-Battlegear 2", files))
+	#
 	print '================ Copy Battlegear Files Done==================='
 	
 	print '================ Battlegear src Instalation Done==================='

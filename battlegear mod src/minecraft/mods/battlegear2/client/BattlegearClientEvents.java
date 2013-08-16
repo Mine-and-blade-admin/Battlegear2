@@ -7,12 +7,14 @@ import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.heraldry.HeraldyPattern;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Icon;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 public class BattlegearClientEvents {
 
@@ -27,6 +29,10 @@ public class BattlegearClientEvents {
 
     @ForgeSubscribe
     public void render3rdPersonBattlemode(RenderPlayerEvent.Specials.Post event){
+
+
+        //System.out.println(event.entityPlayer.isBlockingWithShield());
+
         BattlegearRenderHelper.renderItemIn3rdPerson(
                 event.entityPlayer,
                 getModelBiped(event.renderer, 1),
