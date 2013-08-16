@@ -41,7 +41,7 @@ public class ClientProxy extends CommonProxy {
         super.registerTickHandelers();
         MinecraftForge.EVENT_BUS.register(new BattlegearClientEvents());
         TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
-        //TickRegistry.registerTickHandler(new BattlegearClientTickHandeler(), Side.CLIENT);
+        TickRegistry.registerTickHandler(new BattlegearClientTickHandeler(), Side.CLIENT);
     }
 
     @Override

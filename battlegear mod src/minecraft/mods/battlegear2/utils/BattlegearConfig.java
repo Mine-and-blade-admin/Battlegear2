@@ -106,6 +106,11 @@ public class BattlegearConfig {
 
         }
 
+        int i = 0;
+        shield[i] = new ItemShield(
+                config.get(config.CATEGORY_ITEM, itemNames[7]+shieldTypes[i], firstDefaultItemIndex+itemOffests[7]+i).getInt()
+        );
+
         
         //validWeaponsID=config.get(config.CATEGORY_GENERAL, "Valid Weapon IDs",new int[]{11,12,16,20,27}).getIntList();
         if (config.hasChanged())

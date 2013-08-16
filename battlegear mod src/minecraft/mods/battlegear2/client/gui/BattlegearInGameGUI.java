@@ -1,7 +1,9 @@
 package mods.battlegear2.client.gui;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.items.ItemShield;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
@@ -77,6 +79,14 @@ public class BattlegearInGameGUI extends Gui {
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
 
+        }
+
+
+        if(mc.thePlayer.isBattlemode() &&
+                mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3) != null &&
+                mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3).getItem() instanceof ItemShield){
+
+            this.drawGradientRect(10, height - 35, (int)(10+ (float)BattlegearClientTickHandeler.blockBar/10F), height- 25, 0xFFFFFFFF, 0xFFFFFFFF);
         }
 
 
