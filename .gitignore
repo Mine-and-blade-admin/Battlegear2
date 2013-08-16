@@ -36,5 +36,6 @@
 *~
 *.rej
 *.orig
+*Thumbs.db
 
 

@@ -4,10 +4,7 @@ package mods.battlegear2;
 import mods.battlegear2.client.LanguageHelper;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
-import mods.battlegear2.packet.BattlegearAnimationPacket;
-import mods.battlegear2.packet.BattlegearGUIPacket;
-import mods.battlegear2.packet.BattlegearPacketHandeler;
-import mods.battlegear2.packet.BattlegearSyncItemPacket;
+import mods.battlegear2.packet.*;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.item.EnumArmorMaterial;
@@ -32,7 +29,8 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
                 BattlegearSyncItemPacket.packetName,
                 //BattlegearBannerPacket.packetName,
                 //BattlegearChangeHeraldryPacket.packetName,
-                BattlegearGUIPacket.packetName},
+                BattlegearGUIPacket.packetName,
+                BattlegearShieldBlockPacket.packetName},
         packetHandler = BattlegearPacketHandeler.class)
 public class Battlegear {
 

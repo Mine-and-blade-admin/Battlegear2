@@ -1,18 +1,31 @@
 package mods.battlegear2;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.IExtendedReachWeapon;
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.OffhandAttackEvent;
+import mods.battlegear2.client.BattlegearClientTickHandeler;
+import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.utils.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
+import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet19EntityAction;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -35,7 +48,6 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void attackEntity(AttackEntityEvent event){
-
         ItemStack mainhand = event.entityPlayer.getCurrentEquippedItem();
         if(mainhand != null){
             if(mainhand.getItem() instanceof IExtendedReachWeapon){
@@ -52,7 +64,6 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void playerInterect(PlayerInteractEvent event) {
-
         if (event.entityPlayer.isBattlemode()) {
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = event.entityPlayer.inventory.getStackInSlot(event.entityPlayer.inventory.currentItem + 3);
@@ -71,6 +82,8 @@ public class BattlemodeHookContainerClass {
                             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                         }
 
+                    }else if (offhandItem.getItem() instanceof ItemShield){
+                        event.useItem = Result.DENY;
                     } else {
                         event.entityPlayer.swingOffItem();
                         Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
@@ -92,7 +105,9 @@ public class BattlemodeHookContainerClass {
                                 Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                             }
 
-                        } else {
+                        } else if (offhandItem.getItem() instanceof ItemShield){
+                            event.useItem = Result.DENY;
+                        }else{
                             event.entityPlayer.swingOffItem();
                             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                         }
@@ -130,7 +145,9 @@ public class BattlemodeHookContainerClass {
                     }
                 }
 
-            } else{
+            } else if (offhandItem.getItem() instanceof ItemShield){
+                event.setCanceled(true);
+            }else{
                 if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem.itemID)){
                     event.setCanceled(true);
                     event.entityPlayer.swingOffItem();
@@ -139,6 +156,37 @@ public class BattlemodeHookContainerClass {
                 }
             }
 
+
+        }
+    }
+
+
+
+    @ForgeSubscribe
+    public void shieldHook(LivingAttackEvent event){
+        if(event.entity instanceof EntityPlayer){
+
+            EntityPlayer player = (EntityPlayer)event.entity;
+
+            System.out.println(player.isBlockingWithShield());
+
+            if(player.isBlockingWithShield()){
+                ItemStack shield = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
+                if(((IShield)shield.getItem()).canBlockFull(shield, event.source)){
+                    event.setCanceled(true);
+
+                    if(event.source.isProjectile()){
+                        if(event.source instanceof EntityDamageSourceIndirect){
+                            if(event.source.getEntity() instanceof EntityArrow){
+                                //Send packet to increase arrow sticking
+                                event.source.getEntity().setDead();
+                            }
+                        }
+                    }
+
+                    //Send packet to player to start flashing block bar & reduce block bar
+                }
+            }
 
         }
     }

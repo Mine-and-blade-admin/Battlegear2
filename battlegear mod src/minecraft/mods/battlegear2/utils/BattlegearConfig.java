@@ -26,6 +26,7 @@ public class BattlegearConfig {
 	public static boolean forceBackSheath = false;
 	public static final String[] itemNames = new String[] {"heraldric","chain","quiver", "dagger","waraxe","mace","spear","shield","knight_armour"};
 	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
+    public static final String[] shieldTypes = new String[] {"wood", "hide", "iron", "diamond", "gold"};
 	public static final String[] armourTypes = new String[] {"helmet", "plate", "legs", "boots"};
 	public static final int firstDefaultItemIndex = 26201;
 	public static int[] itemOffests = new int[]{0, 1, 2, 5, 10, 15, 20, 25, 30};
@@ -33,7 +34,8 @@ public class BattlegearConfig {
 	//Valid weapons ids are from vanilla swords
 	public static int[] setID=new int[8],validWeaponsID={11,12,16,20,27};
 	
-	public static ItemWeapon[] dagger=new ItemWeapon[5],warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5],shield=new ItemWeapon[5];
+	public static ItemWeapon[] dagger=new ItemWeapon[5],warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5];
+    public static ItemShield[] shield=new ItemShield[5];
 	public static Item chain,quiver,heradricItem;
 	public static Block banner;
 	public static ItemBlock bannerItem;
@@ -95,7 +97,19 @@ public class BattlegearConfig {
     		spear[i]=new ItemSpear(
     				config.get(config.CATEGORY_ITEM, itemNames[6]+toolTypes[i], firstDefaultItemIndex+itemOffests[6]+i).getInt(),
     				material, itemNames[6]);
+
+            /*
+            shield[i] = new ItemShield(
+                    config.get(config.CATEGORY_ITEM, itemNames[7]+shieldTypes[i], firstDefaultItemIndex+itemOffests[7]+i).getInt()
+            );
+            */
+
         }
+
+        int i = 0;
+        shield[i] = new ItemShield(
+                config.get(config.CATEGORY_ITEM, itemNames[7]+shieldTypes[i], firstDefaultItemIndex+itemOffests[7]+i).getInt()
+        );
 
         
         //validWeaponsID=config.get(config.CATEGORY_GENERAL, "Valid Weapon IDs",new int[]{11,12,16,20,27}).getIntList();
