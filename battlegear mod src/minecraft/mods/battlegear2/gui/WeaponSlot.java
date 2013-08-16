@@ -1,6 +1,7 @@
 package mods.battlegear2.gui;
 
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -54,9 +55,8 @@ public class WeaponSlot extends Slot {
                     } else {
                         return super.isItemValid(par1ItemStack) && BattlegearUtils.isOffHand(par1ItemStack.itemID);
                     }
-                } else {
-                    return false;
-                }
+                } else
+                    return par1ItemStack.getItem() instanceof ItemShield;
 
         }
     }

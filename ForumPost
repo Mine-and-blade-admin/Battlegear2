@@ -1,42 +1,159 @@
 [img]http://i.imgur.com/vubIaQp.png[/img]
+ 
+[center][anchor='Intro']
+[img]http://i.imgur.com/btlT8.png[/img]
+[/anchor][/center]
 
-[font=Helvetica, arial, freesans, clean, sans-serif][color=#333333]This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft. This iteration will be opensource with multiple modders contributing. There is currently [/color][/font][color=#ff0000][font=Helvetica, arial, freesans, clean, sans-serif][b]no download available[/b][/font][/color][font=Helvetica, arial, freesans, clean, sans-serif][color=#333333].[/color][/font]
-
-Any person doing the following will be reported[list]
-[*]Asking for an update or asking when a download will be available (update pestering)
+Mine & Blade: Battlegear 2, is a recreation of the popular combat mod for minecraft currently in development. The mod focuses on:[list]
+[*]Providing players with interesting and balanced combat features, including:
 [list]
-[*]If you really want to get an idea of the complexity of what we are doing look at [url="http://www.minecraftforum.net/topic/1722960-wip-mine-blade-battlegear-2-modders-discussions/page__st__100__gopid__21460802#entry21460802"]this post[/url]. But please do not ask for a release date, it is far to early and we have far too much work to give a reliable date
-[/list][*]Posting pointless comments such as "Yay this was my favourite mod" (spam)
+[*]New weapons
+[*]Dual wielding of weapons
+[*]A shielding mechanic
+[/list][*]An extremely high level of customisation for a select number of items
+[*]Open source, meaning anyone is free to add to the code base
+[/list]
+We are currently previewing select features, there is currently [size=3][color=#FF0000][u][b]no dual wielding or shields[/b][/u][/color][/size]. This is not expected to be released until after minecraft 1.6
+
+[anchor='news'][color=#008080][size=5][b]News[/b][/size][/color][/anchor]
+[color=#AF0000]We have moved![/color] - 27/06/13
+Mine & Blade Battlegear: 2 is now being hosted on CurseForge. All information for the mod has been ported to a new post on CurseForge [url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"]located here[/url]. I will still keep this topic open for discussions and issues however all new information will be added to the CurseForge page.
+
+In the comming days I will also set up a small mini forum for people to post suggestions, bug reports, etc
+
+nerd-boy
+
+[color=#AF0000]Crest creation competition - 18/6/13[/color]
+Due to the fact that we still have approximatly a dozen slots left for the sigil icons, I have decided to open the remaining designs to the community. This is your chance to have the sigil you want be included in the mod. I will leave submit ions open for about a month at which time I will allow the community to vote on their favorites.
+
+A couple of rules & requests[list]
+[*]Nothing offensive
+[*]Try to keep it in the medieval style of the mod (eg no spaceships)
+[*]I would rather keep clear of current real life religious and country symbols
+[*]Be creative
+[/list]
+In the spoiler below is a small description of what is needed.
+[spoiler]
+
+Each sigil is made up of 2 images. Image 1 will take the primary sigil colour and image 2 will take the 2nd sigil colour. Image 2 will then be layed on top of Image 1 when rendered in game. Images should be greyscale (no colour) plus an alpha channel (to allow (semi)transparency). Each image also requires at least 1px border of full black transparency.
+
+Note that the 2nd image may be blank if you do not wish for the secaondary colour to show.
+
+Submitions should include at a minimum[list]
+[*]Name of the icon
+[*]A 2 18x18 images (image 1 & 2)
+[/list]
+You may also include[list]
+[*]A larger hi resolution image (I will compile a hi res pack at a later date)
+[*]Request of colours to use when displaying to the community to vote (both for the symbol and background)
+[/list]
+Below are is a example image (green = transparency)
+[img]http://i.imgur.com/rVgBOsX.png[/img]
+
+
+[/spoiler]
+
+Below are the current sigils already included in the mod
+[spoiler]
+
+For each of the sigils, blue indicates the primary colour and red the secondary colour
+[img]http://i.imgur.com/tRpgy3r.png[/img]
+
+The sigils are (some scale quite badly)[list=1]
+[*]Black
+[*]Wolf (House Stark)
+[*]3-Headed Dragon (House Tragaryen)
+[*]Lion (House Lannister)
+[*]Stag (House Baratheon)
+[*]Eagle (House Arryn)
+[*]Rose (House Tyrell)
+[*]Kraken (House Greyjoy)
+[*]Fish (House Tully)
+[*]Griffin (House Connington)
+[*]Bear (House Mormont)
+[*]Merman (House Manderly)
+[*]Lightning (House Dondarion)
+[*]Tower (House Frey)
+[*]Flayed man on a rack (House Bolton)
+[*]Crocodile (House Reed)
+[*]Bird Head (for a friend)
+[*]Tree (cos why not?)
+[*]Triforce (Request from GotoLink)
+[/list]
+[/spoiler]
+
+Please post your entries in the [url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/forum/crest-creation/"]forum created for this purpose at CurseForge[/url]
+Entries close on 12/6/13
+
+
+[img]http://i.imgur.com/zPOvf.png[/img][list=1]
+[*]Download and Install [url="http://files.minecraftforge.net/"]Minecraft Forge[/url]
+[*]Download the Mine & blade Battlegear 2 zip file from the [url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"]CurseForge page[/url]
+[*]Extract the contents of the zip into your .minecraft directory
 [list]
-[*]I know people will be excited, but these sort of comments add nothing to the discussion and just get in the way of the massive amount of work required
+[*]This will install the mod, coremod and language file components into their correct files
 [/list]
 [/list]
-Also I request [b]please do not ask about compatibility[/b]. It is far to early to know, and most of the time I will not be able to tell you unless I can see the source code (so bug other modders to make their mods opensource)
+[img]http://i.imgur.com/iiSCS.png[/img]
+
+[color=#ff0000]Q: My game crashes, what do I do?[/color]
+[color=#008000]A:[/color] Make sure you followed all the installation instructions for both the mod & Forge. Also make sure you have no incompatible mods installed (either incompatible with this or Forge). If you are still having troubles I need a crash report and detailed description (when it crashed what other mods etc). Please read [url="http://www.minecraftforum.net/topic/1506692-crash-reports-101/"]Crash Repots 101[/url] about obtaining, reading, debugging and posting crash reports. I will likely ignore people not following these instructions.
+
+[color=#ff0000]Q: Why is there no dual wielding or shields[/color]
+[color=#008000]A:[/color] Both Dual wielding and shields (as well as many more items/features) are still being developed. The mian thing holding dual wielding back at the moment is (as well as time) we are waiting for 1.6 to be released as there may be some major engine changes wqith this release.
+
+[color=#ff0000]Q: I have an Idea for a new feature[/color]
+[color=#008000]A:[/color] Feel free to post it (as long as it is not the idea stated in the above FAQ), but please read this post to make sure it's not already implemented and I am not planning on adding it later. Please also scan the last couple of pages for others recently asking for the same (or similar) ideas. This should help me by not being constantly posted the exact same suggestions.
+
+[color=#ff0000]Q: I love your mod and wish to donate but I cannot find a donate button[/color]
+[color=#008000]A: [/color]Please do not donate to me, I do not do this to make money in any form (which is why I don't use adfy links). If you do have your heart set on donations, please send you donate to one of the many worthy charities, they could do many greater things with the money.
 
 
-We are currently working on the dual wielding functionality of the mod.
+[img]http://i.imgur.com/d6Xh7.png[/img]]
 
-So far the following works[list]
-[*] Dual wielding of weapons and fists
-[*] Switching between normal and battlemode with the 'R' Key
-[*] Attacking entities with both the offhand and mainhand weapons
-[*] Rendering of dual wielding in 1st person view
-[*] 3rd person renderering
-[*] Initial work on the equip screen
-[*] Inital work on an API to allow other modders to define dual wielding weapons
-[*] Swinging of offhand items of other players
-[*] Rendering of offhand weapons on other players
-[*] Basic Shift Clicking on the inventory screen
-[*] Initial Configuration Files
-[*] Basic Heraldry
-[*] Inital work on the following weapons: waraxe, dagger
+[anchor='CurrentBugs'][color=#008080][size=5][b]Bugs[/b][/size][/color][/anchor][list]
+[*]Coloured swords do not render their colours (Only the default texture). I have found this bug and a fix will be in the next release
 [/list]
-
-So far the following still needs to be done[list]
-[*] (Most) ASM capabilities*
-[*] Rendering of sheathed weapons
-[*] Spear & Mace
-[*] Shields
+[anchor='Issues'][color=#008080][size=5][b]Issues[/b][/size][/color][/anchor][list]
+[*]The waraxes are not colourable (I still am not sure if I will do this or not)
 [/list]
-The code is available on my personal gitnub account [url="https://github.com/amedw/Battlegear2"]here[/url].
-Due to potential legal issues involved in the re-distribution of minecraft's code, all base class edits are distributed as .patch files. I have provided installation instructions and scripts to simplify the installation and retrieval of the source code.
+[anchor='Incompatibilities'][color=#008080][size=5][b]Incompatibilities[/b][/size][/color][/anchor][list]
+[*]Mods that add new versions of swords (eg ore mods) will not be able to take advantage of the heraldry system
+[*]Mods that use RenderPlayerAPI (eg SmartMoving, Aether) or edit the player model have issues with the Knight's armour. As this is a RenderPlayerAPI incompatibility with Forge I can't do anything about this. It is Divisor's responsibility
+[/list]
+[center][anchor='Planned']
+[img]http://i.imgur.com/3ZQ2O.png[/img]
+[/anchor][/center]
+
+[anchor='PlannedWeapons'][color=#008080][size=5][b]Weapons[/b][/size][/color][/anchor][list=1]
+[*][b]Mace:[/b] Less damage than a sword but has a chance to daze enemies
+[*][b]Spear:[/b] Less damage than a sword but can reach enemies from a longer distance (also bonus to damage while riding)
+[*][b]Dagger:[/b] Less damage than a sword but can ignore part of the flashing red hurt resistance time on emeies
+[/list]
+A more detailed list of the damaged caused by these items can be found on [url="https://github.com/amedw/Battlegear2/blob/master/ItemStats.md"]github[/url]
+
+[anchor='PlannedDual'][color=#008080][size=5][b]Dual Wielding[/b][/size][/color][/anchor]
+As much as this is likely the feature that people are looking forward to, it is also the most complex. The current constant changes making it even more hard. Currently dual wielding is about 1/2 complete, but with possible engine changes around the corner in minecraft 1.6 I am hesitant to work on this feature until we know mor details about 1.6.
+
+Here are a few things known about dual wielding[list]
+[*]Dual wielding will only be available for a select number of items (mainly weapons)
+[*]There will be an API that will allow other modders to make their weapons dual-wieldable
+[*]Left clicking will swing the mainhand weapon, right clicking will swing the left
+[list]
+[*]This is the reason why not all items will be dual wieldable, basically any item that has a function on right click will not be usable in the system without use of the API and careful coding
+[/list][*]3 sets of new slots will be used for dual wielding. These will be accessed by a new inventory screen (separate from the default one)
+[*]Battlemode, where items can be dual wielded will be accessed by pressing the 'R' key
+[*]Dual wielding will make heavy use of coremod/ASM, if you want to have a run down of the complexity of this read [url="http://www.minecraftforum.net/topic/1722960-wip-mine-blade-battlegear-2-modders-discussions/page__st__100__gopid__21460802#entry21460802"]this post[/url]
+[/list]
+Please do not pester about this feature when we are releasing test releases of other features. It will be comming but we also need to test many features of the mod (eg weapons and heraldic items).
+
+[anchor='PlannedShields'][color=#008080][size=5][b]Shield[/b][/size][/color][/anchor]
+
+Shielding will be implemented after dual wielding is released (it depends on the system). Shields will be able to be wielded with other weapons and will be able to be fully customised using the heraldic system. A few more details about the shielding mechanic are below[list]
+[*]Shield blocking will be activated by holding the right mouse button
+[*]Blocking will prevent the player from taking damage from a certain arc in front of them (probably about 120 degrees)
+[*]Blocking will reduce a "stamina bar" preventing someone from constantly blocking (this is for balance)
+[*]Absorbing damage will both damage the shield and slightly reduce your "shield stamina"
+[*]There will be an API that will allow other modders to add shields
+[/list]
+[center][goto='TOC']Goto The Table of Contents[/goto][/center]
