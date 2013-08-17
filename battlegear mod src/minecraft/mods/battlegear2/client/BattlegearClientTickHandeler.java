@@ -7,6 +7,7 @@ import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearShieldBlockPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Mouse;
 
 import java.util.EnumSet;
@@ -14,22 +15,26 @@ import java.util.EnumSet;
 public class BattlegearClientTickHandeler implements ITickHandler {
 
 
-    public static short blockBar = 1000;
+    public static float blockBar = 1;
     public static boolean wasBlocking = false;
-
-    public static final short recoveryRate = 10;
+    public static final float recoveryRate = 0.01F; //should take 5 secods to fully recover
+    public static boolean isFlashing = false;
+    public static final float[] COLOUR_DEFAULT = new float[]{0, 0.75F, 1};
+    public static final float[] COLOUR_RED = new float[]{1, 0.1F, 0.1F};
+    public static final float[] COLOUR_YELLOW = new float[]{1, 1F, 0.1F};
 
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+        ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
         if(player.isBattlemode() &&
-                player.inventory.getStackInSlot(player.inventory.currentItem + 3) != null &&
-                player.inventory.getStackInSlot(player.inventory.currentItem + 3).getItem() instanceof ItemShield){
+                offhand != null &&
+                offhand.getItem() instanceof ItemShield){
 
-            if(Mouse.isButtonDown(1)){
+            if(Mouse.isButtonDown(1) && !player.isSwingInProgress){
 
-                blockBar -= 10;
+                blockBar -= ((ItemShield) offhand.getItem()).getDecayRate(offhand);
                 if(blockBar > 0){
                     if(!wasBlocking){
 
@@ -58,8 +63,8 @@ public class BattlegearClientTickHandeler implements ITickHandler {
                 wasBlocking = false;
 
                 blockBar += recoveryRate;
-                if(blockBar > 1000){
-                    blockBar = 1000;
+                if(blockBar > 1){
+                    blockBar = 1;
                 }
 
             }
