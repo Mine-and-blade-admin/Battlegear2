@@ -18,7 +18,7 @@
  import net.minecraft.world.chunk.IChunkProvider;
  
  import net.minecraftforge.common.ForgeHooks;
-@@ -83,9 +87,119 @@
+@@ -83,9 +87,115 @@
  
  public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
  {
@@ -110,11 +110,10 @@
 +    //-----MB-AddMethod-----  (TODO: Add to coremod)
 +    public boolean isBlockingWithShield(){
 +
-+        System.out.println("is block: "+dataWatcher.getWatchableObjectInt(25));
 +        return isBattlemode() &&
 +                inventory.getStackInSlot(inventory.currentItem + 3) != null &&
 +                inventory.getStackInSlot(inventory.currentItem + 3).getItem() instanceof ItemShield &&
-+                dataWatcher.getWatchableObjectInt(25) > 0;
++                dataWatcher.getWatchableObjectByte(25) > 0;
 +    }
 +    //-----MB-AddMethod-----  (TODO: Add to coremod)
 +    public void setBlockingWithShield(boolean block){
@@ -122,14 +121,11 @@
 +                isBattlemode() &&
 +                inventory.getStackInSlot(inventory.currentItem + 3) != null &&
 +                inventory.getStackInSlot(inventory.currentItem + 3).getItem() instanceof ItemShield){
-+            dataWatcher.updateObject(25, 1);
-+            System.out.println(dataWatcher.getWatchableObjectInt(25));
-+            System.out.println(dataWatcher.hasChanges());
++            dataWatcher.updateObject(25, (byte)1);
 +        }else{
-+            dataWatcher.updateObject(25, 0);
++            dataWatcher.updateObject(25, (byte)0);
 +        }
 +    }
-+	
 +		
      public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
      /** Inventory of the player */
@@ -139,7 +135,7 @@
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
  
      /**
-@@ -201,12 +315,17 @@
+@@ -201,12 +311,17 @@
          this.func_110140_aT().func_111150_b(SharedMonsterAttributes.field_111264_e).func_111128_a(1.0D);
      }
  
@@ -153,24 +149,19 @@
          this.dataWatcher.addObject(18, Integer.valueOf(0));
 +
 +        //TODO: This needs to be added
-+        this.dataWatcher.addObject(25, 0);
++        this.dataWatcher.addObject(25, (byte)0);
      }
  
      @SideOnly(Side.CLIENT)
-@@ -282,6 +401,12 @@
+@@ -282,6 +397,7 @@
          if (this.itemInUse != null)
          {
              ItemStack itemstack = this.inventory.getCurrentItem();
-+            
-+            /*
-+            //-----MB-Edited-----
-+            if(itemInUse.getItem() instanceof ItemShield){
-+            	itemstack = ((InventoryPlayerBattle)inventory).getCurrentOffItem();
-+            }*/
++
  
              if (itemstack == this.itemInUse)
              {
-@@ -468,11 +593,12 @@
+@@ -468,11 +584,12 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
@@ -185,7 +176,7 @@
                  }
              }
  
-@@ -2385,7 +2511,8 @@
+@@ -2385,7 +2502,8 @@
      {
          if (par1 == 0)
          {

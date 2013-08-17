@@ -9,6 +9,7 @@ import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
+import mods.battlegear2.client.renderer.ShieldRenderer;
 import mods.battlegear2.client.renderer.SpearRenderer;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -57,9 +58,13 @@ public class ClientProxy extends CommonProxy {
     public void registerItemRenderers() {
 
         SpearRenderer spearRenderer =  new SpearRenderer();
-
         for(Item spear: BattlegearConfig.spear){
             MinecraftForgeClient.registerItemRenderer(spear.itemID, spearRenderer);
+        }
+
+        ShieldRenderer shieldRenderer = new ShieldRenderer();
+        for(Item shield : BattlegearConfig.shield){
+            MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
         }
 
     }
