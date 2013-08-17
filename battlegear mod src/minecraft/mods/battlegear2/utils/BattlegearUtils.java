@@ -3,6 +3,7 @@ package mods.battlegear2.utils;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import mods.battlegear2.api.IBattlegearWeapon;
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemShield;
@@ -84,8 +85,18 @@ public class BattlegearUtils {
     public static boolean isOffHand(int id) {
         if (Item.itemsList[id] instanceof IBattlegearWeapon)
             return ((IBattlegearWeapon) Item.itemsList[id]).isOffhandHandDualWeapon();
+        else if(Item.itemsList[id] instanceof IShield){
+            return true;
+        }
         else
             return offhandDualWeapons[id];
+    }
+
+    public static boolean allowsShield(int itemID) {
+        if (Item.itemsList[itemID] instanceof IBattlegearWeapon)
+            return ((IBattlegearWeapon) Item.itemsList[itemID]).willAllowShield();
+        else
+            return mainHandDualWeapons[itemID];
     }
 
     public static void scanAndProcessItems() {

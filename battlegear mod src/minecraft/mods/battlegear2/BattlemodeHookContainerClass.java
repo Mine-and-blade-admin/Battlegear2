@@ -1,31 +1,26 @@
 package mods.battlegear2;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.IExtendedReachWeapon;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.OffhandAttackEvent;
-import mods.battlegear2.client.BattlegearClientTickHandeler;
+import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.utils.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet19EntityAction;
-import net.minecraft.util.DamageSource;
+import net.minecraft.network.packet.Packet103SetSlot;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -168,23 +163,28 @@ public class BattlemodeHookContainerClass {
 
             EntityPlayer player = (EntityPlayer)event.entity;
 
-            System.out.println(player.isBlockingWithShield());
-
             if(player.isBlockingWithShield()){
                 ItemStack shield = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
-                if(((IShield)shield.getItem()).canBlockFull(shield, event.source)){
+                if(((IShield)shield.getItem()).canBlock(shield, event.source)){
                     event.setCanceled(true);
 
                     if(event.source.isProjectile()){
                         if(event.source instanceof EntityDamageSourceIndirect){
                             if(event.source.getEntity() instanceof EntityArrow){
-                                //Send packet to increase arrow sticking
                                 event.source.getEntity().setDead();
+
+                                if(shield.getItem() instanceof ItemShield){
+                                    ((ItemShield)shield.getItem()).setArrowCount(shield, ((ItemShield) shield.getItem()).getArrowCount(shield)+1);
+
+
+                                    ((InventoryPlayerBattle)player.inventory).hasChanged = true;
+
+                                }
                             }
                         }
                     }
 
-                    //Send packet to player to start flashing block bar & reduce block bar
+                    //TODO: Send packet to player to start flashing block bar & reduce block bar
                 }
             }
 

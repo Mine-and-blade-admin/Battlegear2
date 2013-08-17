@@ -42,6 +42,8 @@ public class SpearRenderer implements IItemRenderer {
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 
+        GL11.glPushMatrix();
+
         if (mc == null) {
             mc = FMLClientHandler.instance().getClient();
             itemRenderer = new RenderItem();
@@ -86,9 +88,11 @@ public class SpearRenderer implements IItemRenderer {
                     icon.getOriginY(), 1F/16F);
 
             if (item != null && item.hasEffect(0)) {
-                //HeraldryItemRenderer.renderEnchantmentEffects(tessellator);
+               renderEnchantmentEffects(tessellator);
             }
         }
+
+        GL11.glPopMatrix();
 
     }
 

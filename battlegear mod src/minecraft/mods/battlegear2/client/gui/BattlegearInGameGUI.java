@@ -20,6 +20,7 @@ public class BattlegearInGameGUI extends Gui {
 
     public static final RenderItem itemRenderer = new RenderItem();
     protected static final ResourceLocation resourceLocation = new ResourceLocation("textures/gui/widgets.png");
+    protected static final ResourceLocation resourceLocationShield = new ResourceLocation("battlegear2", "textures/gui/Shield Bar.png");
 
 
     public BattlegearInGameGUI() {
@@ -43,20 +44,19 @@ public class BattlegearInGameGUI extends Gui {
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            drawTexturedModalRect(width / 2 + 91 + 15, height - 22, 0, 0, 31, 22);
-            drawTexturedModalRect(width / 2 + 91 + 15 + 31, height - 22, 151, 0, 31, 22);
+            drawTexturedModalRect(width / 2 + 91 + 15 + 15, height - 22, 0, 0, 31, 22);
+            drawTexturedModalRect(width / 2 + 91 + 15 + 31 + 15, height - 22, 151, 0, 31, 22);
 
-            drawTexturedModalRect(width / 2 - 91 - 15 - 62, height - 22, 0, 0, 31, 22);
-            drawTexturedModalRect(width / 2 - 91 - 15 - 31, height - 22, 151, 0, 31, 22);
+            drawTexturedModalRect(width / 2 - 91 - 15 - 62 - 15, height - 22, 0, 0, 31, 22);
+            drawTexturedModalRect(width / 2 - 91 - 15 - 31 - 15, height - 22, 151, 0, 31, 22);
 
 
             if (mc.thePlayer.isBattlemode()) {
 
-
-                this.drawTexturedModalRect(width / 2 - 169 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20,
+                this.drawTexturedModalRect(width / 2 - 169 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20 - 15,
                         height - 22 - 1, 0, 22, 24, 22);
 
-                this.drawTexturedModalRect(width / 2 + 105 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20,
+                this.drawTexturedModalRect(width / 2 + 105 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20 + 15,
                         height - 22 - 1, 0, 22, 24, 22);
             }
 
@@ -64,29 +64,43 @@ public class BattlegearInGameGUI extends Gui {
             GL11.glEnable(GL12.GL_RESCALE_NORMAL);
             RenderHelper.enableGUIStandardItemLighting();
 
-
             for (int i = 0; i < InventoryPlayerBattle.WEAPON_SETS; ++i) {
-                int x = width / 2 - 91 - 16 - 58 + (i) * 20;
+                int x = width / 2 - 91 - 16 - 58 + (i) * 20 - 15;
                 int y = height - 19;
 
-                this.renderInventorySlot(i + InventoryPlayerBattle.OFFSET, x + 105 + 169, y, frame);
+                this.renderInventorySlot(i + InventoryPlayerBattle.OFFSET, x + 105 + 169+ 30, y, frame);
                 this.renderInventorySlot(i + InventoryPlayerBattle.OFFSET + InventoryPlayerBattle.WEAPON_SETS, x, y, frame);
 
             }
 
-
             RenderHelper.disableStandardItemLighting();
             GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
-
         }
-
 
         if(mc.thePlayer.isBattlemode() &&
                 mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3) != null &&
                 mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3).getItem() instanceof ItemShield){
+            GL11.glEnable(GL11.GL_BLEND);
+            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            this.mc.renderEngine.func_110577_a(resourceLocationShield);
+            int x = width / 2 -200;
+            int y = height - 35;
 
-            this.drawGradientRect(10, height - 35, (int)(10+ (float)BattlegearClientTickHandeler.blockBar/10F), height- 25, 0xFFFFFFFF, 0xFFFFFFFF);
+            this.drawTexturedModalRect(x, y, 0, 0, 94, 9);
+
+            float[] colour = BattlegearClientTickHandeler.COLOUR_DEFAULT;
+            if(BattlegearClientTickHandeler.blockBar < 0.33F){
+                colour = BattlegearClientTickHandeler.COLOUR_RED;
+            }
+            if(BattlegearClientTickHandeler.isFlashing && (System.currentTimeMillis() / 250) % 2 == 0){
+                colour = BattlegearClientTickHandeler.COLOUR_YELLOW;
+            }
+            GL11.glColor3f(colour[0], colour[1], colour[2]);
+            this.drawTexturedModalRect(x+2, y+2, 0, 9, (int)(90 * BattlegearClientTickHandeler.blockBar), 5);
+
+
+            GL11.glDisable(GL11.GL_BLEND);
         }
 
 
