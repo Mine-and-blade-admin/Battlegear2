@@ -2,8 +2,10 @@ package mods.battlegear2.client.utils;
 
 
 import mods.battlegear2.api.IBattlegearWeapon;
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.client.BattlegearKeyHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.items.ItemSpear;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.BattlegearUtils;
@@ -91,14 +93,14 @@ public class BattlegearRenderHelper {
 
             if (itemRenderer.offHandItemToRender != null) {
 
-	        	/*if(itemRenderer.offHandItemToRender.getItem() instanceof ItemShield){
+	        	if(itemRenderer.offHandItemToRender.getItem() instanceof IShield){
                     GL11.glPushMatrix();
 
 	        		var7 = 0.8F;
 	        		GL11.glTranslatef(-0.7F * var7 - 0.25F*MathHelper.sin(player.swingProgress*3.14159F),
 	        				-0.65F * var7 - (1.0F - progress) * 0.6F - 0.4F, -0.9F * var7+0.1F);
 
-	        		if(player.getItemInUse() != null){
+	        		if(player.isBlockingWithShield()){
 	        			GL11.glTranslatef(0.25F, 0.15F, 0);
 	        		}
 
@@ -107,14 +109,12 @@ public class BattlegearRenderHelper {
 	        		GL11.glRotatef(325+35*MathHelper.sin(player.swingProgress*3.14159F), 0, 1, 0);
 
 
-
 	        		itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
 
 	        		GL11.glPopMatrix();
 
 
-	        	}else*/
-                {
+	        	}else{
                     GL11.glPushMatrix();
                     var7 = 0.8F;
 
@@ -295,7 +295,8 @@ public class BattlegearRenderHelper {
 
         ItemStack offhand = var1.isBattlemode() ? var1.inventory.getStackInSlot(var1.inventory.currentItem + 3) : dummyStack;
 
-        offhand = (mainhandToRender == null || BattlegearUtils.isMainHand(mainhandToRender.itemID)) ? offhand : dummyStack;
+        offhand = (mainhandToRender == null || BattlegearUtils.isMainHand(mainhandToRender.itemID) ||
+                (BattlegearUtils.allowsShield(mainhandToRender.itemID) && offhand != null && offhand.getItem() instanceof IShield)) ? offhand : dummyStack;
         var3 = var3 & (itemRenderer.equippedItemOffhandSlot == var1.inventory.currentItem + 3 && offhand == itemRenderer.offHandItemToRender);
 
         float var4 = 0.4F;
@@ -358,15 +359,23 @@ public class BattlegearRenderHelper {
 
         if (var21 != null && par1EntityPlayer.isBattlemode()) {
 
-            modelBipedMain.heldItemLeft = 1;
+            boolean isBlockWithShield = par1EntityPlayer.isBlockingWithShield();
+            modelBipedMain.heldItemLeft = isBlockWithShield?3:1;
 
-            ItemStack chest =  par1EntityPlayer.getCurrentItemOrArmor(2);
-            if(chest != null){
-                ModelBiped model = chest.getItem().getArmorModel(par1EntityPlayer, chest, 1);
-                if(model != null){
-                    model.heldItemLeft = 1;
+            //The sneak is not working for some reason???
+            modelBipedMain.isSneak = modelBipedMain.isSneak || isBlockWithShield;
+
+            for(int i = 1; i < 5; i++){
+                ItemStack chest =  par1EntityPlayer.getCurrentItemOrArmor(i);
+                if(chest != null){
+                    ModelBiped model = chest.getItem().getArmorModel(par1EntityPlayer, chest, 1);
+                    if(model != null){
+                        model.heldItemLeft = isBlockWithShield?3:1;
+                        model.isSneak = model.isSneak || isBlockWithShield;
+                    }
                 }
             }
+
 
 
             float var7;
@@ -389,68 +398,100 @@ public class BattlegearRenderHelper {
             IItemRenderer customRenderer = MinecraftForgeClient.getItemRenderer(var21, EQUIPPED);
             boolean is3D = (customRenderer != null && customRenderer.shouldUseRenderHelper(EQUIPPED, var21, BLOCK_3D));
 
-            if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.blocksList[var21.itemID].getRenderType()))) {
-                var7 = 0.5F;
-                GL11.glTranslatef(0.0F, 0.1875F, -0.3125F);
-                var7 *= 0.75F;
-                GL11.glRotatef(20.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
-                GL11.glScalef(-var7, -var7, var7);
-            } else if (var21.itemID == Item.bow.itemID) {
+            if(var21.getItem() instanceof IShield){
                 var7 = 0.625F;
-                GL11.glTranslatef(0.0F, 0.125F, 0.3125F);
-                GL11.glRotatef(-20.0F, 0.0F, 1.0F, 0.0F);
                 GL11.glScalef(var7, -var7, var7);
-                GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
-            } else if (Item.itemsList[var21.itemID].isFull3D()) {
-                var7 = 0.625F;
 
-                if (Item.itemsList[var21.itemID].shouldRotateAroundWhenRendering()) {
-                    GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-                    GL11.glTranslatef(0.0F, -0.125F, 0.0F);
+                GL11.glTranslated(8F/16F, -11F/16F, -1F/16F);
+
+                GL11.glRotatef(-100.0F+90, 1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(45.0F-90, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(25, 0.0F, 0.0F, 1.0F);
+
+
+                if (var21.getItem().requiresMultipleRenderPasses()) {
+                    for (int var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
+                        int var26 = var21.getItem().getColorFromItemStack(var21, var27);
+                        float var28 = (float) (var26 >> 16 & 255) / 255.0F;
+                        float var10 = (float) (var26 >> 8 & 255) / 255.0F;
+                        var11 = (float) (var26 & 255) / 255.0F;
+                        GL11.glColor4f(var28, var10, var11, 1.0F);
+                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
+                    }
+                } else {
+                    int var27 = var21.getItem().getColorFromItemStack(var21, 0);
+                    var8 = (float) (var27 >> 16 & 255) / 255.0F;
+                    float var28 = (float) (var27 >> 8 & 255) / 255.0F;
+                    float var10 = (float) (var27 & 255) / 255.0F;
+                    GL11.glColor4f(var8, var28, var10, 1.0F);
+                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
                 }
 
-                if (par1EntityPlayer.getItemInUseCount() > 0 && var23 == EnumAction.block) {
-                    GL11.glTranslatef(0.05F, 0.0F, -0.1F);
-                    GL11.glRotatef(-50.0F, 0.0F, 1.0F, 0.0F);
-                    GL11.glRotatef(-10.0F, 1.0F, 0.0F, 0.0F);
-                    GL11.glRotatef(-60.0F, 0.0F, 0.0F, 1.0F);
+            }else{
+
+                if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.blocksList[var21.itemID].getRenderType()))) {
+                    var7 = 0.5F;
+                    GL11.glTranslatef(0.0F, 0.1875F, -0.3125F);
+                    var7 *= 0.75F;
+                    GL11.glRotatef(20.0F, 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                    GL11.glScalef(-var7, -var7, var7);
+                } else if (var21.itemID == Item.bow.itemID) {
+                    var7 = 0.625F;
+                    GL11.glTranslatef(0.0F, 0.125F, 0.3125F);
+                    GL11.glRotatef(-20.0F, 0.0F, 1.0F, 0.0F);
+                    GL11.glScalef(var7, -var7, var7);
+                    GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                } else if (Item.itemsList[var21.itemID].isFull3D()) {
+                    var7 = 0.625F;
+
+                    if (Item.itemsList[var21.itemID].shouldRotateAroundWhenRendering()) {
+                        GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+                        GL11.glTranslatef(0.0F, -0.125F, 0.0F);
+                    }
+
+                    if (par1EntityPlayer.getItemInUseCount() > 0 && var23 == EnumAction.block) {
+                        GL11.glTranslatef(0.05F, 0.0F, -0.1F);
+                        GL11.glRotatef(-50.0F, 0.0F, 1.0F, 0.0F);
+                        GL11.glRotatef(-10.0F, 1.0F, 0.0F, 0.0F);
+                        GL11.glRotatef(-60.0F, 0.0F, 0.0F, 1.0F);
+                    }
+
+                    GL11.glTranslatef(0.0F, 0.1875F, 0.0F);
+                    GL11.glScalef(var7, -var7, var7);
+                    GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                } else {
+                    var7 = 0.375F;
+                    GL11.glTranslatef(0.25F, 0.1875F, -0.1875F);
+                    GL11.glScalef(var7, var7, var7);
+                    GL11.glRotatef(60.0F, 0.0F, 0.0F, 1.0F);
+                    GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(20.0F, 0.0F, 0.0F, 1.0F);
                 }
 
-                GL11.glTranslatef(0.0F, 0.1875F, 0.0F);
-                GL11.glScalef(var7, -var7, var7);
-                GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
-            } else {
-                var7 = 0.375F;
-                GL11.glTranslatef(0.25F, 0.1875F, -0.1875F);
-                GL11.glScalef(var7, var7, var7);
-                GL11.glRotatef(60.0F, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(20.0F, 0.0F, 0.0F, 1.0F);
-            }
+                float var10;
+                int var27;
+                float var28;
 
-            float var10;
-            int var27;
-            float var28;
-
-            if (var21.getItem().requiresMultipleRenderPasses()) {
-                for (var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
-                    int var26 = var21.getItem().getColorFromItemStack(var21, var27);
-                    var28 = (float) (var26 >> 16 & 255) / 255.0F;
-                    var10 = (float) (var26 >> 8 & 255) / 255.0F;
-                    var11 = (float) (var26 & 255) / 255.0F;
-                    GL11.glColor4f(var28, var10, var11, 1.0F);
-                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
+                if (var21.getItem().requiresMultipleRenderPasses()) {
+                    for (var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
+                        int var26 = var21.getItem().getColorFromItemStack(var21, var27);
+                        var28 = (float) (var26 >> 16 & 255) / 255.0F;
+                        var10 = (float) (var26 >> 8 & 255) / 255.0F;
+                        var11 = (float) (var26 & 255) / 255.0F;
+                        GL11.glColor4f(var28, var10, var11, 1.0F);
+                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
+                    }
+                } else {
+                    var27 = var21.getItem().getColorFromItemStack(var21, 0);
+                    var8 = (float) (var27 >> 16 & 255) / 255.0F;
+                    var28 = (float) (var27 >> 8 & 255) / 255.0F;
+                    var10 = (float) (var27 & 255) / 255.0F;
+                    GL11.glColor4f(var8, var28, var10, 1.0F);
+                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
                 }
-            } else {
-                var27 = var21.getItem().getColorFromItemStack(var21, 0);
-                var8 = (float) (var27 >> 16 & 255) / 255.0F;
-                var28 = (float) (var27 >> 8 & 255) / 255.0F;
-                var10 = (float) (var27 & 255) / 255.0F;
-                GL11.glColor4f(var8, var28, var10, 1.0F);
-                RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
             }
 
             GL11.glPopMatrix();
@@ -528,7 +569,23 @@ public class BattlegearRenderHelper {
             }
 
 
-            RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, mainhandSheathed, 0);
+            if (mainhandSheathed.getItem().requiresMultipleRenderPasses()) {
+                for (int var27 = 0; var27 < mainhandSheathed.getItem().getRenderPasses(mainhandSheathed.getItemDamage()); ++var27) {
+                    int var26 = mainhandSheathed.getItem().getColorFromItemStack(mainhandSheathed, var27);
+                    float var28 = (float) (var26 >> 16 & 255) / 255.0F;
+                    float var10 = (float) (var26 >> 8 & 255) / 255.0F;
+                    float var11 = (float) (var26 & 255) / 255.0F;
+                    GL11.glColor4f(var28, var10, var11, 1.0F);
+                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, mainhandSheathed, var27);
+                }
+            } else {
+                int var27 = mainhandSheathed.getItem().getColorFromItemStack(mainhandSheathed, 0);
+                float var8 = (float) (var27 >> 16 & 255) / 255.0F;
+                float var28 = (float) (var27 >> 8 & 255) / 255.0F;
+                float var10 = (float) (var27 & 255) / 255.0F;
+                GL11.glColor4f(var8, var28, var10, 1.0F);
+                RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, mainhandSheathed, 0);
+            }
 
             GL11.glPopMatrix();
 
@@ -539,6 +596,8 @@ public class BattlegearRenderHelper {
             boolean onBack = BattlegearConfig.forceBackSheath;
             if(offhandSheathed.getItem() instanceof IBattlegearWeapon){
                 onBack = ((IBattlegearWeapon) offhandSheathed.getItem()).sheatheOnBack();
+            }else if (offhandSheathed.getItem() instanceof IShield){
+                onBack = true;
             }
 
             ModelBiped target = modelBipedMain;
@@ -553,12 +612,12 @@ public class BattlegearRenderHelper {
 
             if(onBack){
                 target.bipedBody.postRender(0.0625F);
-                if(mainhandSheathed.getItem() instanceof ItemSpear){
+                if(offhandSheathed.getItem() instanceof IShield){
                     GL11.glScalef(-0.6F, -0.6F, 0.6F);
-                    GL11.glTranslatef(0, -1, 0);
-                }else
+                }else{
                     GL11.glScalef(-0.6F, 0.6F, 0.6F);
-                GL11.glTranslatef(-8F / 16F, 0, 6F / 16F);
+                }
+                GL11.glTranslatef(-8F / 16F, -1, 6F / 16F);
                 GL11.glRotatef(-5F, 0.0F, 0.0F, 1.0F);
                 GL11.glRotatef(40.0F+90, 0.0F, 1.0F, 0.0F);
                 GL11.glTranslatef(0, 0, 4F/16F - backCount*2F/16F);
@@ -573,7 +632,23 @@ public class BattlegearRenderHelper {
             }
 
 
-            RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, offhandSheathed, 0);
+            if (offhandSheathed.getItem().requiresMultipleRenderPasses()) {
+                for (int var27 = 0; var27 < offhandSheathed.getItem().getRenderPasses(offhandSheathed.getItemDamage()); ++var27) {
+                    int var26 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, var27);
+                    float var28 = (float) (var26 >> 16 & 255) / 255.0F;
+                    float var10 = (float) (var26 >> 8 & 255) / 255.0F;
+                    float var11 = (float) (var26 & 255) / 255.0F;
+                    GL11.glColor4f(var28, var10, var11, 1.0F);
+                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, offhandSheathed, var27);
+                }
+            } else {
+                int var27 = mainhandSheathed.getItem().getColorFromItemStack(offhandSheathed, 0);
+                float var8 = (float) (var27 >> 16 & 255) / 255.0F;
+                float var28 = (float) (var27 >> 8 & 255) / 255.0F;
+                float var10 = (float) (var27 & 255) / 255.0F;
+                GL11.glColor4f(var8, var28, var10, 1.0F);
+                RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, offhandSheathed, 0);
+            }
 
             GL11.glPopMatrix();
         }

@@ -5,6 +5,7 @@ import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import mods.battlegear2.api.IExtendedReachWeapon;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
@@ -18,6 +19,7 @@ import java.util.EnumSet;
 
 public class BattlegearTickHandeler implements ITickHandler {
 
+
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
         // TODO Auto-generated method stub
@@ -30,6 +32,19 @@ public class BattlegearTickHandeler implements ITickHandler {
         if (type.contains(TickType.PLAYER)) {
 
             EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
+
+            if(entityPlayer.isBattlemode() &&
+                    entityPlayer.worldObj instanceof WorldServer && entityPlayer.ticksExisted % (20*15) == 0){
+                ItemStack offhand = entityPlayer.inventory.getStackInSlot(entityPlayer.inventory.currentItem+3);
+                if(offhand != null && offhand.getItem() instanceof ItemShield){
+                    int count = ((ItemShield)offhand.getItem()).getArrowCount(offhand);
+                    if(count > 0){
+                        ((ItemShield)offhand.getItem()).setArrowCount(offhand, count-1);
+                        ((InventoryPlayerBattle)(entityPlayer.inventory)).hasChanged = true;
+                    }
+                }
+            }
+
 
             if (entityPlayer.worldObj instanceof WorldServer && entityPlayer.ticksExisted % 2 == 0) {
 
