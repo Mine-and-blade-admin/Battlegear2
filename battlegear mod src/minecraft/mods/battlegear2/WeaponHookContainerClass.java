@@ -153,17 +153,19 @@ public class WeaponHookContainerClass {
     		for(ItemStack item : player.inventory.mainInventory){
     			if(item!=null && item.getItem() instanceof IArrowContainer){
     				stack = item;
-    				quiver = (IArrowContainer) item.getItem();
-    				break;
+    				if(((IArrowContainer) stack.getItem()).hasArrow(stack))
+    				{
+	    				quiver = (IArrowContainer) stack.getItem();
+	    				break;
+    				}
     			}
     		}
-    		if(quiver != null && quiver.hasArrow(stack)){
+    		if(quiver != null){
     			World world = player.worldObj;
-    			Class arrowClazz = quiver.getArrowType(stack);
-    			try {//We try to find a constructor close to one of EntityArrow
-    				Constructor constructor = arrowClazz.getConstructor(World.class, EntityLivingBase.class, float.class);
-					EntityArrow entityarrow = EntityArrow.class.cast(constructor.newInstance(world, player, f * 2.0F));
-	                if (f == 1.0F)
+    			EntityArrow entityarrow = quiver.getArrowType(stack, world, player, f*2.0F);
+    			if(entityarrow!=null)
+    			{
+	    			if (f == 1.0F)
 	                {
 	                    entityarrow.setIsCritical(true);
 	                }
@@ -194,13 +196,9 @@ public class WeaponHookContainerClass {
 	                {
 	                    world.spawnEntityInWorld(entityarrow);
 	                }
-	                quiver.onArrowFired(world, player, stack, bow);
+	                quiver.onArrowFired(world, player, stack, bow, entityarrow);
 	                //Canceling the event, since we successfully fired our own arrow
 	                event.setCanceled(true);
-    			}catch(Exception e)
-    			{
-    				e.printStackTrace();
-    				return;
     			}
     		}
     	}

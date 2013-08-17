@@ -9,22 +9,26 @@ public interface IArrowContainer {
 
 	/**
 	 * 
-	 * @param stack
+	 * @param stack The {@link #ItemStack} representing this item
 	 * @return true if the item contains at least one arrow
 	 */
 	public boolean hasArrow(ItemStack stack);
 	/**
-	 * This class should at least contain a public constructor with (World,EntityLivingBase,float) as args
-	 * @param stack
-	 * @return the class of Arrows to spawn when bow is fired
+	 * The arrow spawned when bow is used with this non empty container equipped
+	 * @param stack The {@link #ItemStack} representing this item
+	 * @param charge Amount of charge in the bow, ranging from 0.2F to 2.0F
+	 * @param player The {@link #EntityPlayer} using the bow
+	 * @param world 
+	 * @return the arrow entity to spawn when bow is used
 	 */
-	public Class<? extends EntityArrow> getArrowType(ItemStack stack);
+	public EntityArrow getArrowType(ItemStack stack, World world, EntityPlayer player, float charge);
 	/**
 	 * Action to take after an arrow has been fired
-	 * @param player The player using the bow
+	 * @param player The {@link #EntityPlayer} using the bow
 	 * @param world 
-	 * @param stack the stack contained this item
-	 * @param bow the bow which fired
+	 * @param stack The {@link #ItemStack} representing this item
+	 * @param bow The bow which fired
+	 * @param arrow the arrow fired
 	 */
-	public void onArrowFired(World world, EntityPlayer player, ItemStack stack, ItemStack bow);
+	public void onArrowFired(World world, EntityPlayer player, ItemStack stack, ItemStack bow, EntityArrow arrow);
 }

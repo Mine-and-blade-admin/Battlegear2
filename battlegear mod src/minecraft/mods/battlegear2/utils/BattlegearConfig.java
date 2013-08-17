@@ -120,7 +120,27 @@ public class BattlegearConfig {
 		GameRegistry.addShapedRecipe(new ItemStack(chain, 3), new Object[]{
 			"I", "I", Character.valueOf('I'), Item.ingotIron
 		});
+		//Quiver recipes :
+		ItemStack stack = new ItemStack(quiver,1,63);
 		
+		GameRegistry.addRecipe(new ShapedOreRecipe(stack, new Object[]
+				{// A quiver is crafted with an arrow in center
+				"X X", "XIX","XXX", 
+				Character.valueOf('X'), Item.leather,
+				Character.valueOf('I'), Item.arrow }));
+		
+		while(stack.getItemDamage()!=0){
+			List output = new ArrayList();
+			output.add(stack);
+			for(int i = 1; i < 9; i++)
+			{
+				output.add(Item.arrow);
+				GameRegistry.addShapelessRecipe(
+						new ItemStack(quiver,1,stack.getItemDamage()-i),output.toArray());
+			}//A quiver can be charged with any amount of arrow surrounding it
+			stack.setItemDamage(stack.getItemDamage()-1);
+		}
+		//Chain armor recipes
 		GameRegistry.addRecipe(new ItemStack(Item.helmetChain),  new Object[]
 				{"LLL","L L",Character.valueOf('L'),chain});
 		GameRegistry.addRecipe(new ItemStack(Item.plateChain),  new Object[]
@@ -129,7 +149,7 @@ public class BattlegearConfig {
 				{"LLL","L L","L L",Character.valueOf('L'),chain});
 		GameRegistry.addRecipe(new ItemStack(Item.bootsChain),  new Object[]
 				{"L L","L L",Character.valueOf('L'),chain});
-		
+		//Weapon recipes
 		ItemStack woodStack = new ItemStack(Block.planks.blockID,1,OreDictionary.WILDCARD_VALUE);
 		for(int i = 0; i < 5; i++){
 			Item craftingMaterial = Item.itemsList[EnumToolMaterial.values()[i].getToolCraftingMaterial()];
