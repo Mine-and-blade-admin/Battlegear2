@@ -22,12 +22,14 @@ public class BattlegearPacketHandeler implements IPacketHandler {
         map.put(BattlegearGUIPacket.packetName, new BattlegearGUIPacket());
         map.put(BattlegearSyncItemPacket.packetName, new BattlegearSyncItemPacket());
         map.put(BattlegearShieldBlockPacket.packetName, new BattlegearShieldBlockPacket());
+        map.put(BattlegearShieldFlashPacket.packetName, new BattlegearShieldFlashPacket());
 
     }
 
     @Override
     public void onPacketData(INetworkManager manager,
                              Packet250CustomPayload packet, Player player) {
+        System.out.println(packet.channel);
         map.get(packet.channel).process(packet, (EntityPlayer) player);
 
     }

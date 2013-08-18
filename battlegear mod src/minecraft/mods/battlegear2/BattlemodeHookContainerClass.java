@@ -8,9 +8,11 @@ import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.OffhandAttackEvent;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemShield;
+import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.utils.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -21,6 +23,7 @@ import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -77,7 +80,7 @@ public class BattlemodeHookContainerClass {
                             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                         }
 
-                    }else if (offhandItem.getItem() instanceof ItemShield){
+                    }else if (offhandItem != null && offhandItem.getItem() instanceof ItemShield){
                         event.useItem = Result.DENY;
                     } else {
                         event.entityPlayer.swingOffItem();
@@ -100,7 +103,7 @@ public class BattlemodeHookContainerClass {
                                 Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                             }
 
-                        } else if (offhandItem.getItem() instanceof ItemShield){
+                        } else if (offhandItem != null && offhandItem.getItem() instanceof ItemShield){
                             event.useItem = Result.DENY;
                         }else{
                             event.entityPlayer.swingOffItem();
@@ -140,7 +143,7 @@ public class BattlemodeHookContainerClass {
                     }
                 }
 
-            } else if (offhandItem.getItem() instanceof ItemShield){
+            } else if (offhandItem != null && offhandItem.getItem() instanceof ItemShield){
                 event.setCanceled(true);
             }else{
                 if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem.itemID)){
@@ -158,7 +161,7 @@ public class BattlemodeHookContainerClass {
 
 
     @ForgeSubscribe
-    public void shieldHook(LivingAttackEvent event){
+    public void shieldHook(LivingHurtEvent event){
         if(event.entity instanceof EntityPlayer){
 
             EntityPlayer player = (EntityPlayer)event.entity;
@@ -166,25 +169,66 @@ public class BattlemodeHookContainerClass {
             if(player.isBlockingWithShield()){
                 ItemStack shield = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
                 if(((IShield)shield.getItem()).canBlock(shield, event.source)){
-                    event.setCanceled(true);
 
-                    if(event.source.isProjectile()){
-                        if(event.source instanceof EntityDamageSourceIndirect){
-                            if(event.source.getEntity() instanceof EntityArrow){
-                                event.source.getEntity().setDead();
+                    boolean shouldBlock = true;
+                    Entity opponent = event.source.getEntity();
+                    if(opponent != null){
+                        double d0 = opponent.posX - event.entity.posX;
+                        double d1;
 
-                                if(shield.getItem() instanceof ItemShield){
-                                    ((ItemShield)shield.getItem()).setArrowCount(shield, ((ItemShield) shield.getItem()).getArrowCount(shield)+1);
+                        for (d1 = opponent.posZ - player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D)
+                        {
+                            d0 = (Math.random() - Math.random()) * 0.01D;
+                        }
+
+                        float yaw = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - player.rotationYaw;
+                        yaw = yaw - 90;
+
+                        while(yaw < -180){
+                            yaw+= 360;
+                        }
+                        while(yaw >= 180){
+                            yaw-=360;
+                        }
+
+                        float blockAngle = ((IShield) shield.getItem()).getBlockAngle(shield);
+
+                        shouldBlock = yaw < blockAngle && yaw > -blockAngle;
+
+                        //player.knockBack(opponent, 50, 100, 100);
+                    }
 
 
-                                    ((InventoryPlayerBattle)player.inventory).hasChanged = true;
+                    if(shouldBlock){
+                        event.setCanceled(true);
 
+                        PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 32, player.dimension,
+                                BattlegearShieldFlashPacket.generatePacket(player, event.ammount));
+
+                        if(event.source.isProjectile()){
+                            if(event.source instanceof EntityDamageSourceIndirect){
+                                if(event.source.getEntity() instanceof EntityArrow){
+                                    event.source.getEntity().setDead();
+                                    if(shield.getItem() instanceof ItemShield){
+                                        ((ItemShield)shield.getItem()).setArrowCount(shield, ((ItemShield) shield.getItem()).getArrowCount(shield)+1);
+
+
+                                        ((InventoryPlayerBattle)player.inventory).hasChanged = true;
+
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    //TODO: Send packet to player to start flashing block bar & reduce block bar
+
+
+                        shield.damageItem((int)event.ammount, player);
+                        if(shield.getItemDamage() <= 0){
+                            player.inventory.setInventorySlotContents(player.inventory.currentItem + 3, null);
+                            //TODO Render item break
+                        }
+                        ((InventoryPlayerBattle)player.inventory).hasChanged = true;
+                    }
                 }
             }
 

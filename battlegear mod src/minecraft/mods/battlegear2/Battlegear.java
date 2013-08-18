@@ -22,7 +22,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
 
-@Mod(modid="battlegear2", name="Mine & Blade: Battlegear 2", version="0.5 dev")
+@Mod(modid="battlegear2", name="Mine & Blade: Battlegear 2", version="0.5")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         channels = {
                 BattlegearAnimationPacket.packetName,
@@ -30,7 +30,8 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
                 //BattlegearBannerPacket.packetName,
                 //BattlegearChangeHeraldryPacket.packetName,
                 BattlegearGUIPacket.packetName,
-                BattlegearShieldBlockPacket.packetName},
+                BattlegearShieldBlockPacket.packetName,
+                BattlegearShieldFlashPacket.packetName},
         packetHandler = BattlegearPacketHandeler.class)
 public class Battlegear {
 

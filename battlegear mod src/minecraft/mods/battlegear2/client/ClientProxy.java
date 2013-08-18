@@ -2,15 +2,16 @@ package mods.battlegear2.client;
 
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.client.renderer.ShieldRenderer;
 import mods.battlegear2.client.renderer.SpearRenderer;
+import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumBGAnimations;
@@ -19,6 +20,7 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
@@ -51,6 +53,20 @@ public class ClientProxy extends CommonProxy {
         if (entityPlayer instanceof EntityClientPlayerMP) {
             ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
                     BattlegearAnimationPacket.generatePacket(animation, entityPlayer.username));
+        }
+    }
+
+    @Override
+    public void startFlash(EntityPlayer player, float damage) {
+
+        Minecraft.getMinecraft().sndManager.playSound("battlegear2:shield", (float)player.posX, (float)player.posY, (float)player.posZ, 1, 1);
+
+        if(player.username.equals(Minecraft.getMinecraft().thePlayer.username)){
+            BattlegearClientTickHandeler.flashTimer = 30;
+            ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+
+            if(offhand != null && offhand.getItem() instanceof IShield)
+                BattlegearClientTickHandeler.blockBar -= ((IShield) offhand.getItem()).getDamageDecayRate(offhand, damage);
         }
     }
 

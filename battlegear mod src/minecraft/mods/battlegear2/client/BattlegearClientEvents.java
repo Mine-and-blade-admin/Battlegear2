@@ -2,6 +2,7 @@ package mods.battlegear2.client;
 
 
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.heraldry.HeraldyPattern;
@@ -12,6 +13,7 @@ import net.minecraft.util.Icon;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -22,6 +24,7 @@ public class BattlegearClientEvents {
 
     @ForgeSubscribe
     public void postRenderOverlay(RenderGameOverlayEvent.Post event){
+
         if(event.type == RenderGameOverlayEvent.ElementType.HOTBAR){
             inGameGUI.renderGameOverlay(event.partialTicks);
         }
@@ -54,5 +57,19 @@ public class BattlegearClientEvents {
 
     public static ModelBiped getModelBiped(RenderPlayer renderPlayer, int i){
         return ObfuscationReflectionHelper.getPrivateValue(RenderPlayer.class, renderPlayer, i);
+    }
+
+    @ForgeSubscribe
+    public void onSoundLoad(SoundLoadEvent event){
+        try
+        {
+            for(int i = 0; i < 10; i++)
+                event.manager.soundPoolSounds.addSound(String.format("%s:%s%s.wav", "battlegear2", "shield", i));
+
+        }
+        catch (Exception e)
+        {
+            System.err.println("Failed to register one or more sounds.");
+        }
     }
 }
