@@ -44,9 +44,6 @@ public class BattlegearConfig {
 	public static Block banner;
 	public static ItemBlock bannerItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[4];
-
-
-	
 	
 	public static void getConfig(Configuration config) {
 		//System.out.println("Config");
