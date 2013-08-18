@@ -21,6 +21,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet15Place;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
@@ -53,6 +54,23 @@ public class ClientProxy extends CommonProxy {
         if (entityPlayer instanceof EntityClientPlayerMP) {
             ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
                     BattlegearAnimationPacket.generatePacket(animation, entityPlayer.username));
+        }
+    }
+
+    @Override
+    public void sendPlaceBlockPacket(EntityPlayer entityPlayer, int x, int y, int z, int face, Vec3 par8Vec3) {
+
+        System.out.println(par8Vec3);
+        System.out.println(((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon());
+
+        if (entityPlayer instanceof EntityClientPlayerMP) {
+            ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
+                    new Packet15Place(x, y, z, face,
+                            ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon(),
+                            (float)par8Vec3.xCoord - (float)x,
+                            (float)par8Vec3.yCoord - (float)y,
+                            (float)par8Vec3.zCoord - (float)z)
+            );
         }
     }
 

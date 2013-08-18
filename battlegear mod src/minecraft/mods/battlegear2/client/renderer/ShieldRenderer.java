@@ -65,6 +65,9 @@ public class ShieldRenderer implements IItemRenderer{
                     icon.getOriginY(), 8F/256F);
 
             int arrowCount = shield.getArrowCount(item);
+            //Bounds checking (rendering this many is quite silly, any more would look VERY silly)
+            if(arrowCount > 64)
+                arrowCount = 64;
             //System.out.println(arrowCount);
             for(int i = 0; i < arrowCount; i++){
                 renderArrow(i);
@@ -123,6 +126,13 @@ public class ShieldRenderer implements IItemRenderer{
             tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, (double)f3, (double)f4);
             tessellator.addVertexWithUV(16.0D * depth, 2.0D, 0.0D, (double)f3, (double)f5);
             tessellator.addVertexWithUV(0.0D * depth, 2.0D, 0.0D, (double)f2, (double)f5);
+            tessellator.draw();
+
+            tessellator.startDrawingQuads();
+            tessellator.addVertexWithUV(0.0D * depth, 2.0D, 0.0D, (double)f2, (double)f5);
+            tessellator.addVertexWithUV(16.0D * depth, 2.0D, 0.0D, (double)f3, (double)f5);
+            tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, (double)f3, (double)f4);
+            tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, (double)f2, (double)f4);
             tessellator.draw();
         }
 

@@ -7,6 +7,7 @@ import mods.battlegear2.api.IShield;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemShield;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.*;
@@ -100,7 +101,6 @@ public class BattlegearUtils {
     }
 
     public static void scanAndProcessItems() {
-
         weapons = new boolean[Item.itemsList.length];
         mainHandDualWeapons = new boolean[Item.itemsList.length];
         offhandDualWeapons = new boolean[Item.itemsList.length];
@@ -112,11 +112,18 @@ public class BattlegearUtils {
             offhandDualWeapons[i] = false;
             if (item != null) {
 
+                if(i == Block.torchWood.blockID){
+                    System.out.println(item);
+                    offhandDualWeapons[i] = true;
+                }
+
                 boolean valid = item.getItemStackLimit() == 1 && item.isDamageable();
                 if (valid) {
                     weapons[i] = item instanceof ItemSword ||
                             item instanceof ItemBow ||
                             item instanceof ItemTool;
+
+
 
 
                     if (weapons[i]) {

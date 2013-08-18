@@ -51,7 +51,7 @@ public class WeaponSlot extends Slot {
                     return false;
                 }
             } else {
-
+                System.out.println(par1ItemStack.getItem().itemID);
                 if(par1ItemStack.getItem() instanceof IShield){
                     if (partner.getHasStack()) {
                         return BattlegearUtils.allowsShield(partner.getStack().itemID);
@@ -59,7 +59,7 @@ public class WeaponSlot extends Slot {
                         return true;
                     }
 
-                }else if (BattlegearUtils.isWeapon(par1ItemStack.itemID)) {
+                }else if (BattlegearUtils.isOffHand(par1ItemStack.itemID)) {
                     if (partner.getHasStack()) {
                         if (BattlegearUtils.isMainHand(partner.getStack().itemID)) {
                             return BattlegearUtils.isOffHand(par1ItemStack.itemID) ? super.isItemValid(par1ItemStack) : false;
