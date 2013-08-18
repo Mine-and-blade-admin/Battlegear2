@@ -1,16 +1,22 @@
 package mods.battlegear2.client.gui;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemShield;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -80,29 +86,44 @@ public class BattlegearInGameGUI extends Gui {
 
         if(mc.thePlayer.isBattlemode() &&
                 mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3) != null &&
-                mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3).getItem() instanceof ItemShield){
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-            this.mc.renderEngine.func_110577_a(resourceLocationShield);
-            int x = width / 2 -200;
-            int y = height - 35;
+                mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3).getItem() instanceof IShield){
 
-            this.drawTexturedModalRect(x, y, 0, 0, 94, 9);
+            renderBlockBar(width, height);
+        }
+    }
 
-            float[] colour = BattlegearClientTickHandeler.COLOUR_DEFAULT;
-            if(BattlegearClientTickHandeler.blockBar < 0.33F){
-                colour = BattlegearClientTickHandeler.COLOUR_RED;
+    private void renderBlockBar(int width, int height) {
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        this.mc.renderEngine.func_110577_a(resourceLocationShield);
+        int x = width / 2 - 91;
+        int y = height - 35;
+
+        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
+        if(player.capabilities.isCreativeMode){
+            if(player.func_110317_t()){
+                y-=5;
             }
-            if(BattlegearClientTickHandeler.isFlashing && (System.currentTimeMillis() / 250) % 2 == 0){
-                colour = BattlegearClientTickHandeler.COLOUR_YELLOW;
+        }else{
+            y-= 16;
+            if(ForgeHooks.getTotalArmorValue(player) > 0 || player.func_110317_t() || player.getAir() < 300){
+                y-=10;
             }
-            GL11.glColor3f(colour[0], colour[1], colour[2]);
-            this.drawTexturedModalRect(x+2, y+2, 0, 9, (int)(90 * BattlegearClientTickHandeler.blockBar), 5);
-
-
-            GL11.glDisable(GL11.GL_BLEND);
         }
 
+        this.drawTexturedModalRect(x, y, 0, 0, 182, 9);
+
+        float[] colour = BattlegearClientTickHandeler.COLOUR_DEFAULT;
+        if(BattlegearClientTickHandeler.blockBar < 0.33F){
+            colour = BattlegearClientTickHandeler.COLOUR_RED;
+        }
+        if(BattlegearClientTickHandeler.flashTimer > 0 && (System.currentTimeMillis() / 250) % 2 == 0){
+            colour = BattlegearClientTickHandeler.COLOUR_YELLOW;
+        }
+        GL11.glColor3f(colour[0], colour[1], colour[2]);
+        this.drawTexturedModalRect(x, y, 0, 9, (int)(182 * BattlegearClientTickHandeler.blockBar), 9);
+
+        GL11.glDisable(GL11.GL_BLEND);
 
     }
 

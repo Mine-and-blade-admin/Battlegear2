@@ -21,12 +21,14 @@ public class EntityPlayerTransformer implements IClassTransformer {
     private String potionClassName;
     private String potionEffectClassName;
     private String entityLivingClassName;
+    private String dataWatcherClassName;
 
 
     private String playerInventoryFieldName;
     private String inventoryCurrentItremField;
     private String potionDigSpeedField;
     private String potionDigSlowField;
+    private String playerDataWatcherField;
 
 
     private String onItemFinishMethodName;
@@ -41,6 +43,16 @@ public class EntityPlayerTransformer implements IClassTransformer {
     private String playerGetActivePotionMethodDesc;
     private String potionEffectGetAmpMethodName;
     private String playerUpdateArmSwingMethodName;
+    private String dataWatcherAddObjectMethodName;
+    private String dataWatcherAddObjectMethodDesc;
+    private String playerInitMethodName;
+    private String playerInitMethodDesc;
+    private String itemStackGetItemMethodName;
+    private String itemStackGetItemMethodDesc;
+    private String dataWatcherGetByteMethodName;
+    private String dataWatcherGetByteMethodDesc;
+    private String dataWatcherUpdateObjectMethodName;
+    private String dataWatcherUpdateObjectMethodDesc;
 
 
     @Override
@@ -55,6 +67,7 @@ public class EntityPlayerTransformer implements IClassTransformer {
             potionClassName = BattlegearTranslator.getMapedClassName("Potion");
             potionEffectClassName = BattlegearTranslator.getMapedClassName("PotionEffect");
             entityLivingClassName = BattlegearTranslator.getMapedClassName("EntityLivingBase");
+            dataWatcherClassName = BattlegearTranslator.getMapedClassName("DataWatcher");
 
             playerInventoryFieldName =
                     BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
@@ -64,6 +77,8 @@ public class EntityPlayerTransformer implements IClassTransformer {
                     BattlegearTranslator.getMapedFieldName("Potion", "field_76422_e");
             potionDigSlowField =
                     BattlegearTranslator.getMapedFieldName("Potion", "field_76419_f");
+            playerDataWatcherField =
+                    BattlegearTranslator.getMapedFieldName("Entity", "field_70180_af");
 
 
             onItemFinishMethodName =
@@ -90,6 +105,26 @@ public class EntityPlayerTransformer implements IClassTransformer {
                     BattlegearTranslator.getMapedMethodName("PotionEffect", "func_76458_c");
             playerUpdateArmSwingMethodName =
                     BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_82168_bl");
+            dataWatcherAddObjectMethodName =
+                    BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75682_a");
+            dataWatcherAddObjectMethodDesc =
+                    BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75682_a");
+            playerInitMethodName =
+                    BattlegearTranslator.getMapedMethodName("EntityPlayer","func_70088_a");
+            playerInitMethodDesc =
+                    BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70088_a");
+            itemStackGetItemMethodName =
+                    BattlegearTranslator.getMapedMethodName("ItemStack","func_77973_b");
+            itemStackGetItemMethodDesc =
+                    BattlegearTranslator.getMapedMethodDesc("ItemStack", "func_77973_b");
+            dataWatcherGetByteMethodName =
+                    BattlegearTranslator.getMapedMethodName("DataWatcher","func_75683_a");
+            dataWatcherGetByteMethodDesc =
+                    BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75683_a");
+            dataWatcherUpdateObjectMethodName =
+                    BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75692_b");
+            dataWatcherUpdateObjectMethodDesc =
+                    BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75692_b");
 
 
             System.out.println("M&B - Patching Class EntityPlayer (" + name + ")");
@@ -109,6 +144,8 @@ public class EntityPlayerTransformer implements IClassTransformer {
             cn.methods.add(3, generateSwingAnimationEnd2());
             cn.methods.add(4, generateUpdateSwingArm());
             cn.methods.add(5, generateIsBattleMode());
+            cn.methods.add(6, generateIsBlockingWithShield());
+            cn.methods.add(7, generateSetBlockingWithShield());
 
             ClassWriter cw = new ClassWriter(0);
             cn.accept(cw);
@@ -117,7 +154,7 @@ public class EntityPlayerTransformer implements IClassTransformer {
             System.out.println("M&B - Patching Class EntityPlayer done");
 
 
-            if (BattlegearLoadingPlugin.debug) {
+            if (true) {
                 TransformerUtils.writeClassFile(cw, name);
             }
 
@@ -174,10 +211,136 @@ public class EntityPlayerTransformer implements IClassTransformer {
                 System.out.println("\tPatching method setCurrentItemOrArmor in EntityPlayer");
 
                 TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 3, 3);
+            } else if(mn.name.equals(playerInitMethodName) &&
+                    mn.desc.equals(playerInitMethodDesc)) {
+
+                System.out.println("\tPatching method entityInit in EntityPlayer");
+
+                InsnList newList = new InsnList();
+                ListIterator<AbstractInsnNode> it = mn.instructions.iterator();
+                while(it.hasNext()){
+                    AbstractInsnNode next = it.next();
+
+                    if(next instanceof InsnNode && next.getOpcode() == RETURN){
+                        newList.add(new VarInsnNode(ALOAD, 0));
+                        newList.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerDataWatcherField, "L"+dataWatcherClassName+";"));
+                        newList.add(new VarInsnNode(BIPUSH, 25));
+                        newList.add(new InsnNode(ICONST_0));
+                        newList.add(new MethodInsnNode(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;"));
+                        newList.add(new MethodInsnNode(INVOKEVIRTUAL, dataWatcherClassName, dataWatcherAddObjectMethodName, dataWatcherAddObjectMethodDesc));
+                    }
+
+                    newList.add(next);
+                }
+
+                mn.instructions = newList;
             }
         }
     }
 
+    private MethodNode generateIsBlockingWithShield() {
+        MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, "isBlockingWithShield", "()Z", null, null);
+
+        LabelNode L1 = new LabelNode();
+        LabelNode L3 = new LabelNode();
+        LabelNode L4 = new LabelNode();
+
+        //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand  != null)
+        mn.instructions.add(new VarInsnNode(ALOAD, 0));
+        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
+        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/inventory/InventoryPlayerBattle"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/inventory/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
+        mn.instructions.add(new JumpInsnNode(IFNULL, L1));
+
+        //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand().getItem() instanceof IShield)
+        mn.instructions.add(new VarInsnNode(ALOAD, 0));
+        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
+        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/inventory/InventoryPlayerBattle"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/inventory/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, itemStackClassName, itemStackGetItemMethodName, itemStackGetItemMethodDesc));
+        mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/IShield"));
+        mn.instructions.add(new JumpInsnNode(IFEQ, L1));
+
+        mn.instructions.add(new VarInsnNode(ALOAD, 0));
+        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerDataWatcherField, "L"+dataWatcherClassName+";"));
+        mn.instructions.add(new VarInsnNode(BIPUSH, 25));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, dataWatcherClassName, dataWatcherGetByteMethodName, dataWatcherGetByteMethodDesc));
+        mn.instructions.add(new JumpInsnNode(IFLE, L3));
+        mn.instructions.add(new InsnNode(ICONST_1));
+        mn.instructions.add(new JumpInsnNode(GOTO, L4));
+
+        mn.instructions.add(L3);
+        mn.instructions.add(new FrameNode(F_SAME, 0, null, 0, null));
+        mn.instructions.add(new InsnNode(ICONST_0));
+        mn.instructions.add(L4);
+        mn.instructions.add(new FrameNode(F_SAME1, 0, null, 1, new Object[] {INTEGER}));
+        mn.instructions.add(new InsnNode(IRETURN));
+        
+        mn.instructions.add(L1);
+        mn.instructions.add(new FrameNode(F_SAME, 0, null, 0, null));
+        mn.instructions.add(new InsnNode(ICONST_0));
+        mn.instructions.add(new InsnNode(IRETURN));
+
+        mn.maxStack = 2;
+        mn.maxLocals = 1;
+
+        return mn;
+    }
+
+
+    private MethodNode generateSetBlockingWithShield() {
+        MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, "setBlockingWithShield", "(Z)V", null, null);
+
+        LabelNode L1 = new LabelNode();
+        LabelNode L3 = new LabelNode();
+
+        mn.instructions.add(new VarInsnNode(ILOAD, 1));
+        mn.instructions.add(new JumpInsnNode(IFEQ, L1));
+
+        //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand  != null)
+        mn.instructions.add(new VarInsnNode(ALOAD, 0));
+        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
+        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/inventory/InventoryPlayerBattle"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/inventory/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
+        mn.instructions.add(new JumpInsnNode(IFNULL, L1));
+
+        //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand().getItem() instanceof IShield)
+        mn.instructions.add(new VarInsnNode(ALOAD, 0));
+        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
+        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/inventory/InventoryPlayerBattle"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/inventory/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, itemStackClassName, itemStackGetItemMethodName, itemStackGetItemMethodDesc));
+        mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/IShield"));
+        mn.instructions.add(new JumpInsnNode(IFEQ, L1));
+
+        mn.instructions.add(new VarInsnNode(ALOAD, 0));
+        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerDataWatcherField, "L"+dataWatcherClassName+";"));
+        mn.instructions.add(new VarInsnNode(BIPUSH, 25));
+        mn.instructions.add(new InsnNode(ICONST_1));
+        mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;"));
+
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, dataWatcherClassName, dataWatcherUpdateObjectMethodName, dataWatcherUpdateObjectMethodDesc));
+        mn.instructions.add(new JumpInsnNode(GOTO, L3));
+
+        mn.instructions.add(L1);
+        mn.instructions.add(new FrameNode(F_SAME, 0, null, 0, null));
+        mn.instructions.add(new VarInsnNode(ALOAD, 0));
+        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerDataWatcherField, "L"+dataWatcherClassName+";"));
+        mn.instructions.add(new VarInsnNode(BIPUSH, 25));
+        mn.instructions.add(new InsnNode(ICONST_0));
+        mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, dataWatcherClassName, dataWatcherUpdateObjectMethodName, dataWatcherUpdateObjectMethodDesc));
+
+        mn.instructions.add(L3);
+        mn.instructions.add(new FrameNode(F_SAME, 0, null, 0, null));
+        mn.instructions.add(new InsnNode(RETURN));
+
+
+        mn.maxStack = 3;
+        mn.maxLocals = 2;
+
+        return mn;
+    }
 
     private MethodNode generateAttackOffhandMethod() {
         MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, "attackTargetEntityWithCurrentOffItem", "(L" + entityClassName + ";)V", null, null);

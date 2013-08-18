@@ -12,4 +12,6 @@ public interface IShield {
 
     public float getDamageDecayRate(ItemStack shield, float amount);
 
+    public float getBlockAngle(ItemStack shield);
+
 }
