@@ -21,12 +21,12 @@ public class ItemQuiver extends Item implements IArrowContainer{
 	}
 
 	@Override
-	public Class<? extends EntityArrow> getArrowType(ItemStack stack) {
-		return EntityArrow.class;
+	public EntityArrow getArrowType(ItemStack stack, World world, EntityPlayer player, float charge) {
+		return new EntityArrow(world, player, charge);
 	}
 
 	@Override
-	public void onArrowFired(World world, EntityPlayer player, ItemStack stack, ItemStack bow) {
+	public void onArrowFired(World world, EntityPlayer player, ItemStack stack, ItemStack bow, EntityArrow arrow) {
 		stack.setItemDamage(stack.getItemDamage()+1);
 	}
 

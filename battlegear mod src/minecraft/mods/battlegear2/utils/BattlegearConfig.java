@@ -1,6 +1,7 @@
 package mods.battlegear2.utils;
 
-import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import mods.battlegear2.api.IHeraldyItem;
 import mods.battlegear2.heraldry.HeraldryIcon;
@@ -15,10 +16,10 @@ import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 public class BattlegearConfig {
