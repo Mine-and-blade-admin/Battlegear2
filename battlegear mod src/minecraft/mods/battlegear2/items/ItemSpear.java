@@ -1,15 +1,12 @@
 package mods.battlegear2.items;
 
-import mods.battlegear2.api.IBackStabbable;
 import mods.battlegear2.api.IExtendedReachWeapon;
 import mods.battlegear2.api.ISpecialEffect;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
@@ -53,7 +50,7 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 
         par3List.add(EnumChatFormatting.DARK_GREEN+
                 StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 0,
-                        new Object[] {field_111284_a.format(mounted_extra_damage),
+                        new Object[] {decimal_format.format(mounted_extra_damage),
                                 StatCollector.translateToLocal("attribute.name.weapon.mountedBonus")}));
     }
 

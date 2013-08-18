@@ -2,22 +2,17 @@ package mods.battlegear2.items;
 
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import mods.battlegear2.api.*;
 import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumToolMaterial;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.DamageSource;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -27,7 +22,7 @@ import net.minecraft.util.StatCollector;
 //Made this extend the sword class (allows them to be enchanted)
 public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon {
 
-    public static final DecimalFormat field_111284_a = new DecimalFormat("#.###");
+    public static final DecimalFormat decimal_format = new DecimalFormat("#.###");
 
     protected static final UUID penetrateArmourUUID = UUID.fromString("DB3F55D3-645C-4F38-A497-9C13A33DB5CF");
     protected static final RangedAttribute armourPenatrate = new RangedAttribute("weapon.penetrateArmor", 0.0D, 0.0D, Double.MAX_VALUE);
@@ -94,7 +89,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
             if(this instanceof IPenetrateWeapon){
                 par3List.add(EnumChatFormatting.DARK_GREEN+
                         StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 0,
-                                new Object[] {field_111284_a.format(((IPenetrateWeapon)this).getPenetratingPower(par1ItemStack)),
+                                new Object[] {decimal_format.format(((IPenetrateWeapon)this).getPenetratingPower(par1ItemStack)),
                                         StatCollector.translateToLocal("attribute.name.weapon.penetrateArmor")}));
             }
 
@@ -104,13 +99,13 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
                 if(reach > 0){
                     par3List.add(EnumChatFormatting.DARK_GREEN+
                             StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 0,
-                                    new Object[] {field_111284_a.format(reach),
+                                    new Object[] {decimal_format.format(reach),
                                             StatCollector.translateToLocal("attribute.name.weapon.extendedReach")}));
                 }else{
 
                     par3List.add(EnumChatFormatting.RED+
                             StatCollector.translateToLocalFormatted("attribute.modifier.take."+ 0,
-                                    new Object[] {field_111284_a.format(-1 * reach),
+                                    new Object[] {decimal_format.format(-1 * reach),
                                             StatCollector.translateToLocal("attribute.name.weapon.extendedReach")}));
 
                 }
@@ -121,12 +116,12 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
                 if(hitMod > 0){
                     par3List.add(EnumChatFormatting.RED+
                             StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 1,
-                                    new Object[] {field_111284_a.format((float)hitMod / 10F * 100),
+                                    new Object[] {decimal_format.format((float)hitMod / 10F * 100),
                                             StatCollector.translateToLocal("attribute.name.weapon.attackSpeed")}));
                 }else{
                     par3List.add(EnumChatFormatting.DARK_GREEN+
                             StatCollector.translateToLocalFormatted("attribute.modifier.take."+ 1,
-                                    new Object[] {field_111284_a.format(-(float)hitMod / 10F * 100),
+                                    new Object[] {decimal_format.format(-(float)hitMod / 10F * 100),
                                             StatCollector.translateToLocal("attribute.name.weapon.attackSpeed")}));
                 }
             }

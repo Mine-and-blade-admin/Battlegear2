@@ -6,12 +6,17 @@ import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumShield;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class ItemShield extends Item implements IShield{
 
@@ -69,7 +74,7 @@ public class ItemShield extends Item implements IShield{
 
     public int getArrowCount(ItemStack stack){
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey("arrows")){
-            return stack.getTagCompound().getByte("arrows");
+            return stack.getTagCompound().getShort("arrows");
         }else
             return 0;
     }
@@ -80,11 +85,12 @@ public class ItemShield extends Item implements IShield{
             stack.setTagCompound(new NBTTagCompound());
         }
 
-        if(count > 25){
-            count = 25;
+        //Should never happen, you would need A LOT of arrows for this to happen
+        if(count > Short.MAX_VALUE){
+            count = Short.MAX_VALUE;
         }
 
-        stack.getTagCompound().setByte("arrows", (byte)count);
+        stack.getTagCompound().setShort("arrows", (short)count);
     }
 
     public Icon getBackIcon() {
@@ -114,4 +120,21 @@ public class ItemShield extends Item implements IShield{
     public float getBlockAngle(ItemStack shield) {
         return 60;
     }
+    @Override
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+        super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
+
+        par3List.add("");
+
+        par3List.add(EnumChatFormatting.DARK_GREEN+
+                ItemWeapon.decimal_format.format((float) 1F / (enumShield.getDecayRate()) / 20F)+
+                StatCollector.translateToLocal("attribute.name.shield.block.time"));
+
+        int arrowCount = getArrowCount(par1ItemStack);
+        System.out.println(arrowCount);
+        if(arrowCount > 0){
+            par3List.add(String.format("%s%s %s", EnumChatFormatting.GOLD, arrowCount, StatCollector.translateToLocal("attribute.name.shield.arrow.count")));
+        }
+
+    } 
 }

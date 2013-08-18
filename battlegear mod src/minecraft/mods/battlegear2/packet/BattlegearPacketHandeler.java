@@ -29,7 +29,6 @@ public class BattlegearPacketHandeler implements IPacketHandler {
     @Override
     public void onPacketData(INetworkManager manager,
                              Packet250CustomPayload packet, Player player) {
-        System.out.println(packet.channel);
         map.get(packet.channel).process(packet, (EntityPlayer) player);
 
     }

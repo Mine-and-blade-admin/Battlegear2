@@ -64,3 +64,5 @@ attribute.name.weapon.extendedReach=Reach
 attribute.name.weapon.attackSpeed=Attack Speed
 attribute.name.weapon.backstab=Backstab
 attribute.name.weapon.mountedBonus=Mounted Damage
+attribute.name.shield.block.time=s Block
+attribute.name.shield.arrow.count=Arrows

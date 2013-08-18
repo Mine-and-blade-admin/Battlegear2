@@ -190,8 +190,8 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
                     targetStack = extraItems[slot - OFFSET].splitStack(amount);
 
-                    if (extraItems[slot].stackSize == 0) {
-                        extraItems[slot] = null;
+                    if (extraItems[slot - OFFSET].stackSize == 0) {
+                        extraItems[slot - OFFSET] = null;
                     }
 
                     return targetStack;
