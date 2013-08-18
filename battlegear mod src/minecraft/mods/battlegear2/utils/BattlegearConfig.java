@@ -1,6 +1,8 @@
 package mods.battlegear2.utils;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 import mods.battlegear2.api.IHeraldyItem;
 import mods.battlegear2.heraldry.HeraldryIcon;
@@ -9,6 +11,7 @@ import mods.battlegear2.heraldry.HeraldyPattern;
 import mods.battlegear2.heraldry.SigilHelper;
 import mods.battlegear2.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.items.*;
+import mods.battlegear2.recipies.DummyRecipie;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumToolMaterial;
@@ -20,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class BattlegearConfig {
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
@@ -40,9 +44,6 @@ public class BattlegearConfig {
 	public static Block banner;
 	public static ItemBlock bannerItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[4];
-
-
-	
 	
 	public static void getConfig(Configuration config) {
 		//System.out.println("Config");
@@ -51,27 +52,6 @@ public class BattlegearConfig {
         
         chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
     	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).func_111206_d("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
-		
-        /*
-    	for(int i = 0; i < armourTypes.length; i++){
-	    	knightArmor[i] = new ItemKnightArmour(
-	    			config.get(config.CATEGORY_ITEM, itemNames[8]+"."+armourTypes[i],
-	    					firstDefaultItemIndex+itemOffests[8]+i).getInt(),
-	    					i);
-    	}
-        /*
-    	//banner = new BlockBanner(config.get(config.CATEGORY_BLOCK, "Banner", 425).getInt());
-    	banner = new BlockBanner(config.getBlock("Banner", 2650).getInt());
-    	GameRegistry.registerBlock(banner, "Banner");
-		GameRegistry.registerTileEntity(TileEntityBanner.class, "MBBanner");
-		
-		
-		Item.itemsList[banner.blockID] = null;
-		bannerItem = (new BlockItemBanner(banner.blockID-256));
-		Item.itemsList[banner.blockID] = bannerItem;
-		*/
-		
-
         	
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
 
@@ -193,33 +173,37 @@ public class BattlegearConfig {
         //Wood Shield
         GameRegistry.addRecipe(new ItemStack(shield[0]),
                 new Object[] {" W ","WWW", " W ",
-                        Character.valueOf('W'), Block.planks
+                        Character.valueOf('W'), woodStack
                 });
 
         //Hide Shield
         GameRegistry.addRecipe(new ItemStack(shield[1]),
                 new Object[] {" H ","HWH", " H ",
-                        Character.valueOf('W'), Block.planks,
+                        Character.valueOf('W'), woodStack,
                         Character.valueOf('H'), Item.leather
                 });
         //Iron Shield
         GameRegistry.addRecipe(new ItemStack(shield[2]),
-                new Object[] {"III","IWI", " I ",
-                        Character.valueOf('W'), Block.planks,
+                new Object[] {"I I","IWI", " I ",
+                        Character.valueOf('W'), woodStack,
                         Character.valueOf('I'), Item.ingotIron
                 });
         //Diamond Shield
         GameRegistry.addRecipe(new ItemStack(shield[3]),
-                new Object[] {"III","IWI", " I ",
-                        Character.valueOf('W'), Block.planks,
+                new Object[] {"I I","IWI", " I ",
+                        Character.valueOf('W'), woodStack,
                         Character.valueOf('I'), Item.diamond
                 });
         //Iron Shield
         GameRegistry.addRecipe(new ItemStack(shield[4]),
-                new Object[] {"III","IWI", " I ",
-                        Character.valueOf('W'), Block.planks,
+                new Object[] {"I I","IWI", " I ",
+                        Character.valueOf('W'), woodStack,
                         Character.valueOf('I'), Item.ingotGold
                 });
+
+        for(Item shieldItem: shield){
+            GameRegistry.addRecipe(new DummyRecipie(shieldItem.itemID));
+        }
 		
 		for(int i = 0; i < 4; i++){
 			//GameRegistry.addRecipe(new KnightArmourRecipie(i));

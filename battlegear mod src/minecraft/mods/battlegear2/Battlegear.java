@@ -1,10 +1,12 @@
 package mods.battlegear2;
 
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.client.LanguageHelper;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.packet.*;
+import mods.battlegear2.recipies.ShieldCraftingHandeler;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.item.EnumArmorMaterial;
@@ -62,6 +64,7 @@ public class Battlegear {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         BattlegearConfig.registerRecipes();
+        GameRegistry.registerCraftingHandler(new ShieldCraftingHandeler());
     }
 
     @EventHandler

@@ -1,7 +1,9 @@
 package mods.battlegear2;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.IExtendedReachWeapon;
 import mods.battlegear2.api.IShield;
@@ -12,14 +14,21 @@ import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.utils.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
+import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet103SetSlot;
+import net.minecraft.network.packet.Packet15Place;
+import net.minecraft.network.packet.Packet53BlockChange;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraftforge.event.Event.Result;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -82,7 +91,31 @@ public class BattlemodeHookContainerClass {
 
                     }else if (offhandItem != null && offhandItem.getItem() instanceof ItemShield){
                         event.useItem = Result.DENY;
-                    } else {
+                    } else if (offhandItem != null && offhandItem.getItem() instanceof ItemBlock && offhandItem.getItem().itemID == Block.torchWood.blockID){
+                        event.useItem = Result.DENY;
+                        event.useBlock = Result.DENY;
+
+                        int blockId = event.entityLiving.worldObj.getBlockId(event.x, event.y, event.z);
+                        if(Block.blocksList[blockId].canPlaceTorchOnTop(event.entityPlayer.worldObj, event.x, event.y, event.z)){
+
+                            offhandItem.tryPlaceItemIntoWorld(event.entityPlayer, event.entityPlayer.worldObj,
+                                    event.x, event.y, event.z, event.face, 0, 0, 0);
+
+                            if(event.entityPlayer.capabilities.isCreativeMode){
+                                offhandItem.stackSize++;
+                            }
+
+                            if(offhandItem.stackSize == 0){
+                                ForgeEventFactory.onPlayerDestroyItem(event.entityPlayer, offhandItem);
+                                event.entityPlayer.inventory.setInventorySlotContents(event.entityPlayer.inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS, null);
+                            }
+
+                            if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER){
+                                PacketDispatcher.sendPacketToAllAround(event.x, event.y, event.z, 32, event.entityPlayer.dimension,
+                                        new Packet53BlockChange(event.x, event.y, event.z, event.entityPlayer.worldObj));
+                            }
+                        }
+                    }else{
                         event.entityPlayer.swingOffItem();
                         Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                     }
@@ -211,9 +244,9 @@ public class BattlemodeHookContainerClass {
                                     event.source.getEntity().setDead();
                                     if(shield.getItem() instanceof ItemShield){
                                         ((ItemShield)shield.getItem()).setArrowCount(shield, ((ItemShield) shield.getItem()).getArrowCount(shield)+1);
-
-
                                         ((InventoryPlayerBattle)player.inventory).hasChanged = true;
+
+                                        player.setArrowCountInEntity(player.getArrowCountInEntity()-1);
 
                                     }
                                 }
@@ -221,11 +254,12 @@ public class BattlemodeHookContainerClass {
                         }
 
 
-
-                        shield.damageItem((int)event.ammount, player);
-                        if(shield.getItemDamage() <= 0){
-                            player.inventory.setInventorySlotContents(player.inventory.currentItem + 3, null);
-                            //TODO Render item break
+                        if(!player.capabilities.isCreativeMode){
+                            shield.damageItem((int)event.ammount, player);
+                            if(shield.getItemDamage() <= 0){
+                                player.inventory.setInventorySlotContents(player.inventory.currentItem + 3, null);
+                                //TODO Render item break
+                            }
                         }
                         ((InventoryPlayerBattle)player.inventory).hasChanged = true;
                     }

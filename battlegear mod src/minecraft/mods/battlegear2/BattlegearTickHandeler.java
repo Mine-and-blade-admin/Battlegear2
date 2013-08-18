@@ -11,6 +11,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
@@ -32,19 +34,6 @@ public class BattlegearTickHandeler implements ITickHandler {
         if (type.contains(TickType.PLAYER)) {
 
             EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
-
-            if(entityPlayer.isBattlemode() &&
-                    entityPlayer.worldObj instanceof WorldServer && entityPlayer.ticksExisted % (20*15) == 0){
-                ItemStack offhand = entityPlayer.inventory.getStackInSlot(entityPlayer.inventory.currentItem+3);
-                if(offhand != null && offhand.getItem() instanceof ItemShield){
-                    int count = ((ItemShield)offhand.getItem()).getArrowCount(offhand);
-                    if(count > 0){
-                        ((ItemShield)offhand.getItem()).setArrowCount(offhand, count-1);
-                        ((InventoryPlayerBattle)(entityPlayer.inventory)).hasChanged = true;
-                    }
-                }
-            }
-
 
             if (entityPlayer.worldObj instanceof WorldServer && entityPlayer.ticksExisted % 2 == 0) {
 

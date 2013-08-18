@@ -1,0 +1,11 @@
+--- 
++++ 
+@@ -34,7 +34,7 @@
+         ArgumentAcceptingOptionSpec argumentacceptingoptionspec6 = optionparser.accepts("proxyPort").withRequiredArg().defaultsTo("8080", new String[0]).ofType(Integer.class);
+         ArgumentAcceptingOptionSpec argumentacceptingoptionspec7 = optionparser.accepts("proxyUser").withRequiredArg();
+         ArgumentAcceptingOptionSpec argumentacceptingoptionspec8 = optionparser.accepts("proxyPass").withRequiredArg();
+-        ArgumentAcceptingOptionSpec argumentacceptingoptionspec9 = optionparser.accepts("username").withRequiredArg().defaultsTo("Player" + Minecraft.getSystemTime() % 1000L, new String[0]);
++        ArgumentAcceptingOptionSpec argumentacceptingoptionspec9 = optionparser.accepts("username").withRequiredArg().defaultsTo("nerdboy4");
+         ArgumentAcceptingOptionSpec argumentacceptingoptionspec10 = optionparser.accepts("session").withRequiredArg();
+         ArgumentAcceptingOptionSpec argumentacceptingoptionspec11 = optionparser.accepts("version").withRequiredArg().required();
+         ArgumentAcceptingOptionSpec argumentacceptingoptionspec12 = optionparser.accepts("width").withRequiredArg().ofType(Integer.class).defaultsTo(Integer.valueOf(854), new Integer[0]);
