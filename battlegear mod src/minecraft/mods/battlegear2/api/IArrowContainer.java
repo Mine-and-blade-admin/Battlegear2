@@ -24,6 +24,7 @@ public interface IArrowContainer {
 	public EntityArrow getArrowType(ItemStack stack, World world, EntityPlayer player, float charge);
 	/**
 	 * Action to take after an arrow has been fired
+	 * Usually equal to removing an arrow from the container
 	 * @param player The {@link #EntityPlayer} using the bow
 	 * @param world 
 	 * @param stack The {@link #ItemStack} representing this item
@@ -31,4 +32,9 @@ public interface IArrowContainer {
 	 * @param arrow the arrow fired
 	 */
 	public void onArrowFired(World world, EntityPlayer player, ItemStack stack, ItemStack bow, EntityArrow arrow);
+	/**
+	 * Called before the arrow is fired from this container
+	 * @param arrowEvent Used to decide bow damage, bow sound and arrow enchantment
+	 */
+	public void onPreArrowFired(QuiverArrowEvent arrowEvent);
 }

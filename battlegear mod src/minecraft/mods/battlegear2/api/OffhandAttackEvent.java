@@ -4,37 +4,18 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
-public class OffhandAttackEvent extends PlayerEvent {
+public class OffhandAttackEvent extends PlayerEventChild {
 
     public boolean swingOffhand = true;
     public boolean shouldAttack = true;
-    public EntityInteractEvent parent;
-
+    public EntityInteractEvent event;
 
     public OffhandAttackEvent(EntityInteractEvent parent) {
-        super(parent.entityPlayer);
-        this.parent = parent;
+        super(parent);
+        this.event = parent;
     }
 
-    public Entity getTarget() {
-        return parent.target;
+	public Entity getTarget() {
+        return event.target;
     }
-
-    public void setCancelParentEvent(boolean cancel) {
-        parent.setCanceled(cancel);
-    }
-
-    @Override
-    public void setCanceled(boolean cancel) {
-        super.setCanceled(cancel);
-        parent.setCanceled(cancel);
-    }
-
-    @Override
-    public void setResult(Result value) {
-        super.setResult(value);
-        parent.setResult(value);
-    }
-
-
 }

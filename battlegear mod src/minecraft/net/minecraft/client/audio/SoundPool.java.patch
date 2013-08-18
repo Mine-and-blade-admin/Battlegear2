@@ -8,4 +8,3 @@
              ((List)object).add(new SoundPoolEntry(s1, this.func_110654_c(s1)));
          }
          catch (MalformedURLException malformedurlexception)
-

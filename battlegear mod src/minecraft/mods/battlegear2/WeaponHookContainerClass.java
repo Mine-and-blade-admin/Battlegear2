@@ -169,36 +169,43 @@ public class WeaponHookContainerClass {
 	                {
 	                    entityarrow.setIsCritical(true);
 	                }
-	
-	                int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, bow);
-	
-	                if (k > 0)
+	    			QuiverArrowEvent arrowEvent = new QuiverArrowEvent(event);
+	                quiver.onPreArrowFired(arrowEvent);
+	                if(!arrowEvent.isCanceled())
 	                {
-	                    entityarrow.setDamage(entityarrow.getDamage() + (double)k * 0.5D + 0.5D);
+		                if(arrowEvent.addEnchantments)
+		                {
+			                int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, bow);
+			
+			                if (k > 0)
+			                {
+			                    entityarrow.setDamage(entityarrow.getDamage() + (double)k * 0.5D + 0.5D);
+			                }
+			
+			                int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, bow);
+			
+			                if (l > 0)
+			                {
+			                    entityarrow.setKnockbackStrength(l);
+			                }
+			
+			                if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, bow) > 0)
+			                {
+			                    entityarrow.setFire(100);
+			                }
+		                }
+	                	if(arrowEvent.bowDamage>0)
+	                		bow.damageItem(arrowEvent.bowDamage, player);
+	                	if(arrowEvent.bowSoundVolume>0)
+	                		world.playSoundAtEntity(player, "random.bow", arrowEvent.bowSoundVolume, 1.0F / (new Random().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+		                if (!world.isRemote)
+		                {
+		                    world.spawnEntityInWorld(entityarrow);
+		                }
+		                quiver.onArrowFired(world, player, stack, bow, entityarrow);
+		                //Canceling the event, since we successfully fired our own arrow
+		                event.setCanceled(true);
 	                }
-	
-	                int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, bow);
-	
-	                if (l > 0)
-	                {
-	                    entityarrow.setKnockbackStrength(l);
-	                }
-	
-	                if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, bow) > 0)
-	                {
-	                    entityarrow.setFire(100);
-	                }
-	
-	                bow.damageItem(1, player);
-	                world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (new Random().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-	
-	                if (!world.isRemote)
-	                {
-	                    world.spawnEntityInWorld(entityarrow);
-	                }
-	                quiver.onArrowFired(world, player, stack, bow, entityarrow);
-	                //Canceling the event, since we successfully fired our own arrow
-	                event.setCanceled(true);
     			}
     		}
     	}

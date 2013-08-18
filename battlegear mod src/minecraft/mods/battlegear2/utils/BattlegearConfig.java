@@ -59,7 +59,7 @@ public class BattlegearConfig {
 
 
         quiver = new Item(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
-        quiver.func_111206_d("battlegear2:"+itemNames[2]).setUnlocalizedName(itemNames[2]).setCreativeTab(customTab);
+        quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).func_111206_d("battlegear2:"+itemNames[2]).setCreativeTab(customTab);
         	
         	
         for(int i = 0; i < 5; i++){
@@ -95,7 +95,7 @@ public class BattlegearConfig {
         }
 	}
 
-	public static void registerRecipes() {//Those are old recipes found on your M-B topic
+	public static void registerRecipes() {
 		
 		//2 Iron ingots = 3 chain. This is because the chain armour has increased in damage resistance
 		
@@ -103,7 +103,7 @@ public class BattlegearConfig {
 			"I", "I", Character.valueOf('I'), Item.ingotIron
 		});
 		//Quiver recipes :
-		ItemStack stack = new ItemStack(quiver,1,63);
+		ItemStack stack = new ItemStack(quiver,1,quiver.getMaxDamage()-1);
 		
 		GameRegistry.addRecipe(new ShapedOreRecipe(stack, new Object[]
 				{// A quiver is crafted with an arrow in center
