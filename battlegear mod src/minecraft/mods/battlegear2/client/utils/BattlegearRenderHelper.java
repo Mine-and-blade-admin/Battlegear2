@@ -642,7 +642,7 @@ public class BattlegearRenderHelper {
                     RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, offhandSheathed, var27);
                 }
             } else {
-                int var27 = mainhandSheathed.getItem().getColorFromItemStack(offhandSheathed, 0);
+                int var27 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, 0);
                 float var8 = (float) (var27 >> 16 & 255) / 255.0F;
                 float var28 = (float) (var27 >> 8 & 255) / 255.0F;
                 float var10 = (float) (var27 & 255) / 255.0F;

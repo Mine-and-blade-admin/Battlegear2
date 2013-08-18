@@ -189,6 +189,37 @@ public class BattlegearConfig {
                         });
             }
 		}
+
+        //Wood Shield
+        GameRegistry.addRecipe(new ItemStack(shield[0]),
+                new Object[] {" W ","WWW", " W ",
+                        Character.valueOf('W'), Block.planks
+                });
+
+        //Hide Shield
+        GameRegistry.addRecipe(new ItemStack(shield[1]),
+                new Object[] {" H ","HWH", " H ",
+                        Character.valueOf('W'), Block.planks,
+                        Character.valueOf('H'), Item.leather
+                });
+        //Iron Shield
+        GameRegistry.addRecipe(new ItemStack(shield[2]),
+                new Object[] {"III","IWI", " I ",
+                        Character.valueOf('W'), Block.planks,
+                        Character.valueOf('I'), Item.ingotIron
+                });
+        //Diamond Shield
+        GameRegistry.addRecipe(new ItemStack(shield[3]),
+                new Object[] {"III","IWI", " I ",
+                        Character.valueOf('W'), Block.planks,
+                        Character.valueOf('I'), Item.diamond
+                });
+        //Iron Shield
+        GameRegistry.addRecipe(new ItemStack(shield[4]),
+                new Object[] {"III","IWI", " I ",
+                        Character.valueOf('W'), Block.planks,
+                        Character.valueOf('I'), Item.ingotGold
+                });
 		
 		for(int i = 0; i < 4; i++){
 			//GameRegistry.addRecipe(new KnightArmourRecipie(i));

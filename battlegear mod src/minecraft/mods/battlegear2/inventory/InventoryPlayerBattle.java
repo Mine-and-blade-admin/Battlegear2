@@ -319,4 +319,12 @@ public class InventoryPlayerBattle extends InventoryPlayer {
             }
         }
     }
+
+    public ItemStack getCurrentOffhandWeapon(){
+        if(isBattlemode()){
+            return getStackInSlot(currentItem+WEAPON_SETS);
+        }else{
+            return null;
+        }
+    }
 }

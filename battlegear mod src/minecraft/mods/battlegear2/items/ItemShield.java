@@ -52,6 +52,10 @@ public class ItemShield extends Item implements IShield{
         this.func_111206_d("battlegear2:shield/shield."+enumShield.getName());
 
         this.getShareTag();
+
+        this.setMaxDamage(enumShield.getMaxDamage());
+        this.setMaxStackSize(1);
+        this.setHasSubtypes(false);
     }
 
     @Override
@@ -104,5 +108,10 @@ public class ItemShield extends Item implements IShield{
     @Override
     public float getDamageDecayRate(ItemStack shield, float amount) {
         return enumShield.getDamageDecay();
+    }
+
+    @Override
+    public float getBlockAngle(ItemStack shield) {
+        return 60;
     }
 }

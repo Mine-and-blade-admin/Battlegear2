@@ -26,4 +26,7 @@ public class CommonProxy {
 
     public void registerItemRenderers() {
     }
+
+    public void startFlash(EntityPlayer player, float damage) {
+    }
 }

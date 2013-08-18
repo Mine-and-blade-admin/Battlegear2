@@ -18,21 +18,34 @@ public class BattlegearClientTickHandeler implements ITickHandler {
     public static float blockBar = 1;
     public static boolean wasBlocking = false;
     public static final float recoveryRate = 0.01F; //should take 5 secods to fully recover
-    public static boolean isFlashing = false;
     public static final float[] COLOUR_DEFAULT = new float[]{0, 0.75F, 1};
     public static final float[] COLOUR_RED = new float[]{1, 0.1F, 0.1F};
     public static final float[] COLOUR_YELLOW = new float[]{1, 1F, 0.1F};
+    public static int flashTimer;
 
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+
         ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
         if(player.isBattlemode() &&
                 offhand != null &&
                 offhand.getItem() instanceof ItemShield){
 
+            if(flashTimer == 30){
+                player.motionY = player.motionY/2;
+
+            }
+
+            if(flashTimer > 0){
+                flashTimer --;
+            }
+
+
             if(Mouse.isButtonDown(1) && !player.isSwingInProgress){
+
+
 
                 blockBar -= ((ItemShield) offhand.getItem()).getDecayRate(offhand);
                 if(blockBar > 0){
@@ -73,7 +86,19 @@ public class BattlegearClientTickHandeler implements ITickHandler {
 
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData) {
+        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
+        ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
+        if(player.isBattlemode() &&
+                offhand != null &&
+                offhand.getItem() instanceof ItemShield){
+
+            if(Mouse.isButtonDown(1) && !player.isSwingInProgress && blockBar > 0){
+                player.motionX = player.motionX/5;
+                player.motionZ = player.motionZ/5;
+            }
+
+        }
     }
 
     @Override
