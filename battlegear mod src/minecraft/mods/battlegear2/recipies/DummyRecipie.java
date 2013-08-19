@@ -1,13 +1,17 @@
 package mods.battlegear2.recipies;
 
-import mods.battlegear2.items.ItemShield;
-import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-public class ShieldRemoveArrowRecipie implements IRecipe{
+public class DummyRecipie implements IRecipe{
+
+    private int itemID;
+
+    public DummyRecipie(int itemId){
+        this.itemID = itemId;
+    }
 
     @Override
     public boolean matches(InventoryCrafting inventorycrafting, World world) {
@@ -16,7 +20,7 @@ public class ShieldRemoveArrowRecipie implements IRecipe{
         for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
             ItemStack stack = inventorycrafting.getStackInSlot(i);
             if(stack != null){
-                if(stack.getItem() instanceof ItemShield){
+                if(stack.getItem().itemID == itemID){
                     if(foundStack)
                         return false;
                     else
@@ -37,12 +41,8 @@ public class ShieldRemoveArrowRecipie implements IRecipe{
         for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
             ItemStack stack = inventorycrafting.getStackInSlot(i);
             if(stack != null){
-                if(stack.getItem() instanceof ItemShield){
-                    ItemStack shieldCopy =  stack.copy();
-
-                    ((ItemShield)shieldCopy.getItem()).setArrowCount(shieldCopy, 0);
-
-                    return shieldCopy;
+                if(stack.getItem().itemID == itemID){
+                       return stack.copy();
                 }
             }
 
@@ -58,6 +58,6 @@ public class ShieldRemoveArrowRecipie implements IRecipe{
 
     @Override
     public ItemStack getRecipeOutput() {
-        return new ItemStack(BattlegearConfig.shield[2], 1, 0);
+        return new ItemStack(itemID, 1, 0);
     }
 }
