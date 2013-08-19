@@ -23,7 +23,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
 
-@Mod(modid="battlegear2", name="Mine & Blade: Battlegear 2", version="0.5")
+@Mod(modid="battlegear2", name="Mine & Blade: Battlegear 2", version="Warcry 1.0 - pre")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         channels = {
                 BattlegearAnimationPacket.packetName,
@@ -32,7 +32,8 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
                 //BattlegearChangeHeraldryPacket.packetName,
                 BattlegearGUIPacket.packetName,
                 BattlegearShieldBlockPacket.packetName,
-                BattlegearShieldFlashPacket.packetName},
+                BattlegearShieldFlashPacket.packetName,
+                SpecialActionPacket.packetName},
         packetHandler = BattlegearPacketHandeler.class)
 public class Battlegear {
 
@@ -47,6 +48,11 @@ public class Battlegear {
 
     public static EnumArmorMaterial knightArmourMaterial;
 
+
+    public static boolean debug = false;
+
+
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         //Set up the Translator
@@ -55,7 +61,6 @@ public class Battlegear {
         LanguageHelper.loadAllLanguages();
 
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
-        //System.out.println("Config File");
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
 
     }

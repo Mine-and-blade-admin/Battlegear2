@@ -67,11 +67,21 @@ public class BattlemodeHookContainerClass {
             }
         }
 
+        if(event.entityPlayer.specialActionTimer > 0){
+            event.setCanceled(true);
+        }
+
     }
 
     @ForgeSubscribe
     public void playerInterect(PlayerInteractEvent event) {
-        if (event.entityPlayer.isBattlemode()) {
+        if(event.entityPlayer.specialActionTimer > 0){
+            event.setCanceled(true);
+            event.setResult(Result.DENY);
+            event.useBlock = Result.DENY;
+            event.useItem = Result.DENY;
+            event.entityPlayer.isSwingInProgress = false;
+        } else if (event.entityPlayer.isBattlemode()) {
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = event.entityPlayer.inventory.getStackInSlot(event.entityPlayer.inventory.currentItem + 3);
 
@@ -153,8 +163,11 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void playerIntereactEntity(EntityInteractEvent event) {
-
-        if (event.entityPlayer.isBattlemode()) {
+        if(event.entityPlayer.specialActionTimer > 0){
+            event.setCanceled(true);
+            event.setResult(Result.DENY);
+            event.entityPlayer.isSwingInProgress = false;
+        } else if (event.entityPlayer.isBattlemode()) {
 
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = event.entityPlayer.inventory.getStackInSlot(event.entityPlayer.inventory.currentItem + 3);
@@ -195,11 +208,14 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void shieldHook(LivingHurtEvent event){
+
         if(event.entity instanceof EntityPlayer){
 
             EntityPlayer player = (EntityPlayer)event.entity;
 
-            if(player.isBlockingWithShield()){
+            if(player.specialActionTimer > 0){
+                event.setCanceled(true);
+            } else if(player.isBlockingWithShield()){
                 ItemStack shield = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
                 if(((IShield)shield.getItem()).canBlock(shield, event.source)){
 

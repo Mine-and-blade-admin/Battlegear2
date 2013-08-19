@@ -113,7 +113,6 @@ public class BattlegearUtils {
             if (item != null) {
 
 		if(i == Block.torchWood.blockID){
-                    System.out.println(item);
                     offhandDualWeapons[i] = true;
                 }
 

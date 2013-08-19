@@ -171,6 +171,7 @@ public class EntityPlayerTransformer implements IClassTransformer {
         cn.fields.add(1, new FieldNode(ACC_PUBLIC, "prevOffHandSwingProgress", "F", null, 0F));
         cn.fields.add(2, new FieldNode(ACC_PUBLIC, "offHandSwingProgressInt", "I", null, 0));
         cn.fields.add(3, new FieldNode(ACC_PUBLIC, "isOffHandSwingInProgress", "Z", null, 0F));
+        cn.fields.add(4, new FieldNode(ACC_PUBLIC, "specialActionTimer", "I", null, 0F));
 
         for (Object fnObj : cn.fields) {
             FieldNode fn = (FieldNode) fnObj;
