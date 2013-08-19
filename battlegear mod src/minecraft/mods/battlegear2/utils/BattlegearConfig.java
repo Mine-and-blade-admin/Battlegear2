@@ -50,7 +50,6 @@ public class BattlegearConfig {
         	
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
 
-
         quiver = new ItemQuiver(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
         quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).func_111206_d("battlegear2:"+itemNames[2]).setCreativeTab(customTab);
         
@@ -182,8 +181,6 @@ public class BattlegearConfig {
 
 
         GameRegistry.addRecipe(new ShieldRemoveArrowRecipie());
-        
-
 		
 		for(int i = 0; i < 4; i++){
 			//GameRegistry.addRecipe(new KnightArmourRecipie(i));

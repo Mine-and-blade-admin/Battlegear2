@@ -1,5 +1,6 @@
 package mods.battlegear2.recipies;
 
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.inventory.InventoryCrafting;
