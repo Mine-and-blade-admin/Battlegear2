@@ -5,14 +5,20 @@ import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.BattlegearGUIPacket;
+import mods.battlegear2.packet.SpecialActionPacket;
+import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import org.lwjgl.input.Keyboard;
 
 import java.util.EnumSet;
@@ -21,6 +27,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 
     public static KeyBinding battleInv = new KeyBinding("Battle Inventory", Keyboard.KEY_I);
     public static KeyBinding drawWeapons = new KeyBinding("Draw Weapons", Keyboard.KEY_R);
+    public static KeyBinding special = new KeyBinding("Special", Keyboard.KEY_Z);
 
     //TODO: I will replace this with some sort of command in the future, this is primarily for testing.
     //public static KeyBinding openSigilEditor = new KeyBinding("Open Sigil Editor", Keyboard.KEY_P);
@@ -30,7 +37,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 
     public BattlegearKeyHandeler() {
         //super(new KeyBinding[]{battleInv, drawWeapons, openSigilEditor}, new boolean[]{false, false, false});
-        super(new KeyBinding[]{battleInv, drawWeapons}, new boolean[]{false, false});
+        super(new KeyBinding[]{battleInv, drawWeapons, special}, new boolean[]{false, false, false});
     }
 
     @Override
@@ -51,8 +58,29 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
             EntityClientPlayerMP player = FMLClientHandler.instance().getClient().thePlayer;
 
 
+            if (kb.keyCode == special.keyCode && player.isBattlemode() && player.specialActionTimer == 0){
 
-            if (kb.keyCode == battleInv.keyCode) {
+                ItemStack main = player.getCurrentEquippedItem();
+                ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+
+
+                if(offhand != null && offhand.getItem() instanceof IShield){
+
+                    //TODO: Enchantments?
+                    float shieldBashPenalty = 0.33F;
+
+                    if(BattlegearClientTickHandeler.blockBar >= shieldBashPenalty){
+                        Packet250CustomPayload p = BattlegearAnimationPacket.generatePacket(EnumBGAnimations.SpecialAction, player.username);
+                        PacketDispatcher.sendPacketToServer(p);
+                        player.specialActionTimer = ((IShield)offhand.getItem()).getBashTimer(offhand);
+
+                        BattlegearClientTickHandeler.blockBar = BattlegearClientTickHandeler.blockBar - shieldBashPenalty;
+                    }
+
+                }
+
+
+            }else if (kb.keyCode == battleInv.keyCode) {
 
                 //send packet to open container on server
                 PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.equipID));

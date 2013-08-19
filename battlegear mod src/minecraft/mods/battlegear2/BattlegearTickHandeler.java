@@ -1,9 +1,11 @@
 package mods.battlegear2;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import mods.battlegear2.api.IExtendedReachWeapon;
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
@@ -33,7 +35,7 @@ public class BattlegearTickHandeler implements ITickHandler {
 
             EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
 
-            if (entityPlayer.worldObj instanceof WorldServer && entityPlayer.ticksExisted % 2 == 0) {
+            if (entityPlayer.worldObj instanceof WorldServer) {
 
                 if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 
@@ -42,6 +44,9 @@ public class BattlegearTickHandeler implements ITickHandler {
                                 entityPlayer,
                             BattlegearSyncItemPacket.generatePacket(entityPlayer.username, entityPlayer.inventory)
                                 );
+
+                    entityPlayer.specialActionTimer = 0;
+
                 }
                 ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
             }
@@ -64,6 +69,25 @@ public class BattlegearTickHandeler implements ITickHandler {
                     }
                 }
             }
+
+
+            if(entityPlayer.specialActionTimer > 0){
+                entityPlayer.specialActionTimer --;
+
+                int targetTime = 0;
+
+                ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
+                if(offhand != null && offhand.getItem() instanceof IShield){
+                    targetTime = ((IShield) offhand.getItem()).getBashTimer(offhand) / 2;
+                }
+
+                if(entityPlayer.specialActionTimer == targetTime){
+                    Battlegear.proxy.doSpecialAction(entityPlayer);
+                }
+
+
+            }
+
         }
 
     }

@@ -3,14 +3,10 @@ package mods.battlegear2.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import mods.battlegear2.api.IHeraldyItem;
-import mods.battlegear2.heraldry.HeraldryIcon;
-import mods.battlegear2.heraldry.HeraldryPositions;
-import mods.battlegear2.heraldry.HeraldyPattern;
-import mods.battlegear2.heraldry.SigilHelper;
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.items.*;
-import mods.battlegear2.recipies.DummyRecipie;
+import mods.battlegear2.recipies.ShieldRemoveArrowRecipie;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumToolMaterial;
@@ -22,7 +18,6 @@ import net.minecraftforge.common.Configuration;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.registry.GameRegistry;
-import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class BattlegearConfig {
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
@@ -58,9 +53,10 @@ public class BattlegearConfig {
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
 
 
-        quiver = new Item(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
-        quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).func_111206_d("battlegear2:"+itemNames[2]).setCreativeTab(customTab);
-        	
+        if(Battlegear.debug){
+            quiver = new Item(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
+            quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).func_111206_d("battlegear2:"+itemNames[2]).setCreativeTab(customTab);
+        }
         	
         for(int i = 0; i < 5; i++){
         	EnumToolMaterial material = EnumToolMaterial.values()[i];
@@ -102,26 +98,29 @@ public class BattlegearConfig {
 		GameRegistry.addShapedRecipe(new ItemStack(chain, 3), new Object[]{
 			"I", "I", Character.valueOf('I'), Item.ingotIron
 		});
-		//Quiver recipes :
-		ItemStack stack = new ItemStack(quiver,1,quiver.getMaxDamage()-1);
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(stack, new Object[]
-				{// A quiver is crafted with an arrow in center
-				"X X", "XIX","XXX", 
-				Character.valueOf('X'), Item.leather,
-				Character.valueOf('I'), Item.arrow }));
-		
-		while(stack.getItemDamage()!=0){
-			List output = new ArrayList();
-			output.add(stack);
-			for(int i = 1; i < 9; i++)
-			{
-				output.add(Item.arrow);
-				GameRegistry.addShapelessRecipe(
-						new ItemStack(quiver,1,stack.getItemDamage()-i),output.toArray());
-			}//A quiver can be charged with any amount of arrow surrounding it
-			stack.setItemDamage(stack.getItemDamage()-1);
-		}
+
+        if(Battlegear.debug){
+            //Quiver recipes :
+            ItemStack stack = new ItemStack(quiver,1,quiver.getMaxDamage()-1);
+
+            GameRegistry.addRecipe(new ShapedOreRecipe(stack, new Object[]
+                    {// A quiver is crafted with an arrow in center
+                    "X X", "XIX","XXX",
+                    Character.valueOf('X'), Item.leather,
+                    Character.valueOf('I'), Item.arrow }));
+
+            while(stack.getItemDamage()!=0){
+                List output = new ArrayList();
+                output.add(stack);
+                for(int i = 1; i < 9; i++)
+                {
+                    output.add(Item.arrow);
+                    GameRegistry.addShapelessRecipe(
+                            new ItemStack(quiver,1,stack.getItemDamage()-i),output.toArray());
+                }//A quiver can be charged with any amount of arrow surrounding it
+                stack.setItemDamage(stack.getItemDamage()-1);
+            }
+        }
 		//Chain armor recipes
 		GameRegistry.addRecipe(new ItemStack(Item.helmetChain),  new Object[]
 				{"LLL","L L",Character.valueOf('L'),chain});
@@ -203,9 +202,9 @@ public class BattlegearConfig {
                         Character.valueOf('I'), Item.ingotGold
                 });
 
-	for(Item shieldItem: shield){
-            GameRegistry.addRecipe(new DummyRecipie(shieldItem.itemID));
-        } 
+
+        GameRegistry.addRecipe(new ShieldRemoveArrowRecipie());
+
 		
 		for(int i = 0; i < 4; i++){
 			//GameRegistry.addRecipe(new KnightArmourRecipie(i));

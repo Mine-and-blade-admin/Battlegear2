@@ -61,6 +61,7 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
                 targetPlayer.inventory.setInventorySlotContents(InventoryPlayerBattle.OFFSET + i, stack);
                 //}
             }
+            targetPlayer.specialActionTimer = 0;
         } catch (IOException e) {
             e.printStackTrace();
         }

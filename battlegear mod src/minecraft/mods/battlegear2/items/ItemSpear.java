@@ -5,12 +5,14 @@ import mods.battlegear2.api.ISpecialEffect;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -35,6 +37,17 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 	public boolean willAllowShield() {
 		return true;
 	}
+
+    @Override
+    public EnumAction getItemUseAction(ItemStack par1ItemStack) {
+        return EnumAction.none;
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    {
+        return par1ItemStack;
+    }
 
     @Override
     public void registerIcons(IconRegister par1IconRegister) {
