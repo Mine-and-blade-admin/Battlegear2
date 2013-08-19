@@ -1,26 +1,18 @@
 package mods.battlegear2;
 
-import java.lang.reflect.Constructor;
 import java.util.Map;
-import java.util.Random;
 
 import mods.battlegear2.api.*;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 
 /**
  * User: nerd-boy
@@ -28,7 +20,6 @@ import net.minecraftforge.event.entity.player.ArrowLooseEvent;
  * Time: 12:36 PM
  * Events registered with MinecraftForge event bus on default priority: 
  * LivingAttackEvent, to perform weapons custom effects
- * ArrowLooseEvent, to perform bow calculations for the quiver item
  */
 public class WeaponHookContainerClass {
 
@@ -101,7 +92,7 @@ public class WeaponHookContainerClass {
         }
     }
 
-    protected boolean performBackStab(Item item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
+    protected static boolean performBackStab(Item item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
         //Get victim and murderer vector views at hit time
         double[] victimView = new double[]{entityHit.getLookVec().xCoord,entityHit.getLookVec().zCoord};
         double[] murdererView = new double[]{entityHitting.getLookVec().xCoord,entityHitting.getLookVec().zCoord};
@@ -115,7 +106,7 @@ public class WeaponHookContainerClass {
         return false;
     }
 
-    protected void performEffects(Map<PotionEffect, Float> map, EntityLivingBase entityHit) {
+    protected static void performEffects(Map<PotionEffect, Float> map, EntityLivingBase entityHit) {
         double roll =  Math.random();
         for(PotionEffect effect:map.keySet()){
 
@@ -124,90 +115,5 @@ public class WeaponHookContainerClass {
                 entityHit.addPotionEffect(effect);
             }
         }
-    }
-
-    @ForgeSubscribe
-    public void onBowFiring(ArrowLooseEvent event) {
-    	if(!event.isCanceled()){
-    		EntityPlayer player = event.entityPlayer;
-    		ItemStack bow = event.bow;
-    		//Don't need to do anything in those cases
-    		if(player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) > 0){
-    			return;
-    		}
-    		//Check if bow is charged enough
-    		int j = event.charge;
-            float f = (float)j / 20.0F;
-            f = (f * f + f * 2.0F) / 3.0F;
-            if ((double)f < 0.1D)
-            {
-                return;
-            }
-            if (f > 1.0F)
-            {
-                f = 1.0F;
-            }
-            //Check for IArrowContainer in player main inventory
-            ItemStack stack = null;
-    		IArrowContainer quiver = null;
-    		for(ItemStack item : player.inventory.mainInventory){
-    			if(item!=null && item.getItem() instanceof IArrowContainer){
-    				stack = item;
-    				if(((IArrowContainer) stack.getItem()).hasArrow(stack))
-    				{
-	    				quiver = (IArrowContainer) stack.getItem();
-	    				break;
-    				}
-    			}
-    		}
-    		if(quiver != null){
-    			World world = player.worldObj;
-    			EntityArrow entityarrow = quiver.getArrowType(stack, world, player, f*2.0F);
-    			if(entityarrow!=null)
-    			{
-	    			if (f == 1.0F)
-	                {
-	                    entityarrow.setIsCritical(true);
-	                }
-	    			QuiverArrowEvent arrowEvent = new QuiverArrowEvent(event);
-	                quiver.onPreArrowFired(arrowEvent);
-	                if(!arrowEvent.isCanceled())
-	                {
-		                if(arrowEvent.addEnchantments)
-		                {
-			                int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, bow);
-			
-			                if (k > 0)
-			                {
-			                    entityarrow.setDamage(entityarrow.getDamage() + (double)k * 0.5D + 0.5D);
-			                }
-			
-			                int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, bow);
-			
-			                if (l > 0)
-			                {
-			                    entityarrow.setKnockbackStrength(l);
-			                }
-			
-			                if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, bow) > 0)
-			                {
-			                    entityarrow.setFire(100);
-			                }
-		                }
-	                	if(arrowEvent.bowDamage>0)
-	                		bow.damageItem(arrowEvent.bowDamage, player);
-	                	if(arrowEvent.bowSoundVolume>0)
-	                		world.playSoundAtEntity(player, "random.bow", arrowEvent.bowSoundVolume, 1.0F / (new Random().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-		                if (!world.isRemote)
-		                {
-		                    world.spawnEntityInWorld(entityarrow);
-		                }
-		                quiver.onArrowFired(world, player, stack, bow, entityarrow);
-		                //Canceling the event, since we successfully fired our own arrow
-		                event.setCanceled(true);
-	                }
-    			}
-    		}
-    	}
     }
 }
