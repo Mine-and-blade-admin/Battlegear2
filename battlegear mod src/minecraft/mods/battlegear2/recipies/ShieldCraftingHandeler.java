@@ -13,16 +13,16 @@ public class ShieldCraftingHandeler implements ICraftingHandler{
     public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) {
 
         if(item.getItem() instanceof ItemShield){
-            boolean shieldFound = false;
+            ItemStack shield = null;
             boolean isOnlyShield = true;
             for(int i = 0; i < craftMatrix.getSizeInventory(); i++){
                 ItemStack stack = craftMatrix.getStackInSlot(i);
                 if(stack != null){
                     if(stack.getItem() instanceof ItemShield){
-                        if(shieldFound){
-                            isOnlyShield = false;
+                        if(shield == null){
+                            shield = stack;
                         }else{
-                            shieldFound = true;
+                            isOnlyShield = false;
                         }
                     } else{
                         isOnlyShield = false;
@@ -30,10 +30,10 @@ public class ShieldCraftingHandeler implements ICraftingHandler{
                 }
             }
 
-            if(isOnlyShield && shieldFound){
+            if(isOnlyShield && shield != null){
 
-                int arrowCount = ((ItemShield) item.getItem()).getArrowCount(item);
-                ((ItemShield) item.getItem()).setArrowCount(item, 0);
+                int arrowCount = ((ItemShield) shield.getItem()).getArrowCount(shield);
+
                 while(arrowCount > 0){
 
                     int nextStackSize = Math.min(arrowCount, 64);

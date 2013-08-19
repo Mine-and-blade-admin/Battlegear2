@@ -19,7 +19,7 @@
  import net.minecraft.world.chunk.IChunkProvider;
  
  import net.minecraftforge.common.ForgeHooks;
-@@ -83,9 +88,114 @@
+@@ -83,9 +88,127 @@
  
  public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
  {
@@ -43,6 +43,7 @@
 +	public float prevOffHandSwingProgress;
 +	public int offHandSwingProgressInt;
 +	public boolean isOffHandSwingInProgress;
++    public int specialActionTimer;
 +	
 +	// -----MB-AddMethod-----
 +	public void attackTargetEntityWithCurrentOffItem(Entity target) {
@@ -101,6 +102,18 @@
 +		}
 +			this.offHandSwingProgress = (float) this.offHandSwingProgressInt
 +				/ (float) var1;
++
++
++        if(specialActionTimer > 0){
++            this.isOffHandSwingInProgress = false;
++            this.isSwingInProgress = false;
++            this.offHandSwingProgress = 0;
++            this.offHandSwingProgressInt = 0;
++            this.swingProgress = 0;
++            this.field_110158_av = 0;
++
++        }
++
 +	}
 +	
 +	// -----MB-AddMethod-----
@@ -135,7 +148,7 @@
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
  
      /**
-@@ -201,12 +311,16 @@
+@@ -201,12 +324,16 @@
          this.func_110140_aT().func_111150_b(SharedMonsterAttributes.field_111264_e).func_111128_a(1.0D);
      }
  
@@ -152,7 +165,7 @@
      }
  
      @SideOnly(Side.CLIENT)
-@@ -282,6 +396,7 @@
+@@ -282,6 +409,7 @@
          if (this.itemInUse != null)
          {
              ItemStack itemstack = this.inventory.getCurrentItem();
@@ -160,7 +173,7 @@
  
              if (itemstack == this.itemInUse)
              {
-@@ -468,11 +583,12 @@
+@@ -468,11 +596,12 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
@@ -175,7 +188,7 @@
                  }
              }
  
-@@ -2385,7 +2501,8 @@
+@@ -2385,7 +2514,8 @@
      {
          if (par1 == 0)
          {
