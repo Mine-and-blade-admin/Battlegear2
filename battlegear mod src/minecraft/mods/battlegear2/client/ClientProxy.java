@@ -44,6 +44,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerTickHandelers() {
         super.registerTickHandelers();
+        LanguageHelper.loadAllLanguages();
+        
         MinecraftForge.EVENT_BUS.register(new BattlegearClientEvents());
         TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
         TickRegistry.registerTickHandler(new BattlegearClientTickHandeler(), Side.CLIENT);
