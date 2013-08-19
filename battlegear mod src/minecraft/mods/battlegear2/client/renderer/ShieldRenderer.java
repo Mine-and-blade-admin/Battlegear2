@@ -32,37 +32,78 @@ public class ShieldRenderer implements IItemRenderer{
         if(item.getItem() instanceof ItemShield){
             ItemShield shield = (ItemShield)item.getItem();
 
+            GL11.glPushMatrix();
+
             Tessellator tessellator = Tessellator.instance;
             Icon icon = shield.getTrimIcon();
 
-            icon = shield.getIconIndex(item);
-            RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                    icon.getMaxU(),
-                    icon.getMinV(),
-                    icon.getMinU(),
-                    icon.getMaxV(),
-                    icon.getOriginX(),
-                    icon.getOriginY(), 16F/256F);
+            if(type == ItemRenderType.ENTITY){
+                GL11.glTranslatef(-0.5F, -0.25F, 0);
 
-            GL11.glTranslatef(0, 0, 1F/256F);
-            icon = shield.getBackIcon();
-            RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                    icon.getMaxU(),
-                    icon.getMinV(),
-                    icon.getMinU(),
-                    icon.getMaxV(),
-                    icon.getOriginX(),
-                    icon.getOriginY(), 1F/256F);
+                icon = shield.getIconIndex(item);
+                RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                        icon.getMaxU(),
+                        icon.getMinV(),
+                        icon.getMinU(),
+                        icon.getMaxV(),
+                        icon.getOriginX(),
+                        icon.getOriginY(), 16F/256F);
 
-            GL11.glTranslatef(0, 0, -17F/256F);
-            icon = shield.getTrimIcon();
-            RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                    icon.getMaxU(),
-                    icon.getMinV(),
-                    icon.getMinU(),
-                    icon.getMaxV(),
-                    icon.getOriginX(),
-                    icon.getOriginY(), 8F/256F);
+                GL11.glTranslatef(0, 0, -16F/256F);
+                icon = shield.getBackIcon();
+                RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                        icon.getMaxU(),
+                        icon.getMinV(),
+                        icon.getMinU(),
+                        icon.getMaxV(),
+                        icon.getOriginX(),
+                        icon.getOriginY(), 1F/256F);
+
+                GL11.glTranslatef(0, 0, 24F/256F);
+                icon = shield.getTrimIcon();
+                RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                        icon.getMaxU(),
+                        icon.getMinV(),
+                        icon.getMinU(),
+                        icon.getMaxV(),
+                        icon.getOriginX(),
+                        icon.getOriginY(), 8F/256F);
+
+
+
+            }else{
+
+
+
+                icon = shield.getIconIndex(item);
+                RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                        icon.getMaxU(),
+                        icon.getMinV(),
+                        icon.getMinU(),
+                        icon.getMaxV(),
+                        icon.getOriginX(),
+                        icon.getOriginY(), 16F/256F);
+
+                GL11.glTranslatef(0, 0, 1F/256F);
+                icon = shield.getBackIcon();
+                RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                        icon.getMaxU(),
+                        icon.getMinV(),
+                        icon.getMinU(),
+                        icon.getMaxV(),
+                        icon.getOriginX(),
+                        icon.getOriginY(), 1F/256F);
+
+                GL11.glTranslatef(0, 0, -17F/256F);
+                icon = shield.getTrimIcon();
+                RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                        icon.getMaxU(),
+                        icon.getMinV(),
+                        icon.getMinU(),
+                        icon.getMaxV(),
+                        icon.getOriginX(),
+                        icon.getOriginY(), 8F/256F);
+            }
 
             int arrowCount = shield.getArrowCount(item);
 	    //Bounds checking (rendering this many is quite silly, any more would look VERY silly)
@@ -70,14 +111,15 @@ public class ShieldRenderer implements IItemRenderer{
                 arrowCount = 64;
             //System.out.println(arrowCount);
             for(int i = 0; i < arrowCount; i++){
-                renderArrow(i);
+                renderArrow(i, type==ItemRenderType.ENTITY);
             }
+            GL11.glPopMatrix();
 
         }
     }
 
 
-    private void renderArrow(int arrowNo){
+    private void renderArrow(int arrowNo, boolean isEntity){
         GL11.glPushMatrix();
         float x = ItemShield.arrowX[arrowNo];
         float y = ItemShield.arrowY[arrowNo];
@@ -99,13 +141,12 @@ public class ShieldRenderer implements IItemRenderer{
         float f3 = 0F;
         float f4 = (float)(0 + b0 * 10) / 32.0F;
         float f5 = (float)(5 + b0 * 10) / 32.0F;
-        float f6 = 0.0F;
-        float f7 = 0.15625F;
-        float f8 = (float)(5 + b0 * 10) / 32.0F;
-        float f9 = (float)(10 + b0 * 10) / 32.0F;
         float f10 = 0.05F;
 
         GL11.glScalef(f10, f10, f10);
+        if(isEntity){
+            GL11.glScalef(1, 1, -1);
+        }
 
         GL11.glTranslatef(x + 8 + 2.5F, y + 8 + 1.5F, 0);
 
