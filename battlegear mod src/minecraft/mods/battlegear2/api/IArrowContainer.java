@@ -10,9 +10,11 @@ public interface IArrowContainer {
 	/**
 	 * 
 	 * @param stack The {@link #ItemStack} representing this item
+	 * @param bow The bow trying to use this container
+	 * @param player The {@link #EntityPlayer} using the bow
 	 * @return true if the item contains at least one arrow
 	 */
-	public boolean hasArrow(ItemStack stack);
+	public boolean hasArrowFor(ItemStack stack, ItemStack bow, EntityPlayer player);
 	/**
 	 * The arrow spawned when bow is used with this non empty container equipped
 	 * @param stack The {@link #ItemStack} representing this item
@@ -37,4 +39,17 @@ public interface IArrowContainer {
 	 * @param arrowEvent Used to decide bow damage, bow sound and arrow enchantment
 	 */
 	public void onPreArrowFired(QuiverArrowEvent arrowEvent);
+	/**
+	 * Called when the container is put on a crafting bench with vanilla arrows
+	 * @param stack
+	 * @return True to receive {@link #addArrows(ItemStack, int)}
+	 */
+	public boolean isCraftableWithArrows(ItemStack stack);
+	/**
+	 * Crafts the item with vanilla arrows
+	 * @param stack
+	 * @param arrows Number of vanilla arrows on the crafting bench
+	 * @return Number of vanilla arrows that couldn't fit in
+	 */
+	public int addArrows(ItemStack stack, int arrows);
 }
