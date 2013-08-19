@@ -3,6 +3,8 @@ package mods.battlegear2.client;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.BattlegearTickHandeler;
@@ -13,19 +15,18 @@ import mods.battlegear2.client.renderer.SpearRenderer;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
+import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet15Place;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Icon;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -43,6 +44,8 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerTickHandelers() {
         super.registerTickHandelers();
+        LanguageHelper.loadAllLanguages();
+        
         MinecraftForge.EVENT_BUS.register(new BattlegearClientEvents());
         TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
         TickRegistry.registerTickHandler(new BattlegearClientTickHandeler(), Side.CLIENT);
@@ -59,10 +62,6 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void sendPlaceBlockPacket(EntityPlayer entityPlayer, int x, int y, int z, int face, Vec3 par8Vec3) {
-
-        System.out.println(par8Vec3);
-        System.out.println(((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon());
-
         if (entityPlayer instanceof EntityClientPlayerMP) {
             ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
                     new Packet15Place(x, y, z, face,
@@ -112,10 +111,30 @@ public class ClientProxy extends CommonProxy {
         }
     }
 
+    @Override
+    public void doSpecialAction(EntityPlayer entityPlayer) {
+
+        if(entityPlayer.username.equals(Minecraft.getMinecraft().thePlayer.username)){
+            ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory) .getCurrentOffhandWeapon();
+            ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
+
+            MovingObjectPosition mop = null;
+
+            if(offhand != null && offhand.getItem() instanceof IShield){
+                mop = getMouseOver(0, 3);
+            }
+
+            if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase){
+                PacketDispatcher.sendPacketToServer(SpecialActionPacket.generatePacket(entityPlayer, mainhand, offhand, mop.entityHit));
+            }
+        }
+
+    }
 
     /**
      * Finds what block or object the mouse is over at the specified partial tick time. Args: partialTickTime
      */
+    @Override
     public MovingObjectPosition getMouseOver(float tickPart, float maxDist)
     {
         Minecraft mc = FMLClientHandler.instance().getClient();

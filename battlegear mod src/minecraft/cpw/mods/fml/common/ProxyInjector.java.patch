@@ -1,0 +1,23 @@
+--- 
++++ 
+@@ -54,7 +54,12 @@
+                     FMLLog.fine("Skipping proxy injection for %s.%s since it is not for mod %s", targ.getClassName(), targ.getObjectName(), mod.getModId());
+                     continue;
+                 }
++                
+                 String targetType = side.isClient() ? annotation.clientSide() : annotation.serverSide();
++                
++                System.out.println(Class.forName(targetType, true, mcl).getDeclaredConstructors()[0]);
++                
++                
+                 Object proxy=Class.forName(targetType, true, mcl).newInstance();
+ 
+                 if (languageAdapter.supportsStatics() && (target.getModifiers() & Modifier.STATIC) == 0 )
+@@ -71,6 +76,7 @@
+             }
+             catch (Exception e)
+             {
++            	e.printStackTrace();
+                 FMLLog.log(Level.SEVERE, e, "An error occured trying to load a proxy into %s.%s", targ.getAnnotationInfo(), targ.getClassName(), targ.getObjectName());
+                 throw new LoaderException(e);
+             }

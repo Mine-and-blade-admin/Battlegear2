@@ -97,8 +97,16 @@ public class BattlegearRenderHelper {
                     GL11.glPushMatrix();
 
 	        		var7 = 0.8F;
-	        		GL11.glTranslatef(-0.7F * var7 - 0.25F*MathHelper.sin(player.swingProgress*3.14159F),
-	        				-0.65F * var7 - (1.0F - progress) * 0.6F - 0.4F, -0.9F * var7+0.1F);
+
+
+                    float swingProgress =
+                            (float)player.specialActionTimer / (
+                                    float)((IShield)itemRenderer.offHandItemToRender.getItem()).getBashTimer(
+                                    itemRenderer.offHandItemToRender);
+
+	        		GL11.glTranslatef(-0.7F * var7 + 0.25F*MathHelper.sin(swingProgress*3.14159F),
+	        				-0.65F * var7 - (1.0F - progress) * 0.6F - 0.4F,
+                            -0.9F * var7+0.1F - 0.25F*MathHelper.sin(swingProgress*3.14159F));
 
 	        		if(player.isBlockingWithShield()){
 	        			GL11.glTranslatef(0.25F, 0.15F, 0);
@@ -106,7 +114,7 @@ public class BattlegearRenderHelper {
 
 
 	        		GL11.glRotatef(25, 0, 0, 1);
-	        		GL11.glRotatef(325+35*MathHelper.sin(player.swingProgress*3.14159F), 0, 1, 0);
+	        		GL11.glRotatef(325-35*MathHelper.sin(swingProgress*3.14159F), 0, 1, 0);
 
 
 	        		itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
@@ -323,6 +331,13 @@ public class BattlegearRenderHelper {
         if (entity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) entity;
             float offhandSwing = player.getOffSwingProgress(frame);
+
+            if(((EntityPlayer) entity).isBattlemode()){
+                ItemStack offhand = ((InventoryPlayerBattle)((EntityPlayer) entity).inventory).getCurrentOffhandWeapon();
+                if(offhand != null && offhand.getItem() instanceof IShield){
+                    offhandSwing = (float)player.specialActionTimer / (float)((IShield)offhand.getItem()).getBashTimer(offhand);
+                }
+            }
 
 
             biped.heldItemLeft = player.inventory.getStackInSlot(player.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS) == null || player.inventory.currentItem < InventoryPlayerBattle.OFFSET ? 0 : 1;

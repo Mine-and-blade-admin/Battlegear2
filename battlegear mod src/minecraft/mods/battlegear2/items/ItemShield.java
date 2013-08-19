@@ -113,13 +113,19 @@ public class ItemShield extends Item implements IShield{
 
     @Override
     public float getDamageDecayRate(ItemStack shield, float amount) {
-        return enumShield.getDamageDecay();
+        return enumShield.getDamageDecay() * amount;
     }
 
     @Override
     public float getBlockAngle(ItemStack shield) {
         return 60;
     }
+
+    @Override
+    public int getBashTimer(ItemStack shield) {
+        return 10;
+    }
+
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
@@ -131,7 +137,6 @@ public class ItemShield extends Item implements IShield{
                 StatCollector.translateToLocal("attribute.name.shield.block.time"));
 
         int arrowCount = getArrowCount(par1ItemStack);
-        System.out.println(arrowCount);
         if(arrowCount > 0){
             par3List.add(String.format("%s%s %s", EnumChatFormatting.GOLD, arrowCount, StatCollector.translateToLocal("attribute.name.shield.arrow.count")));
         }
