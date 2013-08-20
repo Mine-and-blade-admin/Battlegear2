@@ -8,10 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -69,12 +66,22 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 
     @Override
     public boolean performEffects(EntityLivingBase entityHit, EntityLivingBase entityHitting) {
-        if(entityHit.isRiding() || entityHit.isSprinting() || entityHitting.isSneaking())
+        if(entityHitting.isRiding() || entityHitting.isSprinting())
         {
+
+            //This has been reworked to prevent an infinate loop.
+            //It was also applying twice to halved the damage because CBF looking for the real cause
+            entityHit.attackEntityFrom(new EntityDamageSource("battlegearExtra", entityHitting), mounted_extra_damage/2);
+
+            /*
             if(entityHitting instanceof EntityPlayer)
+                //Player Damage will cause an infinite loop here
                 entityHit.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)entityHitting), mounted_extra_damage);
+                //entityHit.attackEntityFrom(DamageSource.causeMobDamage(entityHitting), mounted_extra_damage);
+
             else
                 entityHit.attackEntityFrom(DamageSource.causeMobDamage(entityHitting), mounted_extra_damage);
+                */
 
             return true;
         }else{

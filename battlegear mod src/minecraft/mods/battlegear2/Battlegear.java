@@ -23,7 +23,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
 
-@Mod(modid="battlegear2", name="Mine & Blade: Battlegear 2", version="Warcry 1.0 - pre")
+@Mod(modid="battlegear2", name="Mine & Blade: Battlegear 2", version="Warcry 1.0 - pre 2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         channels = {
                 BattlegearAnimationPacket.packetName,
