@@ -31,7 +31,7 @@ public class WeaponHookContainerClass {
     	if(event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).capabilities.isCreativeMode)
     	{
     		return;
-    		//Fix weird bug with baby zombies being able to lead mobs to attack player 
+    		//Fix vanilla bug with baby zombies being able to lead mobs to attack player 
     		//in creative mode thus calling the event
     	}
         System.out.println(event.source +", "+event.ammount);
