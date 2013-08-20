@@ -18,8 +18,11 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 
 public class BattlegearTickHandeler implements ITickHandler {
+
+    public HashMap<String, Integer> currentItemCahce = new HashMap<String, Integer>();
 
 
     @Override
@@ -37,6 +40,10 @@ public class BattlegearTickHandeler implements ITickHandler {
 
             if (entityPlayer.worldObj instanceof WorldServer) {
 
+                if(currentItemCahce.containsKey(entityPlayer.username)){
+
+                }
+
                 if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 
                     ((WorldServer)entityPlayer.worldObj)
@@ -49,6 +56,16 @@ public class BattlegearTickHandeler implements ITickHandler {
 
                 }
                 ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
+
+                //Force update every 3 seconds
+                //TODO: This is a temp fix
+                if(entityPlayer.ticksExisted % (20*3) == 0){
+                    ((WorldServer)entityPlayer.worldObj)
+                            .getEntityTracker().sendPacketToAllAssociatedPlayers(
+                            entityPlayer,
+                            BattlegearSyncItemPacket.generatePacket(entityPlayer.username, entityPlayer.inventory)
+                    );
+                }
             }
 
             //If we JUST swung an Item

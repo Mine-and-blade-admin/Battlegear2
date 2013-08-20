@@ -5,6 +5,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.BattlegearTickHandeler;
@@ -26,6 +27,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet15Place;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.*;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
@@ -121,11 +123,17 @@ public class ClientProxy extends CommonProxy {
             MovingObjectPosition mop = null;
 
             if(offhand != null && offhand.getItem() instanceof IShield){
-                mop = getMouseOver(0, 3);
+                mop = getMouseOver(1, 4);
             }
 
             if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase){
-                PacketDispatcher.sendPacketToServer(SpecialActionPacket.generatePacket(entityPlayer, mainhand, offhand, mop.entityHit));
+                Packet250CustomPayload p = SpecialActionPacket.generatePacket(entityPlayer, mainhand, offhand, mop.entityHit);
+                PacketDispatcher.sendPacketToServer(p);
+
+                if(mop.entityHit instanceof EntityPlayer){
+                    PacketDispatcher.sendPacketToPlayer(p, (Player)mop.entityHit);
+                }
+
             }
         }
 

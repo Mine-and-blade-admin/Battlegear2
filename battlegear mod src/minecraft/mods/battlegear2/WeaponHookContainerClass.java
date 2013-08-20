@@ -36,6 +36,8 @@ public class WeaponHookContainerClass {
     @ForgeSubscribe
     public void onAttack(LivingAttackEvent event){
 
+        System.out.println(event.source +", "+event.ammount);
+
         /*boolean isBlockWithShield = false;
         if(event.entity instanceof EntityPlayer){
             isBlockWithShield = ((EntityPlayer) event.entity).isBlockingWithShield();
@@ -47,7 +49,9 @@ public class WeaponHookContainerClass {
             //Record the hurt times
             int hurtTimeTemp = entityHit.hurtTime;
             int hurtResistanceTimeTemp = entityHit.hurtResistantTime;
-            if(event.source instanceof EntityDamageSource && !(event.source instanceof EntityDamageSourceIndirect))
+            if(event.source instanceof EntityDamageSource &&
+                    !(event.source instanceof EntityDamageSourceIndirect) &&
+                    !event.source.damageType.equals("battlegearExtra"))
             {
                 Entity attacker = ((EntityDamageSource)event.source).getEntity();
                 if(attacker instanceof EntityLivingBase)
@@ -118,9 +122,8 @@ public class WeaponHookContainerClass {
     protected void performEffects(Map<PotionEffect, Float> map, EntityLivingBase entityHit) {
         double roll =  Math.random();
         for(PotionEffect effect:map.keySet()){
-
             //add effects if they aren't already applied, with corresponding chance factor
-            if(!entityHit.isPotionActive(effect.getPotionID()) && map.get(effect) < roll){
+            if(!entityHit.isPotionActive(effect.getPotionID()) && map.get(effect) > roll){
                 entityHit.addPotionEffect(effect);
             }
         }

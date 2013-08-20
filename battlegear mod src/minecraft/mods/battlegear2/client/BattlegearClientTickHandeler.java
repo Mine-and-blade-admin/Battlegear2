@@ -44,9 +44,6 @@ public class BattlegearClientTickHandeler implements ITickHandler {
 
 
             if(Mouse.isButtonDown(1) && !player.isSwingInProgress){
-
-
-
                 blockBar -= ((ItemShield) offhand.getItem()).getDecayRate(offhand);
                 if(blockBar > 0){
                     if(!wasBlocking){

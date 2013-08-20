@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSource;
 
 public class ItemDagger extends OneHandedWeapon implements IBackStabbable,IHitTimeModifier,IExtendedReachWeapon{
 
@@ -32,10 +33,18 @@ public class ItemDagger extends OneHandedWeapon implements IBackStabbable,IHitTi
 	@Override//Here we simply cause more damage (hit will touch twice, one here and the other called vanilla)
 	public boolean onBackStab(EntityLivingBase entityHit, EntityLivingBase entityHitting)
 	{
+        /* Same issue here as the spear's
 		if(entityHitting instanceof EntityPlayer)
 			entityHit.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)entityHitting), this.baseDamage);
 		else
 			entityHit.attackEntityFrom(DamageSource.causeMobDamage(entityHitting), this.baseDamage);
+
+        */
+
+        entityHit.attackEntityFrom(new EntityDamageSource("battlegearExtra", entityHitting), this.baseDamage/2);
+
+
+
 
         return true;
 	}

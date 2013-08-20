@@ -1,17 +1,23 @@
 package mods.battlegear2.packet;
 
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet106Transaction;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.util.MathHelper;
 
 import java.io.*;
 
@@ -21,18 +27,27 @@ public class SpecialActionPacket extends AbstractMBPacket{
 
     @Override
     public void process(Packet250CustomPayload packet, EntityPlayer player) {
+        System.out.println("Process Special");
         DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
         try {
-            Entity targetHit = player.worldObj.getEntityByID(inputStream.readInt());
+            Entity targetHit = null;
+            if(inputStream.readBoolean()){
+                targetHit = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
+            }else{
+                targetHit = player.worldObj.getEntityByID(inputStream.readInt());
+            }
+
+            System.out.println(targetHit);
             EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
 
-
-            if(targetHit instanceof EntityLiving){
+            if(targetHit instanceof EntityLivingBase){
+                System.out.println("is Living");
 
                 ItemStack mainhand = targetPlayer.getCurrentEquippedItem();
                 ItemStack offhand = ((InventoryPlayerBattle)targetPlayer.inventory).getCurrentOffhandWeapon();
 
                 if(offhand != null && offhand.getItem() instanceof IShield){
+                    System.out.println("Bash");
                     double d0 = targetHit.posX - targetPlayer.posX;
                     double d1;
 
@@ -41,7 +56,16 @@ public class SpecialActionPacket extends AbstractMBPacket{
                         d0 = (Math.random() - Math.random()) * 0.01D;
                     }
 
-                    ((EntityLiving) targetHit).knockBack(player, 0, -d0*10, -d1*10);
+
+                    ((EntityLivingBase) targetHit).knockBack(player, 0, -d0, -d1);
+
+
+                    if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER &&
+                            targetHit instanceof EntityPlayer){
+                        PacketDispatcher.sendPacketToPlayer(packet, (Player)targetHit);
+                    }
+
+
 
                 }else if(mainhand != null && offhand != null){
                     //This will be handeled elsewhere
@@ -66,8 +90,18 @@ public class SpecialActionPacket extends AbstractMBPacket{
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream(300);
         DataOutputStream outputStream = new DataOutputStream(bos);
+
+        boolean isPlayer = entityHit instanceof EntityPlayer;
+
+
         try {
-            outputStream.writeInt(entityHit.entityId);
+            outputStream.writeBoolean(isPlayer);
+            if(isPlayer){
+                Packet.writeString(((EntityPlayer) entityHit).username, outputStream);
+            }else{
+                outputStream.writeInt(entityHit.entityId);
+            }
+
             Packet.writeString(player.username, outputStream);
         } catch (Exception ex) {
             ex.printStackTrace();

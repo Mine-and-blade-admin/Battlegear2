@@ -154,7 +154,7 @@ public class EntityPlayerTransformer implements IClassTransformer {
             System.out.println("M&B - Patching Class EntityPlayer done");
 
 
-            if (true) {
+            if (BattlegearLoadingPlugin.debug) {
                 TransformerUtils.writeClassFile(cw, name);
             }
 

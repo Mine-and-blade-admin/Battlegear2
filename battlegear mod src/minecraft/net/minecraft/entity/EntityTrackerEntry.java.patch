@@ -1,0 +1,43 @@
+--- 
++++ 
+@@ -7,6 +7,7 @@
+ import java.util.Set;
+ 
+ import cpw.mods.fml.common.network.FMLNetworkHandler;
++import mods.battlegear2.packet.BattlegearSyncItemPacket;
+ import net.minecraft.entity.ai.attributes.ServersideAttributeMap;
+ import net.minecraft.entity.boss.EntityDragon;
+ import net.minecraft.entity.item.EntityBoat;
+@@ -60,6 +61,16 @@
+ 
+ public class EntityTrackerEntry
+ {
++    /*
++	 * Mine & Blade: Notes Edits made by: nerd-boy
++	 *
++	 * Edits: 1 edit
++	 *
++	 * Added a small hook to allow battle items to be synced when
++	 * another player begins to be tracked. Further updates are handeled
++	 * elsewhere.
++	 */
++
+     public Entity myEntity;
+     public int blocksDistanceThreshold;
+ 
+@@ -444,11 +455,15 @@
+                     if (this.myEntity instanceof EntityPlayer)
+                     {
+                         EntityPlayer entityplayer = (EntityPlayer)this.myEntity;
++                        //-----MB-Added-----
++                        //This is a hook to properly sync battleitems
++                        par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(BattlegearSyncItemPacket.generatePacket(entityplayer));
+ 
+                         if (entityplayer.isPlayerSleeping())
+                         {
+                             par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new Packet17Sleep(this.myEntity, 0, MathHelper.floor_double(this.myEntity.posX), MathHelper.floor_double(this.myEntity.posY), MathHelper.floor_double(this.myEntity.posZ)));
+                         }
++
+                     }
+ 
+                     if (this.myEntity instanceof EntityLivingBase)
