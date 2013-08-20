@@ -1,5 +1,6 @@
 package mods.battlegear2;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
@@ -185,17 +186,26 @@ public class BattlemodeHookContainerClass {
                     }
 
                     if (offAttackEvent.shouldAttack) {
-                        event.entityPlayer.attackTargetEntityWithCurrentOffItem(event.target);
+                        //event.entityPlayer.attackTargetEntityWithCurrentOffItem(event.target);
+
+                        BattlegearUtils.attackTargetEntityWithCurrentOffItem(event.entityPlayer, event.target);
+
+
+                        event.setCanceled(true);
+                        event.setResult(Result.DENY);
                     }
                 }
 
             } else if (offhandItem != null && offhandItem.getItem() instanceof ItemShield){
                 event.setCanceled(true);
+                event.setResult(Result.DENY);
             }else{
                 if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem.itemID)){
                     event.setCanceled(true);
+                    event.setResult(Result.DENY);
                     event.entityPlayer.swingOffItem();
-                    event.entityPlayer.attackTargetEntityWithCurrentOffItem(event.target);
+                    BattlegearUtils.attackTargetEntityWithCurrentOffItem(event.entityPlayer, event.target);
+
                     Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                 }
             }

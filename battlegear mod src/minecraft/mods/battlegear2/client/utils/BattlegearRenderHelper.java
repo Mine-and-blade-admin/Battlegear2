@@ -337,10 +337,16 @@ public class BattlegearRenderHelper {
                 if(offhand != null && offhand.getItem() instanceof IShield){
                     offhandSwing = (float)player.specialActionTimer / (float)((IShield)offhand.getItem()).getBashTimer(offhand);
                 }
+
+                boolean isBlockWithShield = ((EntityPlayer) entity).isBlockingWithShield();
+                //biped.heldItemLeft = isBlockWithShield?3:1;
+
+                if(offhand != null)
+                    biped.bipedLeftArm.rotateAngleX = biped.bipedLeftArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F) * (isBlockWithShield?3:1);
+
+            }else{
+                //biped.heldItemLeft = 0;
             }
-
-
-            biped.heldItemLeft = player.inventory.getStackInSlot(player.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS) == null || player.inventory.currentItem < InventoryPlayerBattle.OFFSET ? 0 : 1;
 
             if (offhandSwing > 0.0F) {
                 biped.bipedBody.rotateAngleY = -MathHelper.sin(MathHelper.sqrt_float(offhandSwing) * 3.141593F * 2.0F) * 0.2F;
@@ -374,22 +380,7 @@ public class BattlegearRenderHelper {
 
         if (var21 != null && par1EntityPlayer.isBattlemode()) {
 
-            boolean isBlockWithShield = par1EntityPlayer.isBlockingWithShield();
-            modelBipedMain.heldItemLeft = isBlockWithShield?3:1;
 
-            //The sneak is not working for some reason???
-            modelBipedMain.isSneak = modelBipedMain.isSneak || isBlockWithShield;
-
-            for(int i = 1; i < 5; i++){
-                ItemStack chest =  par1EntityPlayer.getCurrentItemOrArmor(i);
-                if(chest != null){
-                    ModelBiped model = chest.getItem().getArmorModel(par1EntityPlayer, chest, 1);
-                    if(model != null){
-                        model.heldItemLeft = isBlockWithShield?3:1;
-                        model.isSneak = model.isSneak || isBlockWithShield;
-                    }
-                }
-            }
 
 
 
@@ -511,16 +502,6 @@ public class BattlegearRenderHelper {
 
             GL11.glPopMatrix();
         } else {
-            modelBipedMain.heldItemLeft  = 0;
-
-            ItemStack chest =  par1EntityPlayer.getCurrentItemOrArmor(2);
-            if(chest != null){
-                ModelBiped model = chest.getItem().getArmorModel(par1EntityPlayer, chest, 0);
-                if(model != null){
-                    model.heldItemLeft = 0;
-                }
-            }
-
             if(!par1EntityPlayer.isBattlemode())
                 renderSheathedItems(par1EntityPlayer, modelBipedMain, frame);
         }

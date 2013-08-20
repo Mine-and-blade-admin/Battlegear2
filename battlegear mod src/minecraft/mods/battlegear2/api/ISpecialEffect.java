@@ -9,7 +9,7 @@ public interface ISpecialEffect {
 	/**
 	 * 
 	 * @param entityHit The entity the effect will be applied to.
-	 * @param entityHitting 
+	 * @param entityHitting
 	 * @return true if it adds an hitting action
 	 */
     public boolean performEffects(EntityLivingBase entityHit, EntityLivingBase entityHitting);
