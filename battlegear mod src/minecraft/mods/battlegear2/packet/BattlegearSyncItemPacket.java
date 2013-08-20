@@ -2,6 +2,7 @@ package mods.battlegear2.packet;
 
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.utils.BattlegearUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -18,6 +19,10 @@ import java.io.*;
 public class BattlegearSyncItemPacket extends AbstractMBPacket {
 
     public static final String packetName = "MB2|SyncItem";
+
+    public static Packet250CustomPayload generatePacket(EntityPlayer player){
+        return generatePacket(player.username, player.inventory);
+    }
 
     public static Packet250CustomPayload generatePacket(String user, InventoryPlayer inventory) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream(5120);

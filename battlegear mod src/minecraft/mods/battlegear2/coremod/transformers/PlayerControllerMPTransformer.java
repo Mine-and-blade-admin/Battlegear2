@@ -27,6 +27,7 @@ public class PlayerControllerMPTransformer implements IClassTransformer {
         if (transformedName.equals("net.minecraft.client.multiplayer.PlayerControllerMP")) {
 
             entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityOtherPlayerMP");
+
             playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
 
             playerControllerMPsendUseItemMethodName =

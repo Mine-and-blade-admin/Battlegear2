@@ -20,6 +20,7 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
 
     private String mainInventoryArrayFieldName;
     private String currentItemFieldName;
+    private String playerInventoryFieldName;
 
     private String getStackInSlotMethodName;
     private String getStackInSlotMethodDesc;
@@ -27,6 +28,8 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
     private String onUpdateMethodDesc;
     private String setCurrentItemMethodName;
     private String setCurrentItemMethodDesc;
+    private String isItemInUseFieldName;
+    private String limbSwingFieldName;
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
@@ -39,10 +42,16 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
             entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityOtherPlayerMP");
             itemClassName = BattlegearTranslator.getMapedClassName("Item");
 
+            isItemInUseFieldName = BattlegearTranslator.getMapedFieldName("EntityOtherPlayerMP", "field_71186_a");
+            limbSwingFieldName = BattlegearTranslator.getMapedFieldName("EntityLivingBase", "field_70754_ba");
+
             currentItemFieldName =
                     BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_71185_c");
             mainInventoryArrayFieldName =
                     BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a");
+            playerInventoryFieldName =
+                    BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+
 
             getStackInSlotMethodName =
                     BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70301_a");
@@ -57,6 +66,9 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
             onUpdateMethodDesc =
                     BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70071_h_");
 
+            System.out.println(onUpdateMethodName);
+            System.out.println(onUpdateMethodDesc);
+
 
             ClassReader cr = new ClassReader(bytes);
             ClassNode cn = new ClassNode(ASM4);
@@ -70,7 +82,9 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
                 if (mn.name.equals(setCurrentItemMethodName) &&
                         mn.desc.equals(setCurrentItemMethodDesc)) {
                     processSetCurrentItemMethod(mn);
-                } else if (mn.name.equals(onUpdateMethodName) &&
+                }
+
+                if (mn.name.equals(onUpdateMethodName) &&
                         mn.desc.equals(onUpdateMethodDesc)) {
                     processOnUpdateMethod(mn);
                 }
@@ -97,6 +111,43 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
 
         System.out.println("\tPatching method onUpdate in EntityOtherPlayerMP");
         InsnList newList = new InsnList();
+
+        Iterator<AbstractInsnNode> it = mn.instructions.iterator();
+
+        boolean done = false;
+        while(it.hasNext() && !done){
+            AbstractInsnNode node = it.next();
+            if (node instanceof FieldInsnNode &&
+                    node.getOpcode() == PUTFIELD &&
+                    ((FieldInsnNode) node).owner.equals(entityOtherPlayerMPClassName) &&
+                    ((FieldInsnNode) node).name.equals(limbSwingFieldName)){
+                newList.add(node);
+
+                newList.add(new VarInsnNode(ALOAD, 0));
+                newList.add(new VarInsnNode(ALOAD, 0));
+                newList.add(new VarInsnNode(ALOAD, 0));
+
+
+                newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, isItemInUseFieldName, "Z"));
+                newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearClientUtils", "entityOtherPlayerIsItemInUseHook", "(L"+entityOtherPlayerMPClassName+";Z)Z"));
+                newList.add(new FieldInsnNode(PUTFIELD, entityOtherPlayerMPClassName, isItemInUseFieldName, "Z"));
+
+                newList.add(new InsnNode(RETURN));
+
+
+
+                done = true;
+            }else{
+                newList.add(node);
+            }
+
+        }
+        mn.instructions = newList;
+        mn.maxLocals = mn.maxLocals - 1;
+
+
+
+        /*
 
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
 
@@ -143,11 +194,15 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
             }
         }
 
-        mn.instructions = newList;
+        */
 
     }
 
     private void processSetCurrentItemMethod(MethodNode mn) {
         System.out.println("\tPatching method setCurrentItem in EntityOtherPlayerMP");
+        TransformerUtils.replaceInventoryArrayAccess(mn, entityOtherPlayerMPClassName, playerInventoryFieldName, 4,3,3);
+
+
+
     }
 }

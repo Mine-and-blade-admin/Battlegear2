@@ -31,6 +31,7 @@ public class ItemMace extends OneHandedWeapon implements IPotionEffect{
 		this.baseDamage = baseDamage-1;
         effects= new HashMap<PotionEffect,Float>();
         this.stunChance = stunChance;
+        stunChance = 1;
         effects.put(new PotionEffect(2,3*20,100), stunChance);
         effects.put(new PotionEffect(9,3*20,100), stunChance);
         effects.put(new PotionEffect(15,3*20,100), stunChance);
@@ -45,7 +46,6 @@ public class ItemMace extends OneHandedWeapon implements IPotionEffect{
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-        par3List.add("");
         par3List.add(EnumChatFormatting.GOLD+StatCollector.translateToLocal("attribute.name.weapon.daze")+" "+percentFormat.format(stunChance));
     }
 }
