@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
+@Deprecated//Moved in CraftingHandeler 
 public class ShieldCraftingHandeler implements ICraftingHandler{
     @Override
     public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) {
