@@ -73,8 +73,8 @@ public class BowHookContainerClass {
                 f = 1.0F;
             }
             ItemStack stack = getArrowContainer(event.bow, event.entityPlayer);
+            if(stack != null){
             IArrowContainer quiver = (IArrowContainer) stack.getItem();
-    		if(quiver != null){
     			World world = player.worldObj;
     			EntityArrow entityarrow = quiver.getArrowType(stack, world, player, f*2.0F);
     			if(entityarrow!=null)

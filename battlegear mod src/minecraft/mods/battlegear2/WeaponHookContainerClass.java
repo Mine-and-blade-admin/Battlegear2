@@ -5,6 +5,7 @@ import java.util.Map;
 import mods.battlegear2.api.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
@@ -27,6 +28,12 @@ public class WeaponHookContainerClass {
     @ForgeSubscribe
     public void onAttack(LivingAttackEvent event){
 
+    	if(event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).capabilities.isCreativeMode)
+    	{
+    		return;
+    		//Fix weird bug with baby zombies being able to lead mobs to attack player 
+    		//in creative mode thus calling the event
+    	}
         System.out.println(event.source +", "+event.ammount);
 
         /*boolean isBlockWithShield = false;

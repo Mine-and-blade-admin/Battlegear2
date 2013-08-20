@@ -292,6 +292,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
     @Override
     public void dropAllItems() {
+    	super.dropAllItems();
         for (int i = 0; i < this.extraItems.length; ++i) {
             if (this.extraItems[i] != null) {
                 this.player.dropPlayerItemWithRandomChoice(this.extraItems[i], true);
