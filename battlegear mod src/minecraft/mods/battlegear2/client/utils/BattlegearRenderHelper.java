@@ -514,16 +514,21 @@ public class BattlegearRenderHelper {
 
         ModelBiped chestModel = null;
         ModelBiped legsModel = null;
+
+        boolean hasChestArmour = false;
+        boolean hasLegArmour = false;
         ItemStack chest =  par1EntityPlayer.getCurrentItemOrArmor(2);
         if(chest != null){
             chestModel = chest.getItem().getArmorModel(par1EntityPlayer, chest, 1);
+            hasChestArmour = true;
         }
         ItemStack legs =  par1EntityPlayer.getCurrentItemOrArmor(3);
         if(legs != null){
             legsModel = legs.getItem().getArmorModel(par1EntityPlayer, legs, 2);
+            hasLegArmour = true;
         }
 
-        int backCount = 0;
+        int backCount = hasChestArmour?1:0;
 
         if(mainhandSheathed != null){
 
@@ -554,12 +559,15 @@ public class BattlegearRenderHelper {
                 GL11.glTranslatef(-8F / 16F, 0, 6F / 16F);
                 GL11.glRotatef(-5F, 0.0F, 0.0F, 1.0F);
                 GL11.glRotatef(40.0F+90, 0.0F, 1.0F, 0.0F);
-                GL11.glTranslatef(0, 0, 4F/16F);
+                GL11.glTranslatef(0, 0, 4F/16F - backCount*2F/16F);
                 backCount++;
             }else{
                 target.bipedBody.postRender(0.0625F);
                 GL11.glScalef(0.6F, 0.6F, 0.6F);
                 GL11.glTranslatef(8F/16F, 1, -4F/16F);
+                if(hasChestArmour || hasLegArmour){
+                    GL11.glTranslatef(2F/16F, 0, 0);
+                }
                 GL11.glRotatef(35F, 1.0F, 0.0F, 0.0F);
                 GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
             }
@@ -622,6 +630,9 @@ public class BattlegearRenderHelper {
                 target.bipedBody.postRender(0.0625F);
                 GL11.glScalef(0.6F, 0.6F, 0.6F);
                 GL11.glTranslatef(-7F/16F, 1, -4F/16F);
+                if(hasChestArmour || hasLegArmour){
+                    GL11.glTranslatef(-2F/16F, 0, 0);
+                }
                 GL11.glRotatef(35F, 1.0F, 0.0F, 0.0F);
                 GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
 
