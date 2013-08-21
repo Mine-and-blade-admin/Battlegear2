@@ -1,6 +1,7 @@
 package mods.battlegear2;
 
-import mods.battlegear2.api.IArrowContainer;
+import java.util.Random;
+
 import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.api.QuiverArrowEvent;
 import net.minecraft.enchantment.Enchantment;
@@ -13,8 +14,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
-
-import java.util.Random;
 
 public class BowHookContainerClass2 {
 
@@ -40,7 +39,7 @@ public class BowHookContainerClass2 {
         for(ItemStack item : entityPlayer.inventory.mainInventory){
             if(item!=null && item.getItem() instanceof IArrowContainer2){
                 int maxSlot = ((IArrowContainer2) item.getItem()).getSlotCount(item);
-                System.out.println("Quiver");
+                //System.out.println("Quiver");
                 for(int i = 0; i < maxSlot; i++){
                     if(((IArrowContainer2) item.getItem()).hasArrowFor(item, result, entityPlayer, i)){
                         return item;

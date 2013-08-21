@@ -79,17 +79,18 @@ public interface IArrowContainer2 {
      */
     public void onPreArrowFired(QuiverArrowEvent arrowEvent);
     /**
-     * Called when the container is put on a crafting bench with vanilla arrows
+     * Called when the container is put on a crafting bench with other items
      * @param container The {@link #ItemStack} representing this item
+     * @param arrowStack The {@link #ItemStack} representing other items
      * @return True to receive {@link #addArrows(ItemStack, ItemStack)}
      */
     public boolean isCraftableWithArrows(ItemStack contaner, ItemStack arrowStack);
 
     /**
-     * Crafts the item with vanilla arrows
+     * Crafts the item with the items from {@link #isCraftableWithArrows(ItemStack, ItemStack)}
      * @param container The {@link #ItemStack} representing this item
-     * @param arrows Number of vanilla arrows on the crafting bench
-     * @return Number of vanilla arrows that couldn't fit in
+     * @param arrows Another valid item on the crafting bench
+     * @return Number of arrows that couldn't fit in
      */
     public ItemStack addArrows(ItemStack container, ItemStack newStack);
 

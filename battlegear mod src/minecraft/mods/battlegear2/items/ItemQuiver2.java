@@ -58,7 +58,7 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
 
     @Override
     public int getSlotCount(ItemStack container) {
-        return 5;
+        return 4;
     }
 
     @Override
@@ -136,7 +136,7 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
             int slotCount = getSlotCount(container);
             for(int i = 0; i < slotCount && left_over > 0; i++){
                 ItemStack slotStack = getStackInSlot(container, i);
-                System.out.println(slotStack);
+                //System.out.println(slotStack);
                 if(slotStack == null){
                     newStack.stackSize = left_over;
                     setStackInSlot(container, i, newStack);
