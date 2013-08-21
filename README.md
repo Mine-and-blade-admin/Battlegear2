@@ -17,36 +17,29 @@ What does and doesn't work
 * Switching between normal and battlemode with the 'R' Key
 * Attacking entities with both the offhand and mainhand weapons
 * Rendering of dual wielding in 1st person view
-* 3rd person renderering
-* Initial work on the equip screen
-* Inital work on an API to allow other modders to define dual wielding weapons
+* 3rd person renderering (with sheaths)
 * Swinging of offhand items of other players
 * Rendering of offhand weapons on other players
-* Basic Shift Clicking on the inventory screen
-* Initial Configuration Files
-* Basic Heraldry
-* Inital work on the following weapons: waraxe, dagger
+* Shift Clicking on the inventory screen
+* The Following Weapons
+    +Waraxe
+    +Mace
+    +Spear
+    +Dagger
+* Shields
+    + Shield Blocking
+    + Shield Bash
+    + Arrows being stuck in Shields
+* Quivers
+    +Quivers are the "current project" They are not released to the public yet
 
-**Note from nerd-boy:** I am not 100% happy with the way we are syncing items. It works now by sending a packet with all the "battle items" to each player that is viewing a player every 5 ticks. I am not sure if this will be too much or not. Although right now I cannot think of another way to do it that doesn't require more bytecode manipulation. I think we already have enough AccessTransformers planed to keep us busy without adding more that we may in fact not need.
+**Note from nerd-boy:** I am not 100% happy with the way we are syncing items. It works now by sending a packet with all the "battle items" to each player that is viewing a player every 60 ticks. I am not sure if this will be too much or not. Although right now I cannot think of another way to do it that doesn't require more bytecode manipulation. I think we already have enough AccessTransformers planed to keep us busy without adding more that we may in fact not need.
 
 **What does not work**
-* (Most) ASM capabilities*
-* Rendering of sheathed weapons
-* Spear & Mace
-* Shields
+* Some of themore "advanced" quiver features
+    +Rendering on the back
+    +Support for multiple types of arrows in the same quiver
 
-**ASM Transformers**
-* EntityPlayer (sk) - (12/12 edits)
-* ModelBiped -(2/2 edits)
-* NetClientHandeler - (2/2 edits)
-* PlayerControlerMP - (2/2 edits)
-* EntityOtherPlayerMP - (0/2 edits)
-* ItemRenderer - (3/3 edits)
-* RenderPlayer - (0/3 edits)
-* Minecraft - (0/1 edits)
-* EntityAIControledByPlayer - (0/1 edits)
-* ItemInWorldManager - (0/1 edits)
-* NetServiceHandeler - (3/3 edits)
 
 
 Instalation
@@ -71,6 +64,31 @@ on a windows environment
 Remember to set the exeuction bit to true on the unix enviroment
 
 When the project is in a more mature state I will also include another script (likely an ant script) to retrieve the fully compiled and packaged code
+
+
+Compiling the Mod
+-----------------
+The mod can be compiled using the following ant command
+``ant clean compile build``
+
+This will generate a jar file in the battlegear dist folder.
+This command should only be ran after the instalation command
+
+
+Translations
+------------
+If you can help to update any of the translation files please fork & make a pull request.
+
+We currently have translation for the following languages (please note that many of these will be out of date)
+* English US (default)
+* English UK (mainly just change armor -> armour)
+* English Pirate
+* French
+* Polish
+* Chinese 
+
+Please feel free to add to this list or update any of the current language files
+
 
 
 

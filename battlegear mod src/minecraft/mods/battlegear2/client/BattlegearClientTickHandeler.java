@@ -3,9 +3,11 @@ package mods.battlegear2.client;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearShieldBlockPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Mouse;
@@ -26,54 +28,63 @@ public class BattlegearClientTickHandeler implements ITickHandler {
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
-        ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
-        if(player.isBattlemode() &&
-                offhand != null &&
-                offhand.getItem() instanceof ItemShield){
+        if(type.contains(TickType.PLAYER)){
+            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
-            if(flashTimer == 30){
-                player.motionY = player.motionY/2;
+            ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
+            if(player.isBattlemode() &&
+                    offhand != null &&
+                    offhand.getItem() instanceof ItemShield){
 
-            }
+                if(flashTimer == 30){
+                    player.motionY = player.motionY/2;
 
-            if(flashTimer > 0){
-                flashTimer --;
-            }
+                }
+
+                if(flashTimer > 0){
+                    flashTimer --;
+                }
 
 
-            if(Mouse.isButtonDown(1) && !player.isSwingInProgress){
-                blockBar -= ((ItemShield) offhand.getItem()).getDecayRate(offhand);
-                if(blockBar > 0){
-                    if(!wasBlocking){
+                if(Mouse.isButtonDown(1) && !player.isSwingInProgress){
+                    blockBar -= ((ItemShield) offhand.getItem()).getDecayRate(offhand);
+                    if(blockBar > 0){
+                        if(!wasBlocking){
 
-                        PacketDispatcher.sendPacketToServer(BattlegearShieldBlockPacket.generatePacket(true, player.username));
+                            PacketDispatcher.sendPacketToServer(BattlegearShieldBlockPacket.generatePacket(true, player.username));
+                        }
+                        wasBlocking = true;
+                    }else{
+                        if(wasBlocking){
+                            //Send packet
+                            PacketDispatcher.sendPacketToServer(BattlegearShieldBlockPacket.generatePacket(false, player.username));
+
+                        }
+                        wasBlocking = false;
+                        blockBar = 0;
                     }
-                    wasBlocking = true;
                 }else{
-                    if(wasBlocking){
-                        //Send packet
-                        PacketDispatcher.sendPacketToServer(BattlegearShieldBlockPacket.generatePacket(false, player.username));
 
+                    if(wasBlocking){
+                        //send packet
+                        PacketDispatcher.sendPacketToServer(BattlegearShieldBlockPacket.generatePacket(false, player.username));
                     }
                     wasBlocking = false;
-                    blockBar = 0;
-                }
-            }else{
 
-                if(wasBlocking){
-                    //send packet
-                    PacketDispatcher.sendPacketToServer(BattlegearShieldBlockPacket.generatePacket(false, player.username));
-                }
-                wasBlocking = false;
+                    blockBar += recoveryRate;
+                    if(blockBar > 1){
+                        blockBar = 1;
+                    }
 
-                blockBar += recoveryRate;
-                if(blockBar > 1){
-                    blockBar = 1;
                 }
-
             }
+        }else if (type.contains(TickType.RENDER)){
+
+            if(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu){
+                Battlegear.battlegearEnabled = false;
+            }
+
         }
     }
 
@@ -81,22 +92,24 @@ public class BattlegearClientTickHandeler implements ITickHandler {
     public void tickEnd(EnumSet<TickType> type, Object... tickData) {
         EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
-        ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
-        if(player.isBattlemode() &&
-                offhand != null &&
-                offhand.getItem() instanceof ItemShield){
+        if(type.contains(TickType.PLAYER)){
+            ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
+            if(player.isBattlemode() &&
+                    offhand != null &&
+                    offhand.getItem() instanceof ItemShield){
 
-            if(Mouse.isButtonDown(1) && !player.isSwingInProgress && blockBar > 0){
-                player.motionX = player.motionX/5;
-                player.motionZ = player.motionZ/5;
+                if(Mouse.isButtonDown(1) && !player.isSwingInProgress && blockBar > 0){
+                    player.motionX = player.motionX/5;
+                    player.motionZ = player.motionZ/5;
+                }
+
             }
-
         }
     }
 
     @Override
     public EnumSet<TickType> ticks() {
-        return EnumSet.of(TickType.PLAYER);
+        return EnumSet.of(TickType.PLAYER, TickType.RENDER);
     }
 
     @Override

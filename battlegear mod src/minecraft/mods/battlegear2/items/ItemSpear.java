@@ -61,7 +61,7 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
         par3List.add(EnumChatFormatting.DARK_GREEN+
                 StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 0,
                         new Object[] {decimal_format.format(mounted_extra_damage),
-                                StatCollector.translateToLocal("attribute.name.weapon.mountedBonus")}));
+                                StatCollector.translateToLocal("attribute.weapon.mountedBonus")}));
     }
 
     @Override

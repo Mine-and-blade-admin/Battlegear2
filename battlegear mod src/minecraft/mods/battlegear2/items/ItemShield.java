@@ -134,11 +134,11 @@ public class ItemShield extends Item implements IShield{
 
         par3List.add(EnumChatFormatting.DARK_GREEN+
                 ItemWeapon.decimal_format.format((float) 1F / (enumShield.getDecayRate()) / 20F)+
-                StatCollector.translateToLocal("attribute.name.shield.block.time"));
+                StatCollector.translateToLocal("attribute.shield.block.time"));
 
         int arrowCount = getArrowCount(par1ItemStack);
         if(arrowCount > 0){
-            par3List.add(String.format("%s%s %s", EnumChatFormatting.GOLD, arrowCount, StatCollector.translateToLocal("attribute.name.shield.arrow.count")));
+            par3List.add(String.format("%s%s %s", EnumChatFormatting.GOLD, arrowCount, StatCollector.translateToLocal("attribute.shield.arrow.count")));
         }
 
     } 
