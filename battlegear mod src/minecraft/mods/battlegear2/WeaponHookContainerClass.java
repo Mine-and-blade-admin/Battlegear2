@@ -34,8 +34,6 @@ public class WeaponHookContainerClass {
     		//Fix vanilla bug with baby zombies being able to lead mobs to attack player 
     		//in creative mode thus calling the event
     	}
-        System.out.println(event.source +", "+event.ammount);
-
         /*boolean isBlockWithShield = false;
         if(event.entity instanceof EntityPlayer){
             isBlockWithShield = ((EntityPlayer) event.entity).isBlockingWithShield();

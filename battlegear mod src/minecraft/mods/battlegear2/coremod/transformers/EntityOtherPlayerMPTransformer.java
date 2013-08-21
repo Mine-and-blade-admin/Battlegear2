@@ -159,7 +159,7 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
             if (node instanceof FieldInsnNode &&
                     node.getOpcode() == GETFIELD &&
                     ((FieldInsnNode) node).owner.equals(inventoryPlayerClassName) &&
-                    ((FieldInsnNode) node).name.equals(mainInventoryArrayFieldName)) {
+                    ((FieldInsnNode) node).packetName.equals(mainInventoryArrayFieldName)) {
                 //Remove
 
                 System.out.println("Remove");

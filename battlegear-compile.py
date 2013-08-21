@@ -229,6 +229,7 @@ def write_core_manifest(jar_file, loading_plugin):
 	temp = open('temp', 'w')
 	temp.write('Manifest-Version: 1.0\n')
 	temp.write('FMLCorePlugin: '+loading_plugin+'\n')
+	temp.write('FMLCorePluginContainsFMLMod: true\n')
 	temp.close()
 	
 	jar_file.write('temp', os.path.join('META-INF','MANIFEST.MF'))
@@ -238,11 +239,14 @@ def write_core_manifest(jar_file, loading_plugin):
 if  __name__ =='__main__':
     distDir = 'battlegear dist'
     mcpDir = 'mcp'
+
+    print("No Longer in use, please use the ant script with the command")
+    print("ant clean compile build")
     
-    if not os.path.isdir(mcpDir):
-        print 'Invalid Instalation, battlegear-getDist must be in the forge directory'
-    else:
-        if not os.path.isdir(distDir):
-            os.makedirs(distDir)
-        
-        main(os.path.abspath(distDir),  os.path.abspath(mcpDir))
+    #if not os.path.isdir(mcpDir):
+    #    print 'Invalid Instalation, battlegear-getDist must be in the forge directory'
+    #else:
+    #    if not os.path.isdir(distDir):
+    #        os.makedirs(distDir)
+    #
+    #    main(os.path.abspath(distDir),  os.path.abspath(mcpDir))

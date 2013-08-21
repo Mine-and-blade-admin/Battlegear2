@@ -46,6 +46,6 @@ public class ItemMace extends OneHandedWeapon implements IPotionEffect{
     @Override
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-        par3List.add(EnumChatFormatting.GOLD+StatCollector.translateToLocal("attribute.name.weapon.daze")+" "+percentFormat.format(stunChance));
+        par3List.add(EnumChatFormatting.GOLD+StatCollector.translateToLocal("attribute.weapon.daze")+" "+percentFormat.format(stunChance));
     }
 }

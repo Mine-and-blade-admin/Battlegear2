@@ -5,7 +5,7 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public interface IArrowContainer {
+public interface IArrowContainer{
 
 	/**
 	 * 

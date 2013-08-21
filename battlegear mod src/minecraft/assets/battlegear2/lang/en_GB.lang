@@ -3,3 +3,5 @@ sigil.colour1.title=Colour 1
 sigil.colour2.title=Colour 2
 sigil.icon_colour1.title=Sigil%nColour 1
 sigil.icon_colour2.title=Sigil%nColour 2
+
+attribute.weapon.penetrateArmor=Armour Penetration

@@ -1,0 +1,70 @@
+name.title=M&B Battlegear 2
+
+item.battlegear2:heraldric.name=Heraldic Icon
+item.battlegear2:chain.name=Chain
+item.battlegear2:quiver.name=Quiver
+
+item.battlegear2:dagger.wood.name=Wood Dagger
+item.battlegear2:dagger.stone.name=Stone Dagger
+item.battlegear2:dagger.iron.name=Iron Dagger
+item.battlegear2:dagger.diamond.name=Diamond Dagger
+item.battlegear2:dagger.gold.name=Gold Dagger
+
+item.battlegear2:waraxe.wood.name=Wood Waraxe
+item.battlegear2:waraxe.stone.name=Stone Waraxe
+item.battlegear2:waraxe.iron.name=Iron Waraxe
+item.battlegear2:waraxe.diamond.name=Diamond Waraxe
+item.battlegear2:waraxe.gold.name=Gold Waraxe
+
+item.battlegear2:mace.wood.name=Wood Mace
+item.battlegear2:mace.stone.name=Stone Mace
+item.battlegear2:mace.iron.name=Iron Mace
+item.battlegear2:mace.diamond.name=Diamond Mace
+item.battlegear2:mace.gold.name=Gold Mace
+
+item.battlegear2:spear.wood.name=Wood Spear
+item.battlegear2:spear.stone.name=Stone Spear
+item.battlegear2:spear.iron.name=Iron Spear
+item.battlegear2:spear.diamond.name=Diamond Spear
+item.battlegear2:spear.gold.name=Gold Spear
+
+item.battlegear2:shield.wood.name=Wood Shield
+item.battlegear2:shield.hide.name=Hide Shield
+item.battlegear2:shield.iron.name=Iron Shield
+item.battlegear2:shield.diamond.name=Diamond Shield
+item.battlegear2:shield.gold.name=Gold Shield
+
+item.battlegear2:knights_armour.helmet.name=Knight's Helmet
+item.battlegear2:knights_armour.plate.name=Knight's Plate
+item.battlegear2:knights_armour.legs.name=Knight's Leggings
+item.battlegear2:knights_armour.boots.name=Knight's Boots
+
+item.battlegear2:cloak.name=Cloak
+
+enchantment.slow_fall=Slow Fall
+enchantment.super_jump=Super Jump
+
+tile.battlegear2:banner.name=Banner
+
+sigil.pattern.title=Pattern
+sigil.icon.title=Sigil
+sigil.icon_pos.title=Sigil Position
+sigil.colour1.title=Color 1
+sigil.colour2.title=Color 2
+sigil.icon_colour1.title=Sigil%nColor 1
+sigil.icon_colour2.title=Sigil%nColor 2
+sigil.banner.title=Banner
+sigil.helm.title=Helmet
+sigil.colour.select=Select
+
+
+attribute.weapon.penetrateArmor=Armor Penetration
+attribute.weapon.daze=Daze
+attribute.weapon.extendedReach=Reach
+attribute.weapon.attackSpeed=Attack Speed
+attribute.weapon.backstab=Backstab
+attribute.weapon.mountedBonus=Mounted Damage
+attribute.shield.block.time=s Block
+attribute.shield.arrow.count=Arrows
+attribute.quiver.arrow.empty=Empty
+attribute.quiver.arrow.count=Arrows

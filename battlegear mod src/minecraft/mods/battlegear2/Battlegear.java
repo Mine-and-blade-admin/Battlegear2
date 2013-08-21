@@ -1,7 +1,6 @@
 package mods.battlegear2;
 
-import cpw.mods.fml.common.registry.GameRegistry; 
-import mods.battlegear2.client.LanguageHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.packet.*;
@@ -23,7 +22,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
 
-@Mod(modid="battlegear2", name="Mine & Blade: Battlegear 2", version="Warcry 1.0 - pre 2")
+@Mod(modid="battlegear2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         channels = {
                 BattlegearAnimationPacket.packetName,
@@ -33,7 +32,8 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
                 BattlegearGUIPacket.packetName,
                 BattlegearShieldBlockPacket.packetName,
                 BattlegearShieldFlashPacket.packetName,
-                SpecialActionPacket.packetName},
+                SpecialActionPacket.packetName,
+                LoginPacket.packetName},
         packetHandler = BattlegearPacketHandeler.class)
 public class Battlegear {
 
@@ -48,10 +48,9 @@ public class Battlegear {
 
     public static EnumArmorMaterial knightArmourMaterial;
 
+    public static boolean battlegearEnabled = true;
 
-    public static boolean debug = false;
-
-
+    public static boolean debug = true;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -76,6 +75,7 @@ public class Battlegear {
         proxy.registerItemRenderers();
 
         NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
+        GameRegistry.registerPlayerTracker(new BgPlayerTracker());
     }
 
 }

@@ -32,6 +32,11 @@
 !ForumPost
 !ItemStats.md
 !LICENCE.txt
+!LICENCE
+!build.xml
+!bg-logo.png
+!mod.properties
+
 
 *~
 *.rej

@@ -9,6 +9,7 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -81,10 +82,10 @@ public class ItemQuiver extends Item implements IArrowContainer{
         	int arrow = stack.getTagCompound().getInteger(TAG);
         	if(arrow>0)
         	{
-        		list.add(arrow+StatCollector.translateToLocal(" attribute.name.quiver.arrow.count"));
+        		list.add(String.format("%s%s %s", EnumChatFormatting.DARK_GREEN,arrow,StatCollector.translateToLocal("attribute.quiver.arrow.count")));
         		return;
         	}
         }
-        list.add(StatCollector.translateToLocal("attribute.name.quiver.empty"));
+        list.add(String.format("%s %s", EnumChatFormatting.RED, StatCollector.translateToLocal("attribute.quiver.arrow.empty")));
 	}
 }
