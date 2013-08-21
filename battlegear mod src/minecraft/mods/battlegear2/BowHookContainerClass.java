@@ -22,6 +22,7 @@ import net.minecraftforge.event.entity.player.ArrowNockEvent;
  * Events registered with MinecraftForge event bus on default priority:
  * ArrowNockEvent and ArrowLooseEvent, to perform bow calculations for the quiver item
  */
+@Deprecated
 public class BowHookContainerClass {
 	@ForgeSubscribe
     public void onBowUse(ArrowNockEvent event){
