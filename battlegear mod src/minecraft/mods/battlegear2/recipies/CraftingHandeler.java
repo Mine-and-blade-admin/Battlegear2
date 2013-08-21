@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import mods.battlegear2.api.IArrowContainer;
 import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.items.ItemShield;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,7 +48,7 @@ public class CraftingHandeler implements ICraftingHandler{
 
             }
         }
-        else if(item.getItem() instanceof IArrowContainer && ((IArrowContainer)item.getItem()).isCraftableWithArrows(item)){
+        /*else if(item.getItem() instanceof IArrowContainer && ((IArrowContainer)item.getItem()).isCraftableWithArrows(item)){
         	ItemStack quiver = null;
         	boolean hasArrow = false;
         	List<ItemStack> arrows = new ArrayList();
@@ -88,8 +87,7 @@ public class CraftingHandeler implements ICraftingHandler{
         			craftMatrix.setInventorySlotContents(index, null);
         		}
         	}
-        }
-        //TODO: may need to fix this, it is mainly to see if this will work
+        }*/
         else if(item.getItem() instanceof IArrowContainer2){
             ItemStack quiver = null;
             ItemStack arrowStack = null;
@@ -109,18 +107,44 @@ public class CraftingHandeler implements ICraftingHandler{
 
             if(quiver == null)
                 return;
+            List<ItemStack> arrows = new ArrayList();
             for(int i = 0; i < craftMatrix.getSizeInventory(); i++){
                 ItemStack stack = craftMatrix.getStackInSlot(i);
                 if(stack != null && stack != quiver){
                     if(((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack)){
-                        ItemStack rejectArrows = ((IArrowContainer2)quiver.getItem()).addArrows(quiver, stack);
+                    	arrows.add(stack);
+                        /*ItemStack rejectArrows = ((IArrowContainer2)quiver.getItem()).addArrows(quiver, stack);
                         player.inventory.addItemStackToInventory(rejectArrows);
-                        craftMatrix.setInventorySlotContents(i, null);
+                        craftMatrix.setInventorySlotContents(i, null);*/
                     }
+                    else 
+                    	return;
                 }
             }
-
-
+            if(arrows.isEmpty())
+            {
+            	//remove arrows ?
+            }
+            else
+            {
+            	Iterator itr = arrows.iterator();
+        		ItemStack drop = null;
+        		while(itr.hasNext() && drop==null){
+        			ItemStack temp = (ItemStack) itr.next();
+        			drop = ((IArrowContainer2)quiver.getItem()).addArrows(quiver, temp);
+        			if(drop==null)
+        				itr.remove();
+        			else
+        				temp.stackSize = drop.stackSize;
+        		}
+        		itr = arrows.iterator();
+        		while(itr.hasNext()){
+        			player.inventory.addItemStackToInventory((ItemStack)itr.next());
+        		}
+        		for(int index=0;index<craftMatrix.getSizeInventory();index++){
+        			craftMatrix.setInventorySlotContents(index, null);
+        		}
+            }
         }
     }
 

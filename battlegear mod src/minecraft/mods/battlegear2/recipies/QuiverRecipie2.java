@@ -1,10 +1,8 @@
 package mods.battlegear2.recipies;
 
-import mods.battlegear2.api.IArrowContainer;
 import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
@@ -13,28 +11,34 @@ public class QuiverRecipie2 implements IRecipe {
 
     @Override
     public boolean matches(InventoryCrafting inventorycrafting, World world) {
-        boolean hasQuiver = false;
-        boolean hasArrow = false;
+        //boolean hasArrow = false;
+        ItemStack quiver = null;
         for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
             ItemStack stack = inventorycrafting.getStackInSlot(i);
             if(stack!=null)
             {
                 if(stack.getItem() instanceof IArrowContainer2)
                 {
-                    if(hasQuiver)
+                    if(quiver!=null)
                         return false;
-                    hasQuiver= true;
-                }
-                else if(stack.itemID == Item.arrow.itemID){
-                    if(hasArrow)
-                        return false;
-                    hasArrow = true;
+                    quiver = stack.copy();
                 }
             }
         }
-
-
-        return hasArrow && hasQuiver;
+        if(quiver!=null){
+            for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
+                ItemStack stack = inventorycrafting.getStackInSlot(i);
+                if(stack!=null)
+                {
+                    if(!((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -56,9 +60,9 @@ public class QuiverRecipie2 implements IRecipe {
                 ItemStack stack = inventorycrafting.getStackInSlot(i);
                 if(stack!=null)
                 {
-                    if(stack.itemID == Item.arrow.itemID)
+                    if(((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack))
                     {
-                        ((IArrowContainer2)quiver.getItem()).addArrows(quiver, stack);
+                        ((IArrowContainer2)quiver.getItem()).addArrows(quiver, stack.copy());
                     }
                 }
             }
