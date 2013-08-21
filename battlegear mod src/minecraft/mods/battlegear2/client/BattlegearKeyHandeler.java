@@ -49,70 +49,71 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
     public void keyDown(EnumSet<TickType> types, KeyBinding kb,
                         boolean tickEnd, boolean isRepeat) {
 
+        if(Battlegear.battlegearEnabled){
+            Minecraft mc = FMLClientHandler.instance().getClient();
 
-        Minecraft mc = FMLClientHandler.instance().getClient();
+            //null checks to prevent any crash outside the world (and to make sure we have no screen open)
+            if (mc != null && mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
 
-        //null checks to prevent any crash outside the world (and to make sure we have no screen open)
-        if (mc != null && mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
-
-            EntityClientPlayerMP player = FMLClientHandler.instance().getClient().thePlayer;
-
-
-            if (kb.keyCode == special.keyCode && player.isBattlemode() && player.specialActionTimer == 0){
-
-                ItemStack main = player.getCurrentEquippedItem();
-                ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+                EntityClientPlayerMP player = FMLClientHandler.instance().getClient().thePlayer;
 
 
-                if(offhand != null && offhand.getItem() instanceof IShield){
+                if (kb.keyCode == special.keyCode && player.isBattlemode() && player.specialActionTimer == 0){
 
-                    //TODO: Enchantments?
-                    float shieldBashPenalty = 0.33F;
+                    ItemStack main = player.getCurrentEquippedItem();
+                    ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 
-                    if(BattlegearClientTickHandeler.blockBar >= shieldBashPenalty){
-                        Packet250CustomPayload p = BattlegearAnimationPacket.generatePacket(EnumBGAnimations.SpecialAction, player.username);
-                        PacketDispatcher.sendPacketToServer(p);
-                        player.specialActionTimer = ((IShield)offhand.getItem()).getBashTimer(offhand);
 
-                        BattlegearClientTickHandeler.blockBar = BattlegearClientTickHandeler.blockBar - shieldBashPenalty;
+                    if(offhand != null && offhand.getItem() instanceof IShield){
+
+                        //TODO: Enchantments?
+                        float shieldBashPenalty = 0.33F;
+
+                        if(BattlegearClientTickHandeler.blockBar >= shieldBashPenalty){
+                            Packet250CustomPayload p = BattlegearAnimationPacket.generatePacket(EnumBGAnimations.SpecialAction, player.username);
+                            PacketDispatcher.sendPacketToServer(p);
+                            player.specialActionTimer = ((IShield)offhand.getItem()).getBashTimer(offhand);
+
+                            BattlegearClientTickHandeler.blockBar = BattlegearClientTickHandeler.blockBar - shieldBashPenalty;
+                        }
+
                     }
 
+
+                }else if (kb.keyCode == battleInv.keyCode) {
+
+                    //send packet to open container on server
+                    PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.equipID));
+                    //Also open on client
+                    player.openGui(
+                            Battlegear.INSTANCE, BattlegearGUIHandeler.equipID, mc.theWorld,
+                            (int) player.posX, (int) player.posY, (int) player.posZ);
+
+
+                } else
+                if (kb.keyCode == drawWeapons.keyCode && tickEnd) {
+
+                    InventoryPlayer playerInventory = player.inventory;
+                    if (player.isBattlemode()) {
+                        //i'd use int bounds check (0-8) for the item, just in case
+                        previousBattlemode = playerInventory.currentItem;
+                        playerInventory.currentItem = previousNormal;
+
+                    } else {
+                        //i'd use int bounds check (0-8) for the item, just in case
+                        previousNormal = playerInventory.currentItem;
+                        playerInventory.currentItem = previousBattlemode;
+
+                    }
+                    mc.playerController.updateController();
+                /*else if (kb.keyCode == openSigilEditor.keyCode) {
+                    //send packet to open container on server
+                    PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.sigilEditor));
+                    player.openGui(
+                            BattleGear.instance, BattlegearGUIHandeler.sigilEditor, mc.theWorld,
+                            (int) player.posX, (int) player.posY, (int) player.posZ);
+                }*/
                 }
-
-
-            }else if (kb.keyCode == battleInv.keyCode) {
-
-                //send packet to open container on server
-                PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.equipID));
-                //Also open on client
-                player.openGui(
-                        Battlegear.INSTANCE, BattlegearGUIHandeler.equipID, mc.theWorld,
-                        (int) player.posX, (int) player.posY, (int) player.posZ);
-
-
-            } else
-            if (kb.keyCode == drawWeapons.keyCode && tickEnd) {
-
-                InventoryPlayer playerInventory = player.inventory;
-                if (player.isBattlemode()) {
-                    //i'd use int bounds check (0-8) for the item, just in case
-                    previousBattlemode = playerInventory.currentItem;
-                    playerInventory.currentItem = previousNormal;
-
-                } else {
-                    //i'd use int bounds check (0-8) for the item, just in case
-                    previousNormal = playerInventory.currentItem;
-                    playerInventory.currentItem = previousBattlemode;
-
-                }
-                mc.playerController.updateController();
-            /*else if (kb.keyCode == openSigilEditor.keyCode) {
-                //send packet to open container on server
-                PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.sigilEditor));
-                player.openGui(
-                        BattleGear.instance, BattlegearGUIHandeler.sigilEditor, mc.theWorld,
-                        (int) player.posX, (int) player.posY, (int) player.posZ);
-            }*/
             }
         }
     }

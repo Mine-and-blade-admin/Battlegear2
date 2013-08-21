@@ -1,0 +1,84 @@
+<project>
+    <property name="dist.dir" value="battlegear dist"/>
+    <property name="mcp.dir" value="mcp"/>
+    <property name="reob.dir" value="${mcp.dir}/reobf/minecraft"/>
+    <property name="asset.dir" value="${mcp.dir}/src/minecraft"/>
+    <loadproperties srcFile="mod.properties"/>
+
+    <condition property="is_windows">
+        <os family="windows"/>
+    </condition>
+
+    <target name="clean">
+        <delete dir="dist"/>
+    </target>
+
+
+    <target name="compile">
+        <antcall target="compile-unix"/>
+        <antcall target="compile-win"/>
+    </target>
+
+    <target name="compile-unix" unless="is_windows">
+        <exec dir="${mcp.dir}" executable="sh">
+            <arg line="recompile.sh"/>
+        </exec>
+    </target>
+
+    <target name="compile-win" if="is_windows">
+        <exec dir="${mcp.dir}" executable="cmd">
+            <arg line="/c recompile.bat"/>
+        </exec>
+    </target>
+
+
+    <target name="build">
+        <antcall target="reob-unix"/>
+        <antcall target="reob-win"/>
+
+        <echo file="mcmod.info" append="false">[
+            {
+            "modid": "${mod.id}",
+            "name": "${mod.name}",
+            "description": "${mod.descrip}",
+            "version": "${mod.version}",
+            "mcversion": "${mcversion}",
+            "logoFile": "${logoFile}",
+            "url": "${url}",
+            "updateUrl": "${updateUrl}",
+            "authors": ${authors},
+            "credits": "${credits}",
+            "parent": "${parent}",
+            "screenshots": ${screenshots},
+            "dependencies": ${dependencies}
+            }
+            ]
+        </echo>
+        <jar destfile="${dist.dir}/${mcversion}-${dist.name}-${mod.version}.jar">
+            <fileset dir="${reob.dir}" includes="mods/**"/>
+            <fileset dir="${asset.dir}" includes="assets/**"/>
+            <fileset dir="." includes="mcmod.info"/>
+            <fileset dir="." includes="LICENCE"/>
+            <fileset dir="." includes="README.md"/>
+            <fileset dir="." includes="bg-logo.png"/>
+            <manifest>
+                <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="FMLCorePlugin" value="${loadingPlugin}"/>
+                <attribute name="FMLCorePluginContainsFMLMod" value="${containsMod}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="reob-unix" unless="is_windows">
+        <exec dir="${mcp.dir}" executable="sh">
+            <arg line="reobfuscate_srg.sh"/>
+        </exec>
+    </target>
+
+    <target name="reob-win" if="is_windows">
+        <exec dir="${mcp.dir}" executable="cmd">
+            <arg line="/c reobfuscate_srg.bat"/>
+        </exec>
+    </target>
+
+</project>

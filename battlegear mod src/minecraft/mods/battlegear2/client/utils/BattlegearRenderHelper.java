@@ -23,6 +23,8 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.util.MathHelper;
@@ -37,8 +39,17 @@ public class BattlegearRenderHelper {
 
     private static final ItemStack dummyStack = new ItemStack(Block.lavaMoving);
 
+    private static EntityLivingBase dummyEntity;
+
 
     public static void renderItemInFirstPerson(float frame, Minecraft mc, ItemRenderer itemRenderer, ItemStack itemToRender) {
+
+        if(dummyEntity == null){
+            dummyEntity = new EntityChicken(mc.theWorld);
+        }
+        if(dummyEntity.worldObj != mc.theWorld){
+            dummyEntity = new EntityChicken(mc.theWorld);
+        }
 
         if (itemRenderer.offHandItemToRender != dummyStack &&
                 (itemToRender == null || BattlegearUtils.isOffHand(itemToRender.itemID))) {
@@ -580,7 +591,7 @@ public class BattlegearRenderHelper {
                     float var10 = (float) (var26 >> 8 & 255) / 255.0F;
                     float var11 = (float) (var26 & 255) / 255.0F;
                     GL11.glColor4f(var28, var10, var11, 1.0F);
-                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, mainhandSheathed, var27);
+                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, var27);
                 }
             } else {
                 int var27 = mainhandSheathed.getItem().getColorFromItemStack(mainhandSheathed, 0);
@@ -588,7 +599,7 @@ public class BattlegearRenderHelper {
                 float var28 = (float) (var27 >> 8 & 255) / 255.0F;
                 float var10 = (float) (var27 & 255) / 255.0F;
                 GL11.glColor4f(var8, var28, var10, 1.0F);
-                RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, mainhandSheathed, 0);
+                RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, 0);
             }
 
             GL11.glPopMatrix();
@@ -646,7 +657,7 @@ public class BattlegearRenderHelper {
                     float var10 = (float) (var26 >> 8 & 255) / 255.0F;
                     float var11 = (float) (var26 & 255) / 255.0F;
                     GL11.glColor4f(var28, var10, var11, 1.0F);
-                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, offhandSheathed, var27);
+                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, var27);
                 }
             } else {
                 int var27 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, 0);
@@ -654,7 +665,7 @@ public class BattlegearRenderHelper {
                 float var28 = (float) (var27 >> 8 & 255) / 255.0F;
                 float var10 = (float) (var27 & 255) / 255.0F;
                 GL11.glColor4f(var8, var28, var10, 1.0F);
-                RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, offhandSheathed, 0);
+                RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, 0);
             }
 
             GL11.glPopMatrix();

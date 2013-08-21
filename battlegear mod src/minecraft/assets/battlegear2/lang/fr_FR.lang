@@ -1,0 +1,58 @@
+name.title=M&B Battlegear 2
+
+item.battlegear2:heraldric.name=Blason
+item.battlegear2:chain.name=Chaine
+item.battlegear2:quiver.name=Carquois
+
+item.battlegear2:dagger.wood.name=Dague en bois
+item.battlegear2:dagger.stone.name=Dague en pierre
+item.battlegear2:dagger.iron.name=Dague en fer
+item.battlegear2:dagger.diamond.name=Dague en diamant
+item.battlegear2:dagger.gold.name=Dague en or
+
+item.battlegear2:waraxe.wood.name=Hache de guerre en bois
+item.battlegear2:waraxe.stone.name=Hache de guerre en pierre
+item.battlegear2:waraxe.iron.name=Hache de guerre en fer
+item.battlegear2:waraxe.diamond.name=Hache de guerre en diamant
+item.battlegear2:waraxe.gold.name=Hache de guerre en or
+
+item.battlegear2:mace.wood.name=Massue en bois
+item.battlegear2:mace.stone.name=Massue en bois
+item.battlegear2:mace.iron.name=Massue en bois
+item.battlegear2:mace.diamond.name=Massue en bois
+item.battlegear2:mace.gold.name=Massue en or
+
+item.battlegear2:spear.wood.name=Lance en bois
+item.battlegear2:spear.stone.name=Lance en pierre
+item.battlegear2:spear.iron.name=Lance en fer
+item.battlegear2:spear.diamond.name=Lance en diamant
+item.battlegear2:spear.gold.name=Lance en or
+
+item.battlegear2:shield.wood.name=Bouclier de bois
+item.battlegear2:shield.hide.name=Bouclier en peau
+item.battlegear2:shield.iron.name=Bouclier de fer
+item.battlegear2:shield.diamond.name=Bouclier de diamant
+item.battlegear2:shield.gold.name=Bouclier en or
+
+item.battlegear2:knights_armour.helmet.name=Heaume de chevalier
+item.battlegear2:knights_armour.plate.name=Cuirasse de chevalier
+item.battlegear2:knights_armour.legs.name=Jambiere de chevalier
+item.battlegear2:knights_armour.boots.name=Bottes de chevalier
+
+tile.battlegear2:banner.name=Etendard
+
+sigil.pattern.title=Motif
+sigil.icon.title=Symbole
+sigil.icon_pos.title=Position du symbole
+sigil.colour1.title=Couleur 1
+sigil.colour2.title=Couleur 2
+sigil.icon_colour1.title=Symbole%nCouleur 1
+sigil.icon_colour2.title=Symbole%nCouleur 2
+sigil.banner.title=Banniere
+sigil.helm.title=Heaume
+sigil.colour.select=Selection
+
+tooltip.attack=Degats
+attribute.weapon.penetrateArmor=Penetration d'armure
+attribute.weapon.extendedReach=Allonge
+attribute.weapon.daze=Etourdissement

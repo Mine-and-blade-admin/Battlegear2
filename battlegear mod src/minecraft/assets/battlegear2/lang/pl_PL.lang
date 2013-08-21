@@ -1,0 +1,47 @@
+
+item.battlegear2:heraldric.name=Ikona herbu
+item.battlegear2:chain.name=Lancuch
+item.battlegear2:quiver.name=Kolczan
+
+item.battlegear2:dagger.wood.name=Drewniany Sztylet
+item.battlegear2:dagger.stone.name=Kamienny Sztylet
+item.battlegear2:dagger.iron.name=Zelazny Sztylet
+item.battlegear2:dagger.diamond.name=Diamentowy Sztylet
+item.battlegear2:dagger.gold.name=Zloty Sztylet
+
+item.battlegear2:waraxe.wood.name=Drewaniany Topor Bojowy
+item.battlegear2:waraxe.stone.name=Kamienny Topor Bojowy
+item.battlegear2:waraxe.iron.name=Zelazny Topor Bojowy
+item.battlegear2:waraxe.diamond.name=Diamentowy Topor Bojowy
+item.battlegear2:waraxe.gold.name=Zloty Topor Bojowy
+
+item.battlegear2:mace.wood.name=Drewniana Maczeta
+item.battlegear2:mace.stone.name=Kamienna Maczeta
+item.battlegear2:mace.iron.name=Zelazna Maczeta
+item.battlegear2:mace.diamond.name=Diametnowa Maczeta
+item.battlegear2:mace.gold.name=Zlota Maczeta
+
+item.battlegear2:spear.wood.name=Drewniana Wlocznia
+item.battlegear2:spear.stone.name=Kamienna Wlocznia
+item.battlegear2:spear.iron.name=Zelazna Wlocznia
+item.battlegear2:spear.diamond.name=Diamentowa Wlocznia
+item.battlegear2:spear.gold.name=Zlota Wlocznia
+
+item.battlegear2:shield.wood.name=Drewniana Tarcza
+item.battlegear2:shield.hide.name=Okragla Tarcza
+item.battlegear2:shield.iron.name=Zelazna Tarcza
+item.battlegear2:shield.diamond.name=Diamentowa Tarcza
+item.battlegear2:shield.gold.name=Zlota Tarcza
+
+item.battlegear2:knights_armour.helmet.name=Ryserski Helm
+item.battlegear2:knights_armour.plate.name=Rycerski Napiersnik
+item.battlegear2:knights_armour.legs.name=Ryserskie Getry
+item.battlegear2:knights_armour.boots.name=Rycerskie Buty
+
+sigil.pattern.title=Model
+sigil.icon.title=Pieczec
+sigil.icon_pos.title=Miejsce Pieczeci
+sigil.colour1.title=Kolor 1
+sigil.colour2.title=Kolor 2
+sigil.icon_colour1.title=Kolor%nPieczeci 1
+sigil.icon_colour2.title=Kolor%nPieczeci 2

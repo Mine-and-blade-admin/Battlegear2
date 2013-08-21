@@ -1,6 +1,7 @@
 package mods.battlegear2.client.gui;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -35,60 +36,63 @@ public class BattlegearInGameGUI extends Gui {
     }
 
     public void renderGameOverlay(float frame) {
-        ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
-        int width = scaledresolution.getScaledWidth();
-        int height = scaledresolution.getScaledHeight();
 
-        if (!this.mc.playerController.enableEverythingIsScrewedUpMode()) {
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        if(Battlegear.battlegearEnabled){
+            ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
+            int width = scaledresolution.getScaledWidth();
+            int height = scaledresolution.getScaledHeight();
 
-            this.mc.renderEngine.func_110577_a(resourceLocation);
-            InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
-            this.zLevel = -90.0F;
+            if (!this.mc.playerController.enableEverythingIsScrewedUpMode()) {
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+                this.mc.renderEngine.func_110577_a(resourceLocation);
+                InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
+                this.zLevel = -90.0F;
 
-            drawTexturedModalRect(width / 2 + 91 + 15 + 15, height - 22, 0, 0, 31, 22);
-            drawTexturedModalRect(width / 2 + 91 + 15 + 31 + 15, height - 22, 151, 0, 31, 22);
+                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+                GL11.glEnable(GL11.GL_BLEND);
+                GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            drawTexturedModalRect(width / 2 - 91 - 15 - 62 - 15, height - 22, 0, 0, 31, 22);
-            drawTexturedModalRect(width / 2 - 91 - 15 - 31 - 15, height - 22, 151, 0, 31, 22);
+                drawTexturedModalRect(width / 2 + 91 + 15 + 15, height - 22, 0, 0, 31, 22);
+                drawTexturedModalRect(width / 2 + 91 + 15 + 31 + 15, height - 22, 151, 0, 31, 22);
+
+                drawTexturedModalRect(width / 2 - 91 - 15 - 62 - 15, height - 22, 0, 0, 31, 22);
+                drawTexturedModalRect(width / 2 - 91 - 15 - 31 - 15, height - 22, 151, 0, 31, 22);
 
 
-            if (mc.thePlayer.isBattlemode()) {
+                if (mc.thePlayer.isBattlemode()) {
 
-                this.drawTexturedModalRect(width / 2 - 169 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20 - 15,
-                        height - 22 - 1, 0, 22, 24, 22);
+                    this.drawTexturedModalRect(width / 2 - 169 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20 - 15,
+                            height - 22 - 1, 0, 22, 24, 22);
 
-                this.drawTexturedModalRect(width / 2 + 105 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20 + 15,
-                        height - 22 - 1, 0, 22, 24, 22);
+                    this.drawTexturedModalRect(width / 2 + 105 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20 + 15,
+                            height - 22 - 1, 0, 22, 24, 22);
+                }
+
+                GL11.glDisable(GL11.GL_BLEND);
+                GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+                RenderHelper.enableGUIStandardItemLighting();
+
+                for (int i = 0; i < InventoryPlayerBattle.WEAPON_SETS; ++i) {
+                    int x = width / 2 - 91 - 16 - 58 + (i) * 20 - 15;
+                    int y = height - 19;
+
+                    this.renderInventorySlot(i + InventoryPlayerBattle.OFFSET, x + 105 + 169+ 30, y, frame);
+                    this.renderInventorySlot(i + InventoryPlayerBattle.OFFSET + InventoryPlayerBattle.WEAPON_SETS, x, y, frame);
+
+                }
+
+                RenderHelper.disableStandardItemLighting();
+                GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+
             }
 
-            GL11.glDisable(GL11.GL_BLEND);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-            RenderHelper.enableGUIStandardItemLighting();
+            if(mc.thePlayer.isBattlemode() &&
+                    mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3) != null &&
+                    mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3).getItem() instanceof IShield){
 
-            for (int i = 0; i < InventoryPlayerBattle.WEAPON_SETS; ++i) {
-                int x = width / 2 - 91 - 16 - 58 + (i) * 20 - 15;
-                int y = height - 19;
-
-                this.renderInventorySlot(i + InventoryPlayerBattle.OFFSET, x + 105 + 169+ 30, y, frame);
-                this.renderInventorySlot(i + InventoryPlayerBattle.OFFSET + InventoryPlayerBattle.WEAPON_SETS, x, y, frame);
-
+                renderBlockBar(width, height);
             }
-
-            RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-
-        }
-
-        if(mc.thePlayer.isBattlemode() &&
-                mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3) != null &&
-                mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3).getItem() instanceof IShield){
-
-            renderBlockBar(width, height);
         }
     }
 

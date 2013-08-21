@@ -1,0 +1,53 @@
+
+item.battlegear2:heraldric.name=Flag
+item.battlegear2:chain.name=Chain
+item.battlegear2:quiver.name=Quiver
+
+item.battlegear2:dagger.wood.name=Timber Dirk
+item.battlegear2:dagger.stone.name=Dirk o' Rock
+item.battlegear2:dagger.iron.name=Dirk o' Steel
+item.battlegear2:dagger.diamond.name=Bejewelled Dirk
+item.battlegear2:dagger.gold.name=Dirk o' gold
+
+item.battlegear2:waraxe.wood.name=Timber Boardin Axe
+item.battlegear2:waraxe.stone.name=Boardin Axe o' Rock
+item.battlegear2:waraxe.iron.name=Boardin Axe o' Steel
+item.battlegear2:waraxe.diamond.name=Bejewelled Boardin Axe
+item.battlegear2:waraxe.gold.name=Boardin Axe o' Gold
+
+item.battlegear2:mace.wood.name=Timber Club
+item.battlegear2:mace.stone.name=Club o' Rock
+item.battlegear2:mace.iron.name=Club o' Steel
+item.battlegear2:mace.diamond.name=Bejewelled Club
+item.battlegear2:mace.gold.name=Club o' Gold
+
+item.battlegear2:spear.wood.name=Timber Pointed Stick
+item.battlegear2:spear.stone.name=Pointed Stick o' Rock
+item.battlegear2:spear.iron.name=Pointed Stick o' Steel
+item.battlegear2:spear.diamond.name=Bejewelled Pointed Stick
+item.battlegear2:spear.gold.name=Pointed Stick o' Gold
+
+item.battlegear2:shield.wood.name=Timber Buckler
+item.battlegear2:shield.hide.name=Hide Buckler
+item.battlegear2:shield.iron.name=Buckler o' Steel
+item.battlegear2:shield.diamond.name=Bejewlled Buckler
+item.battlegear2:shield.gold.name=Buckler o' Gold
+
+item.battlegear2:knights_armour.helmet.name=Captain's Hat
+item.battlegear2:knights_armour.plate.name=Captain's Coat
+item.battlegear2:knights_armour.legs.name=Captain's Britches
+item.battlegear2:knights_armour.boots.name=Captain's Boots
+
+sigil.pattern.title=Pattern
+sigil.icon.title=Sigil
+sigil.icon_pos.title=Sigil Position
+sigil.colour1.title=Color 1
+sigil.colour2.title=Color 2
+sigil.icon_colour1.title=Sigil%nColor 1
+sigil.icon_colour2.title=Sigil%nColor 2
+
+attribute.weapon.penetrateArmor=Arrrmor Penetration
+attribute.shield.arrow.count=Arrrrows
+attribute.quiver.arrow.empty=No Arrrrows
+attribute.quiver.arrow.count=Arrrrows
+
