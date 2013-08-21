@@ -125,15 +125,19 @@ public class ClientProxy extends CommonProxy {
                 mop = getMouseOver(1, 4);
             }
 
+            Packet250CustomPayload p;
             if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase){
-                Packet250CustomPayload p = SpecialActionPacket.generatePacket(entityPlayer, mainhand, offhand, mop.entityHit);
+                p = SpecialActionPacket.generatePacket(entityPlayer, mainhand, offhand, mop.entityHit);
                 PacketDispatcher.sendPacketToServer(p);
 
                 if(mop.entityHit instanceof EntityPlayer){
                     PacketDispatcher.sendPacketToPlayer(p, (Player)mop.entityHit);
                 }
 
+            }else{
+                p = SpecialActionPacket.generatePacket(entityPlayer, mainhand, offhand, null);
             }
+            PacketDispatcher.sendPacketToServer(p);
         }
 
     }

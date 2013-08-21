@@ -23,6 +23,9 @@ public class ItemQuiver extends Item implements IArrowContainer{
 		this.setMaxStackSize(1);
 	}
 
+
+
+
 	@Override
 	public boolean hasArrowFor(ItemStack stack, ItemStack bow, EntityPlayer player) {
 		if(stack.hasTagCompound())

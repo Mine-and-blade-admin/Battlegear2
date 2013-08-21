@@ -2,22 +2,20 @@ package mods.battlegear2.client.gui;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.BowHookContainerClass2;
+import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
-import mods.battlegear2.items.ItemShield;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -93,6 +91,51 @@ public class BattlegearInGameGUI extends Gui {
 
                 renderBlockBar(width, height);
             }
+
+            ItemStack mainhand = mc.thePlayer.getCurrentEquippedItem();
+            if(mainhand != null){
+                ItemStack quiver = BowHookContainerClass2.getArrowContainer(mainhand, mc.thePlayer);
+                if(quiver != null){
+                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+
+                    this.mc.renderEngine.func_110577_a(resourceLocation);
+                    InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
+                    this.zLevel = -90.0F;
+
+                    GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+                    GL11.glEnable(GL11.GL_BLEND);
+                    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+
+                    int maxSlots = ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver);
+
+                    drawTexturedModalRect(width / 2 -(1 + (maxSlots*10)), 0, 0, 0, 1+(maxSlots*10), 22);
+                    drawTexturedModalRect(width / 2 , 0, 182-(1+(maxSlots*10)), 0, (1+(maxSlots*10)), 22);
+
+                    int selectedSlot =  ((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver);
+
+                    this.drawTexturedModalRect(width / 2 -(2 + (maxSlots*10)) + 20*selectedSlot, -1, 0, 22, 24, 22);
+
+
+                    GL11.glDisable(GL11.GL_BLEND);
+                    GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+                    RenderHelper.enableGUIStandardItemLighting();
+
+                    for (int i = 0; i < maxSlots; ++i) {
+                        int x = width / 2 -((maxSlots*10)-1) + i * 20;
+                        int y = 2;
+
+                        renderStackAt(x, y, ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, i), frame);
+                    }
+
+                    RenderHelper.disableStandardItemLighting();
+                    GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+
+
+
+
+
+                }
+            }
         }
     }
 
@@ -131,28 +174,33 @@ public class BattlegearInGameGUI extends Gui {
 
     }
 
-    private void renderInventorySlot(int par1, int par2, int par3, float par4) {
-        ItemStack itemstack = this.mc.thePlayer.inventory.getStackInSlot(par1);
+    private void renderStackAt(int x, int y, ItemStack itemstack, float frame){
 
         if (itemstack != null) {
-            float f1 = (float) itemstack.animationsToGo - par4;
+            float f1 = (float) itemstack.animationsToGo - frame;
 
             if (f1 > 0.0F) {
                 GL11.glPushMatrix();
                 float f2 = 1.0F + f1 / 5.0F;
-                GL11.glTranslatef((float) (par2 + 8), (float) (par3 + 12), 0.0F);
+                GL11.glTranslatef((float) (x + 8), (float) (y + 12), 0.0F);
                 GL11.glScalef(1.0F / f2, (f2 + 1.0F) / 2.0F, 1.0F);
-                GL11.glTranslatef((float) (-(par2 + 8)), (float) (-(par3 + 12)), 0.0F);
+                GL11.glTranslatef((float) (-(x + 8)), (float) (-(y + 12)), 0.0F);
             }
 
-            itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, itemstack, par2, par3);
+            itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, itemstack, x, y);
 
             if (f1 > 0.0F) {
                 GL11.glPopMatrix();
             }
 
-            itemRenderer.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, itemstack, par2, par3);
+            itemRenderer.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, itemstack, x, y);
         }
+
+    }
+
+    private void renderInventorySlot(int par1, int par2, int par3, float par4) {
+        ItemStack itemstack = this.mc.thePlayer.inventory.getStackInSlot(par1);
+        renderStackAt(par2, par3, itemstack, par4);
     }
 
 }

@@ -4,6 +4,7 @@ import mods.battlegear2.Battlegear;
 import mods.battlegear2.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.items.*;
 import mods.battlegear2.recipies.QuiverRecipie;
+import mods.battlegear2.recipies.QuiverRecipie2;
 import mods.battlegear2.recipies.ShieldRemoveArrowRecipie;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -50,7 +51,7 @@ public class BattlegearConfig {
         	
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
 
-        quiver = new ItemQuiver(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
+        quiver = new ItemQuiver2(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
         quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).func_111206_d("battlegear2:"+itemNames[2]).setCreativeTab(customTab);
         
         for(int i = 0; i < 5; i++){
@@ -97,7 +98,8 @@ public class BattlegearConfig {
         //Quiver recipes :
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(quiver), new Object[]
                 {"X X", "X X","XXX",Character.valueOf('X'), Item.leather}));
-        GameRegistry.addRecipe(new QuiverRecipie());
+        //GameRegistry.addRecipe(new QuiverRecipie());
+        GameRegistry.addRecipe(new QuiverRecipie2());
 		//Chain armor recipes
 		GameRegistry.addRecipe(new ItemStack(Item.helmetChain),  new Object[]
 				{"LLL","L L",Character.valueOf('L'),chain});
