@@ -6,6 +6,8 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.BowHookContainerClass2;
+import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -30,21 +32,30 @@ public class SpecialActionPacket extends AbstractMBPacket{
         System.out.println("Process Special");
         DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
         try {
+            EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
+
             Entity targetHit = null;
             if(inputStream.readBoolean()){
                 targetHit = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
             }else{
-                targetHit = player.worldObj.getEntityByID(inputStream.readInt());
+                try{
+                    targetHit = player.worldObj.getEntityByID(inputStream.readInt());
+                }catch (EOFException e){}
             }
 
-            System.out.println(targetHit);
-            EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
 
-            if(targetHit instanceof EntityLivingBase){
+
+            ItemStack mainhand = targetPlayer.getCurrentEquippedItem();
+            ItemStack offhand = ((InventoryPlayerBattle)targetPlayer.inventory).getCurrentOffhandWeapon();
+
+            ItemStack quiver = BowHookContainerClass2.getArrowContainer(mainhand, player);
+
+            if(quiver != null){
+                ((IArrowContainer2)quiver.getItem()).setSelectedSlot(quiver,
+                        (((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver)+1) %
+                                ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver));
+            } else if(targetHit != null && targetHit instanceof EntityLivingBase){
                 System.out.println("is Living");
-
-                ItemStack mainhand = targetPlayer.getCurrentEquippedItem();
-                ItemStack offhand = ((InventoryPlayerBattle)targetPlayer.inventory).getCurrentOffhandWeapon();
 
                 if(offhand != null && offhand.getItem() instanceof IShield){
                     System.out.println("Bash");
@@ -95,14 +106,17 @@ public class SpecialActionPacket extends AbstractMBPacket{
 
 
         try {
+            Packet.writeString(player.username, outputStream);
+
             outputStream.writeBoolean(isPlayer);
             if(isPlayer){
                 Packet.writeString(((EntityPlayer) entityHit).username, outputStream);
             }else{
-                outputStream.writeInt(entityHit.entityId);
+                if(entityHit != null)
+                    outputStream.writeInt(entityHit.entityId);
             }
 
-            Packet.writeString(player.username, outputStream);
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }

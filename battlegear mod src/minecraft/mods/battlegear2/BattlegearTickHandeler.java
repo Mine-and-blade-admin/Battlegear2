@@ -4,6 +4,8 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.relauncher.Side;
+import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.api.IExtendedReachWeapon;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -96,9 +98,10 @@ public class BattlegearTickHandeler implements ITickHandler {
                 ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
                 if(offhand != null && offhand.getItem() instanceof IShield){
                     targetTime = ((IShield) offhand.getItem()).getBashTimer(offhand) / 2;
+                }else if (offhand != null && offhand.getItem() instanceof IArrowContainer2){
+                    targetTime = 0;
                 }
-
-                if(entityPlayer.specialActionTimer == targetTime){
+                if(entityPlayer.specialActionTimer == targetTime && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
                     Battlegear.proxy.doSpecialAction(entityPlayer);
                 }
 
