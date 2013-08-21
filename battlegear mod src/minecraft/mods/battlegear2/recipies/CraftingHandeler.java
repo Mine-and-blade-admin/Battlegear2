@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import mods.battlegear2.api.IArrowContainer;
+import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.items.ItemShield;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -87,6 +88,39 @@ public class CraftingHandeler implements ICraftingHandler{
         			craftMatrix.setInventorySlotContents(index, null);
         		}
         	}
+        }
+        //TODO: may need to fix this, it is mainly to see if this will work
+        else if(item.getItem() instanceof IArrowContainer2){
+            ItemStack quiver = null;
+            ItemStack arrowStack = null;
+
+            for(int i = 0; i < craftMatrix.getSizeInventory(); i++){
+                ItemStack stack = craftMatrix.getStackInSlot(i);
+                if(stack != null){
+                    if(stack.getItem() instanceof IArrowContainer2){
+                        if(quiver == null){
+                            quiver = stack;
+                        }
+                        else
+                            return;
+                    }
+                }
+            }
+
+            if(quiver == null)
+                return;
+            for(int i = 0; i < craftMatrix.getSizeInventory(); i++){
+                ItemStack stack = craftMatrix.getStackInSlot(i);
+                if(stack != null && stack != quiver){
+                    if(((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack)){
+                        ItemStack rejectArrows = ((IArrowContainer2)quiver.getItem()).addArrows(quiver, stack);
+                        player.inventory.addItemStackToInventory(rejectArrows);
+                        craftMatrix.setInventorySlotContents(i, null);
+                    }
+                }
+            }
+
+
         }
     }
 

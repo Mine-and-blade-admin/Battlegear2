@@ -2,9 +2,13 @@ package mods.battlegear2.client;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.BowHookContainerClass2;
+import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -58,25 +62,35 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
                 EntityClientPlayerMP player = FMLClientHandler.instance().getClient().thePlayer;
 
 
-                if (kb.keyCode == special.keyCode && player.isBattlemode() && player.specialActionTimer == 0){
+                if (kb.keyCode == special.keyCode &&
+                        player.specialActionTimer == 0 &&
+                        FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
 
                     ItemStack main = player.getCurrentEquippedItem();
-                    ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+                    ItemStack quiver = BowHookContainerClass2.getArrowContainer(main, player);
+
+                    if(quiver != null){
+                        Packet250CustomPayload p = BattlegearAnimationPacket.generatePacket(EnumBGAnimations.SpecialAction, player.username);
+                        PacketDispatcher.sendPacketToServer(p);
+                        player.specialActionTimer = 2;
+                    }else if(player.isBattlemode()){
+                        ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 
 
-                    if(offhand != null && offhand.getItem() instanceof IShield){
+                        if(offhand != null && offhand.getItem() instanceof IShield){
 
-                        //TODO: Enchantments?
-                        float shieldBashPenalty = 0.33F;
+                            //TODO: Enchantments?
+                            float shieldBashPenalty = 0.33F;
 
-                        if(BattlegearClientTickHandeler.blockBar >= shieldBashPenalty){
-                            Packet250CustomPayload p = BattlegearAnimationPacket.generatePacket(EnumBGAnimations.SpecialAction, player.username);
-                            PacketDispatcher.sendPacketToServer(p);
-                            player.specialActionTimer = ((IShield)offhand.getItem()).getBashTimer(offhand);
+                            if(BattlegearClientTickHandeler.blockBar >= shieldBashPenalty){
+                                Packet250CustomPayload p = BattlegearAnimationPacket.generatePacket(EnumBGAnimations.SpecialAction, player.username);
+                                PacketDispatcher.sendPacketToServer(p);
+                                player.specialActionTimer = ((IShield)offhand.getItem()).getBashTimer(offhand);
 
-                            BattlegearClientTickHandeler.blockBar = BattlegearClientTickHandeler.blockBar - shieldBashPenalty;
+                                BattlegearClientTickHandeler.blockBar = BattlegearClientTickHandeler.blockBar - shieldBashPenalty;
+                            }
+
                         }
-
                     }
 
 
