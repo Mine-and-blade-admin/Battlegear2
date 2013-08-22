@@ -1,13 +1,18 @@
 package mods.battlegear2;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import mods.battlegear2.api.QuiverArrowRegistry;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
+import mods.battlegear2.items.arrows.EntityEnderArrow;
+import mods.battlegear2.items.arrows.EntityExplossiveArrow;
 import mods.battlegear2.packet.*;
 import mods.battlegear2.recipies.CraftingHandeler;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.BattlegearUtils;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.EnumArmorMaterial;
+import net.minecraft.item.Item;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
 import cpw.mods.fml.common.Mod;
@@ -64,7 +69,12 @@ public class Battlegear {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         BattlegearConfig.registerRecipes();
-	GameRegistry.registerCraftingHandler(new CraftingHandeler());
+	    GameRegistry.registerCraftingHandler(new CraftingHandeler());
+
+        QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 0, EntityExplossiveArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 1, EntityEnderArrow.class);
+
     }
 
     @EventHandler
