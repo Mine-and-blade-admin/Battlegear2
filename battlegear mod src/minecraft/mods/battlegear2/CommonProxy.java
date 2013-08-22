@@ -2,6 +2,8 @@ package mods.battlegear2;
 
 
 import java.util.List;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Icon;
@@ -22,6 +24,10 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(new WeaponHookContainerClass());
 	    //MinecraftForge.EVENT_BUS.register(new BowHookContainerClass());
         MinecraftForge.EVENT_BUS.register(new BowHookContainerClass2());
+
+
+        MinecraftForge.EVENT_BUS.register(new MobHookContainerClass());
+
     }
 
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {}

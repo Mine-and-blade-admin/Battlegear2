@@ -21,14 +21,15 @@ public class QuiverRecipie2 implements IRecipe {
                 {
                     if(quiver!=null)
                         return false;
-                    quiver = stack.copy();
+                    //Don't copy (yet) as we need the reference to check later
+                    quiver = stack;
                 }
             }
         }
         if(quiver!=null){
             for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
                 ItemStack stack = inventorycrafting.getStackInSlot(i);
-                if(stack!=null)
+                if(stack!=null && stack!=quiver)
                 {
                     if(!((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack))
                     {
@@ -36,6 +37,7 @@ public class QuiverRecipie2 implements IRecipe {
                     }
                 }
             }
+
             return true;
         }
         return false;

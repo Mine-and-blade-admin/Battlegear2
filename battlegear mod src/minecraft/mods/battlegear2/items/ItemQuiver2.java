@@ -3,9 +3,13 @@ package mods.battlegear2.items;
 
 import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.api.QuiverArrowEvent;
+import mods.battlegear2.api.QuiverArrowRegistry;
+import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
@@ -18,7 +22,8 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class ItemQuiver2 extends Item implements IArrowContainer2 {
-    Icon emptyQuiver;
+    public Icon quiverDetails;
+    public Icon quiverArrows;
 
     public ItemQuiver2(int id) {
         super(id);
@@ -37,24 +42,10 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
     @Override
     public void registerIcons(IconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
-        emptyQuiver = par1IconRegister.registerIcon("battlegear2:quiver-empty");
+        quiverDetails = par1IconRegister.registerIcon("battlegear2:quiver/quiver-details");
+        quiverArrows = par1IconRegister.registerIcon("battlegear2:quiver/quiver-arrows");
+
     }
-
-    /*
-     *  FIXME: MC doesn't use stack aware rendering for items in GUI, will have to make an IItemRenderer if we want this
-    */
-    @Override
-    public Icon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        int maxSlot = getSlotCount(stack);
-        for(int i = 0; i < maxSlot; i++){
-            if(getStackInSlot(stack, i) != null){
-                return super.getIcon(stack, renderPass, player, usingItem, useRemaining);
-
-            }
-        }
-        return emptyQuiver;
-    }
-
 
     @Override
     public int getSlotCount(ItemStack container) {
@@ -101,22 +92,30 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
 
     @Override
     public EntityArrow getArrowType(ItemStack stack, World world, EntityPlayer player, float charge) {
-
-        if(getStackInSlot(stack, getSelectedSlot(stack)) == null)
+        ItemStack selected = getStackInSlot(stack, getSelectedSlot(stack));
+        if(selected == null)
             return null;
-        else
-            return new EntityArrow(world, player, charge);
+        else {
+            Class clazz = QuiverArrowRegistry.getArrowClass(selected);
+
+            if(clazz != null){
+
+                try {
+                    return (EntityArrow)clazz.getConstructor(World.class, EntityLivingBase.class, Float.TYPE)
+                            .newInstance(player.worldObj, player, charge);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
     }
 
     @Override
     public void onArrowFired(World world, EntityPlayer player, ItemStack stack, ItemStack bow, EntityArrow arrow) {
-        int selectedSlot = getSelectedSlot(stack);
-        ItemStack arrowStack = getStackInSlot(stack, selectedSlot);
-        arrowStack.stackSize --;
-        if(arrowStack.stackSize == 0){
-            arrowStack = null;
-        }
-        setStackInSlot(stack, selectedSlot, arrowStack);
+
     }
 
     @Override
@@ -125,7 +124,9 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
 
     @Override
     public boolean isCraftableWithArrows(ItemStack stack, ItemStack arrows) {
-        return arrows != null && arrows.getItem().itemID == Item.arrow.itemID;
+        return arrows != null &&
+                (arrows.getItem().itemID == Item.arrow.itemID ||
+                        arrows.getItem().itemID == BattlegearConfig.MbArrows.itemID);
     }
 
 
@@ -136,7 +137,6 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
             int slotCount = getSlotCount(container);
             for(int i = 0; i < slotCount && left_over > 0; i++){
                 ItemStack slotStack = getStackInSlot(container, i);
-                //System.out.println(slotStack);
                 if(slotStack == null){
                     newStack.stackSize = left_over;
                     setStackInSlot(container, i, newStack);
@@ -177,7 +177,7 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
                 list.add(String.format(" %s%s: %s x %s", i,
                         i==selected?EnumChatFormatting.DARK_GREEN:EnumChatFormatting.GOLD,
                         slotStack.stackSize,
-                        StatCollector.translateToLocal(slotStack.getItem().getUnlocalizedName(slotStack))));
+                        StatCollector.translateToLocal(slotStack.getItem().getUnlocalizedName(slotStack)+".name")));
             }else{
                 list.add(String.format(" %s%s: %s", i,
                         i==selected?EnumChatFormatting.DARK_GREEN:EnumChatFormatting.GOLD,
@@ -188,4 +188,71 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
     }
 
 
+    /**
+     * Return whether the specified armor ItemStack has a color.
+     */
+    public boolean hasColor(ItemStack par1ItemStack)
+    {
+        return (!par1ItemStack.hasTagCompound() ? false : (!par1ItemStack.getTagCompound().hasKey("display") ? false : par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color")));
+    }
+
+    /**
+     * Return the color for the specified armor ItemStack.
+     */
+    public int getColor(ItemStack par1ItemStack)
+    {
+        {
+            NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+
+            if (nbttagcompound == null)
+            {
+                return 0xFFC65C35;
+            }
+            else
+            {
+                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+                return nbttagcompound1 == null ? 0xFFC65C35: (nbttagcompound1.hasKey("color") ? nbttagcompound1.getInteger("color") : 0xFFC65C35);
+            }
+        }
+    }
+
+    /**
+     * Remove the color from the specified armor ItemStack.
+     */
+    public void removeColor(ItemStack par1ItemStack)
+    {
+            NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+
+            if (nbttagcompound != null)
+            {
+                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+
+                if (nbttagcompound1.hasKey("color"))
+                {
+                    nbttagcompound1.removeTag("color");
+                }
+            }
+    }
+
+    public void func_82813_b(ItemStack par1ItemStack, int par2)
+    {
+        {
+            NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+
+            if (nbttagcompound == null)
+            {
+                nbttagcompound = new NBTTagCompound();
+                par1ItemStack.setTagCompound(nbttagcompound);
+            }
+
+            NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+
+            if (!nbttagcompound.hasKey("display"))
+            {
+                nbttagcompound.setCompoundTag("display", nbttagcompound1);
+            }
+
+            nbttagcompound1.setInteger("color", par2);
+        }
+    }
 }
