@@ -11,6 +11,7 @@ import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.client.renderer.BowRenderer;
 import mods.battlegear2.client.renderer.ShieldRenderer;
 import mods.battlegear2.client.renderer.SpearRenderer;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -37,6 +38,7 @@ import java.util.List;
 public class ClientProxy extends CommonProxy {
 
     public static Icon[] backgroundIcon;
+    public static Icon[] bowIcons;
 
     @Override
     public void registerKeyHandelers() {
@@ -100,6 +102,8 @@ public class ClientProxy extends CommonProxy {
         for(Item shield : BattlegearConfig.shield){
             MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
         }
+
+        MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
 
     }
 

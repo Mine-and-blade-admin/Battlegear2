@@ -29,7 +29,6 @@ public class SpecialActionPacket extends AbstractMBPacket{
 
     @Override
     public void process(Packet250CustomPayload packet, EntityPlayer player) {
-        System.out.println("Process Special");
         DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
         try {
             EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
@@ -55,10 +54,8 @@ public class SpecialActionPacket extends AbstractMBPacket{
                         (((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver)+1) %
                                 ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver));
             } else if(targetHit != null && targetHit instanceof EntityLivingBase){
-                System.out.println("is Living");
 
                 if(offhand != null && offhand.getItem() instanceof IShield){
-                    System.out.println("Bash");
                     double d0 = targetHit.posX - targetPlayer.posX;
                     double d1;
 

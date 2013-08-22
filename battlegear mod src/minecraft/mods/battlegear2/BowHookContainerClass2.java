@@ -4,14 +4,17 @@ import java.util.Random;
 
 import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.api.QuiverArrowEvent;
+import mods.battlegear2.items.arrows.AbstractMBArrow;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
@@ -39,7 +42,6 @@ public class BowHookContainerClass2 {
         for(ItemStack item : entityPlayer.inventory.mainInventory){
             if(item!=null && item.getItem() instanceof IArrowContainer2){
                 int maxSlot = ((IArrowContainer2) item.getItem()).getSlotCount(item);
-                //System.out.println("Quiver");
                 for(int i = 0; i < maxSlot; i++){
                     if(((IArrowContainer2) item.getItem()).hasArrowFor(item, result, entityPlayer, i)){
                         return item;
@@ -57,9 +59,7 @@ public class BowHookContainerClass2 {
             EntityPlayer player = event.entityPlayer;
             ItemStack bow = event.bow;
             //Don't need to do anything in those cases
-            if(player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) > 0){
-                return;
-            }
+
             //Check if bow is charged enough
             int j = event.charge;
             float f = (float)j / 20.0F;
@@ -116,12 +116,40 @@ public class BowHookContainerClass2 {
                         {
                             world.spawnEntityInWorld(entityarrow);
                         }
+
+
                         quiver.onArrowFired(world, player, stack, bow, entityarrow);
+
+                        if(!player.capabilities.isCreativeMode && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) == 0){
+                            int selectedSlot = quiver.getSelectedSlot(stack);
+                            ItemStack arrowStack = quiver.getStackInSlot(stack, selectedSlot);
+                            arrowStack.stackSize --;
+                            if(arrowStack.stackSize == 0){
+                                arrowStack = null;
+                            }
+                            quiver.setStackInSlot(stack, selectedSlot, arrowStack);
+                        }
+
+
                         //Canceling the event, since we successfully fired our own arrow
                         event.setCanceled(true);
                     }
                 }
             }
         }
+    }
+
+
+    //Start hooks for arrows
+    @ForgeSubscribe
+    public void onEntityHitByArrow(LivingAttackEvent event){
+
+        if(event.source instanceof EntityDamageSourceIndirect &&
+             event.source.getSourceOfDamage() instanceof AbstractMBArrow){
+
+            boolean isCanceled = ((AbstractMBArrow) event.source.getSourceOfDamage()).onHitEntity(event.entity);
+            event.setCanceled(isCanceled);
+        }
+
     }
 }

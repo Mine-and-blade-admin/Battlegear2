@@ -3,7 +3,10 @@ package mods.battlegear2.items;
 
 import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.api.QuiverArrowEvent;
+import mods.battlegear2.api.QuiverArrowRegistry;
+import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
@@ -101,22 +104,30 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
 
     @Override
     public EntityArrow getArrowType(ItemStack stack, World world, EntityPlayer player, float charge) {
-
-        if(getStackInSlot(stack, getSelectedSlot(stack)) == null)
+        ItemStack selected = getStackInSlot(stack, getSelectedSlot(stack));
+        if(selected == null)
             return null;
-        else
-            return new EntityArrow(world, player, charge);
+        else {
+            Class clazz = QuiverArrowRegistry.getArrowClass(selected);
+
+            if(clazz != null){
+
+                try {
+                    return (EntityArrow)clazz.getConstructor(World.class, EntityLivingBase.class, Float.TYPE)
+                            .newInstance(player.worldObj, player, charge);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
     }
 
     @Override
     public void onArrowFired(World world, EntityPlayer player, ItemStack stack, ItemStack bow, EntityArrow arrow) {
-        int selectedSlot = getSelectedSlot(stack);
-        ItemStack arrowStack = getStackInSlot(stack, selectedSlot);
-        arrowStack.stackSize --;
-        if(arrowStack.stackSize == 0){
-            arrowStack = null;
-        }
-        setStackInSlot(stack, selectedSlot, arrowStack);
+
     }
 
     @Override
@@ -125,7 +136,9 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
 
     @Override
     public boolean isCraftableWithArrows(ItemStack stack, ItemStack arrows) {
-        return arrows != null && arrows.getItem().itemID == Item.arrow.itemID;
+        return arrows != null &&
+                (arrows.getItem().itemID == Item.arrow.itemID ||
+                        arrows.getItem().itemID == BattlegearConfig.MbArrows.itemID);
     }
 
 
@@ -136,7 +149,6 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
             int slotCount = getSlotCount(container);
             for(int i = 0; i < slotCount && left_over > 0; i++){
                 ItemStack slotStack = getStackInSlot(container, i);
-                //System.out.println(slotStack);
                 if(slotStack == null){
                     newStack.stackSize = left_over;
                     setStackInSlot(container, i, newStack);
@@ -177,7 +189,7 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
                 list.add(String.format(" %s%s: %s x %s", i,
                         i==selected?EnumChatFormatting.DARK_GREEN:EnumChatFormatting.GOLD,
                         slotStack.stackSize,
-                        StatCollector.translateToLocal(slotStack.getItem().getUnlocalizedName(slotStack))));
+                        StatCollector.translateToLocal(slotStack.getItem().getUnlocalizedName(slotStack)+".name")));
             }else{
                 list.add(String.format(" %s%s: %s", i,
                         i==selected?EnumChatFormatting.DARK_GREEN:EnumChatFormatting.GOLD,
