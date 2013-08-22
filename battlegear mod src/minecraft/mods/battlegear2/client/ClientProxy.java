@@ -11,7 +11,9 @@ import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.renderer.BowRenderer;
+import mods.battlegear2.client.renderer.QuiverItremRenderer;
 import mods.battlegear2.client.renderer.ShieldRenderer;
 import mods.battlegear2.client.renderer.SpearRenderer;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -22,8 +24,11 @@ import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -104,6 +109,9 @@ public class ClientProxy extends CommonProxy {
         }
 
         MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
+
+        MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
+
 
     }
 

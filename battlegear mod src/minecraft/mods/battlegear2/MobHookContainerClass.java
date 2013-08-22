@@ -1,6 +1,8 @@
 package mods.battlegear2;
 
+import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.items.arrows.AbstractMBArrow;
+import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,11 +23,16 @@ public class MobHookContainerClass {
             EntitySkeleton skeleton = (EntitySkeleton) event.entity;
 
             try{
-            skeleton.getDataWatcher().addObject(Skell_Arrow_Datawatcher, Byte.valueOf((byte)-1));
+                skeleton.getDataWatcher().addObject(Skell_Arrow_Datawatcher, Byte.valueOf((byte)-1));
 
-            if(skeleton.getRNG().nextFloat() < 1){
-                skeleton.getDataWatcher().updateObject(Skell_Arrow_Datawatcher, Byte.valueOf((byte) 0));
-            }
+                for(int i = 0; i < ItemMBArrow.names.length; i++){
+                    if(skeleton.getRNG().nextFloat() < BattlegearConfig.skeletonArrowSpawnRate[i]){
+                        skeleton.getDataWatcher().updateObject(Skell_Arrow_Datawatcher, Byte.valueOf((byte) i));
+                        break;
+                    }
+                }
+
+
             }catch (Exception e){}
 
 

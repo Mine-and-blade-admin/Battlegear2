@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
@@ -21,7 +22,8 @@ import net.minecraft.world.World;
 import java.util.List;
 
 public class ItemQuiver2 extends Item implements IArrowContainer2 {
-    Icon emptyQuiver;
+    public Icon quiverDetails;
+    public Icon quiverArrows;
 
     public ItemQuiver2(int id) {
         super(id);
@@ -40,24 +42,10 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
     @Override
     public void registerIcons(IconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
-        emptyQuiver = par1IconRegister.registerIcon("battlegear2:quiver-empty");
+        quiverDetails = par1IconRegister.registerIcon("battlegear2:quiver/quiver-details");
+        quiverArrows = par1IconRegister.registerIcon("battlegear2:quiver/quiver-arrows");
+
     }
-
-    /*
-     *  FIXME: MC doesn't use stack aware rendering for items in GUI, will have to make an IItemRenderer if we want this
-    */
-    @Override
-    public Icon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
-        int maxSlot = getSlotCount(stack);
-        for(int i = 0; i < maxSlot; i++){
-            if(getStackInSlot(stack, i) != null){
-                return super.getIcon(stack, renderPass, player, usingItem, useRemaining);
-
-            }
-        }
-        return emptyQuiver;
-    }
-
 
     @Override
     public int getSlotCount(ItemStack container) {
@@ -200,4 +188,71 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
     }
 
 
+    /**
+     * Return whether the specified armor ItemStack has a color.
+     */
+    public boolean hasColor(ItemStack par1ItemStack)
+    {
+        return (!par1ItemStack.hasTagCompound() ? false : (!par1ItemStack.getTagCompound().hasKey("display") ? false : par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color")));
+    }
+
+    /**
+     * Return the color for the specified armor ItemStack.
+     */
+    public int getColor(ItemStack par1ItemStack)
+    {
+        {
+            NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+
+            if (nbttagcompound == null)
+            {
+                return 0xFFC65C35;
+            }
+            else
+            {
+                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+                return nbttagcompound1 == null ? 0xFFC65C35: (nbttagcompound1.hasKey("color") ? nbttagcompound1.getInteger("color") : 0xFFC65C35);
+            }
+        }
+    }
+
+    /**
+     * Remove the color from the specified armor ItemStack.
+     */
+    public void removeColor(ItemStack par1ItemStack)
+    {
+            NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+
+            if (nbttagcompound != null)
+            {
+                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+
+                if (nbttagcompound1.hasKey("color"))
+                {
+                    nbttagcompound1.removeTag("color");
+                }
+            }
+    }
+
+    public void func_82813_b(ItemStack par1ItemStack, int par2)
+    {
+        {
+            NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+
+            if (nbttagcompound == null)
+            {
+                nbttagcompound = new NBTTagCompound();
+                par1ItemStack.setTagCompound(nbttagcompound);
+            }
+
+            NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+
+            if (!nbttagcompound.hasKey("display"))
+            {
+                nbttagcompound.setCompoundTag("display", nbttagcompound1);
+            }
+
+            nbttagcompound1.setInteger("color", par2);
+        }
+    }
 }

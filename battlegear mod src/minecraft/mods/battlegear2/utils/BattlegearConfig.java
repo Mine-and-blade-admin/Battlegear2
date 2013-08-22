@@ -2,6 +2,7 @@ package mods.battlegear2.utils;
 
 import mods.battlegear2.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.items.*;
+import mods.battlegear2.recipies.QuiverDyeRecipie;
 import mods.battlegear2.recipies.QuiverRecipie2;
 import mods.battlegear2.recipies.ShieldRemoveArrowRecipie;
 import net.minecraft.block.Block;
@@ -39,6 +40,7 @@ public class BattlegearConfig {
     public static String[] disabledRecipies = new String[0];
 
 
+    public static double[] skeletonArrowSpawnRate = new double[ItemMBArrow.names.length];
 	
 	
 	public static void getConfig(Configuration config) {
@@ -52,10 +54,20 @@ public class BattlegearConfig {
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
 
         quiver = new ItemQuiver2(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
-        quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).func_111206_d("battlegear2:"+itemNames[2]).setCreativeTab(customTab);
+        quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).func_111206_d("battlegear2:quiver/"+itemNames[2]).setCreativeTab(customTab);
 
         MbArrows = new ItemMBArrow(config.get(config.CATEGORY_ITEM, itemNames[9], firstDefaultItemIndex+itemOffests[9]).getInt());
         MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).func_111206_d("battlegear2:" + itemNames[9]).setCreativeTab(customTab);
+
+        String customArrowSpawn = "Skeleton CustomArrow Spawn Rate";
+        config.addCustomCategoryComment(customArrowSpawn, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
+
+        //default 10% for everything but ender (which is 0%)
+        for(int i = 0; i < ItemMBArrow.names.length; i++){
+            skeletonArrowSpawnRate[i] = config.get(customArrowSpawn, ItemMBArrow.names[i], i!=1?0.1F:0).getDouble(i!=1?0.1F:0);
+        }
+
+
 
         StringBuffer sb = new StringBuffer();
         sb.append("This will disable the crafting recipie for the provided item/blocks.\n");
@@ -96,10 +108,6 @@ public class BattlegearConfig {
         disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], sb.toString()).getStringList();
         Arrays.sort(disabledRecipies);
 
-        System.out.println(Arrays.toString(disabledRecipies));
-
-        System.out.println(Arrays.binarySearch(disabledRecipies, itemNames[7]));
-        System.out.println(Arrays.binarySearch(disabledRecipies, itemNames[5]));
 
         
         for(int i = 0; i < 5; i++){
@@ -151,6 +159,7 @@ public class BattlegearConfig {
                 {"X X", "X X","XXX",Character.valueOf('X'), Item.leather}));
 
         GameRegistry.addRecipe(new QuiverRecipie2());
+        GameRegistry.addRecipe(new QuiverDyeRecipie());
 
         if(Arrays.binarySearch(disabledRecipies, "chain.armour")  < 0){
             //Chain armor recipes

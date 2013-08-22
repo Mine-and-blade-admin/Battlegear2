@@ -91,6 +91,6 @@ public class BowRenderer implements IItemRenderer {
             ItemRenderer.renderItemIn2D(tessellator, icon.getMinU(), icon.getMinV(), icon.getMaxU(), icon.getMaxV(), icon.getOriginX(), icon.getOriginY(), 0.0625F);
             GL11.glPopMatrix();
         }
-
+       SpearRenderer.renderEnchantmentEffects(tessellator);
     }
 }
