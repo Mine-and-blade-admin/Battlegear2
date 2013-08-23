@@ -37,7 +37,7 @@ public class BattlegearRenderHelper {
 
     private static final ItemStack dummyStack = new ItemStack(Block.lavaMoving);
 
-    private static EntityLivingBase dummyEntity;
+    public static EntityLivingBase dummyEntity;
 
     private static final ResourceLocation arrowTex = new ResourceLocation("textures/entity/arrow.png");
 

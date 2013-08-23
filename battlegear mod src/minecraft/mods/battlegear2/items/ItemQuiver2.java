@@ -2,6 +2,7 @@ package mods.battlegear2.items;
 
 
 import mods.battlegear2.api.IArrowContainer2;
+import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.QuiverArrowEvent;
 import mods.battlegear2.api.QuiverArrowRegistry;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -21,7 +22,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemQuiver2 extends Item implements IArrowContainer2 {
+public class ItemQuiver2 extends Item implements IArrowContainer2, IDyable {
     public Icon quiverDetails;
     public Icon quiverArrows;
 
@@ -206,12 +207,12 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
 
             if (nbttagcompound == null)
             {
-                return 0xFFC65C35;
+                return getDefaultColor(par1ItemStack);
             }
             else
             {
                 NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
-                return nbttagcompound1 == null ? 0xFFC65C35: (nbttagcompound1.hasKey("color") ? nbttagcompound1.getInteger("color") : 0xFFC65C35);
+                return nbttagcompound1 == null ? getDefaultColor(par1ItemStack): (nbttagcompound1.hasKey("color") ? nbttagcompound1.getInteger("color") : getDefaultColor(par1ItemStack));
             }
         }
     }
@@ -234,9 +235,15 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
             }
     }
 
-    public void func_82813_b(ItemStack par1ItemStack, int par2)
+    @Override
+    public int getDefaultColor(ItemStack par1ItemStack) {
+        return 0xFFC65C35;
+    }
+
+    @Override
+    public void setColor(ItemStack par1ItemStack, int par2)
     {
-        {
+
             NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
 
             if (nbttagcompound == null)
@@ -253,6 +260,5 @@ public class ItemQuiver2 extends Item implements IArrowContainer2 {
             }
 
             nbttagcompound1.setInteger("color", par2);
-        }
     }
 }

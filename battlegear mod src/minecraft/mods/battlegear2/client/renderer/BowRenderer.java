@@ -4,6 +4,7 @@ import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.MobHookContainerClass;
 import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.client.ClientProxy;
+import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -80,10 +81,13 @@ public class BowRenderer implements IItemRenderer {
             if(type > -1){
                 arrowStack = new ItemStack(BattlegearConfig.MbArrows, 1, type);
             }
+        }else if (entityLivingBase == null || entityLivingBase.equals(BattlegearRenderHelper.dummyEntity)){
+            arrowStack = null;
         }
 
         Tessellator tessellator = Tessellator.instance;
         ItemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getOriginX(), icon.getOriginY(), 0.0625F);
+
         if(arrowStack != null && (arrowStack.getItem() instanceof ItemMBArrow || arrowStack.getItem().itemID == Item.arrow.itemID)){
             icon = arrowStack.getIconIndex();
             GL11.glPushMatrix();

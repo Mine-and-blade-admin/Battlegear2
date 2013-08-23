@@ -62,7 +62,8 @@ public class BattlemodeHookContainerClass {
                 float reachMod = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
                 if(reachMod < 0){
                     if(reachMod + 4 < event.entityPlayer.getDistanceToEntity(event.target)){
-                        event.setCanceled(true);
+                        //event.setCanceled(true);
+                        event.setResult(Result.DENY);
                     }
                 }
             }
