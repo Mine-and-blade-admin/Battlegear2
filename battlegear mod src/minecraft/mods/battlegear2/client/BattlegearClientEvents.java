@@ -116,6 +116,7 @@ public class BattlegearClientEvents {
         }
     }
 
+
     @ForgeSubscribe
     public void renderLiving(RenderLivingEvent.Post event){
 

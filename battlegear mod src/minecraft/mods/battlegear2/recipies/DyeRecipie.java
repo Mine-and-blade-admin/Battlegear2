@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class QuiverDyeRecipie implements IRecipe
+public class DyeRecipie implements IRecipe
 {
     /**
      * Used to check if a recipe matches current crafting inventory

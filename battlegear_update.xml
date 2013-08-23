@@ -1,5 +1,26 @@
 <mod modid="battlegear2">
     <mcVersion version="1.6.2">
-        <release type="normal" version="1.0.0" url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/files/8-mine-blade-battlegear-2-warcry-rc3/"/>
+        <release type="beta" version="1.0.0"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/files/6-mine-blade-battlegear-2-warcry-preview-1/"
+                 download="http://www.curseforge.com/media/files/727/805/1.6.2-MB_Battlegear2-Warcry-RC_3.jar"
+                />
+        <release type="beta" version="0.2.1"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/files/6-mine-blade-battlegear-2-warcry-preview-1/"
+                 download="http://www.curseforge.com/media/files/727/805/1.6.2-MB_Battlegear2-Warcry-RC_3.jar"
+                />
+        <release type="beta" version="0.2.2"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/files/7-mine-blade-battlegear-2-warcry-rc2/"
+                 download="http://www.curseforge.com/media/files/727/595/1.6.2-MB_Battlegear2-Warcry-rc2.jar"
+                />
+        <release type="beta" version="0.2.3"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/files/8-mine-blade-battlegear-2-warcry-rc3/"
+                 download="http://www.curseforge.com/media/files/727/371/1.6.2-MB_Battlegear2-Warcry-preview1.jar"
+                />
+    </mcVersion>
+    <mcVersion version="1.5.2">
+        <release type="beta" version="0.1.1"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/files/1-mine-blade-battlegear-2-0-3-2/"
+                 download="http://www.curseforge.com/media/files/714/354/1.5.2-MB_Battlegear2-0.4.1.zip"
+                />
     </mcVersion>
 </mod>

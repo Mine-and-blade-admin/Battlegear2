@@ -46,23 +46,17 @@ public class CommonProxy {
                 for(int i = 0; i < version.length; i++){
                     version[i] = Integer.parseInt(version_split[i]);
                 }
-                Release thisVersion = new Release(Release.EnumReleaseType.Normal, null, version);
+                Release thisVersion = new Release(Release.EnumReleaseType.Normal, null, version, null);
 
                 if(thisVersion.compareTo(Battlegear.latestRelease) < 0){
-                    StringBuffer newVersionString = new StringBuffer();
-                    for(int i = 0; i < Battlegear.latestRelease.version.length; i++){
-                        newVersionString.append(Battlegear.latestRelease.version[i]);
-                        newVersionString.append(".");
-                    }
-                    newVersionString.deleteCharAt(newVersionString.lastIndexOf("."));
 
                     if(Battlegear.latestRelease.url != null){
                         return String.format("%s: %s (%s)",
-                                mc.getName(),"New version found", newVersionString);
+                                mc.getName(),"New version found", Battlegear.latestRelease.getVersionString());
                     }else{
                         return String.format("%s: %s (%s) - %s %s",
                                 mc.getName(),
-                                "New version found", newVersionString,
+                                "New version found", Battlegear.latestRelease.getVersionString(),
                                  "download url:",Battlegear.latestRelease.url);
                     }
                 }else{

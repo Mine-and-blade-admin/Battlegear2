@@ -1,6 +1,7 @@
 package mods.battlegear2.utils;
 
 
+import mods.battlegear2.Battlegear;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -17,7 +18,7 @@ public class BattlegearUpdateChecker {
     public static void main(String[] arge){
         BattlegearUpdateChecker buc = new BattlegearUpdateChecker("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml");
 
-        System.out.println(buc.getUpToDateRelease("battlegear2", "1.5.2", Release.EnumReleaseType.Beta));
+        System.out.println(buc.getUpToDateRelease("battlegear2", "1.5.2", Battlegear.debug?Release.EnumReleaseType.Dev:Release.EnumReleaseType.Normal));
     }
 
     public BattlegearUpdateChecker(String updateUrl){
@@ -27,8 +28,6 @@ public class BattlegearUpdateChecker {
 
     public Release getUpToDateRelease(String modId, String targetVersion, Release.EnumReleaseType versionLevel){
         try{
-
-            URL url = new URL(updateURL);
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -91,8 +90,12 @@ public class BattlegearUpdateChecker {
             Node versionNode = item.getAttributes().getNamedItem("version");
             Node typeNode = item.getAttributes().getNamedItem("type");
             String url = null;
+            String download = null;
             if(item.getAttributes().getNamedItem("url") != null){
                 url = item.getAttributes().getNamedItem("url").getNodeValue();
+            }
+            if(item.getAttributes().getNamedItem("download") != null){
+                download = item.getAttributes().getNamedItem("download").getNodeValue();
             }
 
 
@@ -117,7 +120,7 @@ public class BattlegearUpdateChecker {
                     }
                 }
 
-                return new Release(releaseType, url, version);
+                return new Release(releaseType, url, version, download);
             }else{
                 return null;
             }

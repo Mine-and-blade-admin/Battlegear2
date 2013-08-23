@@ -1,10 +1,21 @@
 package mods.battlegear2.utils;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.gui.BattlegearGUIHandeler;
+import mods.battlegear2.packet.BattlegearGUIPacket;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.packet.Packet100OpenWindow;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class BattlegearCommands extends CommandBase{
@@ -13,6 +24,11 @@ public class BattlegearCommands extends CommandBase{
     @Override
     public String getCommandName() {
         return "mb";
+    }
+
+    @Override
+    public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
+        return Arrays.asList("download");
     }
 
     @Override
@@ -29,50 +45,23 @@ public class BattlegearCommands extends CommandBase{
     public void processCommand(ICommandSender icommandsender, String[] astring) {
 
         if(astring.length > 0){
-            if(astring[0].equalsIgnoreCase("latest")){
+            if(astring[0].equalsIgnoreCase("download")){
+
+                if(icommandsender instanceof EntityPlayer){
+
+
+                    PacketDispatcher.sendPacketToPlayer(
+                            BattlegearGUIPacket.generatePacket(
+                                    BattlegearGUIHandeler.downloader), (Player)icommandsender);
+
+                }
+
                 if(Battlegear.latestRelease != null && Battlegear.latestRelease.url != null){
-                    openURL(Battlegear.latestRelease.url);
+                    //openURL(Battlegear.latestRelease.url);
                 }
             }
 
         }
 
-    }
-
-    private void openURL(String url) {
-        try{
-
-            String os = System.getProperty("os.name").toLowerCase();
-            Runtime rt = Runtime.getRuntime();
-
-            if (os.indexOf( "win" ) >= 0) {
-
-                // this doesn't support showing urls in the form of "page.html#nameLink"
-                rt.exec( "rundll32 url.dll,FileProtocolHandler " + url);
-
-            } else if (os.indexOf( "mac" ) >= 0) {
-
-                rt.exec( "open " + url);
-
-            } else if (os.indexOf( "nix") >=0 || os.indexOf( "nux") >=0) {
-
-                // Do a best guess on unix until we get a platform independent way
-                // Build a list of browsers to try, in this order.
-                String[] browsers = {"chrome", "google-chrome", "firefox", "mozilla", "epiphany","konqueror",
-                        "netscape","opera","links","lynx"};
-
-                // Build a command string which looks like "browser1 "url" || browser2 "url" ||..."
-                StringBuffer cmd = new StringBuffer();
-                for (int i=0; i<browsers.length; i++)
-                    cmd.append( (i==0  ? "" : " || " ) + browsers[i] +" \"" + url + "\" ");
-
-                rt.exec(new String[] { "sh", "-c", cmd.toString() });
-
-            } else {
-                return;
-            }
-        }catch (Exception e){
-            return;
-        }
     }
 }

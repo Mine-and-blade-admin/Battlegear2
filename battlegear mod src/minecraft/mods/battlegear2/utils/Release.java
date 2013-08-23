@@ -1,16 +1,20 @@
 package mods.battlegear2.utils;
 
+import mods.battlegear2.Battlegear;
+
 import java.util.Arrays;
 
 public  class Release implements Comparable<Release>{
     public int[] version;
     public EnumReleaseType type;
     public String url;
+    public String download;
 
-    public Release(EnumReleaseType type, String url, int[] version) {
+    public Release(EnumReleaseType type, String url, int[] version, String download) {
         this.type = type;
         this.url = url;
         this.version = version;
+        this.download = download;
     }
 
     @Override
@@ -25,6 +29,16 @@ public  class Release implements Comparable<Release>{
         }
 
         return version.length - other.version.length;
+    }
+
+    public String getVersionString(){
+        StringBuffer newVersionString = new StringBuffer();
+        for(int i = 0; i < Battlegear.latestRelease.version.length; i++){
+            newVersionString.append(Battlegear.latestRelease.version[i]);
+            newVersionString.append(".");
+        }
+        newVersionString.deleteCharAt(newVersionString.lastIndexOf("."));
+        return newVersionString.toString();
     }
 
     @Override
