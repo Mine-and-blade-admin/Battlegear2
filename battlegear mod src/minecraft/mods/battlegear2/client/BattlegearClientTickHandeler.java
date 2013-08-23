@@ -34,6 +34,10 @@ public class BattlegearClientTickHandeler implements ITickHandler {
         if(type.contains(TickType.PLAYER)){
             EntityPlayer player = Minecraft.getMinecraft().thePlayer;
 
+            if(!Battlegear.battlegearEnabled && ! player.worldObj.isRemote){
+                Battlegear.battlegearEnabled = true;
+            }
+
             ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
             if(player.isBattlemode() &&
                     offhand != null &&
@@ -81,6 +85,9 @@ public class BattlegearClientTickHandeler implements ITickHandler {
 
                 }
             }
+
+
+
         }else if (type.contains(TickType.RENDER)){
 
             partialTick = (Float)tickData[0];
