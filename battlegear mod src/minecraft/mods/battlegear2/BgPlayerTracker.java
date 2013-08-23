@@ -8,14 +8,20 @@ import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.packet.LoginPacket;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
 
 public class BgPlayerTracker implements IPlayerTracker{
 
 
     @Override
     public void onPlayerLogin(EntityPlayer player) {
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER){
             PacketDispatcher.sendPacketToPlayer(LoginPacket.generate(), (Player)player);
+        }else{
+
+        }
     }
 
     @Override

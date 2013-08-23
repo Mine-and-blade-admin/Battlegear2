@@ -19,10 +19,7 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.*;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
@@ -31,6 +28,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import org.lwjgl.opengl.GL11;
 
@@ -53,6 +51,7 @@ public class BattlegearClientEvents {
             inGameGUI.renderGameOverlay(event.partialTicks);
         }
     }
+
 
     @ForgeSubscribe
     public void render3rdPersonBattlemode(RenderPlayerEvent.Specials.Post event){
@@ -100,6 +99,21 @@ public class BattlegearClientEvents {
         }
 
         event.setResult(Event.Result.ALLOW);
+    }
+
+    @ForgeSubscribe
+    public void playerJoin(EntityJoinWorldEvent event){
+        if(event.entity == Minecraft.getMinecraft().thePlayer){
+            if(!Battlegear.hasDisplayedVersionCheck){
+                ((EntityPlayer)event.entity).sendChatToPlayer(ChatMessageComponent.func_111066_d(
+
+                        Battlegear.proxy.getVersionCheckerMessage()
+
+                ));
+
+                Battlegear.hasDisplayedVersionCheck = true;
+            }
+        }
     }
 
     @ForgeSubscribe

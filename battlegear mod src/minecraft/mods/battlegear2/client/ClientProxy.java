@@ -4,10 +4,12 @@ package mods.battlegear2.client;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.IShield;
@@ -22,6 +24,7 @@ import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumBGAnimations;
+import mods.battlegear2.utils.Release;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -44,6 +47,67 @@ public class ClientProxy extends CommonProxy {
 
     public static Icon[] backgroundIcon;
     public static Icon[] bowIcons;
+
+
+    @Override
+    public String getVersionCheckerMessage() {
+
+            ModContainer mc = FMLCommonHandler.instance().findContainerFor(Battlegear.INSTANCE);
+            if(Battlegear.latestRelease == null){
+                return String.format("%s%s: %s%s%s - %s",
+                        EnumChatFormatting.DARK_RED,  mc.getName(),
+                        EnumChatFormatting.DARK_RED, "Version Check Failed",
+                        EnumChatFormatting.WHITE, "Could not contact server or invalid response");
+            }else{
+
+
+                String[] version_split = mc.getVersion().split("\\.");
+                int[] version = new int[version_split.length];
+                try{
+                    for(int i = 0; i < version.length; i++){
+                        version[i] = Integer.parseInt(version_split[i]);
+                    }
+                    Release thisVersion = new Release(Release.EnumReleaseType.Normal, null, version);
+
+                    if(thisVersion.compareTo(Battlegear.latestRelease) < 0){
+                        StringBuffer newVersionString = new StringBuffer();
+                        for(int i = 0; i < Battlegear.latestRelease.version.length; i++){
+                            newVersionString.append(Battlegear.latestRelease.version[i]);
+                            newVersionString.append(".");
+                        }
+                        newVersionString.deleteCharAt(newVersionString.lastIndexOf("."));
+
+                        if(Battlegear.latestRelease.url != null){
+                            return String.format("%s%s: %s%s (%s)",
+                                    EnumChatFormatting.DARK_BLUE,  mc.getName(),
+                                    EnumChatFormatting.DARK_BLUE, "New version found", newVersionString);
+                        }else{
+                            return String.format("%s%s: %s%s (%s)%s - %s",
+                                    EnumChatFormatting.DARK_BLUE,  mc.getName(),
+                                    EnumChatFormatting.DARK_BLUE, "New version found", newVersionString,
+                                    EnumChatFormatting.WHITE, "type '\\mb latest' to open the url");
+                        }
+                    }else{
+
+
+                        return String.format("%s%s: %s%s%s - %s %s",
+                                EnumChatFormatting.DARK_GREEN,  mc.getName(),
+                                EnumChatFormatting.DARK_GREEN, "Version Up to Date",
+                                EnumChatFormatting.WHITE,
+                                "You are running the latest version of",mc.getName());
+
+                    }
+
+                }catch (NumberFormatException e){
+
+                    return String.format("%s%s: %s%s%s - %s",
+                            EnumChatFormatting.DARK_RED,  mc.getName(),
+                            EnumChatFormatting.DARK_RED, "Version Check Failed",
+                            EnumChatFormatting.WHITE, "Could not determine running version");
+                }
+
+            }
+    }
 
     @Override
     public void registerKeyHandelers() {
