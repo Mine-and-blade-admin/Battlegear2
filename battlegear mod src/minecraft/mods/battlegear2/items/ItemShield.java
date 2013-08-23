@@ -1,6 +1,7 @@
 package mods.battlegear2.items;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumShield;
@@ -18,9 +19,9 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemShield extends Item implements IShield{
+public class ItemShield extends Item implements IShield, IDyable{
 
-    EnumShield enumShield;
+    public EnumShield enumShield;
 
     private Icon backIcon;
     private Icon trimIcon;
@@ -141,5 +142,81 @@ public class ItemShield extends Item implements IShield{
             par3List.add(String.format("%s%s %s", EnumChatFormatting.GOLD, arrowCount, StatCollector.translateToLocal("attribute.shield.arrow.count")));
         }
 
-    } 
+    }
+
+
+
+
+    /**
+     * Return whether the specified armor ItemStack has a color.
+     */
+    public boolean hasColor(ItemStack par1ItemStack)
+    {
+        return (!par1ItemStack.hasTagCompound() ? false : (!par1ItemStack.getTagCompound().hasKey("display") ? false : par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color")));
+    }
+
+    /**
+     * Return the color for the specified armor ItemStack.
+     */
+    public int getColor(ItemStack par1ItemStack)
+    {
+        {
+            NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+
+            if (nbttagcompound == null)
+            {
+                return getDefaultColor(par1ItemStack);
+            }
+            else
+            {
+                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+                return nbttagcompound1 == null ? getDefaultColor(par1ItemStack): (nbttagcompound1.hasKey("color") ? nbttagcompound1.getInteger("color") : getDefaultColor(par1ItemStack));
+            }
+        }
+    }
+
+    /**
+     * Remove the color from the specified armor ItemStack.
+     */
+    public void removeColor(ItemStack par1ItemStack)
+    {
+        NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+
+        if (nbttagcompound != null)
+        {
+            NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+
+            if (nbttagcompound1.hasKey("color"))
+            {
+                nbttagcompound1.removeTag("color");
+            }
+        }
+    }
+
+    @Override
+    public int getDefaultColor(ItemStack par1ItemStack) {
+        return enumShield.getDefaultRGB();
+    }
+
+    @Override
+    public void setColor(ItemStack par1ItemStack, int par2)
+    {
+
+        NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+
+        if (nbttagcompound == null)
+        {
+            nbttagcompound = new NBTTagCompound();
+            par1ItemStack.setTagCompound(nbttagcompound);
+        }
+
+        NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+
+        if (!nbttagcompound.hasKey("display"))
+        {
+            nbttagcompound.setCompoundTag("display", nbttagcompound1);
+        }
+
+        nbttagcompound1.setInteger("color", par2);
+    }
 }
