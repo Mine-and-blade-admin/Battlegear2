@@ -1,6 +1,7 @@
 package mods.battlegear2.recipies;
 
 
+import mods.battlegear2.api.IDyable;
 import mods.battlegear2.items.ItemQuiver2;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.passive.EntitySheep;
@@ -21,8 +22,9 @@ public class QuiverDyeRecipie implements IRecipe
      */
     public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World)
     {
-        ItemStack quiverStack = null;
+        ItemStack dyableStack = null;
         ArrayList arraylist = new ArrayList();
+        boolean waterFound = false;
 
         for (int i = 0; i < par1InventoryCrafting.getSizeInventory(); ++i)
         {
@@ -30,29 +32,31 @@ public class QuiverDyeRecipie implements IRecipe
 
             if (stack != null)
             {
-                if (stack.getItem() instanceof ItemQuiver2)
+                if (stack.getItem() instanceof IDyable)
                 {
 
-                    if (quiverStack != null)
+                    if (dyableStack != null)
                     {
                         return false;
                     }
 
-                    quiverStack = stack;
+                    dyableStack = stack;
                 }
                 else
                 {
-                    if (stack.itemID != Item.dyePowder.itemID)
+                    if(stack.itemID == Item.bucketWater.itemID &&!waterFound){
+                        waterFound = true;
+                    }else if (stack.itemID != Item.dyePowder.itemID)
                     {
                         return false;
+                    }else{
+                        arraylist.add(stack);
                     }
-
-                    arraylist.add(stack);
                 }
             }
         }
 
-        return quiverStack != null && !arraylist.isEmpty();
+        return dyableStack != null && (!arraylist.isEmpty() ^ waterFound);
     }
 
     /**
@@ -60,16 +64,17 @@ public class QuiverDyeRecipie implements IRecipe
      */
     public ItemStack getCraftingResult(InventoryCrafting par1InventoryCrafting)
     {
-        ItemStack quiverStack = null;
+        ItemStack dyableStack = null;
         int[] aint = new int[3];
         int i = 0;
         int j = 0;
-        ItemQuiver2 quiver = null;
+        IDyable dyeable = null;
         int k;
         int l;
         float f;
         float f1;
         int i1;
+        boolean removeColour = false;
 
         for (k = 0; k < par1InventoryCrafting.getSizeInventory(); ++k)
         {
@@ -77,21 +82,21 @@ public class QuiverDyeRecipie implements IRecipe
 
             if (stack != null)
             {
-                if (stack.getItem() instanceof ItemQuiver2)
+                if (stack.getItem() instanceof IDyable)
                 {
-                    quiver = (ItemQuiver2)stack.getItem();
+                    dyeable = (IDyable)stack.getItem();
 
-                    if (quiverStack != null)
+                    if (dyableStack != null)
                     {
                         return null;
                     }
 
-                    quiverStack = stack.copy();
-                    quiverStack.stackSize = 1;
+                    dyableStack = stack.copy();
+                    dyableStack.stackSize = 1;
 
-                    if (quiver.hasColor(stack))
+                    if (dyeable.hasColor(stack))
                     {
-                        l = quiver.getColor(quiverStack);
+                        l = dyeable.getColor(dyableStack);
                         f = (float)(l >> 16 & 255) / 255.0F;
                         f1 = (float)(l >> 8 & 255) / 255.0F;
                         float f2 = (float)(l & 255) / 255.0F;
@@ -104,7 +109,9 @@ public class QuiverDyeRecipie implements IRecipe
                 }
                 else
                 {
-                    if (stack.itemID != Item.dyePowder.itemID)
+                    if(stack.getItem().itemID == Item.bucketWater.itemID){
+                        removeColour = true;
+                    }else if (stack.itemID != Item.dyePowder.itemID)
                     {
                         return null;
                     }
@@ -122,24 +129,28 @@ public class QuiverDyeRecipie implements IRecipe
             }
         }
 
-        if (quiver == null)
+        if (dyeable == null)
         {
             return null;
         }
         else
         {
-            k = aint[0] / j;
-            int l1 = aint[1] / j;
-            l = aint[2] / j;
-            f = (float)i / (float)j;
-            f1 = (float)Math.max(k, Math.max(l1, l));
-            k = (int)((float)k * f / f1);
-            l1 = (int)((float)l1 * f / f1);
-            l = (int)((float)l * f / f1);
-            i1 = (k << 8) + l1;
-            i1 = (i1 << 8) + l;
-            quiver.func_82813_b(quiverStack, i1);
-            return quiverStack;
+            if(removeColour){
+                dyeable.removeColor(dyableStack);
+            }else{
+                k = aint[0] / j;
+                int l1 = aint[1] / j;
+                l = aint[2] / j;
+                f = (float)i / (float)j;
+                f1 = (float)Math.max(k, Math.max(l1, l));
+                k = (int)((float)k * f / f1);
+                l1 = (int)((float)l1 * f / f1);
+                l = (int)((float)l * f / f1);
+                i1 = (k << 8) + l1;
+                i1 = (i1 << 8) + l;
+                dyeable.setColor(dyableStack, i1);
+            }
+            return dyableStack;
         }
     }
 

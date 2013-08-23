@@ -20,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.IItemRenderer;
@@ -123,16 +124,26 @@ public class BattlegearClientEvents {
                     (float)(d1 - RenderManager.renderPosY),
                     (float)(d2 - RenderManager.renderPosZ));
 
-
-
-
-
-            GL11.glTranslatef(0, 1.5F, 0);
             GL11.glScalef(1,-1,1);
 
             float f2 = interpolateRotation(event.entity.prevRenderYawOffset, event.entity.renderYawOffset, 0);
 
             GL11.glRotatef(180.0F - f2, 0.0F, 1.0F, 0.0F);
+
+            if (event.entity.deathTime > 0)
+            {
+                float f3 = ((float)event.entity.deathTime +  BattlegearClientTickHandeler.partialTick - 1.0F) / 20.0F * 1.6F;
+                f3 = MathHelper.sqrt_float(f3);
+
+                if (f3 > 1.0F)
+                {
+                    f3 = 1.0F;
+                }
+
+                GL11.glRotatef(-f3 * 90, 0.0F, 0.0F, 1.0F);
+            }
+
+            GL11.glTranslatef(0, -1.5F, 0);
 
             GL11.glRotatef(((EntitySkeleton) event.entity).rotationPitch, 0, 1, 0);
             model.bipedBody.postRender(0.0625F);
