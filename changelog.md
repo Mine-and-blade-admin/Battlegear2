@@ -1,4 +1,4 @@
-== Mine & Blade: Battlegear 2 - Warcry 1.0.0 == Mc 1.6.2  
+== Mine & Blade: Battlegear 2 - Warcry 1.0.0 ==
 **New Features**
 * New update manager
 ** Displays when a new update is uploaded
@@ -8,8 +8,11 @@
 ** Dye can be removed using a bucket of water
 **Bugs Fixed**
 * Fixed an issue caused by hitting an enemy with an offhand dagger
+**Known Issues**
+* Entering a world too quickly will cause the update checker to fail
+* The scrollbar on the downloader does not work (mousewheel scrol does)
 
-== Mine & Blade: Battlegear 2 - Warcry 0.2.3 == Mc 1.6.2  
+== Mine & Blade: Battlegear 2 - Warcry 0.2.3 ==
 **New Features**
 * Added various translations (there are not many, and many are not complete)
 **Bugs Fixed**
@@ -21,7 +24,7 @@
 * Fixed issues with minecraft forge "Latest Builds"
 * Corrected the crafting recipe for the iron shield.
 
-== Mine & Blade: Battlegear 2 - Warcry 0.2.2 == Mc 1.6.2  
+== Mine & Blade: Battlegear 2 - Warcry 0.2.2 ==
 **Bugs Fixed**
 * Fixed many issues related to SMP including (but not limited to)
 ** Crash when entering SMP
@@ -35,7 +38,7 @@
 **Known Issues**
 * The synchronization is a bit "dumb". It may take up to 3 seconds to correctly update.
 
-== Mine & Blade: Battlegear 2 - Warcry 0.2.1 == Mc 1.6.2  
+== Mine & Blade: Battlegear 2 - Warcry 0.2.1 ==
 **New Features**
 * Updated to 1.6.2
 **Known Issues**

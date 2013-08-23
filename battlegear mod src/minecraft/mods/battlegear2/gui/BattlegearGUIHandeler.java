@@ -2,6 +2,7 @@ package mods.battlegear2.gui;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import mods.battlegear2.client.gui.BattleEquipGUI;
+import mods.battlegear2.client.gui.GuiDownload;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -9,6 +10,7 @@ public class BattlegearGUIHandeler implements IGuiHandler {
 
     public static final int equipID = 1;
     public static final int sigilEditor = 2;
+    public static final int downloader = 3;
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world,
@@ -32,6 +34,8 @@ public class BattlegearGUIHandeler implements IGuiHandler {
                 return new BattleEquipGUI(player, world.isRemote);
            /* case sigilEditor:
                 return new GUIHeraldry(player, true, world.isRemote);*/
+            case downloader:
+                return new GuiDownload();
             default:
                 return null;
         }

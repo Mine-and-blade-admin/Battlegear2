@@ -31,6 +31,8 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.io.File;
+
 import static mods.battlegear2.utils.BattlegearUpdateChecker.*;
 
 
@@ -62,15 +64,18 @@ public class Battlegear {
 
     public static boolean battlegearEnabled = true;
 
-    public static boolean debug = false;
-
+    public static boolean debug = true;
 
     public static Release latestRelease;
     public static boolean hasDisplayedVersionCheck;
 
+    public static File modSrc;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         //Set up the Translator
+
+        modSrc = event.getSourceFile();
         BattlegearTranslator.setup("/deobfuscation_data-" + FMLInjectionData.data()[4] + ".lzma");
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
@@ -84,10 +89,11 @@ public class Battlegear {
         BattlegearConfig.registerRecipes();
 	    GameRegistry.registerCraftingHandler(new CraftingHandeler());
 
-        QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
-        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 0, EntityExplossiveArrow.class);
-        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 1, EntityEnderArrow.class);
-
+        if(Battlegear.debug){
+            QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
+            QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 0, EntityExplossiveArrow.class);
+            QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 1, EntityEnderArrow.class);
+        }
 
 
     }

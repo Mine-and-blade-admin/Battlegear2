@@ -67,25 +67,21 @@ public class ClientProxy extends CommonProxy {
                     for(int i = 0; i < version.length; i++){
                         version[i] = Integer.parseInt(version_split[i]);
                     }
-                    Release thisVersion = new Release(Release.EnumReleaseType.Normal, null, version);
+                    Release thisVersion = new Release(Release.EnumReleaseType.Normal, null, version, null);
 
                     if(thisVersion.compareTo(Battlegear.latestRelease) < 0){
-                        StringBuffer newVersionString = new StringBuffer();
-                        for(int i = 0; i < Battlegear.latestRelease.version.length; i++){
-                            newVersionString.append(Battlegear.latestRelease.version[i]);
-                            newVersionString.append(".");
-                        }
-                        newVersionString.deleteCharAt(newVersionString.lastIndexOf("."));
-
                         if(Battlegear.latestRelease.url != null){
-                            return String.format("%s%s: %s%s (%s)",
+                            return String.format("%s%s: %s%s - %s %s - %s",
                                     EnumChatFormatting.DARK_BLUE,  mc.getName(),
-                                    EnumChatFormatting.DARK_BLUE, "New version found", newVersionString);
+                                    EnumChatFormatting.DARK_BLUE, "New version found",
+                                    EnumChatFormatting.WHITE, Battlegear.latestRelease.getVersionString(),
+                                    "type '\\mb download' to see the changelog");
                         }else{
-                            return String.format("%s%s: %s%s (%s)%s - %s",
+                            return String.format("%s%s: %s%s - %s %s - %s",
                                     EnumChatFormatting.DARK_BLUE,  mc.getName(),
-                                    EnumChatFormatting.DARK_BLUE, "New version found", newVersionString,
-                                    EnumChatFormatting.WHITE, "type '\\mb latest' to open the url");
+                                    EnumChatFormatting.DARK_BLUE, "New version found",
+                                    EnumChatFormatting.WHITE, Battlegear.latestRelease.getVersionString(),
+                                    "type '\\mb download' to view the changelog and download");
                         }
                     }else{
 
@@ -172,10 +168,12 @@ public class ClientProxy extends CommonProxy {
             MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
         }
 
-        MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
 
-        MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
+        if(Battlegear.debug){
+            MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
 
+            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
+        }
 
     }
 
