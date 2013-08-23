@@ -25,6 +25,8 @@ public class BattlegearClientTickHandeler implements ITickHandler {
     public static final float[] COLOUR_YELLOW = new float[]{1, 1F, 0.1F};
     public static int flashTimer;
 
+    public static float partialTick;
+
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
@@ -80,6 +82,8 @@ public class BattlegearClientTickHandeler implements ITickHandler {
                 }
             }
         }else if (type.contains(TickType.RENDER)){
+
+            partialTick = (Float)tickData[0];
 
             if(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu){
                 Battlegear.battlegearEnabled = false;

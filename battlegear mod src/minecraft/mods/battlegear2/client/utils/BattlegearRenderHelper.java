@@ -14,10 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderBlocks;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -28,6 +25,7 @@ import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.*;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import org.lwjgl.opengl.GL11;
@@ -40,6 +38,8 @@ public class BattlegearRenderHelper {
     private static final ItemStack dummyStack = new ItemStack(Block.lavaMoving);
 
     private static EntityLivingBase dummyEntity;
+
+    private static final ResourceLocation arrowTex = new ResourceLocation("textures/entity/arrow.png");
 
 
     public static void renderItemInFirstPerson(float frame, Minecraft mc, ItemRenderer itemRenderer, ItemStack itemToRender) {
@@ -670,6 +670,65 @@ public class BattlegearRenderHelper {
 
             GL11.glPopMatrix();
         }
+
+    }
+
+    public static void renderArrow(boolean isEntity, float x, float y, float depth, float pitch, float yaw){
+        GL11.glPushMatrix();
+
+
+        //depth = 1;
+
+        Minecraft.getMinecraft().renderEngine.func_110577_a(arrowTex);
+
+
+
+        Tessellator tessellator = Tessellator.instance;
+
+
+        byte b0 = 0;
+        float f2 = 12F/32F * depth;
+        float f3 = 0F;
+        float f4 = (float)(0 + b0 * 10) / 32.0F;
+        float f5 = (float)(5 + b0 * 10) / 32.0F;
+        float f10 = 0.05F;
+
+        GL11.glScalef(f10, f10, f10);
+        if(isEntity){
+            GL11.glScalef(1, 1, -1);
+        }
+
+        GL11.glTranslatef(x + 8 + 2.5F, y + 8 + 1.5F, 0);
+
+
+
+        GL11.glRotatef( pitch, 0.0F, 1.0F, 0.0F);
+        GL11.glRotatef( yaw, 1.0F, 0.0F, 0.0F);
+        GL11.glNormal3f(f10, 0.0F, 0.0F);
+
+
+
+        for (int i = 0; i < 2; ++i)
+        {
+            GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
+            GL11.glNormal3f(0.0F, 0.0F, f10);
+            tessellator.startDrawingQuads();
+            tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, (double)f2, (double)f4);
+            tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, (double)f3, (double)f4);
+            tessellator.addVertexWithUV(16.0D * depth, 2.0D, 0.0D, (double)f3, (double)f5);
+            tessellator.addVertexWithUV(0.0D * depth, 2.0D, 0.0D, (double)f2, (double)f5);
+            tessellator.draw();
+
+            tessellator.startDrawingQuads();
+            tessellator.addVertexWithUV(0.0D * depth, 2.0D, 0.0D, (double)f2, (double)f5);
+            tessellator.addVertexWithUV(16.0D * depth, 2.0D, 0.0D, (double)f3, (double)f5);
+            tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, (double)f3, (double)f4);
+            tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, (double)f2, (double)f4);
+            tessellator.draw();
+        }
+
+        GL11.glPopMatrix();
+
 
     }
 

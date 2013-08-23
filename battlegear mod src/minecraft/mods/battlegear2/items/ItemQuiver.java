@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mods.battlegear2.api.IArrowContainer;
@@ -13,6 +14,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+@Deprecated
 public class ItemQuiver extends Item implements IArrowContainer{
 
 	public static final String TAG = "Arrows";
@@ -23,7 +25,11 @@ public class ItemQuiver extends Item implements IArrowContainer{
 		this.setMaxStackSize(1);
 	}
 
+    public void dyeQuiver(ItemStack quiver, ArrayList<ItemStack> dyes){
 
+
+
+    }
 
 
 	@Override

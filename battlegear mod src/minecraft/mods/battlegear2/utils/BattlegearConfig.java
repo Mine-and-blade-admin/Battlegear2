@@ -66,14 +66,11 @@ public class BattlegearConfig {
         for(int i = 0; i < ItemMBArrow.names.length; i++){
             skeletonArrowSpawnRate[i] = config.get(customArrowSpawn, ItemMBArrow.names[i], i!=1?0.1F:0).getDouble(i!=1?0.1F:0);
         }
-
-
-
         StringBuffer sb = new StringBuffer();
         sb.append("This will disable the crafting recipie for the provided item/blocks.\n");
         sb.append("It should be noted that this WILL NOT remove the item from the game, it will only disable the recipe.\n");
         sb.append("In this way the items may still be obtained through creative mode and cheats, but playes will be unable to craft them.\n");
-        sb.append("These should all placed on seperate lines between the provide \'<\' and \'>\'. The valid values are: \n");
+        sb.append("These should all placed on separate lines between the provide \'<\' and \'>\'. The valid values are: \n");
 
         int count = 0;
         for(int i = 1; i < itemNames.length; i++){
