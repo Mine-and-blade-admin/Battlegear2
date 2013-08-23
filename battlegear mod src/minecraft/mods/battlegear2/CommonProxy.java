@@ -4,8 +4,11 @@ package mods.battlegear2;
 import java.util.List;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.ModContainer;
 import mods.battlegear2.utils.EnumBGAnimations;
+import mods.battlegear2.utils.Release;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -28,6 +31,59 @@ public class CommonProxy {
 
         MinecraftForge.EVENT_BUS.register(new MobHookContainerClass());
 
+    }
+
+    public String getVersionCheckerMessage(){
+        ModContainer mc = FMLCommonHandler.instance().findContainerFor(Battlegear.INSTANCE);
+        if(Battlegear.latestRelease == null){
+            return String.format("%s: %s - %s",
+                    mc.getName(), "Version Check Failed",
+                    "Could not contact server or invalid response");
+        }else{
+            String[] version_split = mc.getVersion().split("\\.");
+            int[] version = new int[version_split.length];
+            try{
+                for(int i = 0; i < version.length; i++){
+                    version[i] = Integer.parseInt(version_split[i]);
+                }
+                Release thisVersion = new Release(Release.EnumReleaseType.Normal, null, version);
+
+                if(thisVersion.compareTo(Battlegear.latestRelease) < 0){
+                    StringBuffer newVersionString = new StringBuffer();
+                    for(int i = 0; i < Battlegear.latestRelease.version.length; i++){
+                        newVersionString.append(Battlegear.latestRelease.version[i]);
+                        newVersionString.append(".");
+                    }
+                    newVersionString.deleteCharAt(newVersionString.lastIndexOf("."));
+
+                    if(Battlegear.latestRelease.url != null){
+                        return String.format("%s: %s (%s)",
+                                mc.getName(),"New version found", newVersionString);
+                    }else{
+                        return String.format("%s: %s (%s) - %s %s",
+                                mc.getName(),
+                                "New version found", newVersionString,
+                                 "download url:",Battlegear.latestRelease.url);
+                    }
+                }else{
+
+
+                    return String.format("%s: %s - %s %s",
+                            mc.getName(),
+                            "Version Up to Date",
+                            "You are running the latest version of",mc.getName());
+
+                }
+
+            }catch (NumberFormatException e){
+
+                return String.format("%s: %s - %s",
+                          mc.getName(),
+                         "Version Check Failed",
+                        "Could not determine running version");
+            }
+
+        }
     }
 
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {}
