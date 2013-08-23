@@ -1,4 +1,4 @@
-== Mine & Blade: Battlegear 2 - Warcry 1.0.0 ==
+== Mine & Blade: Battlegear 2 - Warcry 1.0.0 == Mc 1.6.2  
 **New Features**
 * New update manager
 ** Displays when a new update is uploaded
@@ -9,7 +9,7 @@
 **Bugs Fixed**
 * Fixed an issue caused by hitting an enemy with an offhand dagger
 
-== Mine & Blade: Battlegear 2 - Warcry 0.2.3 ==
+== Mine & Blade: Battlegear 2 - Warcry 0.2.3 == Mc 1.6.2  
 **New Features**
 * Added various translations (there are not many, and many are not complete)
 **Bugs Fixed**
@@ -21,7 +21,7 @@
 * Fixed issues with minecraft forge "Latest Builds"
 * Corrected the crafting recipe for the iron shield.
 
-== Mine & Blade: Battlegear 2 - Warcry 0.2.2 ==
+== Mine & Blade: Battlegear 2 - Warcry 0.2.2 == Mc 1.6.2  
 **Bugs Fixed**
 * Fixed many issues related to SMP including (but not limited to)
 ** Crash when entering SMP
@@ -35,7 +35,7 @@
 **Known Issues**
 * The synchronization is a bit "dumb". It may take up to 3 seconds to correctly update.
 
-== Mine & Blade: Battlegear 2 - Warcry 0.2.1 ==
+== Mine & Blade: Battlegear 2 - Warcry 0.2.1 == Mc 1.6.2  
 **New Features**
 * Updated to 1.6.2
 **Known Issues**
