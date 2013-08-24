@@ -9,6 +9,7 @@ import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.heraldry.HeraldyPattern;
 import mods.battlegear2.items.ItemQuiver2;
+import mods.mum.ModUpdateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderBiped;
@@ -101,22 +102,9 @@ public class BattlegearClientEvents {
         event.setResult(Event.Result.ALLOW);
     }
 
-    @ForgeSubscribe
-    public void playerJoin(EntityJoinWorldEvent event){
-        if(event.entity == Minecraft.getMinecraft().thePlayer){
-            if(!Battlegear.hasDisplayedVersionCheck){
-                ((EntityPlayer)event.entity).sendChatToPlayer(ChatMessageComponent.func_111066_d(
-
-                        Battlegear.proxy.getVersionCheckerMessage()
-
-                ));
-
-                Battlegear.hasDisplayedVersionCheck = true;
-            }
-        }
-    }
 
 
+    /*
     @ForgeSubscribe
     public void renderLiving(RenderLivingEvent.Post event){
 
@@ -176,6 +164,7 @@ public class BattlegearClientEvents {
         }
 
     }
+    */
 
     /**
      * Returns a rotation angle that is inbetween two other rotation angles. par1 and par2 are the angles between which
@@ -223,8 +212,9 @@ public class BattlegearClientEvents {
     public void onSoundLoad(SoundLoadEvent event){
         try
         {
-            for(int i = 0; i < 10; i++)
+            for(int i = 0; i < 10; i++){
                 event.manager.soundPoolSounds.addSound(String.format("%s:%s%s.wav", "battlegear2", "shield", i));
+            }
 
         }
         catch (Exception e)

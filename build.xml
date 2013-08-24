@@ -10,7 +10,7 @@
     </condition>
 
     <target name="clean">
-        <delete dir="dist"/>
+        <delete dir="battlegear dist"/>
     </target>
 
 
@@ -63,6 +63,7 @@
             <fileset dir="." includes="bg-logo.png"/>
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
+                <attribute name="Main-Class" value="mods.mum.utils.FileDeleter"/>
                 <attribute name="FMLCorePlugin" value="${loadingPlugin}"/>
                 <attribute name="FMLCorePluginContainsFMLMod" value="${containsMod}"/>
             </manifest>

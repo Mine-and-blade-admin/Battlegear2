@@ -12,16 +12,14 @@ import mods.battlegear2.items.arrows.EntityExplossiveArrow;
 import mods.battlegear2.packet.*;
 import mods.battlegear2.recipies.CraftingHandeler;
 import mods.battlegear2.utils.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.crash.CallableMinecraftVersion;
-import net.minecraft.entity.player.EntityPlayer;
+import mods.mum.ModUpdateManager;
+import mods.mum.Release;
+import mods.mum.BattlegearCommands;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.network.rcon.RConConsoleSource;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatMessageComponent;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -29,11 +27,10 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
-import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
-
-import static mods.battlegear2.utils.BattlegearUpdateChecker.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 @Mod(modid="battlegear2")
@@ -64,24 +61,25 @@ public class Battlegear {
 
     public static boolean battlegearEnabled = true;
 
-    public static boolean debug = true;
-
-    public static Release latestRelease;
-    public static boolean hasDisplayedVersionCheck;
-
-    public static File modSrc;
+    public static boolean debug = false;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         //Set up the Translator
 
-        modSrc = event.getSourceFile();
         BattlegearTranslator.setup("/deobfuscation_data-" + FMLInjectionData.data()[4] + ".lzma");
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
 
-        Thread t = new Thread(new UpdateThread(Release.EnumReleaseType.Beta));
-        t.start();
+        try {
+            ModUpdateManager.registerMod(
+                    FMLCommonHandler.instance().findContainerFor(this),
+                    new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml"),
+                    new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/changelog.md")
+                    );
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
     @EventHandler
@@ -109,40 +107,5 @@ public class Battlegear {
         GameRegistry.registerPlayerTracker(new BgPlayerTracker());
 
 
-    }
-
-    @EventHandler
-    public void serverStarting(FMLServerStartingEvent event){
-        if(FMLCommonHandler.instance().getSide() == Side.SERVER){
-            RConConsoleSource.consoleBuffer.sendChatToPlayer(ChatMessageComponent.func_111066_d(proxy.getVersionCheckerMessage()));
-        }
-
-        event.registerServerCommand(new BattlegearCommands());
-    }
-
-
-
-
-    public static class UpdateThread implements Runnable{
-
-        private String modid;
-        private String minecraftVersion;
-        private Release.EnumReleaseType level;
-
-        public UpdateThread(Release.EnumReleaseType level) {
-            this.level = level;
-            this.minecraftVersion = Loader.instance().getMCVersionString().replaceAll("Minecraft ", "");
-            ModContainer mc = FMLCommonHandler.instance().findContainerFor(INSTANCE);
-            this.modid = mc.getModId();
-        }
-
-        @Override
-        public void run() {
-
-            BattlegearUpdateChecker buc = new BattlegearUpdateChecker("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml");
-
-            latestRelease = buc.getUpToDateRelease(modid, minecraftVersion, level);
-            hasDisplayedVersionCheck = false;
-        }
     }
 }
