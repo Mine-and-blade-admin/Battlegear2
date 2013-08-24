@@ -1,0 +1,16 @@
+mum.name=Mod Update Manager
+message.checking=Checking for updated versions of mods.
+message.check.done=Checking done
+message.you.have=You have
+message.outdated=Outdated Mods
+message.type=Use the command
+message.to.view=to view outdated mods
+message.up.to.date=All mods up to date
+
+button.download.latest=Download Latest
+gui.downloading=Downloading
+button.close=Close
+button.ok=Ok
+gui.download.complete=Download Successful
+gui.download.failed=Download Failed
+gui.restart=Please Restart Minecraft

@@ -1,7 +1,7 @@
-package mods.battlegear2.utils;
+package mods.mum;
 
-
-import mods.battlegear2.Battlegear;
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.common.Loader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -9,29 +9,41 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.TreeSet;
+import java.util.*;
 
-public class BattlegearUpdateChecker {
-    private final String updateURL;
+public class UpdateChecker implements Runnable{
+    private Collection<UpdateEntry> updateEntries;
 
-    public static void main(String[] arge){
-        BattlegearUpdateChecker buc = new BattlegearUpdateChecker("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml");
-
-        System.out.println(buc.getUpToDateRelease("battlegear2", "1.5.2", Battlegear.debug?Release.EnumReleaseType.Dev:Release.EnumReleaseType.Normal));
-    }
-
-    public BattlegearUpdateChecker(String updateUrl){
-        this.updateURL = updateUrl;
+    public UpdateChecker(Collection<UpdateEntry> entries){
+        updateEntries = entries;
     }
 
 
-    public Release getUpToDateRelease(String modId, String targetVersion, Release.EnumReleaseType versionLevel){
+    @Override
+    public void run() {
+        //Map<String, Release> latestReleases = new HashMap<String, Release>();
+
+        for(UpdateEntry entry:updateEntries){
+            Release latest = getUpToDateRelease(
+                    entry.getMc().getModId(),
+                    Loader.instance().getMCVersionString().replaceAll("Minecraft ", ""),
+                    Release.EnumReleaseType.Normal,
+                    entry.getUpdateXML()
+            );
+
+            entry.setLatest(latest);
+        }
+
+        ModUpdateManager.notifyUpdateDone();
+
+    }
+
+    public Release getUpToDateRelease(String modId, String targetMcVersion, Release.EnumReleaseType versionLevel, URL updateURL){
         try{
 
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc = db.parse(new URL(updateURL).openStream());
+            Document doc = db.parse(updateURL.openStream());
 
             NodeList mods = doc.getElementsByTagName("mod");
 
@@ -49,7 +61,7 @@ public class BattlegearUpdateChecker {
 
                         if(mcVersion.hasAttributes() &&
                                 mcVersion.getAttributes().getNamedItem("version") != null &&
-                                mcVersion.getAttributes().getNamedItem("version").getNodeValue().equals(targetVersion)){
+                                mcVersion.getAttributes().getNamedItem("version").getNodeValue().equals(targetMcVersion)){
 
                             NodeList releasNodes = mcVersion.getChildNodes();
                             for(int k = 0; k < releasNodes.getLength(); k++){
@@ -83,6 +95,8 @@ public class BattlegearUpdateChecker {
 
 
     }
+
+
 
     private Release parseNode(Node item, Release.EnumReleaseType versionLevel) {
         if(item.hasAttributes()){

@@ -68,11 +68,3 @@ attribute.shield.block.time=s Block
 attribute.shield.arrow.count=Arrows
 attribute.quiver.arrow.empty=Empty
 attribute.quiver.arrow.count=Arrows
-
-
-button.download=Download
-gui.downloading=Downloading
-button.close=Close
-gui.download.complete=Download Successful
-gui.download.failed=Download Failed
-gui.restart=Please Restart Minecraft

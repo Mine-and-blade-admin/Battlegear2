@@ -1,4 +1,4 @@
-package mods.battlegear2.utils;
+package mods.mum;
 
 import mods.battlegear2.Battlegear;
 
@@ -33,8 +33,8 @@ public  class Release implements Comparable<Release>{
 
     public String getVersionString(){
         StringBuffer newVersionString = new StringBuffer();
-        for(int i = 0; i < Battlegear.latestRelease.version.length; i++){
-            newVersionString.append(Battlegear.latestRelease.version[i]);
+        for(int i = 0; i < version.length; i++){
+            newVersionString.append(version[i]);
             newVersionString.append(".");
         }
         newVersionString.deleteCharAt(newVersionString.lastIndexOf("."));
