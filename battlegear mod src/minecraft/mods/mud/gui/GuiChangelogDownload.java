@@ -1,12 +1,9 @@
-package mods.mum.gui;
+package mods.mud.gui;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import mods.battlegear2.Battlegear;
-import mods.mum.ModUpdateManager;
-import mods.mum.UpdateEntry;
+import mods.mud.ModUpdateDetector;
+import mods.mud.UpdateEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
@@ -14,7 +11,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -23,7 +19,6 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.List;
 
@@ -51,16 +46,21 @@ public class GuiChangelogDownload extends GuiScreen
     private float downloadPercent;
     private String message;
 
-
+    private GuiScreen parent;
     private char[] bullets = new char[]{0x2219, 0x25E6, 0x2023};
     private int[] bulletWidth = new int[3];
 
     private Thread getChangeLogThread;
 
-    public GuiChangelogDownload()
-    {
+    public GuiChangelogDownload(GuiScreen parent){
+        System.out.println(parent);
+        this.parent = parent;
         changelog = new String[]{"Loading Changelog from server"};
-        this.entries=new ArrayList<UpdateEntry>(ModUpdateManager.getAllUpdateEntries());
+        this.entries=new ArrayList<UpdateEntry>(ModUpdateDetector.getAllUpdateEntries());
+    }
+
+    public GuiChangelogDownload(){
+        this(null);
     }
 
     @Override
@@ -84,8 +84,8 @@ public class GuiChangelogDownload extends GuiScreen
         download.enabled = false;
         close1 = new GuiButton(5, width-30-150, height-35, 150, 20, StatCollector.translateToLocal("button.close"));
         ok = new GuiButton(6, (width - 200)/2 + 5, (height - 150)/2+115, 190, 20, StatCollector.translateToLocal("button.ok"));
-        ok.drawButton = false;
-        ok.enabled = false;
+        ok.drawButton = isDownloading;
+        ok.enabled = downloadComplete || downloadFailed;
 
 
         buttonList.add(download);
@@ -96,7 +96,11 @@ public class GuiChangelogDownload extends GuiScreen
     protected void keyTyped(char par1, int par2)
     {
         if(!isDownloading){
-            super.keyTyped(par1, par2);
+            if (par2 == 1)
+            {
+                this.mc.displayGuiScreen((GuiScreen)parent);
+                this.mc.setIngameFocus();
+            }
         }
     }
 
@@ -127,8 +131,8 @@ public class GuiChangelogDownload extends GuiScreen
                             download.enabled = false;
                         return;
                     case 5:
-                        this.mc.displayGuiScreen(null);
-                        this.mc.setIngameFocus();
+                        this.mc.displayGuiScreen((GuiScreen)parent);
+                        //this.mc.setIngameFocus();
                         return;
                     case 6:
                         isDownloading = false;
@@ -375,11 +379,15 @@ public class GuiChangelogDownload extends GuiScreen
             this.orginial = originalFile;
             if(md5 != null){
                 try{
-                    this.expectedMd5 =  DatatypeConverter.parseHexBinary(md5);
+                    this.expectedMd5 =  DatatypeConverter.parseHexBinary(md5.toUpperCase());
                 }catch (Exception e){
+                    e.printStackTrace();
                     this.expectedMd5 = null;
                 }
             }
+
+            System.out.println(md5);
+
         }
 
         @Override
@@ -444,6 +452,10 @@ public class GuiChangelogDownload extends GuiScreen
                                 dis.close();
                             }catch (Exception ex){}
                         }
+
+                        downloadFailed = true;
+                        ok.enabled = true;
+
                     }
                 }else{
                     downloadComplete = true;
@@ -453,12 +465,13 @@ public class GuiChangelogDownload extends GuiScreen
 
                 if(downloadComplete &&
                         orginial.exists() &&
-                        !orginial.getName().equals(file.getName())
+                        !orginial.getName().equals(file.getName()) &&
+                        !World.class.getName().equals("net.minecraft.world.World")
                         ){
                     System.out.println("Deleting: "+orginial.getAbsolutePath());
                     if(!orginial.delete()){
                         System.out.println("Deleting failed, spawning new process to delete");
-                        String cmd = "java -classpath \""+file.getAbsolutePath()+"\" mods.mum.utils.FileDeleter \""+orginial.getAbsolutePath()+"\"";
+                        String cmd = "java -classpath \""+file.getAbsolutePath()+"\" mods.mud.utils.FileDeleter \""+orginial.getAbsolutePath()+"\"";
                         System.out.println(cmd);
                         Runtime.getRuntime().exec(cmd);
                     }

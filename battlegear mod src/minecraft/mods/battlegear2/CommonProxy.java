@@ -1,10 +1,7 @@
 package mods.battlegear2;
 
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ModContainer;
 import mods.battlegear2.utils.EnumBGAnimations;
-import mods.mum.Release;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MovingObjectPosition;
