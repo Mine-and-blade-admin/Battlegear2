@@ -68,6 +68,7 @@
                 <attribute name="FMLCorePluginContainsFMLMod" value="${containsMod}"/>
             </manifest>
         </jar>
+        <checksum file="${dist.dir}/${mcversion}-${dist.name}-${mod.version}.jar"/>
     </target>
 
     <target name="reob-unix" unless="is_windows">

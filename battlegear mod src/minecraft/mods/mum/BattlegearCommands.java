@@ -1,19 +1,12 @@
 package mods.mum;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
-import mods.battlegear2.Battlegear;
-import mods.battlegear2.gui.BattlegearGUIHandeler;
-import mods.battlegear2.packet.BattlegearGUIPacket;
-import mods.mum.gui.ModListGui;
+import mods.mum.gui.GuiChangelogDownload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet100OpenWindow;
 
 import java.util.List;
 
@@ -43,7 +36,7 @@ public class BattlegearCommands extends CommandBase{
     public void processCommand(ICommandSender icommandsender, String[] astring) {
         if(icommandsender instanceof EntityPlayer){
             if(FMLCommonHandler.instance().getSide() == Side.CLIENT){
-                ModListGui gui = new ModListGui();
+                GuiChangelogDownload gui = new GuiChangelogDownload();
                 Minecraft.getMinecraft().displayGuiScreen(gui);
             }
 

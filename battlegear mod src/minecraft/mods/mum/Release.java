@@ -9,12 +9,18 @@ public  class Release implements Comparable<Release>{
     public EnumReleaseType type;
     public String url;
     public String download;
+    public String md5;
 
     public Release(EnumReleaseType type, String url, int[] version, String download) {
+        this(type, url, version, download, null);
+    }
+
+    public Release(EnumReleaseType type, String url, int[] version, String download, String md5) {
         this.type = type;
         this.url = url;
         this.version = version;
         this.download = download;
+        this.md5 = md5;
     }
 
     @Override

@@ -105,14 +105,16 @@ public class UpdateChecker implements Runnable{
             Node typeNode = item.getAttributes().getNamedItem("type");
             String url = null;
             String download = null;
+            String md5 = null;
             if(item.getAttributes().getNamedItem("url") != null){
                 url = item.getAttributes().getNamedItem("url").getNodeValue();
+            }
+            if(item.getAttributes().getNamedItem("md5") != null){
+                url = item.getAttributes().getNamedItem("md5").getNodeValue();
             }
             if(item.getAttributes().getNamedItem("download") != null){
                 download = item.getAttributes().getNamedItem("download").getNodeValue();
             }
-
-
             Release.EnumReleaseType releaseType = Release.EnumReleaseType.Normal;
             if(typeNode != null){
                 if(typeNode.getNodeValue().equalsIgnoreCase("beta")){
@@ -134,7 +136,7 @@ public class UpdateChecker implements Runnable{
                     }
                 }
 
-                return new Release(releaseType, url, version, download);
+                return new Release(releaseType, url, version, download, md5);
             }else{
                 return null;
             }
