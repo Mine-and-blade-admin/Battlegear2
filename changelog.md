@@ -1,3 +1,9 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.1 ==
+**New Features**
+* A mod url button has been added to M.U.D.
+**Bugs Fixed**
+* M.U.D. will check for updates every hour rather than every minute
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.0 ==
 **New Features**
 * New update manager (M.U.D)
@@ -9,6 +15,8 @@
 **Bugs Fixed**
 * Fixed an issue caused by hitting an enemy with an offhand dagger
 * Fixed a rendering issue where the bow animation would activate while it is sheathed
+**Known Issues**
+* M.U.D. checks for updates every minute
 
 == Mine & Blade: Battlegear 2 - Warcry 0.2.3 ==
 **New Features**

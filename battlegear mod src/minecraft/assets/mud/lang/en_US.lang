@@ -11,6 +11,7 @@ button.download.latest=Download Latest
 gui.downloading=Downloading
 button.close=Close
 button.ok=Ok
+button.url=Open mod webpage
 gui.download.complete=Download Successful
 gui.download.failed=Download Failed
 gui.restart=Please Restart Minecraft
