@@ -23,6 +23,7 @@ public class ModUpdateDetector {
     
     private static boolean hasInitialised = false;
     private static Map<String, UpdateEntry> updateMap;
+    public static boolean hasChecked = false;
 
     /*
      * The time between update checks in minutes.
@@ -85,10 +86,12 @@ public class ModUpdateDetector {
 
     public static void notifyUpdateDone(){
         ICommandSender sender = getSender();
-        sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
-                EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
-                        EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.check.done")
-        ));
+        if(sender != null){
+            sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
+                    EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
+                            EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.check.done")
+            ));
+        }
 
         int outOfDateCount = 0;
         int failedCount = 0;
@@ -102,23 +105,26 @@ public class ModUpdateDetector {
             }
         }
         if(outOfDateCount > 0){
-            sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
-                    String.format("%s%s %s %s",
-                    EnumChatFormatting.RED, StatCollector.translateToLocal("message.you.have"),
-                            outOfDateCount, StatCollector.translateToLocal("message.outdated"))
-            ));
-            sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
-                    String.format("%s%s %s %s",
-                            EnumChatFormatting.RED, StatCollector.translateToLocal("message.type"),
-                            "/mud", StatCollector.translateToLocal("message.to.view"))
-            ));
+            if(sender != null){
+                sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
+                        String.format("%s%s %s %s",
+                        EnumChatFormatting.RED, StatCollector.translateToLocal("message.you.have"),
+                                outOfDateCount, StatCollector.translateToLocal("message.outdated"))
+                ));
+                sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
+                        String.format("%s%s %s %s",
+                                EnumChatFormatting.RED, StatCollector.translateToLocal("message.type"),
+                                "/mud", StatCollector.translateToLocal("message.to.view"))
+                ));
+            }
         }else{
-            sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
-                    String.format("%s%s",
-                            EnumChatFormatting.DARK_GREEN, StatCollector.translateToLocal("message.up.to.date"))
-            ));
+            if(sender != null){
+                sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
+                        String.format("%s%s",
+                                EnumChatFormatting.DARK_GREEN, StatCollector.translateToLocal("message.up.to.date"))
+                ));
+            }
         }
-
-
+        hasChecked = true;
     }
 }

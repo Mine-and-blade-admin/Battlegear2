@@ -68,8 +68,6 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
                     hasMumButton = hasMumButton || o instanceof GuiModUpdateButton;
                 }
                 if(!hasMumButton){
-                    System.out.println("Add button");
-                    System.out.println(Minecraft.getMinecraft().currentScreen);
                     buttonList.add(new GuiModUpdateButton(99, x, y,125, 20, Minecraft.getMinecraft().currentScreen));
                 }
                 lastScreen = Minecraft.getMinecraft().currentScreen;

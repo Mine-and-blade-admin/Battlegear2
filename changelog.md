@@ -1,6 +1,6 @@
 == Mine & Blade: Battlegear 2 - Warcry 1.0.0 ==
 **New Features**
-* New update manager
+* New update manager (M.U.D)
 ** Displays when a new update is uploaded
 ** Allows a user to download the new version from inside minecraft.
 * Shields are now dyabe
