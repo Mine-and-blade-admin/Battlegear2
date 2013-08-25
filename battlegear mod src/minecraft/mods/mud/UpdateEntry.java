@@ -1,7 +1,7 @@
-package mods.mum;
+package mods.mud;
 
 import cpw.mods.fml.common.ModContainer;
-import mods.mum.exceptions.UnknownVersionFormatException;
+import mods.mud.exceptions.UnknownVersionFormatException;
 
 import java.net.URL;
 

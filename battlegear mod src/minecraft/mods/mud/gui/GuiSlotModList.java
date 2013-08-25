@@ -1,11 +1,11 @@
-package mods.mum.gui;
+package mods.mud.gui;
 
 import cpw.mods.fml.client.GuiScrollingList;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.LoaderState;
 import cpw.mods.fml.common.ModContainer;
-import mods.mum.UpdateEntry;
-import mods.mum.exceptions.UnknownVersionFormatException;
+import mods.mud.UpdateEntry;
+import mods.mud.exceptions.UnknownVersionFormatException;
 import net.minecraft.client.renderer.Tessellator;
 
 import java.util.ArrayList;

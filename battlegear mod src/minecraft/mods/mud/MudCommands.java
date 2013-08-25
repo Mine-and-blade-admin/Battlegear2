@@ -1,8 +1,8 @@
-package mods.mum;
+package mods.mud;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
-import mods.mum.gui.GuiChangelogDownload;
+import mods.mud.gui.GuiChangelogDownload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -10,11 +10,11 @@ import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.List;
 
-public class BattlegearCommands extends CommandBase{
+public class MudCommands extends CommandBase{
 
     @Override
     public String getCommandName() {
-        return "mum";
+        return "mud";
     }
 
     @Override

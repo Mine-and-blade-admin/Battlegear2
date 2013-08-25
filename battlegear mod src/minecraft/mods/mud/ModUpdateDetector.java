@@ -1,11 +1,10 @@
-package mods.mum;
+package mods.mud;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.Side;
-import mods.mum.exceptions.UnknownVersionFormatException;
+import mods.battlegear2.WeaponHookContainerClass;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommandSender;
@@ -13,13 +12,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ModUpdateManager {
+public class ModUpdateDetector {
     
     private static boolean hasInitialised = false;
     private static Map<String, UpdateEntry> updateMap;
@@ -28,7 +28,7 @@ public class ModUpdateManager {
      * The time between update checks in minutes.
      * A value <=0 will only run the updater when a player joins the world.
      */
-    private static int Timer = 15*20;
+    private static int Timer = 60*20;
     private static MinecraftServer server;
 
 
@@ -46,14 +46,14 @@ public class ModUpdateManager {
         if(server == null || server != FMLCommonHandler.instance().getMinecraftServerInstance()){
             server = FMLCommonHandler.instance().getMinecraftServerInstance();
             CommandHandler ch = (CommandHandler) server.getCommandManager();
-            ch.registerCommand(new BattlegearCommands());
+            ch.registerCommand(new MudCommands());
 
         }
 
 
         ICommandSender sender = getSender();
         sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
-                EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mum.name") +
+                EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
                 EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.checking")
         ));
 
@@ -68,8 +68,10 @@ public class ModUpdateManager {
 
     private static void initialise() {
         updateMap = new HashMap<String, UpdateEntry>();
-        TickRegistry.registerTickHandler(new ModUpdateManagerTickHandeler(Timer), Side.CLIENT);
-
+        TickRegistry.registerTickHandler(new ModUpdateDetectorTickHandeler(Timer), Side.CLIENT);
+        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
+            MinecraftForge.EVENT_BUS.register(new WeaponHookContainerClass());
+        }
     }
 
     public static ICommandSender getSender() {
@@ -84,7 +86,7 @@ public class ModUpdateManager {
     public static void notifyUpdateDone(){
         ICommandSender sender = getSender();
         sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
-                EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mum.name") +
+                EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
                         EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.check.done")
         ));
 
@@ -108,7 +110,7 @@ public class ModUpdateManager {
             sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
                     String.format("%s%s %s %s",
                             EnumChatFormatting.RED, StatCollector.translateToLocal("message.type"),
-                            "/mum", StatCollector.translateToLocal("message.to.view"))
+                            "/mud", StatCollector.translateToLocal("message.to.view"))
             ));
         }else{
             sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
