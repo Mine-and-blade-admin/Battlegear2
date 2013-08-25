@@ -1,6 +1,5 @@
-package mods.mum;
+package mods.mud;
 
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.Loader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -34,7 +33,7 @@ public class UpdateChecker implements Runnable{
             entry.setLatest(latest);
         }
 
-        ModUpdateManager.notifyUpdateDone();
+        ModUpdateDetector.notifyUpdateDone();
 
     }
 
@@ -110,7 +109,7 @@ public class UpdateChecker implements Runnable{
                 url = item.getAttributes().getNamedItem("url").getNodeValue();
             }
             if(item.getAttributes().getNamedItem("md5") != null){
-                url = item.getAttributes().getNamedItem("md5").getNodeValue();
+                md5 = item.getAttributes().getNamedItem("md5").getNodeValue();
             }
             if(item.getAttributes().getNamedItem("download") != null){
                 download = item.getAttributes().getNamedItem("download").getNodeValue();

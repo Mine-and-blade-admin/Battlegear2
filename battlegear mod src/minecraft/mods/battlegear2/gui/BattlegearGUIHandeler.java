@@ -2,7 +2,7 @@ package mods.battlegear2.gui;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import mods.battlegear2.client.gui.BattleEquipGUI;
-import mods.mum.gui.GuiChangelogDownload;
+import mods.mud.gui.GuiChangelogDownload;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 

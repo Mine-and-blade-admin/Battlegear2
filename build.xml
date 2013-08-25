@@ -63,7 +63,7 @@
             <fileset dir="." includes="bg-logo.png"/>
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
-                <attribute name="Main-Class" value="mods.mum.utils.FileDeleter"/>
+                <attribute name="Main-Class" value="mods.mud.utils.FileDeleter"/>
                 <attribute name="FMLCorePlugin" value="${loadingPlugin}"/>
                 <attribute name="FMLCorePluginContainsFMLMod" value="${containsMod}"/>
             </manifest>

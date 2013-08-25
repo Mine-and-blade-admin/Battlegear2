@@ -3,7 +3,6 @@ package mods.battlegear2;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.QuiverArrowRegistry;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
@@ -12,14 +11,10 @@ import mods.battlegear2.items.arrows.EntityExplossiveArrow;
 import mods.battlegear2.packet.*;
 import mods.battlegear2.recipies.CraftingHandeler;
 import mods.battlegear2.utils.*;
-import mods.mum.ModUpdateManager;
-import mods.mum.Release;
-import mods.mum.BattlegearCommands;
+import mods.mud.ModUpdateDetector;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.network.rcon.RConConsoleSource;
-import net.minecraft.util.ChatMessageComponent;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -28,7 +23,6 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -72,11 +66,11 @@ public class Battlegear {
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
 
         try {
-            ModUpdateManager.registerMod(
+            ModUpdateDetector.registerMod(
                     FMLCommonHandler.instance().findContainerFor(this),
                     new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml"),
                     new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/changelog.md")
-                    );
+            );
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }

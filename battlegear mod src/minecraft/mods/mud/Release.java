@@ -1,6 +1,4 @@
-package mods.mum;
-
-import mods.battlegear2.Battlegear;
+package mods.mud;
 
 import java.util.Arrays;
 

@@ -1,4 +1,4 @@
-package mods.mum.utils;
+package mods.mud.utils;
 
 import java.io.File;
 

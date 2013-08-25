@@ -8,9 +8,7 @@
 ** Dye can be removed using a bucket of water
 **Bugs Fixed**
 * Fixed an issue caused by hitting an enemy with an offhand dagger
-**Known Issues**
-* Entering a world too quickly will cause the update checker to fail
-* The scrollbar on the downloader does not work (mousewheel scrol does)
+* Fixed a rendering issue where the bow animation would activate while it is sheathed
 
 == Mine & Blade: Battlegear 2 - Warcry 0.2.3 ==
 **New Features**
