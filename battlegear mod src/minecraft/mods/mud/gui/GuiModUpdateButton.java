@@ -50,14 +50,7 @@ public class GuiModUpdateButton extends GuiButton{
         for(int i = 0; i < text.size() && i < 2; i++){
             drawCenteredString(par1Minecraft.fontRenderer, text.get(i), (int)(scale*(xPosition+20+40)), (int)(scale*((yPosition+3)+par1Minecraft.fontRenderer.FONT_HEIGHT*i)), l);
         }
-
-
         GL11.glScalef(scale, scale, scale);
-
-
-
-
-
     }
 
     @Override

@@ -29,7 +29,7 @@ public class ModUpdateDetector {
      * The time between update checks in minutes.
      * A value <=0 will only run the updater when a player joins the world.
      */
-    private static int Timer = 60*20;
+    private static int Timer = 60*60*20;
     private static MinecraftServer server;
 
 

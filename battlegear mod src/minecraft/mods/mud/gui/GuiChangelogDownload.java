@@ -16,8 +16,11 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import javax.xml.bind.DatatypeConverter;
+import java.awt.*;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.util.*;
@@ -54,10 +57,7 @@ public class GuiChangelogDownload extends GuiScreen
 
     private Thread getChangeLogThread;
 
-
-
     public GuiChangelogDownload(GuiScreen parent){
-        System.out.println(parent);
         this.parent = parent;
         changelog = new String[]{"Loading Changelog from server"};
         if(!ModUpdateDetector.hasChecked){
@@ -92,8 +92,8 @@ public class GuiChangelogDownload extends GuiScreen
         download.enabled = false;
         close1 = new GuiButton(5, width-15-125, height-35, 125, 20, StatCollector.translateToLocal("button.close"));
         ok = new GuiButton(6, (width - 200)/2 + 5, (height - 150)/2+115, 190, 20, StatCollector.translateToLocal("button.ok"));
-        urlButton = new GuiButton(6, (width - 125)/2, height-35, 125, 20, StatCollector.translateToLocal("button.url"));
-
+        urlButton = new GuiButton(7, (width - 125)/2, height-35, 125, 20, StatCollector.translateToLocal("button.url"));
+        urlButton.enabled = false;
         ok.drawButton = isDownloading;
         ok.enabled = downloadComplete || downloadFailed;
 
@@ -101,7 +101,7 @@ public class GuiChangelogDownload extends GuiScreen
         buttonList.add(download);
         buttonList.add(close1);
         buttonList.add(ok);
-        //buttonList.add(urlButton);
+        buttonList.add(urlButton);
     }
 
     protected void keyTyped(char par1, int par2)
@@ -132,7 +132,7 @@ public class GuiChangelogDownload extends GuiScreen
                                     mc.getName(),
                                     selectedMod.getLatest().getVersionString());
                             File newFile = new File(mc.getSource().getParent(), filename);
-                            Thread t = new Thread(new Downloader(selectedMod.getLatest().url,
+                            Thread t = new Thread(new Downloader(selectedMod.getLatest().download,
                                     newFile, mc.getSource(), selectedMod.getLatest().md5
                             ));
                             t.start();
@@ -140,6 +140,7 @@ public class GuiChangelogDownload extends GuiScreen
                             ok.drawButton = true;
                             close1.enabled = false;
                             download.enabled = false;
+                            urlButton.enabled = false;
                         return;
                     case 5:
                         this.mc.displayGuiScreen((GuiScreen)parent);
@@ -151,6 +152,18 @@ public class GuiChangelogDownload extends GuiScreen
                         downloadFailed = false;
                         ok.drawButton = false;
                         close1.enabled = true;
+                        urlButton.enabled=true;
+                        return;
+                    case 7:
+                        if(selectedMod != null && selectedMod.getLatest() != null && selectedMod.getLatest().url != null){
+                            try {
+                                Desktop.getDesktop().browse(new URI(selectedMod.getLatest().url));
+                            } catch (IOException e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            }catch (URISyntaxException e) {
+                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            }
+                        }
                         return;
                 }
             }
@@ -323,6 +336,8 @@ public class GuiChangelogDownload extends GuiScreen
                 this.selectedMod=null;
             }
 
+            urlButton.enabled = selectedMod!=null && selectedMod.getLatest()!=null && selectedMod.getLatest().url!=null;
+
             if(selectedMod.getChangelogURL() == null){
                 changelog = new String[]{"No Changelog Provided"};
             }else{
@@ -438,8 +453,8 @@ public class GuiChangelogDownload extends GuiScreen
                         dis.close();
                         byte[] md5 = md.digest(fileData);
 
-                        System.out.println("Expected MD5: "+Arrays.toString(expectedMd5));
-                        System.out.println("File MD5: "+Arrays.toString(md5));
+                        System.out.println("Expected MD5: "+bytArrayToHex(expectedMd5));
+                        System.out.println("File MD5: "+bytArrayToHex(md5));
 
                         if(Arrays.equals(md5, expectedMd5)){
                             downloadComplete = true;
@@ -451,7 +466,7 @@ public class GuiChangelogDownload extends GuiScreen
                             ok.enabled = true;
                             message = StatCollector.translateToLocal("gui.md5.fail");
 
-                            file.delete();
+                            //file.delete();
 
                         }
 
@@ -497,5 +512,12 @@ public class GuiChangelogDownload extends GuiScreen
         }
 
 
+    }
+
+    String bytArrayToHex(byte[] a) {
+        StringBuilder sb = new StringBuilder();
+        for(byte b: a)
+            sb.append(String.format("%02x", b&0xff));
+        return sb.toString();
     }
 }
