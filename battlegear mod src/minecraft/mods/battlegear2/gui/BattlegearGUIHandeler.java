@@ -2,7 +2,7 @@ package mods.battlegear2.gui;
 
 import cpw.mods.fml.common.network.IGuiHandler;
 import mods.battlegear2.client.gui.BattleEquipGUI;
-import mods.mum.gui.ModListGui;
+import mods.mum.gui.GuiChangelogDownload;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -35,7 +35,7 @@ public class BattlegearGUIHandeler implements IGuiHandler {
            /* case sigilEditor:
                 return new GUIHeraldry(player, true, world.isRemote);*/
             case downloader:
-                return new ModListGui();
+                return new GuiChangelogDownload();
             default:
                 return null;
         }

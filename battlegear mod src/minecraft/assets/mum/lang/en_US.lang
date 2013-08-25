@@ -14,3 +14,4 @@ button.ok=Ok
 gui.download.complete=Download Successful
 gui.download.failed=Download Failed
 gui.restart=Please Restart Minecraft
+gui.md5.fail=Corrupt or invalid download

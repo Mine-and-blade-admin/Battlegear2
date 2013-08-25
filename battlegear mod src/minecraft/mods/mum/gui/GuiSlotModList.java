@@ -1,6 +1,5 @@
 package mods.mum.gui;
 
-import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.client.GuiScrollingList;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.LoaderState;
@@ -15,10 +14,10 @@ import java.util.List;
 
 public class GuiSlotModList extends GuiScrollingList
 {
-    private ModListGui parent;
+    private GuiChangelogDownload parent;
     private List<UpdateEntry> entries;
 
-    public GuiSlotModList(ModListGui parent, Collection<UpdateEntry> entries, int listWidth)
+    public GuiSlotModList(GuiChangelogDownload parent, Collection<UpdateEntry> entries, int listWidth)
     {
         super(parent.getMinecraftInstance(), listWidth, parent.height, 32, parent.height - 65 + 4, 10, 25);
         this.parent=parent;

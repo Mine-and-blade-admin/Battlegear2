@@ -18,13 +18,16 @@ import net.minecraftforge.common.MinecraftForge;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.List;
 
-public class ModListGui extends GuiScreen
+public class GuiChangelogDownload extends GuiScreen
 {
     private GuiSlotModList modList;
     private int selected = -1;
@@ -46,6 +49,7 @@ public class ModListGui extends GuiScreen
     private boolean downloadComplete = false;
     private boolean downloadFailed = false;
     private float downloadPercent;
+    private String message;
 
 
     private char[] bullets = new char[]{0x2219, 0x25E6, 0x2023};
@@ -53,7 +57,7 @@ public class ModListGui extends GuiScreen
 
     private Thread getChangeLogThread;
 
-    public ModListGui()
+    public GuiChangelogDownload()
     {
         changelog = new String[]{"Loading Changelog from server"};
         this.entries=new ArrayList<UpdateEntry>(ModUpdateManager.getAllUpdateEntries());
@@ -114,7 +118,7 @@ public class ModListGui extends GuiScreen
                                     selectedMod.getLatest().getVersionString());
                             File newFile = new File(mc.getSource().getParent(), filename);
                             Thread t = new Thread(new Downloader(selectedMod.getLatest().url,
-                                    newFile, mc.getSource()
+                                    newFile, mc.getSource(), selectedMod.getLatest().md5
                             ));
                             t.start();
                             isDownloading = true;
@@ -203,12 +207,16 @@ public class ModListGui extends GuiScreen
 
             if(downloadComplete){
                 drawCenteredString(fontRenderer, StatCollector.translateToLocal("gui.download.complete"), width/2, y + 70, 0xFF44FF44);
-                drawCenteredString(fontRenderer, StatCollector.translateToLocal("gui.restart"), width/2, y + 85, 0xFFFFFFFF);
             }
 
             if(downloadFailed){
                 drawCenteredString(fontRenderer, StatCollector.translateToLocal("gui.download.failed"), width/2, y + 70, 0xFFFF0000);
             }
+
+            if(message != null){
+                drawCenteredString(fontRenderer, message, width/2, y + 85, 0xFFFFFFFF);
+            }
+
             ok.drawButton(mc, p_571_1_, p_571_2_);
 
         }
@@ -358,11 +366,20 @@ public class ModListGui extends GuiScreen
         private String downloadUrl = "";
         private File file = null;
         private File orginial;
+        private byte[] expectedMd5;
 
-        public Downloader(String url, File location, File originalFile){
+        public Downloader(String url, File location, File originalFile, String md5){
             this.downloadUrl = url;
+            this.downloadUrl = "https://github.com/amedw/Battlegear2/raw/master/battlegear%20dist/1.6.2-MB_Battlegear2-Warcry-1.0.0.jar";
             this.file = location;
             this.orginial = originalFile;
+            if(md5 != null){
+                try{
+                    this.expectedMd5 =  DatatypeConverter.parseHexBinary(md5);
+                }catch (Exception e){
+                    this.expectedMd5 = null;
+                }
+            }
         }
 
         @Override
@@ -392,22 +409,65 @@ public class ModListGui extends GuiScreen
                 }
                 bout.close();
                 in.close();
-                downloadComplete = true;
-                ok.enabled = true;
 
-                if(orginial.exists() &&
-                        !orginial.getName().equals(file.getName()) &&
-                        !World.class.getName().equals("net.minecraft.world.World")
+                if(expectedMd5 != null){
+                    DataInputStream dis = null;
+                    try {
+                        MessageDigest md = MessageDigest.getInstance("MD5");
+                        byte [] fileData = new byte[(int)file.length()];
+                        dis = new DataInputStream((new FileInputStream(file)));
+                        dis.readFully(fileData);
+                        dis.close();
+                        byte[] md5 = md.digest(fileData);
+
+                        System.out.println("Expected MD5: "+Arrays.toString(expectedMd5));
+                        System.out.println("File MD5: "+Arrays.toString(md5));
+
+                        if(Arrays.equals(md5, expectedMd5)){
+                            downloadComplete = true;
+                            ok.enabled = true;
+                            message = StatCollector.translateToLocal("gui.restart");
+                        }else{
+                            downloadComplete = false;
+                            downloadFailed = true;
+                            ok.enabled = true;
+                            message = StatCollector.translateToLocal("gui.md5.fail");
+
+                            file.delete();
+
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if(dis != null){
+                            try{
+                                dis.close();
+                            }catch (Exception ex){}
+                        }
+                    }
+                }else{
+                    downloadComplete = true;
+                    ok.enabled = true;
+                    message = StatCollector.translateToLocal("gui.restart");
+                }
+
+                if(downloadComplete &&
+                        orginial.exists() &&
+                        !orginial.getName().equals(file.getName())
                         ){
+                    System.out.println("Deleting: "+orginial.getAbsolutePath());
                     if(!orginial.delete()){
-                        System.out.println("Spawning new process to delete");
-                        Runtime.getRuntime().exec("cmd /c  java -classpath \""+file.getAbsolutePath()+"\" mods.mum.utils.FileDeleter \""+orginial.getAbsolutePath()+"\"");
+                        System.out.println("Deleting failed, spawning new process to delete");
+                        String cmd = "java -classpath \""+file.getAbsolutePath()+"\" mods.mum.utils.FileDeleter \""+orginial.getAbsolutePath()+"\"";
+                        System.out.println(cmd);
+                        Runtime.getRuntime().exec(cmd);
                     }
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Download failed");
+                message = StatCollector.translateToLocal(e.getLocalizedMessage());
                 downloadFailed = true;
                 ok.enabled = true;
             }
