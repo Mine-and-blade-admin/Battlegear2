@@ -1,9 +1,9 @@
 <mod modid="battlegear2">
     <mcVersion version="1.6.2">
         <release type="release" version="1.0.0"
-                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/files/9-mine-blade-battlegear-2-warcry-v-1-0-0/"
-                 download="http://www.curseforge.com/media/files/728/756/1.6.2-MB_Battlegear2-Warcry-1.0.0.jar"
-                 md5="1fb1cdd981a4c871b33a305a2352ca59"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
+                 download="http://www.curseforge.com/media/files/728/757/1.6.2-MB_Battlegear2-Warcry-1.0.0.jar"
+                 md5="81fb84aeb34e04fcea554f8b6f250696"
                 />
         <release type="beta" version="0.2.1"
                  url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/files/6-mine-blade-battlegear-2-warcry-preview-1/"
