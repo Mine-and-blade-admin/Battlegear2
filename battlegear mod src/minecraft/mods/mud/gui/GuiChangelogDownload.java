@@ -3,6 +3,7 @@ package mods.mud.gui;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import mods.mud.ModUpdateDetector;
+import mods.mud.UpdateChecker;
 import mods.mud.UpdateEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -39,6 +40,7 @@ public class GuiChangelogDownload extends GuiScreen
     private GuiButton download;
     private GuiButton close1;
     private GuiButton ok;
+    private GuiButton urlButton;
 
     private boolean isDownloading = false;
     private boolean downloadComplete = false;
@@ -52,10 +54,16 @@ public class GuiChangelogDownload extends GuiScreen
 
     private Thread getChangeLogThread;
 
+
+
     public GuiChangelogDownload(GuiScreen parent){
         System.out.println(parent);
         this.parent = parent;
         changelog = new String[]{"Loading Changelog from server"};
+        if(!ModUpdateDetector.hasChecked){
+            new UpdateChecker(ModUpdateDetector.getAllUpdateEntries()).run();
+        }
+
         this.entries=new ArrayList<UpdateEntry>(ModUpdateDetector.getAllUpdateEntries());
     }
 
@@ -80,10 +88,12 @@ public class GuiChangelogDownload extends GuiScreen
             bulletWidth[i] = fontRenderer.getStringWidth(bullets[i]+" ");
         }
 
-        download = new GuiButton(4, 30, height-35, 150, 20, StatCollector.translateToLocal("button.download.latest"));
+        download = new GuiButton(4, 15, height-35, 125, 20, StatCollector.translateToLocal("button.download.latest"));
         download.enabled = false;
-        close1 = new GuiButton(5, width-30-150, height-35, 150, 20, StatCollector.translateToLocal("button.close"));
+        close1 = new GuiButton(5, width-15-125, height-35, 125, 20, StatCollector.translateToLocal("button.close"));
         ok = new GuiButton(6, (width - 200)/2 + 5, (height - 150)/2+115, 190, 20, StatCollector.translateToLocal("button.ok"));
+        urlButton = new GuiButton(6, (width - 125)/2, height-35, 125, 20, StatCollector.translateToLocal("button.url"));
+
         ok.drawButton = isDownloading;
         ok.enabled = downloadComplete || downloadFailed;
 
@@ -91,6 +101,7 @@ public class GuiChangelogDownload extends GuiScreen
         buttonList.add(download);
         buttonList.add(close1);
         buttonList.add(ok);
+        //buttonList.add(urlButton);
     }
 
     protected void keyTyped(char par1, int par2)
@@ -374,7 +385,6 @@ public class GuiChangelogDownload extends GuiScreen
 
         public Downloader(String url, File location, File originalFile, String md5){
             this.downloadUrl = url;
-            this.downloadUrl = "https://github.com/amedw/Battlegear2/raw/master/battlegear%20dist/1.6.2-MB_Battlegear2-Warcry-1.0.0.jar";
             this.file = location;
             this.orginial = originalFile;
             if(md5 != null){
@@ -466,7 +476,7 @@ public class GuiChangelogDownload extends GuiScreen
                 if(downloadComplete &&
                         orginial.exists() &&
                         !orginial.getName().equals(file.getName()) &&
-                        !World.class.getName().equals("net.minecraft.world.World")
+                        !orginial.isDirectory()
                         ){
                     System.out.println("Deleting: "+orginial.getAbsolutePath());
                     if(!orginial.delete()){
