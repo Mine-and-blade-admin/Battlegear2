@@ -1,67 +1,67 @@
 #zh_CN
 
-name.title=\u6316\u77ff\u4e0e\u780d\u6740|\u6218\u5907\u53cc\u63012
+name.title=挖矿与砍杀|战备双持2
 
-item.battlegear2:heraldric.name=\u7eb9\u7ae0\u56fe\u6807
-item.battlegear2:chain.name=\u94c1\u94fe
-item.battlegear2:quiver.name=\u7bad\u888b
+item.battlegear2:heraldric.name=纹章图标
+item.battlegear2:chain.name=铁链
+item.battlegear2:quiver.name=箭袋
 
-item.battlegear2:dagger.wood.name=\u6728\u5315\u9996
-item.battlegear2:dagger.stone.name=\u77f3\u5934\u5315\u9996
-item.battlegear2:dagger.iron.name=\u94c1\u5315\u9996
-item.battlegear2:dagger.diamond.name=\u94bb\u77f3\u5315\u9996
-item.battlegear2:dagger.gold.name=\u91d1\u5315\u9996
+item.battlegear2:dagger.wood.name=木匕首
+item.battlegear2:dagger.stone.name=石头匕首
+item.battlegear2:dagger.iron.name=铁匕首
+item.battlegear2:dagger.diamond.name=钻石匕首
+item.battlegear2:dagger.gold.name=金匕首
 
-item.battlegear2:waraxe.wood.name=\u6728\u6218\u65a7
-item.battlegear2:waraxe.stone.name=\u77f3\u5934\u6218\u65a7
-item.battlegear2:waraxe.iron.name=\u94c1\u6218\u65a7
-item.battlegear2:waraxe.diamond.name=\u94bb\u77f3\u6218\u65a7
-item.battlegear2:waraxe.gold.name=\u91d1\u6218\u65a7
+item.battlegear2:waraxe.wood.name=木战斧
+item.battlegear2:waraxe.stone.name=石头战斧
+item.battlegear2:waraxe.iron.name=铁战斧
+item.battlegear2:waraxe.diamond.name=钻石战斧
+item.battlegear2:waraxe.gold.name=金战斧
 
-item.battlegear2:mace.wood.name=\u6728\u69cc
-item.battlegear2:mace.stone.name=\u77f3\u5934\u69cc
-item.battlegear2:mace.iron.name=\u94c1\u69cc
-item.battlegear2:mace.diamond.name=\u94bb\u77f3\u69cc
-item.battlegear2:mace.gold.name=\u91d1\u69cc
+item.battlegear2:mace.wood.name=木槌
+item.battlegear2:mace.stone.name=石头槌
+item.battlegear2:mace.iron.name=铁槌
+item.battlegear2:mace.diamond.name=钻石槌
+item.battlegear2:mace.gold.name=金槌
 
-item.battlegear2:spear.wood.name=\u6728\u6807\u67aa
-item.battlegear2:spear.stone.name=\u77f3\u5934\u6807\u67aa
-item.battlegear2:spear.iron.name=\u94c1\u6807\u67aa
-item.battlegear2:spear.diamond.name=\u94bb\u77f3\u6807\u67aa
-item.battlegear2:spear.gold.name=\u91d1\u6807\u67aa
+item.battlegear2:spear.wood.name=木标枪
+item.battlegear2:spear.stone.name=石头标枪
+item.battlegear2:spear.iron.name=铁标枪
+item.battlegear2:spear.diamond.name=钻石标枪
+item.battlegear2:spear.gold.name=金标枪
 
-item.battlegear2:shield.wood.name=\u6728\u76fe
-item.battlegear2:shield.hide.name=\u906e\u853d\u76fe\u724c
-item.battlegear2:shield.iron.name=\u94c1\u76fe
-item.battlegear2:shield.diamond.name=\u94bb\u77f3\u76fe
-item.battlegear2:shield.gold.name=\u91d1\u76fe
+item.battlegear2:shield.wood.name=木盾
+item.battlegear2:shield.hide.name=遮蔽盾牌
+item.battlegear2:shield.iron.name=铁盾
+item.battlegear2:shield.diamond.name=钻石盾
+item.battlegear2:shield.gold.name=金盾
 
-item.battlegear2:knights_armour.helmet.name=\u9a91\u58eb\u5934\u76d4
-item.battlegear2:knights_armour.plate.name=\u9a91\u58eb\u80f8\u7532
-item.battlegear2:knights_armour.legs.name=\u9a91\u58eb\u62a4\u817f
-item.battlegear2:knights_armour.boots.name=\u9a91\u58eb\u9774\u5b50
+item.battlegear2:knights_armour.helmet.name=骑士头盔
+item.battlegear2:knights_armour.plate.name=骑士胸甲
+item.battlegear2:knights_armour.legs.name=骑士护腿
+item.battlegear2:knights_armour.boots.name=骑士靴子
 
-item.battlegear2:cloak.name=\u62ab\u98ce
+item.battlegear2:cloak.name=披风
 
-enchantment.slow_fall=\u7fbd\u843d
-enchantment.super_jump=\u68af\u4e91\u7eb5
+enchantment.slow_fall=羽落
+enchantment.super_jump=梯云纵
 
-tile.battlegear2:banner.name=\u65d7\u5e1c
+tile.battlegear2:banner.name=旗帜
 
-sigil.pattern.title=\u56fe\u6848
-sigil.icon.title=\u5370\u7ae0
-sigil.icon_pos.title=\u5370\u7ae0\u4f4d\u7f6e
-sigil.colour1.title=\u989c\u82721
-sigil.colour2.title=\u989c\u82722
-sigil.icon_colour1.title=\u5370\u7ae0l%n\u989c\u82721
-sigil.icon_colour2.title=\u5370\u7ae0%n\u989c\u82722
-sigil.banner.title=\u65d7\u5e1c
-sigil.helm.title=\u5934\u76d4
-sigil.colour.select=\u9009\u62e9
+sigil.pattern.title=图案
+sigil.icon.title=印章
+sigil.icon_pos.title=印章位置
+sigil.colour1.title=颜色1
+sigil.colour2.title=颜色2
+sigil.icon_colour1.title=印章l%n颜色1
+sigil.icon_colour2.title=印章%n颜色2
+sigil.banner.title=旗帜
+sigil.helm.title=头盔
+sigil.colour.select=选择
 
-attribute.weapon.penetrateArmor=\u7834\u7532
-attribute.weapon.daze=\u51fb\u6655
-attribute.weapon.extendedReach=\u653b\u51fb\u8ddd\u79bb
-attribute.weapon.attackSpeed=\u653b\u51fb\u901f\u5ea6
-attribute.weapon.backstab=\u80cc\u523a
-attribute.weapon.mountedBonus=\u9a91\u5175\u989d\u5916\u4f24\u5bb3
+attribute.weapon.penetrateArmor=破甲
+attribute.weapon.daze=击晕
+attribute.weapon.extendedReach=攻击距离
+attribute.weapon.attackSpeed=攻击速度
+attribute.weapon.backstab=背刺
+attribute.weapon.mountedBonus=骑兵额外伤害
