@@ -1,7 +1,7 @@
 package mods.battlegear2.items;
 
-import mods.battlegear2.api.IExtendedReachWeapon;
-import mods.battlegear2.api.ISpecialEffect;
+import mods.battlegear2.api.weapons.IExtendedReachWeapon;
+import mods.battlegear2.api.weapons.ISpecialEffect;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;

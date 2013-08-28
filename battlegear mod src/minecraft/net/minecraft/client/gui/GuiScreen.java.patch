@@ -1,0 +1,20 @@
+--- 
++++ 
+@@ -7,6 +7,7 @@
+ import java.awt.datatransfer.DataFlavor;
+ import java.awt.datatransfer.StringSelection;
+ import java.awt.datatransfer.Transferable;
++import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.List;
+ import net.minecraft.client.Minecraft;
+@@ -43,8 +44,7 @@
+     /**
+      * Draws the screen and all the components in it.
+      */
+-    public void drawScreen(int par1, int par2, float par3)
+-    {
++    public void drawScreen(int par1, int par2, float par3){
+         for (int k = 0; k < this.buttonList.size(); ++k)
+         {
+             GuiButton guibutton = (GuiButton)this.buttonList.get(k);

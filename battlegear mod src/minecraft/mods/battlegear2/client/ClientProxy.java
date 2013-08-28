@@ -11,10 +11,8 @@ import mods.battlegear2.Battlegear;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.IShield;
-import mods.battlegear2.client.renderer.BowRenderer;
-import mods.battlegear2.client.renderer.QuiverItremRenderer;
-import mods.battlegear2.client.renderer.ShieldRenderer;
-import mods.battlegear2.client.renderer.SpearRenderer;
+import mods.battlegear2.api.heraldry.IHeraldryItem;
+import mods.battlegear2.client.renderer.*;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
@@ -103,13 +101,21 @@ public class ClientProxy extends CommonProxy {
             MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
         }
 
+        MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem.itemID, new HeraldryCrestItemRenderer());
 
         if(Battlegear.debug){
             MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
 
             MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
+        
+            for(int i = 0; i < Item.itemsList.length; i++){
+            	if(Item.itemsList[i] instanceof IHeraldryItem &&
+            			((IHeraldryItem)Item.itemsList[i]).useDefaultRenderer()){
+            		MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer());
+            	}
+            	
+            }
         }
-
     }
 
     @Override

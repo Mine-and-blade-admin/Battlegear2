@@ -4,9 +4,10 @@ package mods.battlegear2.client;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
+import mods.battlegear2.client.heraldry.CrestImages;
+import mods.battlegear2.client.heraldry.PatternStore;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
-import mods.battlegear2.heraldry.HeraldyPattern;
 import mods.battlegear2.items.ItemQuiver2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
@@ -188,7 +189,14 @@ public class BattlegearClientEvents {
             ClientProxy.bowIcons[1] = event.map.registerIcon("battlegear2:bow_pulling_1");
             ClientProxy.bowIcons[2] = event.map.registerIcon("battlegear2:/bow_pulling_2");
 
-            HeraldyPattern.registerAllIcons(event.map);
+            PatternStore.initialise(Minecraft.getMinecraft().func_110442_L());
+            CrestImages.initialise(Minecraft.getMinecraft().func_110442_L());
+
+            for(int i = 0; i < CrestImages.images.length; i++){
+                if(CrestImages.images[i] != null){
+                    System.out.println(CrestImages.images[i]);
+                }
+            }
         }
     }
 

@@ -1,6 +1,6 @@
 package mods.battlegear2.recipies;
 
-import mods.battlegear2.api.IArrowContainer2;
+import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;

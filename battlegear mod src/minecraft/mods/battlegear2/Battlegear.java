@@ -3,7 +3,7 @@ package mods.battlegear2;
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.registry.GameRegistry;
-import mods.battlegear2.api.QuiverArrowRegistry;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.items.arrows.EntityEnderArrow;

@@ -3,8 +3,8 @@ package mods.battlegear2.utils;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import cpw.mods.fml.common.FMLCommonHandler;
-import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemShield;
@@ -32,6 +32,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -401,4 +402,17 @@ public class BattlegearUtils {
 
         player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
     }
+
+
+
+    public static void closeStream(Closeable c){
+        try{
+            if(c != null){
+                c.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

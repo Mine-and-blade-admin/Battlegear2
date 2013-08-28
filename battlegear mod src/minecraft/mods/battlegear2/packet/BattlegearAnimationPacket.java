@@ -1,5 +1,6 @@
 package mods.battlegear2.packet;
 
+import mods.battlegear2.utils.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet;
@@ -19,22 +20,22 @@ public class BattlegearAnimationPacket extends AbstractMBPacket {
 
     public static Packet250CustomPayload generatePacket(EnumBGAnimations animation, String username) {
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(300);
-        DataOutputStream outputStream = new DataOutputStream(bos);
+        ByteArrayOutputStream bos = null;
+        DataOutputStream outputStream = null;
         try {
+            bos = new ByteArrayOutputStream(300);
+            outputStream = new DataOutputStream(bos);
+
             outputStream.writeInt(animation.ordinal());
             Packet.writeString(username, outputStream);
 
+            return new Packet250CustomPayload(packetName, bos.toByteArray());
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            BattlegearUtils.closeStream(outputStream);
         }
-
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = packetName;
-        packet.data = bos.toByteArray();
-        packet.length = bos.size();
-
-        return packet;
+        return null;
     }
 
     @Override
@@ -48,7 +49,8 @@ public class BattlegearAnimationPacket extends AbstractMBPacket {
             playername = Packet.readString(inputStream, 16);
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+        }finally {
+            BattlegearUtils.closeStream(inputStream);
         }
 
         if (playername != null && animation != null) {

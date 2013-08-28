@@ -2,7 +2,7 @@ package mods.battlegear2.client.renderer;
 
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.MobHookContainerClass;
-import mods.battlegear2.api.IArrowContainer2;
+import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.client.ClientProxy;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemMBArrow;
@@ -17,7 +17,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraft.util.*;
 import org.lwjgl.opengl.GL11;
-import sun.security.krb5.Config;
 
 public class BowRenderer implements IItemRenderer {
 

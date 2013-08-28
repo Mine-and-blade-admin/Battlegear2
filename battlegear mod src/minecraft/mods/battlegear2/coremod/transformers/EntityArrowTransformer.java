@@ -37,7 +37,8 @@ public class EntityArrowTransformer implements IClassTransformer {
             cr.accept(cn, 0);
 
 
-            for(FieldNode fn : cn.fields){
+            for(Object fnOb : cn.fields){
+            	FieldNode fn = (FieldNode)fnOb;
 
                 System.out.println(fn.name+"\t"+fn.desc);
                 if (((

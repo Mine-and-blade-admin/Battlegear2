@@ -3,8 +3,8 @@ package mods.battlegear2.items;
 import java.util.ArrayList;
 import java.util.List;
 
-import mods.battlegear2.api.IArrowContainer;
-import mods.battlegear2.api.QuiverArrowEvent;
+import mods.battlegear2.api.quiver.IArrowContainer;
+import mods.battlegear2.api.quiver.QuiverArrowEvent;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;

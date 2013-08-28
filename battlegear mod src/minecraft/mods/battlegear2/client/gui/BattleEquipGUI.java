@@ -3,6 +3,7 @@ package mods.battlegear2.client.gui;
 import mods.battlegear2.gui.ContainerBattle;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -34,7 +35,7 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
     /**
      * Draws the screen and all the components in it.
      */
-    public void drawScreen(int par1, int par2, float par3) {
+    public void drawScreen(int par1, int par2, float par3){
         super.drawScreen(par1, par2, par3);
         this.xSize_lo = (float) par1;
         this.ySize_lo = (float) par2;
@@ -59,6 +60,7 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
         //GuiInventory.drawPlayerOnGui(this.mc, var5 + 31, var6 + 75, 30, (float) (var5 + 51) - this.xSize_lo, (float) (var6 + 75 - 50) - this.ySize_lo);
         GuiInventory.func_110423_a(var5 + 31, var6 + 75, 30, (float) (var5 + 51) - this.xSize_lo, (float) (var6 + 75 - 50) - this.ySize_lo, mc.thePlayer);
     }
+
 
 
 }

@@ -2,8 +2,8 @@ package mods.battlegear2;
 
 import java.util.Random;
 
-import mods.battlegear2.api.IArrowContainer;
-import mods.battlegear2.api.QuiverArrowEvent;
+import mods.battlegear2.api.quiver.IArrowContainer;
+import mods.battlegear2.api.quiver.QuiverArrowEvent;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;

@@ -25,10 +25,13 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
     }
 
     public static Packet250CustomPayload generatePacket(String user, InventoryPlayer inventory) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(5120);
-        DataOutputStream outputStream = new DataOutputStream(bos);
+        ByteArrayOutputStream bos = null;
+        DataOutputStream outputStream = null;
 
         try {
+            bos = new ByteArrayOutputStream();
+            outputStream = new DataOutputStream(bos);
+
             Packet.writeString(user, outputStream);
             outputStream.writeInt(inventory.currentItem);
             Packet.writeItemStack(inventory.getCurrentItem(), outputStream);
@@ -36,16 +39,18 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
             for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
                 Packet.writeItemStack(inventory.getStackInSlot(i + InventoryPlayerBattle.OFFSET), outputStream);
             }
+
+            return new Packet250CustomPayload(packetName, bos.toByteArray());
+
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            BattlegearUtils.closeStream(outputStream);
         }
 
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = packetName;
-        packet.data = bos.toByteArray();
-        packet.length = bos.size();
 
-        return packet;
+
+        return null;
     }
 
 
@@ -69,6 +74,8 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
             targetPlayer.specialActionTimer = 0;
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            BattlegearUtils.closeStream(inputStream);
         }
     }
 }

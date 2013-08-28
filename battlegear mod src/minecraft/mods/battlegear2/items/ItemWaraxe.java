@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import mods.battlegear2.api.IPenetrateWeapon;
+
+import mods.battlegear2.api.weapons.IPenetrateWeapon;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.SharedMonsterAttributes;

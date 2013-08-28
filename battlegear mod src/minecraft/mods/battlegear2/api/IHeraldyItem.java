@@ -3,6 +3,7 @@ package mods.battlegear2.api;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 
+@Deprecated
 public interface IHeraldyItem {
 	
 	public enum HeraldyRenderPassess{
@@ -47,7 +48,7 @@ public interface IHeraldyItem {
 	 */
 	public boolean hasHeraldry(ItemStack stack);
 	/**
-	 * Returns the current heraldy code, this will only be called on ItemStacks that have been found to have heraldry using the hasHeraldryMethod 
+	 * Returns the current heraldy code, this will only be called on ItemStacks that have been found to have heraldrybackup using the hasHeraldryMethod
 	 */
 	public byte[] getHeraldryCode(ItemStack stack);
 	

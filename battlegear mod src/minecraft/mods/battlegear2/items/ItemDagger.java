@@ -1,8 +1,8 @@
 package mods.battlegear2.items;
 
-import mods.battlegear2.api.IBackStabbable;
-import mods.battlegear2.api.IExtendedReachWeapon;
-import mods.battlegear2.api.IHitTimeModifier;
+import mods.battlegear2.api.weapons.IBackStabbable;
+import mods.battlegear2.api.weapons.IExtendedReachWeapon;
+import mods.battlegear2.api.weapons.IHitTimeModifier;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;

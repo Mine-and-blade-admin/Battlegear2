@@ -7,10 +7,11 @@ import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BowHookContainerClass2;
-import mods.battlegear2.api.IArrowContainer2;
-import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -91,18 +92,23 @@ public class SpecialActionPacket extends AbstractMBPacket{
 
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            BattlegearUtils.closeStream(inputStream);
         }
     }
 
     public static Packet250CustomPayload generatePacket(EntityPlayer player, ItemStack mainhand, ItemStack offhand, Entity entityHit) {
 
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(300);
-        DataOutputStream outputStream = new DataOutputStream(bos);
+        ByteArrayOutputStream bos = null;
+        DataOutputStream outputStream = null;
 
         boolean isPlayer = entityHit instanceof EntityPlayer;
 
 
         try {
+            bos = new ByteArrayOutputStream();
+            outputStream = new DataOutputStream(bos);
+
             Packet.writeString(player.username, outputStream);
 
             outputStream.writeBoolean(isPlayer);
@@ -113,12 +119,15 @@ public class SpecialActionPacket extends AbstractMBPacket{
                     outputStream.writeInt(entityHit.entityId);
             }
 
+            return new Packet250CustomPayload(packetName, bos.toByteArray());
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            BattlegearUtils.closeStream(outputStream);
         }
-        Packet250CustomPayload packet = new Packet250CustomPayload(packetName, bos.toByteArray());
 
-        return packet;
+        return null;
     }
 }

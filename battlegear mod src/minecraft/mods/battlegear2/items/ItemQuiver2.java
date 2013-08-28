@@ -1,10 +1,10 @@
 package mods.battlegear2.items;
 
 
-import mods.battlegear2.api.IArrowContainer2;
 import mods.battlegear2.api.IDyable;
-import mods.battlegear2.api.QuiverArrowEvent;
-import mods.battlegear2.api.QuiverArrowRegistry;
+import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.QuiverArrowEvent;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;

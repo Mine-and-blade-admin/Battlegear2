@@ -1,6 +1,7 @@
 package mods.battlegear2.packet;
 
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
@@ -17,20 +18,22 @@ public class BattlegearGUIPacket extends AbstractMBPacket {
     public static final String packetName = "MB2|GUI";
 
     public static Packet250CustomPayload generatePacket(int equipid) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(4);
-        DataOutputStream outputStream = new DataOutputStream(bos);
+        ByteArrayOutputStream bos = null;
+        DataOutputStream outputStream = null;
         try {
+            bos = new ByteArrayOutputStream(4);
+            outputStream = new DataOutputStream(bos);
+
             outputStream.writeInt(equipid);
+
+            return new Packet250CustomPayload(packetName, bos.toByteArray());
         } catch (Exception ex) {
             ex.printStackTrace();
+        } finally {
+            BattlegearUtils.closeStream(outputStream);
         }
 
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = packetName;
-        packet.data = bos.toByteArray();
-        packet.length = bos.size();
-
-        return packet;
+        return null;
     }
 
 
@@ -38,13 +41,17 @@ public class BattlegearGUIPacket extends AbstractMBPacket {
     public void process(Packet250CustomPayload packet, EntityPlayer player) {
         DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 
-        int windowID;
+        int windowID = -1;
         try {
             windowID = inputStream.readInt();
         } catch (IOException e) {
             e.printStackTrace();
-            return;
+        }finally {
+            BattlegearUtils.closeStream(inputStream);
         }
-        player.openGui(Battlegear.INSTANCE, windowID, player.worldObj, 0, 0, 0);
+
+        if(windowID != -1){
+            player.openGui(Battlegear.INSTANCE, windowID, player.worldObj, 0, 0, 0);
+        }
     }
 }

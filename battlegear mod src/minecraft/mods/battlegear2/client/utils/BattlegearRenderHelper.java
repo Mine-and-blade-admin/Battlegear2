@@ -1,8 +1,8 @@
 package mods.battlegear2.client.utils;
 
 
-import mods.battlegear2.api.IBattlegearWeapon;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.client.BattlegearKeyHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemShield;

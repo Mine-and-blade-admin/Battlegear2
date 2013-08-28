@@ -137,6 +137,7 @@ public class EntityPlayerTransformer implements IClassTransformer {
             processFields(cn);
             processMethods(cn);
 
+
             System.out.println("\tCreating new methods in EntityPlayer");
             cn.methods.add(0, generateAttackOffhandMethod());
             cn.methods.add(1, generateSwingOffhand());
@@ -206,12 +207,12 @@ public class EntityPlayerTransformer implements IClassTransformer {
                     mn.desc.equals(onItemFinishMethodDesc)) {
                 System.out.println("\tPatching method onItemUseFinish in EntityPlayer");
 
-                TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 3, 3);
+                TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
             } else if (mn.name.equals(setCurrentItemArmourMethodName) &&
                     mn.desc.equals(setCurrentItemArmourMethodDesc)) {
                 System.out.println("\tPatching method setCurrentItemOrArmor in EntityPlayer");
 
-                TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 3, 3);
+                TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
             } else if(mn.name.equals(playerInitMethodName) &&
                     mn.desc.equals(playerInitMethodDesc)) {
 

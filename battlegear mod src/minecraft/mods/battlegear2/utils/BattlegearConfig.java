@@ -46,8 +46,9 @@ public class BattlegearConfig {
 	public static void getConfig(Configuration config) {
 		//System.out.println("Config");
 		config.load();
-        heradricItem = new ItemHeradryIcon(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());
-        
+
+        heradricItem = new HeraldryCrest(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());
+
         chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
     	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).func_111206_d("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
         	
@@ -239,7 +240,7 @@ public class BattlegearConfig {
                     });
             //Iron Shield
             GameRegistry.addRecipe(new ItemStack(shield[2]),
-                    new Object[] {"III","IWI", " I ",
+                    new Object[] {"I I","IWI", " I ",
                             Character.valueOf('W'), woodStack,
                             Character.valueOf('I'), Item.ingotIron
                     });
