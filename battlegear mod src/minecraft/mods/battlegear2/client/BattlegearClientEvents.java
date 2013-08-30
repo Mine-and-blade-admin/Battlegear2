@@ -189,14 +189,10 @@ public class BattlegearClientEvents {
             ClientProxy.bowIcons[1] = event.map.registerIcon("battlegear2:bow_pulling_1");
             ClientProxy.bowIcons[2] = event.map.registerIcon("battlegear2:/bow_pulling_2");
 
-            PatternStore.initialise(Minecraft.getMinecraft().func_110442_L());
-            CrestImages.initialise(Minecraft.getMinecraft().func_110442_L());
+            //PatternStore.initialise(Minecraft.getMinecraft().func_110442_L());
+            //CrestImages.initialise(Minecraft.getMinecraft().func_110442_L());
 
-            for(int i = 0; i < CrestImages.images.length; i++){
-                if(CrestImages.images[i] != null){
-                    System.out.println(CrestImages.images[i]);
-                }
-            }
+            
         }
     }
 

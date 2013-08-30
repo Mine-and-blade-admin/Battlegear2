@@ -41,9 +41,6 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
      */
     public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List)
     {
-        ItemStack stack = new ItemStack(BattlegearConfig.heradricItem);
-        setHeraldry(stack, new HeraldryData(30, 0xFFFFFF00, 0xFF0000FF, 0xFF00FF00, 58, 0xFF000000, 0,0,0,0).getByteArray());
-        par3List.add(stack);
     }
 
     @Override
@@ -126,13 +123,6 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     public boolean shouldDoPass(HeraldyRenderPassess pass) {
         return ! pass.equals(HeraldyRenderPassess.SecondaryColourTrim);
     }
-
-
-
-
-
-
-
 
 
 
