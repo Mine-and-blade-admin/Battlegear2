@@ -1,3 +1,9 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.2 ==
+**Bugs Fixed**
+* Fixed a crash with mcpc+
+* Changed the iron shield recipe back (yet again)
+** It should now be the same as described on the forum page
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.1 ==
 **New Features**
 * A mod url button has been added to M.U.D.
