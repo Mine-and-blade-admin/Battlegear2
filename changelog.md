@@ -3,6 +3,8 @@
 * Fixed a crash with mcpc+
 * Changed the iron shield recipe back (yet again)
 ** It should now be the same as described on the forum page
+**Known Issues**
+* The shield block bar will be placed over any extra hearts given by various sources
 
 == Mine & Blade: Battlegear 2 - Warcry 1.0.1 ==
 **New Features**
