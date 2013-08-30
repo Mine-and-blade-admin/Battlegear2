@@ -1,0 +1,70 @@
+name.title=M&B Battlegear 2
+
+item.battlegear2:heraldric.name=Wappenzeichen
+item.battlegear2:chain.name=Kette
+item.battlegear2:quiver.name=K\u00f6cher
+
+item.battlegear2:dagger.wood.name=H\u00f6lzerner Dolch
+item.battlegear2:dagger.stone.name=Steinerner Dolch
+item.battlegear2:dagger.iron.name=Eisener Dolch
+item.battlegear2:dagger.diamond.name=Diamantener Dolch
+item.battlegear2:dagger.gold.name=Goldener Dolch
+
+item.battlegear2:waraxe.wood.name=Holzstreitaxt
+item.battlegear2:waraxe.stone.name=Steinstreitaxt
+item.battlegear2:waraxe.iron.nameEisenstreitaxt
+item.battlegear2:waraxe.diamond.name=Diamantstreitaxt
+item.battlegear2:waraxe.gold.name=Goldstreitaxt
+
+item.battlegear2:mace.wood.name=Holzstreitkolben
+item.battlegear2:mace.stone.name=Steinstreitkolben
+item.battlegear2:mace.iron.name=Eisenstreitkolben
+item.battlegear2:mace.diamond.name=Diamantstreitkolben
+item.battlegear2:mace.gold.name=Goldstreitkolben
+
+item.battlegear2:spear.wood.name=Holzspeer
+item.battlegear2:spear.stone.name=Steinspeer
+item.battlegear2:spear.iron.name=Eisenspeer
+item.battlegear2:spear.diamond.name=Diamantspeer
+item.battlegear2:spear.gold.name=Goldspeer
+
+item.battlegear2:shield.wood.name=Holzschild
+item.battlegear2:shield.hide.name=Lederschild
+item.battlegear2:shield.iron.name=Eisenschild
+item.battlegear2:shield.diamond.name=Diamantschild
+item.battlegear2:shield.gold.name=Goldschild
+
+item.battlegear2:knights_armour.helmet.name=Ritterhelm
+item.battlegear2:knights_armour.plate.name=Ritterbrustpanzer
+item.battlegear2:knights_armour.legs.name=Ritterhose
+item.battlegear2:knights_armour.boots.name=Ritterstiefel
+
+item.battlegear2:cloak.name=Umhang
+
+enchantment.slow_fall=Langsamer Fall
+enchantment.super_jump=Supersprung
+
+tile.battlegear2:banner.name=Banner
+
+sigil.pattern.title=Schablone
+sigil.icon.title=Siegel
+sigil.icon_pos.title=Siegelposition
+sigil.colour1.title=Farbe 1
+sigil.colour2.title=Farbe 2
+sigil.icon_colour1.title=Siegel%nFarbe 1
+sigil.icon_colour2.title=Siegel%nFarbe 2
+sigil.banner.title=Banner
+sigil.helm.title=Helm
+sigil.colour.select=W\u00e4hlen
+
+
+attribute.weapon.penetrateArmor=R\u00fcstung Durchschlagen
+attribute.weapon.daze=Bet\u00e4ubung
+attribute.weapon.extendedReach=Reichweite
+attribute.weapon.attackSpeed=Attacken-Geschwindigkeit
+attribute.weapon.backstab=R\u00fcckenstich
+attribute.weapon.mountedBonus=Berittener Schaden
+attribute.shield.block.time=s Block
+attribute.shield.arrow.count=Pfeile
+attribute.quiver.arrow.empty=Leer
+attribute.quiver.arrow.count=Pfeile
