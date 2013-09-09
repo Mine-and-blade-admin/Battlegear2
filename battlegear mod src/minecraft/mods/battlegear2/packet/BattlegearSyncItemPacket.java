@@ -60,18 +60,20 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
 
         try {
             EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
-
-            targetPlayer.inventory.currentItem = inputStream.readInt();
-            BattlegearUtils.setPlayerCurrentItem(targetPlayer, Packet.readItemStack(inputStream));
-
-            for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
-                ItemStack stack = Packet.readItemStack(inputStream);
-
-                //if(stack!=null){
-                targetPlayer.inventory.setInventorySlotContents(InventoryPlayerBattle.OFFSET + i, stack);
-                //}
+            if(targetPlayer!=null)
+            {
+	            targetPlayer.inventory.currentItem = inputStream.readInt();
+	            BattlegearUtils.setPlayerCurrentItem(targetPlayer, Packet.readItemStack(inputStream));
+	
+	            for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
+	                ItemStack stack = Packet.readItemStack(inputStream);
+	
+	                //if(stack!=null){
+	                targetPlayer.inventory.setInventorySlotContents(InventoryPlayerBattle.OFFSET + i, stack);
+	                //}
+	            }
+	            targetPlayer.specialActionTimer = 0;
             }
-            targetPlayer.specialActionTimer = 0;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
