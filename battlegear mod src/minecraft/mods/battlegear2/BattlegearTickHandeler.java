@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 public class BattlegearTickHandeler implements ITickHandler {
 
-    public HashMap<String, Integer> currentItemCahce = new HashMap<String, Integer>();
+    public HashMap<String, Integer> currentItemCache = new HashMap<String, Integer>();
 
 
     @Override
@@ -39,12 +39,15 @@ public class BattlegearTickHandeler implements ITickHandler {
         if (type.contains(TickType.PLAYER)) {
 
             EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
-
+            
             if (entityPlayer.worldObj instanceof WorldServer) {
-
-                if(currentItemCahce.containsKey(entityPlayer.username)){
-
+            	/*boolean changed = false;
+                if(!currentItemCache.containsKey(entityPlayer.username)||entityPlayer.inventory.currentItem!=currentItemCache.get(entityPlayer.username))
+                {
+                	changed = true;
                 }
+            	
+            	((InventoryPlayerBattle)entityPlayer.inventory).hasChanged |= changed;*/
 
                 if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 
@@ -68,8 +71,13 @@ public class BattlegearTickHandeler implements ITickHandler {
                             BattlegearSyncItemPacket.generatePacket(entityPlayer.username, entityPlayer.inventory)
                     );
                 }
+                
+                /*if(changed)
+                {
+                	currentItemCache.put(entityPlayer.username, entityPlayer.inventory.currentItem);
+                }*/
             }
-
+            
             //If we JUST swung an Item
             if (entityPlayer.field_110158_av == 1) {
                 ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
