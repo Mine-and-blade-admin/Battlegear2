@@ -22,18 +22,16 @@ public class BowHookContainerClass2 {
 
     @ForgeSubscribe
     public void onBowUse(ArrowNockEvent event){
-        if(!event.isCanceled()){
-            if(event.entityPlayer.capabilities.isCreativeMode
-                    || event.entityPlayer.inventory.hasItem(Item.arrow.itemID)){
-                return;
-            }
-            ItemStack quiver = getArrowContainer(event.result,event.entityPlayer);
-            if(quiver != null &&
-                    ((IArrowContainer2)quiver.getItem()).
-                            hasArrowFor(quiver, event.result, event.entityPlayer, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver))){
+        if(event.entityPlayer.capabilities.isCreativeMode
+                || event.entityPlayer.inventory.hasItem(Item.arrow.itemID)){
+            return;
+        }
+        ItemStack quiver = getArrowContainer(event.result,event.entityPlayer);
+        if(quiver != null &&
+                ((IArrowContainer2)quiver.getItem()).
+                        hasArrowFor(quiver, event.result, event.entityPlayer, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver))){
 
-                event.entityPlayer.setItemInUse(event.result, event.result.getItem().getMaxItemUseDuration(event.result));
-            }
+            event.entityPlayer.setItemInUse(event.result, event.result.getItem().getMaxItemUseDuration(event.result));
         }
     }
 
@@ -55,85 +53,74 @@ public class BowHookContainerClass2 {
 
     @ForgeSubscribe
     public void onBowFiring(ArrowLooseEvent event) {
-        if(!event.isCanceled()){
-            EntityPlayer player = event.entityPlayer;
-            ItemStack bow = event.bow;
-            //Don't need to do anything in those cases
-
-            //Check if bow is charged enough
-            int j = event.charge;
-            float f = (float)j / 20.0F;
-            f = (f * f + f * 2.0F) / 3.0F;
-            if ((double)f < 0.1D)
+        //Check if bow is charged enough
+        int j = new Integer(event.charge);
+        float f = (float)j / 20.0F;
+        f = (f * f + f * 2.0F) / 3.0F;
+        if ((double)f < 0.1D)
+        {
+            return;
+        }
+        if (f > 1.0F)
+        {
+            f = 1.0F;
+        }
+        ItemStack stack = getArrowContainer(event.bow, event.entityPlayer);
+        if(stack != null){
+            IArrowContainer2 quiver = (IArrowContainer2) stack.getItem();
+            World world = event.entityPlayer.worldObj;
+            EntityArrow entityarrow = quiver.getArrowType(stack, world, event.entityPlayer, f*2.0F);
+            if(entityarrow!=null)
             {
-                return;
-            }
-            if (f > 1.0F)
-            {
-                f = 1.0F;
-            }
-            ItemStack stack = getArrowContainer(event.bow, event.entityPlayer);
-            if(stack != null){
-                IArrowContainer2 quiver = (IArrowContainer2) stack.getItem();
-                World world = player.worldObj;
-                EntityArrow entityarrow = quiver.getArrowType(stack, world, player, f*2.0F);
-                if(entityarrow!=null)
+                if (f == 1.0F)
+                    entityarrow.setIsCritical(true);
+                QuiverArrowEvent arrowEvent = new QuiverArrowEvent(event);
+                quiver.onPreArrowFired(arrowEvent);
+                if(!arrowEvent.isCanceled())
                 {
-                    if (f == 1.0F)
+                    if(arrowEvent.addEnchantments)
                     {
-                        entityarrow.setIsCritical(true);
-                    }
-                    QuiverArrowEvent arrowEvent = new QuiverArrowEvent(event);
-                    quiver.onPreArrowFired(arrowEvent);
-                    if(!arrowEvent.isCanceled())
-                    {
-                        if(arrowEvent.addEnchantments)
+                        int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, event.bow);
+
+                        if (k > 0)
                         {
-                            int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, bow);
-
-                            if (k > 0)
-                            {
-                                entityarrow.setDamage(entityarrow.getDamage() + (double)k * 0.5D + 0.5D);
-                            }
-
-                            int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, bow);
-
-                            if (l > 0)
-                            {
-                                entityarrow.setKnockbackStrength(l);
-                            }
-
-                            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, bow) > 0)
-                            {
-                                entityarrow.setFire(100);
-                            }
+                            entityarrow.setDamage(entityarrow.getDamage() + (double)k * 0.5D + 0.5D);
                         }
-                        if(arrowEvent.bowDamage>0)
-                            bow.damageItem(arrowEvent.bowDamage, player);
-                        if(arrowEvent.bowSoundVolume>0)
-                            world.playSoundAtEntity(player, "random.bow", arrowEvent.bowSoundVolume, 1.0F / (new Random().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-                        if (!world.isRemote)
+
+                        int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, event.bow);
+
+                        if (l > 0)
                         {
-                            world.spawnEntityInWorld(entityarrow);
+                            entityarrow.setKnockbackStrength(l);
                         }
 
-
-                        quiver.onArrowFired(world, player, stack, bow, entityarrow);
-
-                        if(!player.capabilities.isCreativeMode && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) == 0){
-                            int selectedSlot = quiver.getSelectedSlot(stack);
-                            ItemStack arrowStack = quiver.getStackInSlot(stack, selectedSlot);
-                            arrowStack.stackSize --;
-                            if(arrowStack.stackSize == 0){
-                                arrowStack = null;
-                            }
-                            quiver.setStackInSlot(stack, selectedSlot, arrowStack);
+                        if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, event.bow) > 0)
+                        {
+                            entityarrow.setFire(100);
                         }
-
-
-                        //Canceling the event, since we successfully fired our own arrow
-                        event.setCanceled(true);
                     }
+                    if(arrowEvent.bowDamage>0)
+                    	event.bow.damageItem(arrowEvent.bowDamage, event.entityPlayer);
+                    if(arrowEvent.bowSoundVolume>0)
+                        world.playSoundAtEntity(event.entityPlayer, "random.bow", arrowEvent.bowSoundVolume, 1.0F / (new Random().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                    if (!world.isRemote)
+                        world.spawnEntityInWorld(entityarrow);
+
+                    quiver.onArrowFired(world, event.entityPlayer, stack, event.bow, entityarrow);
+
+                    if(!event.entityPlayer.capabilities.isCreativeMode && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, event.bow) == 0){
+                        int selectedSlot = quiver.getSelectedSlot(stack);
+                        ItemStack arrowStack = quiver.getStackInSlot(stack, selectedSlot);
+                        arrowStack.stackSize --;
+                        if(arrowStack.stackSize == 0){
+                            arrowStack = null;
+                        }
+                        quiver.setStackInSlot(stack, selectedSlot, arrowStack);
+                    }
+
+
+                    //Canceling the event, since we successfully fired our own arrow
+                    event.setCanceled(true);
                 }
             }
         }
