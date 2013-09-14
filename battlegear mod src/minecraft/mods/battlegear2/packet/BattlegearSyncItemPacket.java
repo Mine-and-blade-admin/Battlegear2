@@ -60,8 +60,7 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
 
         try {
             EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
-            if(targetPlayer!=null)
-            {
+            if(targetPlayer!=null){
 	            targetPlayer.inventory.currentItem = inputStream.readInt();
 	            BattlegearUtils.setPlayerCurrentItem(targetPlayer, Packet.readItemStack(inputStream));
 	

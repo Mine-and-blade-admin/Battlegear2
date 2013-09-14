@@ -23,8 +23,8 @@ public class BattlegearShieldFlashPacket extends AbstractMBPacket{
             inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
             EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
             float damage = inputStream.readFloat();
-
-            Battlegear.proxy.startFlash(targetPlayer, damage);
+            if(targetPlayer!=null)
+            	Battlegear.proxy.startFlash(targetPlayer, damage);
 
         } catch (IOException e) {
             e.printStackTrace();
