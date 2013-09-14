@@ -1,6 +1,6 @@
 package mods.battlegear2.heraldry;
 
-import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -73,7 +73,7 @@ public class HeraldricWeaponRecipie implements IRecipe{
 		}
 		
 		if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
-			byte[] code = ((IHeraldyItem)icon.getItem()).getHeraldryCode(icon);
+			byte[] code = ((IHeraldryItem)icon.getItem()).getHeraldry(icon);
 			compound.setByteArray("hc2", code);
 			item.setTagCompound(compound);
 		}else{ // should be a bucket

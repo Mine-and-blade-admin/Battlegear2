@@ -67,7 +67,7 @@ public class HeraldryArmourModel extends ModelBiped{
 			GL11.glPushMatrix();
 			IHeraldyArmour heraldryItem = (IHeraldyArmour)stack.getItem();
 			if(stack != null && heraldryItem.hasHeraldry(stack)){
-				byte[] code = heraldryItem.getHeraldryCode(stack);
+				byte[] code = heraldryItem.getHeraldry(stack);
 				
 				Tessellator tess = new Tessellator();
 				//if helmet

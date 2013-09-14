@@ -1,16 +1,16 @@
 package mods.battlegear2.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.heraldry.SigilHelper;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Icon;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemHeradryIcon extends Item implements IHeraldyItem {
+public class ItemHeradryIcon extends Item implements IHeraldryItem {
 
 	Icon base;
 	Icon trim;
@@ -76,7 +76,7 @@ public class ItemHeradryIcon extends Item implements IHeraldyItem {
 	}
 	
 	@Override
-	public byte[] getHeraldryCode(ItemStack stack) {
+	public byte[] getHeraldry(ItemStack stack) {
 		if(!stack.hasTagCompound()){
 			return SigilHelper.getDefault();
 		}
@@ -96,7 +96,7 @@ public class ItemHeradryIcon extends Item implements IHeraldyItem {
 	}
 
 	@Override
-	public void setHeraldryCode(ItemStack stack, byte[] code) {
+	public void setHeraldry(ItemStack stack, byte[] code) {
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 		}

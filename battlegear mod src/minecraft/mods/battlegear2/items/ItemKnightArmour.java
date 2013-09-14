@@ -4,7 +4,7 @@ import java.util.List;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.IHeraldyArmour;
-import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.client.heraldry.HeraldryArmourModel;
 import mods.battlegear2.heraldry.HeraldyPattern;
 import mods.battlegear2.heraldry.SigilHelper;
@@ -66,7 +66,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour/*, IAr
 	@Override
 	public Icon getBaseIcon(ItemStack stack) {
 		if(armorType == 0){
-			return baseIcon[SigilHelper.getHelm(((IHeraldyItem) stack.getItem()).getHeraldryCode(stack))];
+			return baseIcon[SigilHelper.getHelm(((IHeraldryItem) stack.getItem()).getHeraldry(stack))];
 		}else
 			return baseIcon[0];
 	}
@@ -74,7 +74,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour/*, IAr
 	@Override
 	public Icon getPostRenderIcon(ItemStack stack) {
 		if(armorType == 0){
-			return postRenderIcon[SigilHelper.getHelm(((IHeraldyItem)stack.getItem()).getHeraldryCode(stack))];
+			return postRenderIcon[SigilHelper.getHelm(((IHeraldryItem)stack.getItem()).getHeraldry(stack))];
 		}else 
 			return postRenderIcon[0];
 	}
@@ -109,7 +109,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour/*, IAr
 	}
 
 	@Override
-	public byte[] getHeraldryCode(ItemStack stack) {
+	public byte[] getHeraldry(ItemStack stack) {
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 		}
@@ -123,7 +123,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour/*, IAr
 	}
 	
 	@Override
-	public void setHeraldryCode(ItemStack stack, byte[] code){
+	public void setHeraldry(ItemStack stack, byte[] code){
 		if(!stack.hasTagCompound()){
 			stack.setTagCompound(new NBTTagCompound());
 		}
@@ -140,7 +140,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour/*, IAr
 	@Override
 	public boolean shouldDoPass(HeraldyRenderPassess pass) {
 		
-		if(pass.equals(HeraldyRenderPassess.PrimaryColourBase) || 
+		if(pass.equals(HeraldyRenderPassess.Pattern) || 
 				pass.equals(HeraldyRenderPassess.SecondaryColourTrim) ||
 				pass.equals(HeraldyRenderPassess.PostRenderIcon)){
 			return true;

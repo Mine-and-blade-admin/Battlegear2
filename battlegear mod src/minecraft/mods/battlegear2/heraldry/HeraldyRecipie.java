@@ -1,6 +1,6 @@
 package mods.battlegear2.heraldry;
 
-import mods.battlegear2.api.IHeraldyItem;
+import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -66,12 +66,12 @@ public class HeraldyRecipie implements IRecipe{
 		
 		item=item.copy();
 		
-		if(heraldricWeapon instanceof IHeraldyItem){
+		if(heraldricWeapon instanceof IHeraldryItem){
 			byte[] code = SigilHelper.getDefault();
 			if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
-				code = ((IHeraldyItem)icon.getItem()).getHeraldryCode(icon);
+				code = ((IHeraldryItem)icon.getItem()).getHeraldry(icon);
 			}
-			((IHeraldyItem) heraldricWeapon).setHeraldryCode(item, code);
+			((IHeraldryItem) heraldricWeapon).setHeraldry(item, code);
 		}else{
 			
 			NBTTagCompound compound = item.getTagCompound();
@@ -79,7 +79,7 @@ public class HeraldyRecipie implements IRecipe{
 				compound = new NBTTagCompound();
 			}
 			if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
-				byte[] code = ((IHeraldyItem)icon.getItem()).getHeraldryCode(icon);
+				byte[] code = ((IHeraldryItem)icon.getItem()).getHeraldry(icon);
 				compound.setByteArray("hc2", code);
 				item.setTagCompound(compound);
 			}else{ // should be a bucket
@@ -99,8 +99,8 @@ public class HeraldyRecipie implements IRecipe{
 	@Override
 	public ItemStack getRecipeOutput() {
 		ItemStack stack = new ItemStack(heraldricWeapon, 1);
-		if(heraldricWeapon instanceof IHeraldyItem){
-			((IHeraldyItem)heraldricWeapon).setHeraldryCode(stack, SigilHelper.getDefault());
+		if(heraldricWeapon instanceof IHeraldryItem){
+			((IHeraldryItem)heraldricWeapon).setHeraldry(stack, SigilHelper.getDefault());
 		}else{
 			stack.setTagCompound(new NBTTagCompound());
 			stack.getTagCompound().setByteArray("hc", SigilHelper.getDefault());
