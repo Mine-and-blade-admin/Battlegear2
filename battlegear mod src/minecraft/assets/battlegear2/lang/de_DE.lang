@@ -2,9 +2,9 @@ name.title=M&B Battlegear 2
 
 item.battlegear2:heraldric.name=Wappenzeichen
 item.battlegear2:chain.name=Kette
-item.battlegear2:quiver.name=K\u00f6cher
+item.battlegear2:quiver.name=Köcher
 
-item.battlegear2:dagger.wood.name=H\u00f6lzerner Dolch
+item.battlegear2:dagger.wood.name=Hölzerner Dolch
 item.battlegear2:dagger.stone.name=Steinerner Dolch
 item.battlegear2:dagger.iron.name=Eisener Dolch
 item.battlegear2:dagger.diamond.name=Diamantener Dolch
@@ -55,14 +55,14 @@ sigil.icon_colour1.title=Siegel%nFarbe 1
 sigil.icon_colour2.title=Siegel%nFarbe 2
 sigil.banner.title=Banner
 sigil.helm.title=Helm
-sigil.colour.select=W\u00e4hlen
+sigil.colour.select=Wählen
 
 
-attribute.weapon.penetrateArmor=R\u00fcstung Durchschlagen
-attribute.weapon.daze=Bet\u00e4ubung
+attribute.weapon.penetrateArmor=Rüstung Durchschlagen
+attribute.weapon.daze=Betäubung
 attribute.weapon.extendedReach=Reichweite
 attribute.weapon.attackSpeed=Attacken-Geschwindigkeit
-attribute.weapon.backstab=R\u00fcckenstich
+attribute.weapon.backstab=Rückenstich
 attribute.weapon.mountedBonus=Berittener Schaden
 attribute.shield.block.time=s Block
 attribute.shield.arrow.count=Pfeile
