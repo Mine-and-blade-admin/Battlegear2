@@ -17,7 +17,7 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
     public static final String ItemInWorldTransformer = "mods.battlegear2.coremod.transformers.ItemInWorldTransformer";
     public static final String EntityAIControlledTransformer = "mods.battlegear2.coremod.transformers.EntityAIControlledByPlayerTransformer";
     public static final String EntityOtherPlayerMPTransformer = "mods.battlegear2.coremod.transformers.EntityOtherPlayerMPTransformer";
-    public static final String EntityArrowTransformer = "mods.battlegear2.coremod.transformers.EntityArrowTransformer";
+    //public static final String EntityArrowTransformer = "mods.battlegear2.coremod.transformers.EntityArrowTransformer";
     public static final String EntityTrackerTransformer = "mods.battlegear2.coremod.transformers.EntityTrackerTransformer";
     //Setting this to true will enable the output of all edited classess as .class files
     //I will probably expose this via some sort of config to allow debugging of potential issues in the future
@@ -42,7 +42,7 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
                 ItemInWorldTransformer,
                 EntityAIControlledTransformer,
                 EntityOtherPlayerMPTransformer,
-                EntityArrowTransformer,
+                //EntityArrowTransformer,
                 EntityTrackerTransformer
         };
     }

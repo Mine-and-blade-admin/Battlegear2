@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.FieldNode;
 
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ASM4;
-
+@Deprecated//Fields accessibility is already changed by Forge
 public class EntityArrowTransformer implements IClassTransformer {
 
     private static String xTileField;

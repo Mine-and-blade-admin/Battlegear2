@@ -53,15 +53,13 @@ public class BowRenderer implements IItemRenderer {
         if(entityLivingBase instanceof EntityPlayer){
             EntityPlayer player = (EntityPlayer)entityLivingBase;
 
-            if(player.getItemInUse() != null){
-                int timer =  item.getMaxItemUseDuration() - player.getItemInUseCount();
-                if (timer >= 18)
-                    drawAmount = 2;
-                else if (timer > 13)
-                    drawAmount = 1;
-                else if (timer > 0)
-                    drawAmount = 0;
-            }
+            int timer =  player.getItemInUseDuration();
+            if (timer >= 18)
+                drawAmount = 2;
+            else if (timer > 13)
+                drawAmount = 1;
+            else if (timer > 0)
+                drawAmount = 0;
 
             ItemStack quiver = BowHookContainerClass2.getArrowContainer(item, (EntityPlayer) entityLivingBase);
             if(quiver != null){

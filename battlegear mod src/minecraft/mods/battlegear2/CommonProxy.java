@@ -19,7 +19,6 @@ public class CommonProxy {
         TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.SERVER);
         MinecraftForge.EVENT_BUS.register(new BattlemodeHookContainerClass());
         MinecraftForge.EVENT_BUS.register(new WeaponHookContainerClass());
-	    //MinecraftForge.EVENT_BUS.register(new BowHookContainerClass());
         MinecraftForge.EVENT_BUS.register(new BowHookContainerClass2());
 
 

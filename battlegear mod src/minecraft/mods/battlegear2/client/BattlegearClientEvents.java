@@ -187,7 +187,7 @@ public class BattlegearClientEvents {
             ClientProxy.bowIcons = new Icon[3];
             ClientProxy.bowIcons[0] = event.map.registerIcon("battlegear2:bow_pulling_0");
             ClientProxy.bowIcons[1] = event.map.registerIcon("battlegear2:bow_pulling_1");
-            ClientProxy.bowIcons[2] = event.map.registerIcon("battlegear2:/bow_pulling_2");
+            ClientProxy.bowIcons[2] = event.map.registerIcon("battlegear2:bow_pulling_2");
 
             //PatternStore.initialise(Minecraft.getMinecraft().func_110442_L());
             //CrestImages.initialise(Minecraft.getMinecraft().func_110442_L());
