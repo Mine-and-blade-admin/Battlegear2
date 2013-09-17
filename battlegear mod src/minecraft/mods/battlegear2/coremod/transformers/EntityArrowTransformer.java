@@ -67,7 +67,7 @@ public class EntityArrowTransformer implements IClassTransformer {
 
 
             if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, name);
+                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
             }
 
 

@@ -8,7 +8,9 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.IFMLCallHook;
 import net.minecraft.src.BaseMod;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +21,8 @@ import java.util.zip.ZipFile;
 public class BattlegearTranslator implements IFMLCallHook {
 
     private String deobFile;
-
+    private String mcLocation;
+    
     private static HashMap<String, String> classNameMap = new HashMap<String, String>();
     private static HashMap<String, String> fieldNameMap = new HashMap<String, String>();
     private static HashMap<String, String> methodNameMap = new HashMap<String, String>();
@@ -43,7 +46,6 @@ public class BattlegearTranslator implements IFMLCallHook {
 
     public static void setup(String deobFileName){
         try{
-
             LZMAInputSupplier zis = new LZMAInputSupplier(FMLInjectionData.class.getResourceAsStream(deobFileName));
             InputSupplier<InputStreamReader> srgSupplier = CharStreams.newReaderSupplier(zis, Charsets.UTF_8);
             List<String> srgList = CharStreams.readLines(srgSupplier);
@@ -72,10 +74,45 @@ public class BattlegearTranslator implements IFMLCallHook {
     @Override
     public Void call() throws Exception {
         setup(deobFile);
+        //parse the config file
+        File config = new File(mcLocation+File.separator+"config"+File.separator+"battlegear2.cfg");
+        config.mkdirs();
+        if(config.exists()){
+        	readConfig(config);
+        }else{
+        	
+        }
+        
+        
         return null;
     }
 
-    private static void parseMethod(String line) {
+    private void readConfig(File config) {
+    	BufferedReader br = null;
+    	try{
+    		br = new BufferedReader(new FileReader(config));
+    		String line = br.readLine();
+
+    		while(line != null){
+    			if(line.toLowerCase().contains("asm debug mode")){
+    				BattlegearLoadingPlugin.debug = line.toLowerCase().contains("true");
+    			}
+    			line = br.readLine();
+    		}
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	} finally{
+    		if(br != null){
+    			try{
+    				br.close();
+    			}catch (Exception e2){
+    				e2.printStackTrace();
+    			}
+    		}
+    	}
+	}
+
+	private static void parseMethod(String line) {
         String[] splitLine = line.split(" ");
 
         String[] splitObName = splitLine[1].split("/");
@@ -113,6 +150,7 @@ public class BattlegearTranslator implements IFMLCallHook {
     @Override
     public void injectData(Map<String, Object> data) {
         deobFile = data.get("deobfuscationFileName").toString();
+        mcLocation = data.get("mcLocation").toString();
     }
 
 }

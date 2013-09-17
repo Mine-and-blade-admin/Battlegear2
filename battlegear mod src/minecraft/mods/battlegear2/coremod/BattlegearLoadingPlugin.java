@@ -2,6 +2,7 @@ package mods.battlegear2.coremod;
 
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
+import java.io.File;
 import java.util.Map;
 
 public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
@@ -22,6 +23,24 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
     //Setting this to true will enable the output of all edited classess as .class files
     //I will probably expose this via some sort of config to allow debugging of potential issues in the future
     public static boolean debug = false;
+    public static File debugOutputLocation;
+    
+    public static final String[] transformers = 
+    		new String[]{
+		        EntityPlayerTransformer,
+		        ModelBipedTransformer,
+		        NetClientHandlerTransformer,
+		        NetServerHandlerTransformer,
+		        PlayerControllerMPTransformer,
+		        ItemRendererTransformer,
+		        MinecraftTransformer,
+		        //RenderPlayerTransformer,
+		        ItemInWorldTransformer,
+		        EntityAIControlledTransformer,
+		        EntityOtherPlayerMPTransformer,
+		        //EntityArrowTransformer,
+		        EntityTrackerTransformer
+   			};
 
     @Override
     public String[] getLibraryRequestClass() {
@@ -30,21 +49,7 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String[] getASMTransformerClass() {
-        return new String[]{
-                EntityPlayerTransformer,
-                ModelBipedTransformer,
-                NetClientHandlerTransformer,
-                NetServerHandlerTransformer,
-                PlayerControllerMPTransformer,
-                ItemRendererTransformer,
-                MinecraftTransformer,
-                //RenderPlayerTransformer,
-                ItemInWorldTransformer,
-                EntityAIControlledTransformer,
-                EntityOtherPlayerMPTransformer,
-                //EntityArrowTransformer,
-                EntityTrackerTransformer
-        };
+        return transformers;
     }
 
     @Override
@@ -60,7 +65,7 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 
     @Override
     public void injectData(Map<String, Object> data) {
-
+    	debugOutputLocation = new File(data.get("mcLocation").toString(), "bg edited classess");
     }
 
 }

@@ -57,7 +57,7 @@ public class EntityAIControlledByPlayerTransformer implements IClassTransformer 
             System.out.println("M&B - Patching Class EntityAIControlledByPlayer done");
 
             if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, name);
+                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
             }
 
             return cw.toByteArray();
