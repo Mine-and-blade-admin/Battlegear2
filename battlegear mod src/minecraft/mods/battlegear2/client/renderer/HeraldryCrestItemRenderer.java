@@ -61,7 +61,7 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
 
         Tessellator tess = Tessellator.instance;
 
-        Minecraft.getMinecraft().renderEngine.func_110577_a(map_overlay);
+        Minecraft.getMinecraft().renderEngine.bindTexture(map_overlay);
         tess.startDrawingQuads();
         tess.addVertexWithUV(-8,136,-.01,0,1);
         tess.addVertexWithUV(136,136,-.01,1,1);
@@ -76,12 +76,12 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
 
 
         ResourceLocation crestLocation = new ResourceLocation("Small:"+ HeraldryData.byteArrayToHex(heraldryData));
-        TextureObject texture = Minecraft.getMinecraft().renderEngine.func_110581_b(crestLocation);
+        TextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
         if(texture == null){
             texture = new HeraldryTextureSmall(new HeraldryData(heraldryData));
-            Minecraft.getMinecraft().renderEngine.func_110579_a(crestLocation, texture);
+            Minecraft.getMinecraft().renderEngine.loadTexture(crestLocation, texture);
         }
-        Minecraft.getMinecraft().renderEngine.func_110577_a(crestLocation);
+        Minecraft.getMinecraft().renderEngine.bindTexture(crestLocation);
 
 
         tess.startDrawingQuads();
@@ -97,7 +97,7 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
 
     private void doInventoryRendering(ItemStack item, byte[] heraldryData, IHeraldryItem heraldryItem) {
 
-        Minecraft.getMinecraft().renderEngine.func_110577_a(map_overlay);
+        Minecraft.getMinecraft().renderEngine.bindTexture(map_overlay);
         renderTexturedQuad(0, 0, itemRenderer.zLevel, 16, 16);
 
 
@@ -106,12 +106,12 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
             glPushMatrix();
 
             ResourceLocation crestLocation = new ResourceLocation("Small:"+ HeraldryData.byteArrayToHex(heraldryData));
-            TextureObject texture = Minecraft.getMinecraft().renderEngine.func_110581_b(crestLocation);
+            TextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
             if(texture == null){
                 texture = new HeraldryTextureSmall(new HeraldryData(heraldryData));
-                Minecraft.getMinecraft().renderEngine.func_110579_a(crestLocation, texture);
+                Minecraft.getMinecraft().renderEngine.loadTexture(crestLocation, texture);
             }
-            Minecraft.getMinecraft().renderEngine.func_110577_a(crestLocation);
+            Minecraft.getMinecraft().renderEngine.bindTexture(crestLocation);
 
 
             renderTexturedQuad(2, 2, itemRenderer.zLevel, 12, 12);

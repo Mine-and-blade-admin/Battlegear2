@@ -59,12 +59,12 @@ public class HeraldryItemRenderer implements IItemRenderer{
             itemRenderer.renderIcon(0, 0, icon, 16, 16);
 
             ResourceLocation crestLocation = new ResourceLocation("Small:"+HeraldryData.byteArrayToHex(heraldryData));
-            TextureObject texture = Minecraft.getMinecraft().renderEngine.func_110581_b(crestLocation);
+            TextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
             if(texture == null){
                 texture = new HeraldryTextureSmall(new HeraldryData(heraldryData));
-                Minecraft.getMinecraft().renderEngine.func_110579_a(crestLocation, texture);
+                Minecraft.getMinecraft().renderEngine.loadTexture(crestLocation, texture);
             }
-            Minecraft.getMinecraft().renderEngine.func_110577_a(crestLocation);
+            Minecraft.getMinecraft().renderEngine.bindTexture(crestLocation);
 
             glDepthFunc(GL11.GL_EQUAL);
             glEnable(GL_BLEND);

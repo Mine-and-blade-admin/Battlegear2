@@ -71,13 +71,13 @@ public class BattlegearClientEvents {
                     arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0:1;
                 }
                 GL11.glColor3f(1,1,1);
-                Minecraft.getMinecraft().renderEngine.func_110577_a(quiverDetails);
+                Minecraft.getMinecraft().renderEngine.bindTexture(quiverDetails);
                 GL11.glPushMatrix();
                 biped.bipedBody.postRender(0.0625F);
                 GL11.glScalef(1.05F, 1.05F, 1.05F);
                 quiverModel.render(arrowCount, 0.0625F);
 
-                Minecraft.getMinecraft().renderEngine.func_110577_a(quiverBase);
+                Minecraft.getMinecraft().renderEngine.bindTexture(quiverBase);
                 GL11.glColor3f(red, green, blue);
                 quiverModel.render(0, 0.0625F);
                 GL11.glColor3f(1,1,1);

@@ -22,7 +22,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
 
+@Deprecated
 public class HeraldryArmourModel extends ModelBiped{
+	/*
 	ItemStack stack;
 	int armourSlot;
 	
@@ -232,6 +234,7 @@ public class HeraldryArmourModel extends ModelBiped{
 	/**
      * Renders an item held in hand as a 2D texture with thickness
      */
+	/*
 	public static void renderTexturedQuad(Tessellator par0Tessellator, float par1, float par2, float par3, float par4, int par5, int par6, float par7)
     {
         par0Tessellator.startDrawingQuads();
@@ -294,6 +297,6 @@ public class HeraldryArmourModel extends ModelBiped{
 		}
 		GL11.glTranslatef(0, 0, -helmOffset);
 		GL11.glPopMatrix();
-	}
+	}*/
 	
 }
