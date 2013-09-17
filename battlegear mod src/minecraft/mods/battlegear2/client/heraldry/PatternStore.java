@@ -23,7 +23,7 @@ public class PatternStore {
 
     public static void initialise(ResourceManager rm){
         try{
-            InputStream inputstream = rm.func_110536_a(small_image).func_110527_b();
+            InputStream inputstream = rm.getResource(small_image).getInputStream();
             BufferedImage image = ImageIO.read(inputstream);
 
             small_rgbs = new int[IMAGES_X * IMAGES_Y][3][(image.getWidth() / IMAGES_X)][(image.getHeight() / IMAGES_Y)];

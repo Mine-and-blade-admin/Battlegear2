@@ -39,7 +39,7 @@ public class QuiverItremRenderer implements IItemRenderer{
             itemRenderer = new RenderItem();
         }
 
-        this.mc.renderEngine.func_110577_a(TextureMap.field_110576_c);
+        this.mc.renderEngine.bindTexture(TextureMap.locationItemsTexture);
 
         ItemQuiver2 quiver = (ItemQuiver2)item.getItem();
         int col = quiver.getColor(item);
@@ -76,12 +76,12 @@ public class QuiverItremRenderer implements IItemRenderer{
                 GL11.glPushMatrix();
                 GL11.glColor3f(red,green,blue);
                 RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                        icon.getMaxU(),
+                		icon.getMaxU(),
                         icon.getMinV(),
                         icon.getMinU(),
                         icon.getMaxV(),
-                        icon.getOriginX(),
-                        icon.getOriginY(), 16F / 256F);
+                        icon.getIconWidth(),
+                        icon.getIconHeight(), 16F / 256F);
 
                 GL11.glColor3f(1, 1, 1);
                 icon = quiver.quiverDetails;
@@ -90,8 +90,8 @@ public class QuiverItremRenderer implements IItemRenderer{
                         icon.getMinV(),
                         icon.getMinU(),
                         icon.getMaxV(),
-                        icon.getOriginX(),
-                        icon.getOriginY(), 16F / 256F);
+                        icon.getIconWidth(),
+                        icon.getIconHeight(), 16F / 256F);
 
 
 
@@ -99,12 +99,12 @@ public class QuiverItremRenderer implements IItemRenderer{
                     GL11.glTranslated(0, 0, -4F/256F);
                     icon = quiver.quiverArrows;
                     RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                            icon.getMaxU(),
+                    		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
                             icon.getMaxV(),
-                            icon.getOriginX(),
-                            icon.getOriginY(), 8F / 256F);
+                            icon.getIconWidth(),
+                            icon.getIconHeight(), 8F / 256F);
                 }
                 GL11.glPopMatrix();
                 break;

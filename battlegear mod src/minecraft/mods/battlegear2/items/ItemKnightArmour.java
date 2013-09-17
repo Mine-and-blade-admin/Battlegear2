@@ -25,8 +25,9 @@ import net.minecraft.util.StatCollector;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour/*, IArmorTextureProvider*/{
-	
+@Deprecated
+public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, IArmorTextureProvider*/{
+/*
 	private Icon baseIcon[];
 	private Icon postRenderIcon[];
 	private Icon trimRenderIcon;
@@ -217,5 +218,5 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour/*, IAr
 	public String getPatternArmourPath(HeraldyPattern pattern, int armourSlot) {
 		return Battlegear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-"+pattern.ordinal()+".png";
 	}
-	
+	*/
 }

@@ -50,7 +50,7 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
     public void registerIcons(IconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
 
-        bigIcon = par1IconRegister.registerIcon(this.func_111208_A()+".big");
+        bigIcon = par1IconRegister.registerIcon(this.getIconString()+".big");
 
     }
 

@@ -272,19 +272,19 @@ public class BattlegearUtils {
         }
         if (par1Entity.canAttackWithItem())
         {
-            if (!par1Entity.func_85031_j(player))
+            if (!par1Entity.hitByEntity(player))
             {
                 float f = 1;
                 if(stack != null){
 
                     //I will be the 1st to admit that this code may not be correct. It is really the best I can do with the Searge names
-                    Collection map = stack.func_111283_C().get(SharedMonsterAttributes.field_111264_e.func_111108_a());
+                    Collection map = stack.getAttributeModifiers().get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
 
                     for(Object ob : map){
                         if(ob instanceof AttributeModifier){
                             AttributeModifier am = (AttributeModifier)ob;
-                            if(am.func_111166_b().equals("Weapon modifier")){
-                                f += am.func_111164_d();
+                            if(am.getName().equals("Weapon modifier")){
+                                f += am.getAmount();
                             }
                         }
                     }
@@ -350,7 +350,7 @@ public class BattlegearUtils {
                             player.triggerAchievement(AchievementList.overkill);
                         }
 
-                        player.func_130011_c(par1Entity);
+                        player.setLastAttacker(par1Entity);
 
                         if (par1Entity instanceof EntityLivingBase)
                         {

@@ -35,7 +35,7 @@ public class GuiModUpdateButton extends GuiButton{
             text = par1Minecraft.fontRenderer.listFormattedStringToWidth(StatCollector.translateToLocal("mud.name"), 80);
         }
 
-        renderItem.renderItemIntoGUI(par1Minecraft.fontRenderer, par1Minecraft.func_110434_K(), icon, xPosition+2, yPosition+2);
+        renderItem.renderItemIntoGUI(par1Minecraft.fontRenderer, par1Minecraft.getTextureManager(), icon, xPosition+2, yPosition+2);
 
         int l = 14737632;
 

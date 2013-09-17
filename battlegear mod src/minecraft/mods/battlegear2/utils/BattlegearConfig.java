@@ -50,16 +50,16 @@ public class BattlegearConfig {
         heradricItem = new HeraldryCrest(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());
 
         chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
-    	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).func_111206_d("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
+    	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).setTextureName("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
         	
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
 
         if(Battlegear.debug){
             quiver = new ItemQuiver2(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
-            quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).func_111206_d("battlegear2:quiver/"+itemNames[2]).setCreativeTab(customTab);
+            quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).setTextureName("battlegear2:quiver/"+itemNames[2]).setCreativeTab(customTab);
 
             MbArrows = new ItemMBArrow(config.get(config.CATEGORY_ITEM, itemNames[9], firstDefaultItemIndex+itemOffests[9]).getInt());
-            MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).func_111206_d("battlegear2:" + itemNames[9]).setCreativeTab(customTab);
+            MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).setTextureName("battlegear2:" + itemNames[9]).setCreativeTab(customTab);
 
             String customArrowSpawn = "Skeleton CustomArrow Spawn Rate";
             config.addCustomCategoryComment(customArrowSpawn, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");

@@ -43,7 +43,7 @@ public class BattlegearInGameGUI extends Gui {
             if (!this.mc.playerController.enableEverythingIsScrewedUpMode()) {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-                this.mc.renderEngine.func_110577_a(resourceLocation);
+                this.mc.renderEngine.bindTexture(resourceLocation);
                 InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
                 this.zLevel = -90.0F;
 
@@ -98,7 +98,7 @@ public class BattlegearInGameGUI extends Gui {
                 if(quiver != null){
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-                    this.mc.renderEngine.func_110577_a(resourceLocation);
+                    this.mc.renderEngine.bindTexture(resourceLocation);
                     InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
                     this.zLevel = -90.0F;
 
@@ -142,18 +142,18 @@ public class BattlegearInGameGUI extends Gui {
     private void renderBlockBar(int width, int height) {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        this.mc.renderEngine.func_110577_a(resourceLocationShield);
+        this.mc.renderEngine.bindTexture(resourceLocationShield);
         int x = width / 2 - 91;
         int y = height - 35;
 
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         if(player.capabilities.isCreativeMode){
-            if(player.func_110317_t()){
+            if(player.isRidingHorse()){
                 y-=5;
             }
         }else{
             y-= 16;
-            if(ForgeHooks.getTotalArmorValue(player) > 0 || player.func_110317_t() || player.getAir() < 300){
+            if(ForgeHooks.getTotalArmorValue(player) > 0 || player.isRidingHorse() || player.getAir() < 300){
                 y-=10;
             }
         }
