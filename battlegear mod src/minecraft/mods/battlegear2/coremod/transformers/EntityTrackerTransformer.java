@@ -98,9 +98,8 @@ public class EntityTrackerTransformer  implements IClassTransformer {
             cn.accept(cw);
 
             System.out.println("M&B - Patching Class EntityTrackerEntry (" + name + ") done");
-
-            if (true) {
-                TransformerUtils.writeClassFile(cw, name);
+            if (BattlegearLoadingPlugin.debug) {
+                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
             }
 
             return cw.toByteArray();

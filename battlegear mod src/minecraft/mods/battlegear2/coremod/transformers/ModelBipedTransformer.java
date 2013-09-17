@@ -61,7 +61,7 @@ public class ModelBipedTransformer implements IClassTransformer {
             System.out.println("M&B - Patching Class ModelBiped (" + name + ") done");
 
             if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, name);
+                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
             }
 
             return cw.toByteArray();

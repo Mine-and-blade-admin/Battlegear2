@@ -53,6 +53,9 @@ public class BattlegearConfig {
     	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).setTextureName("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
         	
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
+        
+        config.get("Coremod", "ASM debug Mode", false);
+        
 
         if(Battlegear.debug){
             quiver = new ItemQuiver2(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
