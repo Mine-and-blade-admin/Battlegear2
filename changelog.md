@@ -5,6 +5,8 @@
 ** It should now be the same as described on the forum page
 **Known Issues**
 * The shield block bar will be placed over any extra hearts given by various sources
+* There is an issue with Forge versions greater than 9.10.1.849. Please use Forge 9.10.1.849 or lower (9.10.1.850 has the problematic code)
+* There are still many issues with mcpc+
 
 == Mine & Blade: Battlegear 2 - Warcry 1.0.1 ==
 **New Features**
