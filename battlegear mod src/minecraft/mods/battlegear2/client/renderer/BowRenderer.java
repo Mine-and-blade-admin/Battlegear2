@@ -83,13 +83,13 @@ public class BowRenderer implements IItemRenderer {
         }
 
         Tessellator tessellator = Tessellator.instance;
-        ItemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getOriginX(), icon.getOriginY(), 0.0625F);
+        ItemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
 
         if(arrowStack != null && (arrowStack.getItem() instanceof ItemMBArrow || arrowStack.getItem().itemID == Item.arrow.itemID)){
             icon = arrowStack.getIconIndex();
             GL11.glPushMatrix();
             GL11.glTranslatef(-(-3F+drawAmount)/16F, -(-2F+drawAmount)/16F, firstPerson?-0.5F/16F:0.5F/16F);
-            ItemRenderer.renderItemIn2D(tessellator, icon.getMinU(), icon.getMinV(), icon.getMaxU(), icon.getMaxV(), icon.getOriginX(), icon.getOriginY(), 0.0625F);
+            ItemRenderer.renderItemIn2D(tessellator, icon.getMinU(), icon.getMinV(), icon.getMaxU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
             GL11.glPopMatrix();
         }
 

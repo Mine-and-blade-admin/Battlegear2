@@ -63,7 +63,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 		
 		
 		this.setUnlocalizedName("battlegear2:"+name);
-		this.func_111206_d("battlegear2:"+name);
+		this.setTextureName("battlegear2:"+name);
 		
 		this.baseDamage = 4 + material.getDamageVsEntity();
 	}
@@ -74,10 +74,10 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 	}
 	
 	@Override
-	public Multimap func_111205_h() {
+	public Multimap getItemAttributeModifiers()
+    {
 		Multimap map = HashMultimap.create();
-
-        map.put(SharedMonsterAttributes.field_111264_e.func_111108_a(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)this.baseDamage, 0));
+		map.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)this.baseDamage, 0));
 
         return map;
     }

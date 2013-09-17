@@ -25,7 +25,7 @@ public class ItemMBArrow extends Item {
     public void registerIcons(IconRegister par1IconRegister) {
         icons = new Icon[names.length];
         for(int i = 0; i < names.length; i++){
-            icons[i] = par1IconRegister.registerIcon(func_111208_A()+"."+names[i]);
+            icons[i] = par1IconRegister.registerIcon(this.getIconString()+"."+names[i]);
         }
     }
 

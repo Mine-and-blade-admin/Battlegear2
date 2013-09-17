@@ -48,7 +48,7 @@ public class SpearRenderer implements IItemRenderer {
             mc = FMLClientHandler.instance().getClient();
             itemRenderer = new RenderItem();
         }
-        this.mc.renderEngine.func_110577_a(TextureMap.field_110576_c);
+        this.mc.renderEngine.bindTexture(TextureMap.locationItemsTexture);
         Tessellator tessellator = Tessellator.instance;
 
         if (type == ItemRenderType.EQUIPPED) {
@@ -59,12 +59,12 @@ public class SpearRenderer implements IItemRenderer {
             Icon icon = ((ItemSpear)item.getItem()).bigIcon;
 
             RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                    icon.getMaxU(),
+            		icon.getMaxU(),
                     icon.getMinV(),
                     icon.getMinU(),
                     icon.getMaxV(),
-                    icon.getOriginX(),
-                    icon.getOriginY(), 1F/16F);
+                    icon.getIconWidth(),
+                    icon.getIconHeight(), 1F/16F);
 
             if (item != null && item.hasEffect(0)) {
                 //HeraldryItemRenderer.renderEnchantmentEffects(tessellator);
@@ -80,12 +80,12 @@ public class SpearRenderer implements IItemRenderer {
             Icon icon = item.getIconIndex();
 
             RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                    icon.getMaxU(),
+            		icon.getMaxU(),
                     icon.getMinV(),
                     icon.getMinU(),
                     icon.getMaxV(),
-                    icon.getOriginX(),
-                    icon.getOriginY(), 1F/16F);
+                    icon.getIconWidth(),
+                    icon.getIconHeight(), 1F/16F);
 
             if (item != null && item.hasEffect(0)) {
                renderEnchantmentEffects(tessellator);
@@ -99,7 +99,7 @@ public class SpearRenderer implements IItemRenderer {
     public static void renderEnchantmentEffects(Tessellator tessellator) {
         GL11.glDepthFunc(GL11.GL_EQUAL);
         GL11.glDisable(GL11.GL_LIGHTING);
-        FMLClientHandler.instance().getClient().renderEngine.func_110577_a(ITEM_GLINT);
+        FMLClientHandler.instance().getClient().renderEngine.bindTexture(ITEM_GLINT);
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
         float f7 = 0.76F;

@@ -269,7 +269,7 @@ public class BattlegearRenderHelper {
                 GL11.glRotatef(var21 * 20.0F, 0.0F, 0.0F, 1.0F);
 
 
-                mc.func_110434_K().func_110577_a(player.func_110306_p());
+                mc.getTextureManager().bindTexture(player.getLocationSkin());
                 GL11.glTranslatef(-1.0F, 3.6F, 3.5F);
                 GL11.glRotatef(120.0F, 0.0F, 0.0F, 1.0F);
                 GL11.glRotatef(200.0F, 1.0F, 0.0F, 0.0F);
@@ -679,7 +679,7 @@ public class BattlegearRenderHelper {
 
         //depth = 1;
 
-        Minecraft.getMinecraft().renderEngine.func_110577_a(arrowTex);
+        Minecraft.getMinecraft().renderEngine.bindTexture(arrowTex);
 
 
 
