@@ -98,7 +98,7 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
             System.out.println("M&B - Patching Class EntityOtherPlayerMP done");
 
             if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, name);
+                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
             }
             return cw.toByteArray();
 
@@ -106,8 +106,76 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
             return bytes;
         }
     }
-
+    
+    
     private void processOnUpdateMethod(MethodNode mn) {
+
+        System.out.println("\tPatching method onUpdate in EntityOtherPlayerMP");
+        InsnList newList = new InsnList();
+
+        Iterator<AbstractInsnNode> it = mn.instructions.iterator();
+
+        boolean done = false;
+        while(it.hasNext() && !done){
+            AbstractInsnNode node = it.next();
+            if (!done && node instanceof FieldInsnNode &&
+                    node.getOpcode() == GETFIELD &&
+                    ((FieldInsnNode) node).owner.equals(entityOtherPlayerMPClassName) &&
+                    ((FieldInsnNode) node).name.equals(isItemInUseFieldName)){
+            	
+            	//TODO replace with dynamic name
+            	newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, "bn", "Luc;"));
+            	newList.add(new VarInsnNode(ALOAD, 0));
+            	newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, "bn", "Luc;"));
+            	newList.add(new FieldInsnNode(GETFIELD, "uc", "c", "I"));
+            	newList.add(new MethodInsnNode(INVOKEVIRTUAL, "uc", "a", "(I)Lyd;"));
+                newList.add(new VarInsnNode(ASTORE, 6));
+                newList.add(new VarInsnNode(ALOAD, 0));
+                newList.add(node);
+                int A_Load_Count = 0;
+                
+                while (it.hasNext() && !done) {
+                	node = it.next();
+                	if(node instanceof VarInsnNode && 
+                			node.getOpcode() == ALOAD){
+                		A_Load_Count ++;
+                		if(A_Load_Count == 2){
+                    		boolean found_AALoad = false;
+                    		while(it.hasNext() && !found_AALoad){
+                    			node = it.next();
+                    			found_AALoad = node.getOpcode() == AALOAD;
+                    		}
+                    		newList.add(new VarInsnNode(ALOAD, 6));
+                    	}else if (A_Load_Count == 3){
+                    		newList.add(node);
+                    		int AALoad_count = 0;
+                    		while(it.hasNext() && AALoad_count < 2){
+                    			node = it.next();
+                    			if(node.getOpcode() == AALOAD){
+                    				AALoad_count++;
+                    			}
+                    		}
+                    		newList.add(new VarInsnNode(ALOAD, 6));
+                    		done=true;
+                    	}else{
+                    		newList.add(node);
+                    	}
+                	}else{
+                		newList.add(node);
+                	}
+				}
+            }else{
+            	newList.add(node);
+            }
+        }
+        while(it.hasNext()){
+        	newList.add(it.next());
+        }
+        mn.instructions = newList;
+        mn.maxLocals = mn.maxLocals;
+    }
+
+    private void processOnUpdateMethod2(MethodNode mn) {
 
         System.out.println("\tPatching method onUpdate in EntityOtherPlayerMP");
         InsnList newList = new InsnList();
@@ -134,8 +202,6 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
 
                 newList.add(new InsnNode(RETURN));
 
-
-
                 done = true;
             }else{
                 newList.add(node);
@@ -143,7 +209,7 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
 
         }
         mn.instructions = newList;
-        mn.maxLocals = mn.maxLocals - 1;
+        mn.maxLocals = mn.maxLocals;
 
 
 

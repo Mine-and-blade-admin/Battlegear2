@@ -9,7 +9,25 @@
  import net.minecraft.block.Block;
  import net.minecraft.client.audio.SoundManager;
  import net.minecraft.client.entity.EntityClientPlayerMP;
-@@ -1398,7 +1400,8 @@
+@@ -149,6 +151,17 @@
+ @SideOnly(Side.CLIENT)
+ public class Minecraft implements IPlayerUsage
+ {
++	/*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 * 
++	 * Edits: 1
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 * 
++	 * Prevention of index out of bounds errors
++	 */
++	
+     private static final ResourceLocation locationMojangPng = new ResourceLocation("textures/gui/title/mojang.png");
+     public static final boolean isRunningOnMac = Util.getOSType() == EnumOS.MACOS;
+ 
+@@ -1398,7 +1411,8 @@
  
                      if (itemstack.stackSize == 0)
                      {
