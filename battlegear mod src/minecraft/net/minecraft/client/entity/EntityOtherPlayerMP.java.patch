@@ -40,8 +40,8 @@
      {
          this.field_71082_cx = 0.0F;
 @@ -82,17 +98,9 @@
-         this.limbYaw += (f - this.limbYaw) * 0.4F;
-         this.limbSwing += this.limbYaw;
+         this.limbSwingAmount += (f - this.limbSwingAmount) * 0.4F;
+         this.limbSwing += this.limbSwingAmount;
  
 -        if (!this.isItemInUse && this.isEating() && this.inventory.mainInventory[this.inventory.currentItem] != null)
 -        {

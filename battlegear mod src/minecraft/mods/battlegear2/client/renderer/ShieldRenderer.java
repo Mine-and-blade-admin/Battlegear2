@@ -60,12 +60,12 @@ public class ShieldRenderer implements IItemRenderer{
 
                     GL11.glColor3f(red, green, blue);
                     RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                            icon.getMaxU(),
+                    		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
                             icon.getMaxV(),
-                            icon.getOriginX(),
-                            icon.getOriginY(), 16F/256F);
+                            icon.getIconWidth(),
+                            icon.getIconHeight(), 16F / 256F);
                     if(shield.enumShield != EnumShield.WOOD){
                         GL11.glColor3f(1,1,1);
                     }
@@ -73,23 +73,23 @@ public class ShieldRenderer implements IItemRenderer{
                     GL11.glTranslatef(0, 0, -16F/256F);
                     icon = shield.getBackIcon();
                     RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                            icon.getMaxU(),
+                    		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
                             icon.getMaxV(),
-                            icon.getOriginX(),
-                            icon.getOriginY(), 1F/256F);
+                            icon.getIconWidth(),
+                            icon.getIconHeight(), 1F/256F);
                     GL11.glColor3f(1,1,1);
 
                     GL11.glTranslatef(0, 0, 24F/256F);
                     icon = shield.getTrimIcon();
                     RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                            icon.getMaxU(),
+                    		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
                             icon.getMaxV(),
-                            icon.getOriginX(),
-                            icon.getOriginY(), (8F+16F)/256F);
+                            icon.getIconWidth(),
+                            icon.getIconHeight(), (8F+16F)/256F);
 
                     if(item.isItemEnchanted())
                         SpearRenderer.renderEnchantmentEffects(tessellator);
@@ -99,12 +99,12 @@ public class ShieldRenderer implements IItemRenderer{
 
                     GL11.glColor3f(red, green, blue);
                     RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                            icon.getMaxU(),
+                    		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
                             icon.getMaxV(),
-                            icon.getOriginX(),
-                            icon.getOriginY(), 16F/256F);
+                            icon.getIconWidth(),
+                            icon.getIconHeight(), 16F/256F);
 
                     if(shield.enumShield != EnumShield.WOOD){
                         GL11.glColor3f(1,1,1);
@@ -113,24 +113,24 @@ public class ShieldRenderer implements IItemRenderer{
                     GL11.glTranslatef(0, 0, 1F/256F);
                     icon = shield.getBackIcon();
                     RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                            icon.getMaxU(),
+                    		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
                             icon.getMaxV(),
-                            icon.getOriginX(),
-                            icon.getOriginY(), 1F/256F);
+                            icon.getIconWidth(),
+                            icon.getIconHeight(), 1F/256F);
 
                     GL11.glColor3f(1,1,1);
 
                     GL11.glTranslatef(0, 0, -1F/256F);
                     icon = shield.getTrimIcon();
                     RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                            icon.getMaxU(),
+                    		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
                             icon.getMaxV(),
-                            icon.getOriginX(),
-                            icon.getOriginY(), (8F+16F)/256F);
+                            icon.getIconWidth(),
+                            icon.getIconHeight(), (8F+16F)/256F);
 
                     if(item.isItemEnchanted())
                         SpearRenderer.renderEnchantmentEffects(tessellator);

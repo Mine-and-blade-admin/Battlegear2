@@ -8,12 +8,7 @@
  import net.minecraft.block.Block;
  import net.minecraft.block.material.Material;
  import net.minecraft.client.Minecraft;
-@@ -31,11 +32,28 @@
- import net.minecraftforge.client.IItemRenderer.ItemRenderType;
- import net.minecraftforge.client.MinecraftForgeClient;
- import static net.minecraftforge.client.IItemRenderer.ItemRenderType.*;
--import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.*;
- 
+@@ -36,6 +37,25 @@
  @SideOnly(Side.CLIENT)
  public class ItemRenderer
  {
@@ -28,17 +23,18 @@
 +	 * Because rendering the offhand item is quite complex the edits only defer the actual rendering to 
 +	 * another method in BattlegearRenderHelper. This makes the coremod infinatly simpeler.
 +	 */
-+	
++		
 +	//-----MB-AddFields-----(4)
 +	public ItemStack offHandItemToRender;
 +	public int equippedItemOffhandSlot;
 +	public float equippedOffHandProgress;
 +	public float prevEquippedOffHandProgress;
 +	
-     private static final ResourceLocation field_110930_b = new ResourceLocation("textures/misc/enchanted_item_glint.png");
-     private static final ResourceLocation field_110931_c = new ResourceLocation("textures/map/map_background.png");
-     private static final ResourceLocation field_110929_d = new ResourceLocation("textures/misc/underwater.png");
-@@ -247,7 +265,7 @@
++	
+     private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+     private static final ResourceLocation RES_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
+     private static final ResourceLocation RES_UNDERWATER_OVERLAY = new ResourceLocation("textures/misc/underwater.png");
+@@ -247,7 +267,7 @@
       */
      public void renderItemInFirstPerson(float par1)
      {
@@ -47,7 +43,7 @@
          EntityClientPlayerMP entityclientplayermp = this.mc.thePlayer;
          float f2 = entityclientplayermp.prevRotationPitch + (entityclientplayermp.rotationPitch - entityclientplayermp.prevRotationPitch) * par1;
          GL11.glPushMatrix();
-@@ -525,6 +543,9 @@
+@@ -525,6 +545,9 @@
  
          GL11.glDisable(GL12.GL_RESCALE_NORMAL);
          RenderHelper.disableStandardItemLighting();
@@ -57,7 +53,7 @@
      }
  
      /**
-@@ -722,6 +743,9 @@
+@@ -722,6 +745,9 @@
              this.itemToRender = itemstack;
              this.equippedItemSlot = entityclientplayermp.inventory.currentItem;
          }

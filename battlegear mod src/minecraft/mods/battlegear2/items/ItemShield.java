@@ -55,7 +55,7 @@ public class ItemShield extends Item implements IShield, IDyable{
         this.enumShield = enumShield;
 
         this.setUnlocalizedName("battlegear2:shield."+enumShield.getName());
-        this.func_111206_d("battlegear2:shield/shield."+enumShield.getName());
+        this.setTextureName("battlegear2:shield/shield."+enumShield.getName());
 
         this.getShareTag();
 

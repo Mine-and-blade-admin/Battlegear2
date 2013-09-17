@@ -53,7 +53,7 @@ public class ModUpdateDetector {
 
 
         ICommandSender sender = getSender();
-        sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
+        sender.sendChatToPlayer(ChatMessageComponent.createFromText(
                 EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
                 EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.checking")
         ));
@@ -87,7 +87,7 @@ public class ModUpdateDetector {
     public static void notifyUpdateDone(){
         ICommandSender sender = getSender();
         if(sender != null){
-            sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
+            sender.sendChatToPlayer(ChatMessageComponent.createFromText(
                     EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
                             EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.check.done")
             ));
@@ -106,12 +106,12 @@ public class ModUpdateDetector {
         }
         if(outOfDateCount > 0){
             if(sender != null){
-                sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
+                sender.sendChatToPlayer(ChatMessageComponent.createFromText(
                         String.format("%s%s %s %s",
                         EnumChatFormatting.RED, StatCollector.translateToLocal("message.you.have"),
                                 outOfDateCount, StatCollector.translateToLocal("message.outdated"))
                 ));
-                sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
+                sender.sendChatToPlayer(ChatMessageComponent.createFromText(
                         String.format("%s%s %s %s",
                                 EnumChatFormatting.RED, StatCollector.translateToLocal("message.type"),
                                 "/mud", StatCollector.translateToLocal("message.to.view"))
@@ -119,7 +119,7 @@ public class ModUpdateDetector {
             }
         }else{
             if(sender != null){
-                sender.sendChatToPlayer(ChatMessageComponent.func_111066_d(
+                sender.sendChatToPlayer(ChatMessageComponent.createFromText(
                         String.format("%s%s",
                                 EnumChatFormatting.DARK_GREEN, StatCollector.translateToLocal("message.up.to.date"))
                 ));

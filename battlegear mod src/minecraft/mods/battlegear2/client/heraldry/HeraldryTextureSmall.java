@@ -19,7 +19,7 @@ public class HeraldryTextureSmall extends AbstractTexture {
     }
 
     @Override
-    public void func_110551_a(ResourceManager resourcemanager) throws IOException {
+    public void loadTexture(ResourceManager resourcemanager) throws IOException {
         BufferedImage image = null;
 
         image = new BufferedImage(PatternStore.small_rgbs[crest.getPattern()][0].length, PatternStore.small_rgbs[crest.getPattern()][0][0].length,BufferedImage.TYPE_4BYTE_ABGR);
@@ -42,7 +42,7 @@ public class HeraldryTextureSmall extends AbstractTexture {
         }
 
 
-        TextureUtil.func_110987_a(this.func_110552_b(), image);
+        TextureUtil.uploadTextureImage(this.getGlTextureId(),  image);
     }
 }
 
