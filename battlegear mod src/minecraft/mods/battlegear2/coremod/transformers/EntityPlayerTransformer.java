@@ -156,7 +156,7 @@ public class EntityPlayerTransformer implements IClassTransformer {
 
 
             if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, name);
+                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
             }
 
 
@@ -184,7 +184,7 @@ public class EntityPlayerTransformer implements IClassTransformer {
     }
 
     private void processMethods(ClassNode cn) {
-        for (Object mnObj : cn.methods) {
+    	for (Object mnObj : cn.methods) {
             MethodNode mn = (MethodNode)mnObj;
             if (mn.name.equals("<init>")) {
                 System.out.println("\tPatching constructor in EntityPlayer");

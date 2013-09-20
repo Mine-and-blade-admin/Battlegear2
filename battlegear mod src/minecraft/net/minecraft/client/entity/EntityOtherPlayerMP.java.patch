@@ -30,16 +30,13 @@
      private int otherPlayerMPPosRotationIncrements;
      private double otherPlayerMPX;
 @@ -65,6 +78,9 @@
-     /**
-      * Called to update the entity's position/logic.
-      */
 +    /**
 +     * Called to update the entity's position/logic.
 +     */
      public void onUpdate()
      {
          this.field_71082_cx = 0.0F;
-@@ -82,17 +98,9 @@
+@@ -82,10 +98,13 @@
          this.limbSwingAmount += (f - this.limbSwingAmount) * 0.4F;
          this.limbSwing += this.limbSwingAmount;
  
@@ -47,20 +44,26 @@
 -        {
 -            ItemStack itemstack = this.inventory.mainInventory[this.inventory.currentItem];
 -            this.setItemInUse(this.inventory.mainInventory[this.inventory.currentItem], Item.itemsList[itemstack.itemID].getMaxItemUseDuration(itemstack));
--            this.isItemInUse = true;
--        }
--        else if (this.isItemInUse && !this.isEating())
--        {
--            this.clearItemInUse();
--            this.isItemInUse = false;
--        }
 +        //-----MB-Edited-----
 +        //Simplified for ASM
-+        isItemInUse = BattlegearClientUtils.entityOtherPlayerIsItemInUseHook(this, isItemInUse);
++        //isItemInUse = BattlegearClientUtils.entityOtherPlayerIsItemInUseHook(this, isItemInUse);
++        ItemStack mainhand = inventory.getStackInSlot(inventory.currentItem);
++        if (!this.isItemInUse && this.isEating() && mainhand != null)
++        {
++            this.setItemInUse(mainhand, Item.itemsList[mainhand.itemID].getMaxItemUseDuration(mainhand));
+             this.isItemInUse = true;
+         }
+         else if (this.isItemInUse && !this.isEating())
+@@ -93,6 +112,8 @@
+             this.clearItemInUse();
+             this.isItemInUse = false;
+         }
++        
++        
      }
  
      public float getShadowSize()
-@@ -162,7 +170,8 @@
+@@ -162,7 +183,8 @@
      {
          if (par1 == 0)
          {

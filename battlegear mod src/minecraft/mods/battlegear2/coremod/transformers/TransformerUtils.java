@@ -1,5 +1,6 @@
 package mods.battlegear2.coremod.transformers;
 
+import mods.battlegear2.coremod.BattlegearLoadingPlugin;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
@@ -70,8 +71,7 @@ public class TransformerUtils {
 
     public static void writeClassFile(ClassWriter cw, String name) {
         try {
-            File outDir = new File(System.getProperty("user.home"), "bg classFiles" + File.separator + "final");
-            System.out.println(outDir.getAbsolutePath());
+            File outDir = BattlegearLoadingPlugin.debugOutputLocation;
             outDir.mkdirs();
             DataOutputStream dout = new DataOutputStream(new FileOutputStream(new File(outDir, name + ".class")));
             dout.write(cw.toByteArray());
