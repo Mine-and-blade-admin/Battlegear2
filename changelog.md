@@ -56,6 +56,6 @@
 
 == Mine & Blade: Battlegear 2 - Warcry 0.2.1 ==
 **New Features**
-* Updated to 1.6.2
+* Updated to 1.6.4
 **Known Issues**
 * Many issues related to SMP
