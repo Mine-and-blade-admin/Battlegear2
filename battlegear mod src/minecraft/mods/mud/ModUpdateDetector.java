@@ -35,7 +35,7 @@ public class ModUpdateDetector {
 
     public static void registerMod(ModContainer mc, URL updateXML, URL changelog){
         if(!hasInitialised){
-            initialise();
+            initialise(mc);
             hasInitialised = true;
         }
 
@@ -67,12 +67,15 @@ public class ModUpdateDetector {
         return updateMap.values();
     }
 
-    private static void initialise() {
+    private static void initialise(ModContainer mc) {
         updateMap = new HashMap<String, UpdateEntry>();
         TickRegistry.registerTickHandler(new ModUpdateDetectorTickHandeler(Timer), Side.CLIENT);
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
-            MinecraftForge.EVENT_BUS.register(new WeaponHookContainerClass());
-        }
+
+
+
+
+
+
     }
 
     public static ICommandSender getSender() {

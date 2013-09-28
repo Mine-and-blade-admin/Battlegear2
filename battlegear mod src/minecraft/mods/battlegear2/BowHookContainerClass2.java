@@ -19,7 +19,6 @@ import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
 public class BowHookContainerClass2 {
-
     @ForgeSubscribe
     public void onBowUse(ArrowNockEvent event){
         if(event.entityPlayer.capabilities.isCreativeMode

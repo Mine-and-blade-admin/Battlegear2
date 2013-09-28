@@ -39,7 +39,7 @@ public class BattlegearTickHandeler implements ITickHandler {
         if (type.contains(TickType.PLAYER)) {
 
             EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
-            
+
             if (entityPlayer.worldObj instanceof WorldServer) {
             	/*boolean changed = false;
                 if(!currentItemCache.containsKey(entityPlayer.username)||entityPlayer.inventory.currentItem!=currentItemCache.get(entityPlayer.username))
@@ -52,23 +52,25 @@ public class BattlegearTickHandeler implements ITickHandler {
                 if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 
                     ((WorldServer)entityPlayer.worldObj)
-                        .getEntityTracker().sendPacketToAllAssociatedPlayers(
-                                entityPlayer,
-                            BattlegearSyncItemPacket.generatePacket(entityPlayer.username, entityPlayer.inventory)
-                                );
+                            .getEntityTracker().sendPacketToAllAssociatedPlayers(
+                            entityPlayer,
+                            BattlegearSyncItemPacket.generatePacket(entityPlayer)
+                    );
 
                     entityPlayer.specialActionTimer = 0;
 
+                    ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
+
                 }
-                ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
+
 
                 //Force update every 3 seconds
                 //TODO: This is a temp fix
-                if(entityPlayer.ticksExisted % (20*3) == 0){
+                if(entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
                     ((WorldServer)entityPlayer.worldObj)
                             .getEntityTracker().sendPacketToAllAssociatedPlayers(
                             entityPlayer,
-                            BattlegearSyncItemPacket.generatePacket(entityPlayer.username, entityPlayer.inventory)
+                            BattlegearSyncItemPacket.generatePacket(entityPlayer)
                     );
                 }
                 

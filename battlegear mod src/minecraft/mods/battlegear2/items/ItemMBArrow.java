@@ -13,7 +13,7 @@ public class ItemMBArrow extends Item {
 
     public Icon[] icons;
 
-    public static final String[] names = {"explosive", "ender"};
+    public static final String[] names = {"explosive", "ender", "flame"};
 
     public ItemMBArrow(int id) {
         super(id);

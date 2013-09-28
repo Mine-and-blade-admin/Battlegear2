@@ -50,7 +50,7 @@ public class BattlegearClientEvents {
         BattlegearRenderHelper.renderItemIn3rdPerson(
                 event.entityPlayer,
                 biped,
-                event.partialTicks
+                event.partialRenderTick
         );
 
 

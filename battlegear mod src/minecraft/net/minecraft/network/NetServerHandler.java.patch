@@ -29,7 +29,7 @@
      /** The underlying network manager for this server handler. */
      public final INetworkManager netManager;
  
-@@ -596,16 +611,20 @@
+@@ -598,16 +613,20 @@
  
          itemstack = this.playerEntity.inventory.getCurrentItem();
  
@@ -52,7 +52,7 @@
              Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
              this.playerEntity.openContainer.detectAndSendChanges();
              this.playerEntity.playerInventoryBeingManipulated = false;
-@@ -678,8 +697,8 @@
+@@ -680,8 +699,8 @@
  
      public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
      {
@@ -61,5 +61,5 @@
 +    	//-----MB-Edited-----
 +        if (InventoryPlayerBattle.isValidSwitch(par1Packet16BlockItemSwitch.id)){
              this.playerEntity.inventory.currentItem = par1Packet16BlockItemSwitch.id;
+             this.playerEntity.func_143004_u();
          }
-         else
