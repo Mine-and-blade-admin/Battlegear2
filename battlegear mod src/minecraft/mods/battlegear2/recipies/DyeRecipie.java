@@ -2,13 +2,10 @@ package mods.battlegear2.recipies;
 
 
 import mods.battlegear2.api.IDyable;
-import mods.battlegear2.items.ItemQuiver2;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;

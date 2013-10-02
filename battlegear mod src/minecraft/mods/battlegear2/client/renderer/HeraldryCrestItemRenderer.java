@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
@@ -71,9 +70,6 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
 
         //glDisable(GL_BLEND);
         //glDepthFunc(GL11.GL_LEQUAL);
-
-
-
 
         ResourceLocation crestLocation = new ResourceLocation("Small:"+ HeraldryData.byteArrayToHex(heraldryData));
         TextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);

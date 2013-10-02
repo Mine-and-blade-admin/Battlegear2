@@ -2,127 +2,134 @@ package mods.battlegear2.api.heraldry;
 
 import mods.battlegear2.utils.BattlegearUtils;
 
+import javax.management.Query;
+import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class HeraldryData {
+
 
 
     public static final int RED = 1;
     public static final int GREEN = 2;
     public static final int BLUE = 3;
+    public static final int MAX_CRESTS = 6;
 
     private byte pattern;
-    private short crest;
-    private byte crestPosition;
-    private int[] colours = new int[5];
+    private int[] patternColours;
+    private byte[] extraData;
 
-    private byte helm;
-    private byte banner;
+    private static final int extraDataSize = 6;
+    public static final HeraldryData defaultData =
+            new HeraldryData((byte)0, Color.YELLOW.getRGB(), Color.BLUE.getRGB(), Color.BLACK.getRGB(), new ArrayList<Crest>(), new byte[extraDataSize]);
+
 
     private byte[] byteArray = null;
+    private List<Crest> crests;
 
-    public HeraldryData(int pattern, int pattern_col_1, int pattern_col_2, int pattern_col_3, int crest, int crest_col_1, int crest_col_2, int crest_position, int helm, int banner) {
-        this.pattern = (byte) pattern;
-        this.crest = (short) crest;
-        colours = new int[]{pattern_col_1, pattern_col_2, pattern_col_3, crest_col_1, crest_col_2};
-        this.crestPosition = (byte) crest_position;
-        this.helm = (byte) helm;
-        this.banner = (byte) banner;
+    public HeraldryData(byte pattern, int pattern_col_1, int pattern_col_2, int pattern_col_3, List<Crest> crests, byte[] extraData) {
+        this.pattern = pattern;
+        this.patternColours = new int[]{pattern_col_1, pattern_col_2, pattern_col_3};
+        this.crests = crests;
+        this.extraData = extraData;
     }
 
-    public HeraldryData(byte pattern, int pattern_col_1, int pattern_col_2, int pattern_col_3){
-        this(pattern, pattern_col_1, pattern_col_2, pattern_col_3, 0, 0, 0,0, 0, 0);
-    }
-
-    public HeraldryData(byte[] data){
+    public HeraldryData(byte[] crestData){
         DataInputStream input = null;
 
         try{
-            input = new DataInputStream(new ByteArrayInputStream(data));
+            input = new DataInputStream(new ByteArrayInputStream(crestData));
 
-            pattern = input.readByte();;
-            crest = input.readShort();
-            crestPosition = input.readByte();
-            colours= new int[5];
-            for(int i = 0; i < colours.length; i++){
-                colours[i] = input.readInt();
+            pattern = input.readByte();
+            patternColours = new int[]{input.readInt(), input.readInt(), input.readInt()};
+            byte crestCount = input.readByte();
+            crests = new ArrayList<Crest>(crestCount);
+            for(int i = 0; i < crestCount; i++){
+                byte[] bytes = new byte[Crest.dataSize];
+                input.read(bytes);
+                crests.add(new Crest(bytes));
             }
-
-            helm = input.readByte();
-            banner = input.readByte();
-
-            byteArray = Arrays.copyOf(data, data.length);
-
+            extraData = new byte[extraDataSize];
+            for(int i = 0; i < extraDataSize; i++){
+                extraData[i] = input.readByte();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            BattlegearUtils.closeStream(input);
+            try{
+                if(input != null){
+                    input.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public static HeraldryData getDefault() {
-        return new HeraldryData(10, 0xFF000000, 0xFFFFFFFF, 0xFFFFFF00, 0, 0xFF000000, 0xFF000000, 0, 0, 0);
+        return defaultData;
     }
+
 
     public byte[] getByteArray(){
-
         if(byteArray != null){
             return byteArray;
-        }
+        }else{
+            DataOutputStream output = null;
 
-        DataOutputStream output = null;
+            ByteArrayOutputStream bos = null;
 
-        ByteArrayOutputStream bos = null;
+            try{
+                bos = new ByteArrayOutputStream();
+                output = new DataOutputStream(bos);
 
-        try{
-            bos = new ByteArrayOutputStream();
-            output = new DataOutputStream(bos);
+                output.writeByte(pattern);
+                output.writeInt(patternColours[0]);
+                output.writeInt(patternColours[1]);
+                output.writeInt(patternColours[2]);
+                output.writeByte(crests.size());
+                for(Crest c: crests){
+                    output.write(c.getByteArray());
+                }
+                output.write(extraData);
 
-            output.writeByte(pattern);
-            output.writeShort(crest);
-            output.writeByte(crestPosition);
-            for(int i = 0; i < 5; i++){
-                output.writeInt(colours[i]);
+                byteArray = bos.toByteArray();
+
+                return byteArray;
+            } catch (Exception e){
+                e.printStackTrace();
+            } finally {
+                try{
+                    if(output != null){
+                        output.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
 
-            output.writeByte(helm);
-            output.writeByte(banner);
-
-            return bos.toByteArray();
-        } catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            BattlegearUtils.closeStream(output);
+            return null;
         }
-
-        return null;
     }
 
-    public int getColourChanel(int colour, int chanelNo){
-        switch (chanelNo){
-            case RED:
-                return (colours[colour] >> 16) & 0xFF;
-            case GREEN:
-                return (colours[colour] >> 8) & 0xFF;
-            case BLUE:
-                return (colours[colour] >> 0) & 0xFF;
-            default:
-                return (colours[colour] >> 16) & 0xFF;
-        }
+    public List<Crest> getCrests() {
+        return crests;
+    }
+
+    public byte[] getExtraData() {
+        return extraData;
     }
 
     public byte getPattern() {
         return pattern;
     }
 
-    public int getColour(int i) {
-        return colours[i];
-    }
-
-    @Override
-    public String toString() {
-        return byteArrayToHex(getByteArray());
+    public int getColour(int index) {
+        return patternColours[index];
     }
 
     public static String byteArrayToHex(byte[] a) {
@@ -130,9 +137,5 @@ public class HeraldryData {
         for(byte b: a)
             sb.append(String.format("%02x", b&0xff));
         return sb.toString();
-    }
-
-    public short getCrest() {
-        return crest;
     }
 }
