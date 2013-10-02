@@ -1,9 +1,9 @@
-package mods.battlegear2.client.gui;
+package mods.battlegear2.client.gui.controls;
 
 import cpw.mods.fml.client.GuiScrollingList;
 import mods.battlegear2.api.heraldry.Crest;
 import mods.battlegear2.api.heraldry.HeraldryData;
-import mods.battlegear2.client.gui.controls.GUIScrollList;
+import mods.battlegear2.client.gui.BattlegearSigilGUI;
 import mods.battlegear2.client.heraldry.PatternStore;
 import mods.battlegear2.client.heraldry.TextureBackground;
 import mods.mud.UpdateEntry;
@@ -37,7 +37,7 @@ public class GUICrestElementList extends GUIScrollList {
 
     public GUICrestElementList(BattlegearSigilGUI parent, int listWidth, int x)
     {
-        super(Minecraft.getMinecraft(), listWidth, parent.height-64, 30, parent.height - 30, x, 25);
+        super(Minecraft.getMinecraft(), listWidth, 30, parent.height - 30, x, 25);
 
         this.parent=parent;
         this.entries = new ArrayList<Crest>();
@@ -47,8 +47,13 @@ public class GUICrestElementList extends GUIScrollList {
             dirtyTextures[i] = true;
         }
     }
+    
+    public void markDirty(int index){
+    	dirtyTextures[index] = true;
+    }
+    
     @Override
-    protected int getSize() {
+	public int getSize() {
         return 1+entries.size();
     }
 
@@ -127,60 +132,6 @@ public class GUICrestElementList extends GUIScrollList {
 
     }
 
-    /**
-     * Draws a textured rectangle at the stored z-value. Args: x, y, u, v, width, height
-     */
-    public void drawTexturedModalRect(Tessellator tessellator, int x, int y, int width, int height, int zLevel)
-    {
-        float f = 0.00390625F;
-        float f1 = 0.00390625F;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)zLevel, 0F, 1F);
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)zLevel, 1F, 1F);
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)zLevel, 1F, 0F);
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)zLevel, 0F, 0F);
-        tessellator.draw();
-    }
-
-    /**
-     * Draws a solid color rectangle with the specified coordinates and color. Args: x1, y1, x2, y2, color
-     */
-    public static void drawRect(int x1, int y1, int x2, int y2, int col)
-    {
-        int j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-
-        float f = (float)(col >> 24 & 255) / 255.0F;
-        float f1 = (float)(col >> 16 & 255) / 255.0F;
-        float f2 = (float)(col >> 8 & 255) / 255.0F;
-        float f3 = (float)(col & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.instance;
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(f1, f2, f3, f);
-        tessellator.startDrawingQuads();
-        tessellator.addVertex((double)x1, (double)y2, 0.0D);
-        tessellator.addVertex((double)x2, (double)y2, 0.0D);
-        tessellator.addVertex((double)x2, (double)y1, 0.0D);
-        tessellator.addVertex((double)x1, (double)y1, 0.0D);
-        tessellator.draw();
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-    }
-
+    
 
 }

@@ -138,4 +138,20 @@ public class HeraldryData {
             sb.append(String.format("%02x", b&0xff));
         return sb.toString();
     }
+
+	public void setColour(int i, int rgb) {
+		patternColours[i] = rgb;
+		byteArray = null;
+		
+	}
+
+	public void setPattern(int pattern) {
+		this.pattern = (byte)pattern;
+		byteArray = null;
+	}
+	
+	
+	public HeraldryData clone(){
+		return new HeraldryData(pattern, patternColours[0], patternColours[1], patternColours[2], crests, extraData);
+	}
 }
