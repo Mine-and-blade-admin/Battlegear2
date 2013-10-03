@@ -2,7 +2,7 @@ package mods.battlegear2.client.renderer;
 
 
 import cpw.mods.fml.client.FMLClientHandler;
-import mods.battlegear2.items.ItemQuiver2;
+import mods.battlegear2.items.ItemQuiver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -22,7 +22,7 @@ public class QuiverItremRenderer implements IItemRenderer{
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return type != ItemRenderType.FIRST_PERSON_MAP && item != null && item.getItem() instanceof ItemQuiver2;
+        return type != ItemRenderType.FIRST_PERSON_MAP && item != null && item.getItem() instanceof ItemQuiver;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class QuiverItremRenderer implements IItemRenderer{
 
         this.mc.renderEngine.bindTexture(TextureMap.locationItemsTexture);
 
-        ItemQuiver2 quiver = (ItemQuiver2)item.getItem();
+        ItemQuiver quiver = (ItemQuiver)item.getItem();
         int col = quiver.getColor(item);
         float red = (float)(col >> 16 & 255) / 255.0F;
         float green = (float)(col >> 8 & 255) / 255.0F;

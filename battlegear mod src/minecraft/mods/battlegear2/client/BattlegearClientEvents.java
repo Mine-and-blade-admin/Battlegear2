@@ -4,17 +4,21 @@ package mods.battlegear2.client;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
-import mods.battlegear2.client.heraldry.CrestImages;
 import mods.battlegear2.client.heraldry.PatternStore;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
-import mods.battlegear2.items.ItemQuiver2;
+import mods.battlegear2.items.ItemQuiver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.RenderBiped;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.RenderSkeleton;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
@@ -50,16 +54,16 @@ public class BattlegearClientEvents {
         BattlegearRenderHelper.renderItemIn3rdPerson(
                 event.entityPlayer,
                 biped,
-                event.partialTicks
+                event.partialRenderTick
         );
 
 
         ItemStack mainhand = event.entityPlayer.getHeldItem();
         if(mainhand != null){
             ItemStack quiverStack = BowHookContainerClass2.getArrowContainer(mainhand, event.entityPlayer);
-            if(quiverStack != null && quiverStack.getItem() instanceof ItemQuiver2){
+            if(quiverStack != null && quiverStack.getItem() instanceof ItemQuiver){
 
-                ItemQuiver2 quiver = (ItemQuiver2)quiverStack.getItem();
+                ItemQuiver quiver = (ItemQuiver)quiverStack.getItem();
                 int col = quiver.getColor(quiverStack);
                 float red = (float)(col >> 16 & 255) / 255.0F;
                 float green = (float)(col >> 8 & 255) / 255.0F;
@@ -92,8 +96,6 @@ public class BattlegearClientEvents {
     }
 
 
-
-    /*
     @ForgeSubscribe
     public void renderLiving(RenderLivingEvent.Post event){
 
@@ -105,7 +107,7 @@ public class BattlegearClientEvents {
 
             int arrowCount = 5;
             GL11.glColor3f(1,1,1);
-            Minecraft.getMinecraft().renderEngine.func_110577_a(quiverDetails);
+            Minecraft.getMinecraft().renderEngine.bindTexture(quiverDetails);
 
             double d0 = (((EntitySkeleton) event.entity).lastTickPosX + ((((EntitySkeleton) event.entity).posX - ((EntitySkeleton) event.entity).lastTickPosX) * BattlegearClientTickHandeler.partialTick));
             double d1 = (((EntitySkeleton) event.entity).lastTickPosY + ((((EntitySkeleton) event.entity).posY - ((EntitySkeleton) event.entity).lastTickPosY) * BattlegearClientTickHandeler.partialTick));
@@ -142,7 +144,7 @@ public class BattlegearClientEvents {
             GL11.glScalef(1.05F, 1.05F, 1.05F);
             quiverModel.render(arrowCount, 0.0625F);
 
-            Minecraft.getMinecraft().renderEngine.func_110577_a(quiverBase);
+            Minecraft.getMinecraft().renderEngine.bindTexture(quiverBase);
             GL11.glColor3f(0.10F, 0.10F, 0.10F);
             quiverModel.render(0, 0.0625F);
             GL11.glColor3f(1,1,1);
@@ -153,7 +155,6 @@ public class BattlegearClientEvents {
         }
 
     }
-    */
 
     /**
      * Returns a rotation angle that is inbetween two other rotation angles. par1 and par2 are the angles between which
@@ -189,7 +190,8 @@ public class BattlegearClientEvents {
             ClientProxy.bowIcons[1] = event.map.registerIcon("battlegear2:bow_pulling_1");
             ClientProxy.bowIcons[2] = event.map.registerIcon("battlegear2:bow_pulling_2");
 
-            //PatternStore.initialise(Minecraft.getMinecraft().func_110442_L());
+
+            PatternStore.initialise(Minecraft.getMinecraft().getResourceManager());
             //CrestImages.initialise(Minecraft.getMinecraft().func_110442_L());
 
             

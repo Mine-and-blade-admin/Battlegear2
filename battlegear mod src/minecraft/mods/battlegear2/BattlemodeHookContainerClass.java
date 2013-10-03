@@ -47,8 +47,7 @@ public class BattlemodeHookContainerClass {
             EntityPlayer entityPlayer = (EntityPlayer)event.entity;
 
             PacketDispatcher.sendPacketToPlayer(
-                    BattlegearSyncItemPacket.generatePacket(
-                            entityPlayer.username, entityPlayer.inventory),
+                    BattlegearSyncItemPacket.generatePacket(entityPlayer),
                     (Player)entityPlayer);
 
         }

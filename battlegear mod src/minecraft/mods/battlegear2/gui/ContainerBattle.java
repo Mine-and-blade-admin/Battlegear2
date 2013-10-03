@@ -127,8 +127,7 @@ public class ContainerBattle extends Container {
         super.onCraftMatrixChanged(par1IInventory);
 
         PacketDispatcher.sendPacketToPlayer(
-                BattlegearSyncItemPacket.generatePacket(
-                        thePlayer.username, thePlayer.inventory),
+                BattlegearSyncItemPacket.generatePacket(thePlayer),
                 (Player) thePlayer);
     }
 

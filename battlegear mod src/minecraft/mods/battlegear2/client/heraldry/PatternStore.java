@@ -15,9 +15,6 @@ public class PatternStore {
 
     public static final int IMAGES_X = 8;
     public static final int IMAGES_Y = 4;
-    
-    
-
 
     public static int[][][][] small_rgbs;
 
