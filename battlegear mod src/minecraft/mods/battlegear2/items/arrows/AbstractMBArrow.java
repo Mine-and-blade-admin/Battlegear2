@@ -41,6 +41,9 @@ public abstract class AbstractMBArrow extends EntityArrow {
                 case 1:
                     mbArrow = new EntityEnderArrow(arrow.worldObj, skeleton, skeleton.getAttackTarget(), 1.6F, (float)(14 - skeleton.worldObj.difficultySetting * 4));
                     break;
+                case 2:
+                    mbArrow = new EntityFlameArrow(arrow.worldObj, skeleton, skeleton.getAttackTarget(), 1.6F, (float)(14 - skeleton.worldObj.difficultySetting * 4));
+                    break;
             }
 
         }

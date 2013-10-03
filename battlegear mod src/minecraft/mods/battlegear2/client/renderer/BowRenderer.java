@@ -46,6 +46,7 @@ public class BowRenderer implements IItemRenderer {
 
     private void renderEquippedBow(ItemStack item, EntityLivingBase entityLivingBase, boolean firstPerson) {
 
+
         Icon icon = item.getIconIndex();
 
         ItemStack arrowStack = new ItemStack(Item.arrow);
@@ -60,7 +61,6 @@ public class BowRenderer implements IItemRenderer {
                 drawAmount = 1;
             else if (timer > 0)
                 drawAmount = 0;
-
             ItemStack quiver = BowHookContainerClass2.getArrowContainer(item, (EntityPlayer) entityLivingBase);
             if(quiver != null){
                 arrowStack = ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, ((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver));

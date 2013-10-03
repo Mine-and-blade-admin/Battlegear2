@@ -5,6 +5,8 @@ import net.minecraft.util.Icon;
 
 public interface IHeraldryItem {
 
+    public static final String heraldryTag = "hc1";
+
     public enum HeraldyRenderPassess{
         Pattern,
         SecondaryColourTrim,

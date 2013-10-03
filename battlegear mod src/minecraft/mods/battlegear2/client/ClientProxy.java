@@ -101,11 +101,9 @@ public class ClientProxy extends CommonProxy {
             MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
         }
 
-        
-
         if(Battlegear.debug){
+
             MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
-            
             MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem.itemID, new HeraldryCrestItemRenderer());
 
             MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
