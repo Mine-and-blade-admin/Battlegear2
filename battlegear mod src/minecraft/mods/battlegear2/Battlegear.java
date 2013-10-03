@@ -56,7 +56,7 @@ public class Battlegear {
 
     public static boolean battlegearEnabled = true;
 
-    public static boolean debug = true;
+    public static boolean debug = false;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {

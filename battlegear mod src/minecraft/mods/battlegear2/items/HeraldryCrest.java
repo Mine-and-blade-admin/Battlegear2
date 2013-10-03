@@ -41,9 +41,6 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
      */
     public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List)
     {
-        ItemStack stack = new ItemStack(BattlegearConfig.heradricItem);
-        setHeraldry(stack, HeraldryData.defaultData.getByteArray());
-        par3List.add(stack);
     }
 
     @Override

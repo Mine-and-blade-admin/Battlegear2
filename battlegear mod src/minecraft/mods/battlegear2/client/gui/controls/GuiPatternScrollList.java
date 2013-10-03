@@ -22,7 +22,7 @@ public class GuiPatternScrollList extends GUIScrollList{
 	
 	BattlegearSigilGUI parent;
 	public GuiPatternScrollList(BattlegearSigilGUI parent, int width, int top, int bottom, int left) {
-		super(Minecraft.getMinecraft(), width, top, bottom, left, 20);
+		super(Minecraft.getMinecraft(), width, top+20, bottom-20, left, 20);
 		this.parent = parent;
 		
 		for(int i = 0; i < dynamicTextures.length; i++){
@@ -43,6 +43,7 @@ public class GuiPatternScrollList extends GUIScrollList{
 	@Override
 	protected void elementClicked(int index, boolean doubleClick) {
 		parent.getCurrentData().setPattern(index);
+		parent.markAllDirty();
 	}
 
 	@Override
@@ -52,7 +53,7 @@ public class GuiPatternScrollList extends GUIScrollList{
 
 	@Override
 	protected void drawBackground() {
-		drawRect(left, top, left+listWidth, bottom, 0xAA000000);
+		drawRect(left, top-20, left+listWidth, bottom+20, 0xAA000000);
         drawRect(left, parent.height, left+listWidth, 0, 0x44000000);
 	}
 
@@ -62,16 +63,16 @@ public class GuiPatternScrollList extends GUIScrollList{
 		if(dirtyTextures){
 			HeraldryData heraldryData = parent.getCurrentData();
 			for(int i = 0; i < dynamicTextures.length; i++){
-				BufferedImage image = new BufferedImage(PatternStore.small_rgbs[var1][0].length, PatternStore.small_rgbs[var1][0][0].length,BufferedImage.TYPE_4BYTE_ABGR);
+				BufferedImage image = new BufferedImage(PatternStore.small_rgbs[i][0].length, PatternStore.small_rgbs[i][0][0].length,BufferedImage.TYPE_4BYTE_ABGR);
                 for(int x = 0; x < image.getWidth(); x++){
                     for(int y = 0; y < image.getHeight(); y++){
-                        image.setRGB(x, y, PatternStore.getBlendedSmallPixel(heraldryData.getPattern(), x, y, heraldryData.getColour(0), heraldryData.getColour(1), heraldryData.getColour(2)));
+                        image.setRGB(x, y, PatternStore.getBlendedSmallPixel((byte) i, x, y, heraldryData.getColour(0), heraldryData.getColour(1), heraldryData.getColour(2)));
                     }
                 }
                 if(image.getHeight() != 32 || image.getWidth() != 32){
                     image = (BufferedImage)image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
                 }
-                int[] pixels = dynamicTextures[var1].getTextureData();
+                int[] pixels = dynamicTextures[i].getTextureData();
 
                 for(int x = 0; x < image.getWidth(); x++){
                     for(int y = 0; y < image.getHeight(); y++){
@@ -91,7 +92,7 @@ public class GuiPatternScrollList extends GUIScrollList{
 	        dynamicTextures[var1].updateDynamicTexture();
 	        ResourceLocation rl = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("gui_dynamic_pattern_"+var1, dynamicTextures[var1]);
 	        Minecraft.getMinecraft().getTextureManager().bindTexture(rl);
-	        drawTexturedModalRect(var5, var2-listWidth+9, var3, 16, 16, 0);
+	        drawTexturedModalRect(var5, var2-listWidth/2-8, var3, 16, 16, 0);
 
 	        GL11.glEnable(GL11.GL_ALPHA_TEST);
 	        GL11.glDisable(GL11.GL_BLEND);

@@ -37,7 +37,7 @@ public class GUICrestElementList extends GUIScrollList {
 
     public GUICrestElementList(BattlegearSigilGUI parent, int listWidth, int x)
     {
-        super(Minecraft.getMinecraft(), listWidth, 30, parent.height - 30, x, 25);
+        super(Minecraft.getMinecraft(), listWidth, 30 + 25, parent.height - 30 - 25, x, 25);
 
         this.parent=parent;
         this.entries = new ArrayList<Crest>();
@@ -77,7 +77,7 @@ public class GUICrestElementList extends GUIScrollList {
 
     @Override
     protected void drawBackground() {
-        drawRect(left, top, left+listWidth, bottom, 0xAA000000);
+        drawRect(left, top-25, left+listWidth, bottom+25, 0xAA000000);
         drawRect(left, parent.height, left+listWidth, 0, 0x44000000);
     }
 
