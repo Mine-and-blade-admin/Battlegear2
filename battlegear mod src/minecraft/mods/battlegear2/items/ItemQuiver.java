@@ -22,11 +22,11 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class ItemQuiver2 extends Item implements IArrowContainer2, IDyable {
+public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     public Icon quiverDetails;
     public Icon quiverArrows;
 
-    public ItemQuiver2(int id) {
+    public ItemQuiver(int id) {
         super(id);
         this.setMaxStackSize(1);
     }

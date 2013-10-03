@@ -8,6 +8,7 @@ import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.items.arrows.EntityEnderArrow;
 import mods.battlegear2.items.arrows.EntityExplossiveArrow;
+import mods.battlegear2.items.arrows.EntityFlameArrow;
 import mods.battlegear2.packet.*;
 import mods.battlegear2.recipies.CraftingHandeler;
 import mods.battlegear2.utils.*;
@@ -64,7 +65,7 @@ public class Battlegear {
         BattlegearTranslator.setup("/deobfuscation_data-" + FMLInjectionData.data()[4] + ".lzma");
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
-
+        /*
         try {
             ModUpdateDetector.registerMod(
                     FMLCommonHandler.instance().findContainerFor(this),
@@ -73,7 +74,7 @@ public class Battlegear {
             );
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @EventHandler
@@ -85,6 +86,7 @@ public class Battlegear {
             QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
             QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 0, EntityExplossiveArrow.class);
             QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 1, EntityEnderArrow.class);
+            QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 2, EntityFlameArrow.class);
         }
 
 

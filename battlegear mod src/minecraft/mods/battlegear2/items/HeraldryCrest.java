@@ -76,7 +76,7 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
 
     @Override
     public boolean hasHeraldry(ItemStack stack) {
-        return stack.hasTagCompound() && stack.getTagCompound().hasKey("hc");
+        return stack.hasTagCompound() && stack.getTagCompound().hasKey(heraldryTag);
     }
 
     @Override
@@ -85,8 +85,8 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
             return HeraldryData.getDefault().getByteArray();
         }
         NBTTagCompound compound = stack.getTagCompound();
-        if(compound.hasKey("hc")){
-            return compound.getByteArray("hc");
+        if(compound.hasKey(heraldryTag)){
+            return compound.getByteArray(heraldryTag);
         }else{
             return HeraldryData.getDefault().getByteArray();
         }
@@ -95,7 +95,7 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     @Override
     public void removeHeraldry(ItemStack item) {
         if(item.hasTagCompound()){
-            item.getTagCompound().removeTag("hc");
+            item.getTagCompound().removeTag(heraldryTag);
         }
     }
 
@@ -105,7 +105,7 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
             stack.setTagCompound(new NBTTagCompound());
         }
 
-        stack.getTagCompound().setByteArray("hc", data);
+        stack.getTagCompound().setByteArray(heraldryTag, data);
     }
 
     @Override

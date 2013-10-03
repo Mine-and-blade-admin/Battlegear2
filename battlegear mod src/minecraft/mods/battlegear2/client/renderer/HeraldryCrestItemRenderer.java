@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
@@ -20,8 +19,8 @@ import static org.lwjgl.opengl.GL11.glPopMatrix;
 public class HeraldryCrestItemRenderer implements IItemRenderer{
     private RenderItem itemRenderer;
 
-    private static final ResourceLocation map_background = new ResourceLocation("textures/map/map_background.png");
-    private static final ResourceLocation map_overlay = new ResourceLocation("battlegear2", "textures/heraldry/Background.png");
+    
+    public static final ResourceLocation map_overlay = new ResourceLocation("battlegear2", "textures/heraldry/Background.png");
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -71,9 +70,6 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
 
         //glDisable(GL_BLEND);
         //glDepthFunc(GL11.GL_LEQUAL);
-
-
-
 
         ResourceLocation crestLocation = new ResourceLocation("Small:"+ HeraldryData.byteArrayToHex(heraldryData));
         TextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);

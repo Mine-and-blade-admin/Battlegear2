@@ -8,11 +8,11 @@ import net.minecraft.client.resources.ResourceManager;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class HeraldryTextureSmall extends AbstractTexture {
+public class TextureBackground extends AbstractTexture {
 
     private HeraldryData heraldryData;
 
-    public HeraldryTextureSmall(HeraldryData crest) {
+    public TextureBackground(HeraldryData crest) {
         this.heraldryData = crest;
     }
 
@@ -27,8 +27,7 @@ public class HeraldryTextureSmall extends AbstractTexture {
                 image.setRGB(x, y, PatternStore.getBlendedSmallPixel(heraldryData.getPattern(), x, y, heraldryData.getColour(0), heraldryData.getColour(1), heraldryData.getColour(2)));
             }
         }
-        TextureUtil.uploadTextureImage(this.getGlTextureId(),  image);
+
+        TextureUtil.uploadTextureImage(this.getGlTextureId(), image);
     }
 }
-
-

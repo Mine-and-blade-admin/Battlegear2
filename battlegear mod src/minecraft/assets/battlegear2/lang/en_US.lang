@@ -57,6 +57,11 @@ sigil.banner.title=Banner
 sigil.helm.title=Helmet
 sigil.colour.select=Select
 
+gui.sigil.add=Add
+gui.sigil.remove=Remove
+gui.sigil.crest=Crest
+gui.sigil.pattern=Background
+
 
 attribute.weapon.penetrateArmor=Armor Penetration
 attribute.weapon.daze=Daze
