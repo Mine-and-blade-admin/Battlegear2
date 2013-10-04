@@ -1,6 +1,7 @@
 package mods.battlegear2.gui;
 
 import cpw.mods.fml.common.network.IGuiHandler;
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.client.gui.BattleEquipGUI;
 import mods.battlegear2.client.gui.BattlegearSigilGUI;
 import mods.mud.gui.GuiChangelogDownload;
@@ -34,7 +35,7 @@ public class BattlegearGUIHandeler implements IGuiHandler {
             case equipID:
                 return new BattleEquipGUI(player, world.isRemote);
            case sigilEditor:
-                return new BattlegearSigilGUI();
+                return Battlegear.debug?new BattlegearSigilGUI():null;
             case downloader:
                 return new GuiChangelogDownload();
             default:
