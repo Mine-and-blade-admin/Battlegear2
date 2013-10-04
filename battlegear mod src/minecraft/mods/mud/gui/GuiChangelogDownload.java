@@ -274,7 +274,7 @@ public class GuiChangelogDownload extends GuiScreen
             }
 
             return (int)(1F/scale * 10)+start;
-        }else if(line.startsWith("**") && line.endsWith("**")){
+        }else if(line.trim().startsWith("**") && line.trim().endsWith("**")){
             float scale = 1.1F;
             GL11.glScalef(1/scale, 1/scale, 1/scale);
             this.drawString(fontRenderer, line.replaceAll("\\*\\*", "").trim(), (int)((startX)*scale), (int)(start*scale), 0xFFFFFFFF);
