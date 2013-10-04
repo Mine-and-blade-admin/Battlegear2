@@ -1,3 +1,11 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.3.1 ==  
+**Bugs Fixed**  
+* Re-added MUD
+* Added a config file for MUD
+* Removed the still work in progress heraldry designer bound to the "p" key
+** Note that the bound key will still appear in options but do nothing currently
+**Known Issues**  
+* Still some issues with mcpc+, it is recomended to not use this mod on mcpc+ servers
 == Mine & Blade: Battlegear 2 - Warcry 1.0.3 ==  
 **New Features**  
 * Updated to minecraft 1.6.4
