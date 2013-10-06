@@ -16,6 +16,7 @@ import mods.mud.ModUpdateDetector;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
+import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -23,6 +24,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -65,16 +67,18 @@ public class Battlegear {
         BattlegearTranslator.setup("/deobfuscation_data-" + FMLInjectionData.data()[4] + ".lzma");
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
-        /*
-        try {
-            ModUpdateDetector.registerMod(
-                    FMLCommonHandler.instance().findContainerFor(this),
-                    new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml"),
-                    new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/changelog.md")
-            );
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }*/
+
+        if(event.getSourceFile().getName().endsWith(".jar")){
+            try {
+                ModUpdateDetector.registerMod(
+                        FMLCommonHandler.instance().findContainerFor(this),
+                        new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml"),
+                        new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/changelog.md")
+                );
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @EventHandler
