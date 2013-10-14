@@ -6,6 +6,7 @@
 ** Note that the bound key will still appear in options but do nothing currently
 **Known Issues**  
 * Still some issues with mcpc+, it is recomended to not use this mod on mcpc+ servers
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.3 ==  
 **New Features**  
 * Updated to minecraft 1.6.4
