@@ -37,9 +37,9 @@ public class NetClientHandlerTransformer implements IClassTransformer {
             netClientHandlerHandleNamedEntitySpawnMethodDesc =
                     BattlegearTranslator.getMapedMethodDesc("NetClientHandler", "func_72518_a");
 
-            netClientHandlerHandleNamedEntitySpawnMethodName =
+            netClientHandlerHandleBlockItemSwitchMethodName =
                     BattlegearTranslator.getMapedMethodName("NetClientHandler", "func_72502_a");
-            netClientHandlerHandleNamedEntitySpawnMethodDesc =
+            netClientHandlerHandleBlockItemSwitchMethodDesc =
                     BattlegearTranslator.getMapedMethodDesc("NetClientHandler", "func_72502_a");
 
             System.out.println("M&B - Patching Class NetClientHandler (" + name + ")");
@@ -70,11 +70,11 @@ public class NetClientHandlerTransformer implements IClassTransformer {
                         if(nextNode instanceof JumpInsnNode && nextNode.getOpcode() == IFLT){
                             LabelNode label = ((JumpInsnNode) nextNode).label;
                             newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/inventory/InventoryPlayerBattle", "isValidSwitch", "(I)Z"));
-                            newList.add(new JumpInsnNode(IFEQ, label));
+                            newList.add(new JumpInsnNode(IFEQ, label));//"if equal" branch
 
                             nextNode = insn.next();
                             while(insn.hasNext() && !(nextNode instanceof JumpInsnNode) && nextNode.getOpcode() != IF_ICMPGE){
-                                nextNode = insn.next();
+                                nextNode = insn.next();//continue till "if int greater than or equal to" branch
                             }
 
                         }else{

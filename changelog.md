@@ -1,3 +1,7 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.3.3 ==  
+**Bugs Fixed**
+* Fixed NetClientHandler crash on server
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.3.2 ==  
 **Bugs Fixed**
 * Fixed BattlegearSyncPacket crash on server
