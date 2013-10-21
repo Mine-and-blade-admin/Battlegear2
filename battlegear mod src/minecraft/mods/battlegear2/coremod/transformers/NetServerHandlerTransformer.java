@@ -3,6 +3,8 @@ package mods.battlegear2.coremod.transformers;
 
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.coremod.BattlegearLoadingPlugin;
+import mods.battlegear2.utils.BattlegearUtils;
+import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -113,11 +115,11 @@ public class NetServerHandlerTransformer implements IClassTransformer {
             if (nextNode instanceof FieldInsnNode &&
                     ((FieldInsnNode) nextNode).owner.equals(entityPlayerMPClassName) &&
                     ((FieldInsnNode) nextNode).name.equals(playerInventoryFieldName)) {
-                fieldCount++;
+                fieldCount++;//count number of playerEntity.inventory use
 
                 if (fieldCount == 3) {
 
-                    while (it.hasNext() && nextNode.getOpcode() != ACONST_NULL) {
+                    while (it.hasNext() && nextNode.getOpcode() != ACONST_NULL) {//visit till pushing null onto stack
                         nextNode = it.next();
                     }
 
@@ -127,16 +129,16 @@ public class NetServerHandlerTransformer implements IClassTransformer {
                             "setPlayerCurrentItem",
                             "(L" + BattlegearTranslator.getMapedClassName("EntityPlayer") +
                                     ";L" + BattlegearTranslator.getMapedClassName("ItemStack") + ";)V"));
-                    it.next();
+                    it.next();//BattlegearUtils.setPlayerCurrentItem(playerEntity, null);
 
 
                 } else if (fieldCount == 4) {
 
-                    while (it.hasNext() && nextNode.getOpcode() != AASTORE) {
+                    while (it.hasNext() && nextNode.getOpcode() != AASTORE) {//visit till storing into array
                         nextNode = it.next();
                     }
 
-
+//BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
                     newList.add(new VarInsnNode(ALOAD, 0));
                     newList.add(new FieldInsnNode(GETFIELD, netServiceHandelerClassName, netServiceHandelerPlayerField, "L" + entityPlayerMPClassName + ";"));
                     newList.add(new FieldInsnNode(GETFIELD, entityPlayerMPClassName, playerInventoryFieldName, "L" + inventoryPlayerClassName + ";"));
@@ -180,13 +182,13 @@ public class NetServerHandlerTransformer implements IClassTransformer {
                 nextInsn = it.next();
                 while (it.hasNext() &&
                         (!(nextInsn instanceof JumpInsnNode)
-                                || !(nextInsn.getOpcode() == IF_ICMPGE))) {
+                                || !(nextInsn.getOpcode() == IF_ICMPGE))) {//"if int greater than or equal to" branch
 
                     System.out.println(nextInsn.getClass());
                     nextInsn = it.next();
 
                 }
-                newList.add(new JumpInsnNode(IFEQ, ((JumpInsnNode) nextInsn).label));
+                newList.add(new JumpInsnNode(IFEQ, ((JumpInsnNode) nextInsn).label));//make "if equal" branch
 
                 while (it.hasNext()) {
                     nextInsn = it.next();

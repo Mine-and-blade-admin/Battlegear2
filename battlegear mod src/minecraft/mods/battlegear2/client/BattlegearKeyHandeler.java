@@ -122,7 +122,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
                     mc.playerController.updateController();
                 }
                 else if (kb.keyCode == openSigilEditor.keyCode) {
-                    System.out.println("Open");
+                    //System.out.println("Open");
                     //send packet to open container on server
                     //PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.sigilEditor));
                     player.openGui(
