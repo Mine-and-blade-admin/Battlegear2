@@ -39,8 +39,10 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
             for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
                 Packet.writeItemStack(inventory.getStackInSlot(i + InventoryPlayerBattle.OFFSET), outputStream);
             }
-
-            outputStream.writeInt(player.getItemInUseCount());
+            if(player.worldObj.isRemote){//client-side only thing
+            	Packet.writeItemStack(player.getItemInUse(), outputStream);
+            	outputStream.writeInt(player.getItemInUseCount());
+            }
 
             return new Packet250CustomPayload(packetName, bos.toByteArray());
 
@@ -74,7 +76,9 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
 	                //}
 	            }
 	            targetPlayer.specialActionTimer = 0;
-                targetPlayer.setItemInUse(targetPlayer.getItemInUse(), inputStream.readInt());
+	            if(!player.worldObj.isRemote){//Using data sent only by client
+	            	targetPlayer.setItemInUse(Packet.readItemStack(inputStream), inputStream.readInt());
+	            }
             }
         } catch (IOException e) {
             e.printStackTrace();
