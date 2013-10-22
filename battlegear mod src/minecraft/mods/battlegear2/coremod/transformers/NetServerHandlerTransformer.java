@@ -3,8 +3,6 @@ package mods.battlegear2.coremod.transformers;
 
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import mods.battlegear2.utils.BattlegearUtils;
-import net.minecraft.item.ItemStack;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -42,7 +40,7 @@ public class NetServerHandlerTransformer implements IClassTransformer {
 
         if (transformedName.equals("net.minecraft.network.NetServerHandler")) {
 
-            System.out.println("M&B - Patching Class NetServiceHandeler (" + name + ")");
+            System.out.println("M&B - Patching Class NetServerHandler (" + name + ")");
 
             netServiceHandelerClassName = BattlegearTranslator.getMapedClassName("NetServerHandler");
             packet16BlockItemSwitchClassName = BattlegearTranslator.getMapedClassName("Packet16BlockItemSwitch");
@@ -104,7 +102,7 @@ public class NetServerHandlerTransformer implements IClassTransformer {
     }
 
     private void processPlaceMethod(MethodNode mn) {
-        System.out.println("\tPatching method handlePlace in NetServiceHandler");
+        System.out.println("\tPatching method handlePlace in NetServerHandler");
         InsnList newList = new InsnList();
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
 
@@ -164,7 +162,7 @@ public class NetServerHandlerTransformer implements IClassTransformer {
 
 
     private void processSwitchBlockMethod(MethodNode mn) {
-        System.out.println("\tPatching method handleBlockItemSwitch in NetServiceHandler");
+        System.out.println("\tPatching method handleBlockItemSwitch in NetServerHandler");
         InsnList newList = new InsnList();
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
 

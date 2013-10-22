@@ -46,7 +46,7 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
             limbSwingFieldName = BattlegearTranslator.getMapedFieldName("EntityLivingBase", "field_70754_ba");
 
             currentItemFieldName =
-                    BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_71185_c");
+                    BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c");
             mainInventoryArrayFieldName =
                     BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a");
             playerInventoryFieldName =
@@ -66,9 +66,7 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
             onUpdateMethodDesc =
                     BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70071_h_");
 
-            System.out.println(onUpdateMethodName);
-            System.out.println(onUpdateMethodDesc);
-
+            
 
             ClassReader cr = new ClassReader(bytes);
             ClassNode cn = new ClassNode(ASM4);
@@ -123,12 +121,11 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
                     ((FieldInsnNode) node).owner.equals(entityOtherPlayerMPClassName) &&
                     ((FieldInsnNode) node).name.equals(isItemInUseFieldName)){
             	
-            	//TODO replace with dynamic name
-            	newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, "bn", "Luc;"));
+            	newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, playerInventoryFieldName, "L"+inventoryPlayerClassName+";"));
             	newList.add(new VarInsnNode(ALOAD, 0));
-            	newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, "bn", "Luc;"));
-            	newList.add(new FieldInsnNode(GETFIELD, "uc", "c", "I"));
-            	newList.add(new MethodInsnNode(INVOKEVIRTUAL, "uc", "a", "(I)Lyd;"));
+            	newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, playerInventoryFieldName, "L"+inventoryPlayerClassName+";"));
+            	newList.add(new FieldInsnNode(GETFIELD, inventoryPlayerClassName, currentItemFieldName, "I"));
+            	newList.add(new MethodInsnNode(INVOKEVIRTUAL, inventoryPlayerClassName, getStackInSlotMethodName, getStackInSlotMethodDesc));
                 newList.add(new VarInsnNode(ASTORE, 6));
                 newList.add(new VarInsnNode(ALOAD, 0));
                 newList.add(node);
