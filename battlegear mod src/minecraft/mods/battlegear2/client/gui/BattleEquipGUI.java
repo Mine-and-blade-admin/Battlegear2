@@ -1,5 +1,6 @@
 package mods.battlegear2.client.gui;
 
+import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.gui.ContainerBattle;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
@@ -10,9 +11,8 @@ import org.lwjgl.opengl.GL11;
 
 public class BattleEquipGUI extends InventoryEffectRenderer {
 
-
     public static final ResourceLocation resource = new ResourceLocation("battlegear2", "textures/gui/Equip GUI.png");
-
+    
     /**
      * x size of the inventory window in pixels. Defined as float, passed as int
      */
@@ -46,6 +46,7 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
      */
     public void initGui() {
         super.initGui();
+        BattlegearClientEvents.onOpenGui(buttonList, guiLeft, guiTop);
     }
 
     /**
@@ -60,7 +61,5 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
         //GuiInventory.drawPlayerOnGui(this.mc, var5 + 31, var6 + 75, 30, (float) (var5 + 51) - this.xSize_lo, (float) (var6 + 75 - 50) - this.ySize_lo);
         GuiInventory.func_110423_a(var5 + 31, var6 + 75, 30, (float) (var5 + 51) - this.xSize_lo, (float) (var6 + 75 - 50) - this.ySize_lo, mc.thePlayer);
     }
-
-
 
 }

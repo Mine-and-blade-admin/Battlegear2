@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import org.lwjgl.opengl.GL11;
 
 import mods.battlegear2.api.heraldry.HeraldryData;
+import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.gui.controls.GUICrestElementList;
 import mods.battlegear2.client.gui.controls.GUIScrollList;
 import mods.battlegear2.client.gui.controls.GuiColourPicker;
@@ -116,7 +117,7 @@ public class BattlegearSigilGUI extends GuiScreen{
         buttonList.add(colourPickerPattern);
         
         scrollListPattern = new GuiPatternScrollList(this, 125, 45, height-32, (width+160)/2);
-        
+        BattlegearClientEvents.onOpenGui(buttonList, (width-300)/2, (height-180)/2);
     }
 
     public FontRenderer getFontRenderer() {

@@ -109,15 +109,12 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 
                     InventoryPlayer playerInventory = player.inventory;
                     if (player.isBattlemode()) {
-                        //i'd use int bounds check (0-8) for the item, just in case
                         previousBattlemode = playerInventory.currentItem;
                         playerInventory.currentItem = previousNormal;
 
                     } else {
-                        //i'd use int bounds check (0-8) for the item, just in case
                         previousNormal = playerInventory.currentItem;
                         playerInventory.currentItem = previousBattlemode;
-
                     }
                     mc.playerController.updateController();
                 }
