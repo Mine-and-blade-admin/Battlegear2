@@ -1,5 +1,10 @@
 <mod modid="battlegear2">
 	<mcVersion version="1.6.4">
+	<release type="release" version="1.0.3.5"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
+                 download="http://www.curseforge.com/media/files/752/364/1.6.4-MB_Battlegear2-Warcry-1.0.3.5.jar"
+                 md5="5c268957a89efe143de951a94a19f041"
+                />
 	<release type="release" version="1.0.3.4"
                  url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
                  download="http://www.curseforge.com/media/files/747/861/1.6.4-MB_Battlegear2-Warcry-1.0.3.4.jar"
