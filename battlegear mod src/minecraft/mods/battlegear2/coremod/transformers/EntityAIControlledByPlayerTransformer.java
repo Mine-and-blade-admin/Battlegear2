@@ -27,7 +27,7 @@ public class EntityAIControlledByPlayerTransformer implements IClassTransformer 
             System.out.println("M&B - Patching Class EntityAIControlledByPlayer (" + name + ")");
 
             entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
-            playerInventoryFieldName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
+            playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
             updateTaskMethodName =
                     BattlegearTranslator.getMapedMethodName("EntityAIControlledByPlayer", "func_75246_d");
             updateTaskMethodDesc =

@@ -176,7 +176,7 @@ public class EntityPlayerTransformer implements IClassTransformer {
 
         for (Object fnObj : cn.fields) {
             FieldNode fn = (FieldNode) fnObj;
-            if (fn.name.equals("L" + inventoryCurrentItremField) && fn.desc.equals(inventoryClassName + ";")) {
+            if (fn.name.equals(playerInventoryFieldName) && fn.desc.equals("L"+inventoryClassName + ";")) {
                 System.out.println("M&B - Marking field inventory as final in EntityPlayer");
                 fn.access = ACC_PUBLIC | ACC_FINAL;
             }

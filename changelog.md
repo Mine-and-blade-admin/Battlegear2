@@ -1,3 +1,7 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.3.5 ==  
+* Simplified EntityOtherplayerMP patch, and other coremod fixes
+* Added buttons to switch between gui
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.3.4 ==  
 **Bugs Fixed**
 * Fixed EntityOtherplayerMP crash on server

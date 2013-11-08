@@ -73,7 +73,7 @@ public class ModelBipedTransformer implements IClassTransformer {
 
     private void processRotationAnglesMethod(MethodNode method) {
 
-        System.out.println("\tPatching Method setRotationAngles in ModelBiped");
+        System.out.println("\tPatching Method render in ModelBiped");
         Iterator<AbstractInsnNode> it = method.instructions.iterator();
 
         InsnList newInsn = new InsnList();
@@ -86,7 +86,6 @@ public class ModelBipedTransformer implements IClassTransformer {
                     ((MethodInsnNode)nextInsn).name.equals(setRotationAngleMethodName) &&
                     ((MethodInsnNode)nextInsn).desc.equals(setRotationAngleMethodDesc)){
                 newInsn.add(nextInsn);
-                System.out.println("\t\tAdding hook");
 
                 newInsn.add(new VarInsnNode(ALOAD, 1));
                 newInsn.add(new VarInsnNode(ALOAD, 0));

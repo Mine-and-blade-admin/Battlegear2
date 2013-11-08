@@ -68,9 +68,9 @@ public class EntityTrackerTransformer  implements IClassTransformer {
                                 ((TypeInsnNode) next).desc.equals(entityPlayerClassName)){
 
                             newList.add(next);
-                            //Add the nex ALOAD
-                            newList.add(insn.next());
-
+                            next = insn.next();
+                            newList.add(new VarInsnNode(ASTORE, 10));
+                            //TODO: Fix entityplayer variable management
 
                             newList.add(new VarInsnNode(ALOAD, 1));
 
