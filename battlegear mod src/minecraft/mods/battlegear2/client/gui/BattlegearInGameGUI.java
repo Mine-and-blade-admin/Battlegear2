@@ -1,23 +1,28 @@
 package mods.battlegear2.client.gui;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.ForgeHooks;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import cpw.mods.fml.client.FMLClientHandler;
 
 public class BattlegearInGameGUI extends Gui {
 
@@ -26,7 +31,7 @@ public class BattlegearInGameGUI extends Gui {
     public static final RenderItem itemRenderer = new RenderItem();
     protected static final ResourceLocation resourceLocation = new ResourceLocation("textures/gui/widgets.png");
     protected static final ResourceLocation resourceLocationShield = new ResourceLocation("battlegear2", "textures/gui/Shield Bar.png");
-
+    private Class<?extends InventoryEffectRenderer> previousGui;
 
     public BattlegearInGameGUI() {
         super();
@@ -43,6 +48,17 @@ public class BattlegearInGameGUI extends Gui {
             if (!this.mc.playerController.enableEverythingIsScrewedUpMode()) {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
+                if(previousGui!=null && mc.currentScreen==null) {
+                	previousGui=null;
+                }
+                if(mc.currentScreen instanceof InventoryEffectRenderer && mc.currentScreen.getClass()!=previousGui){
+                	int movX=0;
+                	if(mc.thePlayer.capabilities.isCreativeMode){
+                		movX=-50;
+                	}
+                	BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList,((GuiContainer)mc.currentScreen).guiLeft+movX,((GuiContainer)mc.currentScreen).guiTop);
+                	previousGui = (Class<? extends InventoryEffectRenderer>) mc.currentScreen.getClass();
+                }
                 this.mc.renderEngine.bindTexture(resourceLocation);
                 InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
                 this.zLevel = -90.0F;
@@ -129,7 +145,6 @@ public class BattlegearInGameGUI extends Gui {
 
                     RenderHelper.disableStandardItemLighting();
                     GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-
 
 
 

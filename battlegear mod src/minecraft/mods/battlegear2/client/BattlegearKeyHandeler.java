@@ -29,19 +29,15 @@ import java.util.EnumSet;
 
 public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 
-    public static KeyBinding battleInv = new KeyBinding("Battle Inventory", Keyboard.KEY_I);
     public static KeyBinding drawWeapons = new KeyBinding("Draw Weapons", Keyboard.KEY_R);
     public static KeyBinding special = new KeyBinding("Special", Keyboard.KEY_Z);
-
-    //TODO: I will replace this with some sort of command in the future, this is primarily for testing.
-    public static KeyBinding openSigilEditor = new KeyBinding("Open Sigil Editor", Keyboard.KEY_P);
 
     private static int previousNormal = 0;
     public static int previousBattlemode = InventoryPlayerBattle.OFFSET;
 
     public BattlegearKeyHandeler() {
         //super(new KeyBinding[]{battleInv, drawWeapons, openSigilEditor}, new boolean[]{false, false, false});
-        super(new KeyBinding[]{battleInv, drawWeapons, special, openSigilEditor}, new boolean[]{false, false, false, false});
+        super(new KeyBinding[]{drawWeapons, special}, new boolean[]{false, false, false, false});
     }
 
     @Override
@@ -94,16 +90,6 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
                     }
 
 
-                }else if (kb.keyCode == battleInv.keyCode) {
-
-                    //send packet to open container on server
-                    PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.equipID));
-                    //Also open on client
-                    player.openGui(
-                            Battlegear.INSTANCE, BattlegearGUIHandeler.equipID, mc.theWorld,
-                            (int) player.posX, (int) player.posY, (int) player.posZ);
-
-
                 } else
                 if (kb.keyCode == drawWeapons.keyCode && tickEnd) {
 
@@ -117,14 +103,6 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
                         playerInventory.currentItem = previousBattlemode;
                     }
                     mc.playerController.updateController();
-                }
-                else if (kb.keyCode == openSigilEditor.keyCode) {
-                    //System.out.println("Open");
-                    //send packet to open container on server
-                    //PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.sigilEditor));
-                    player.openGui(
-                            Battlegear.INSTANCE, BattlegearGUIHandeler.sigilEditor, mc.theWorld,
-                            (int) player.posX, (int) player.posY, (int) player.posZ);
                 }
             }
         }

@@ -236,7 +236,7 @@ public class BattlegearClientEvents {
 		int count = 0;
 		for (GuiPlaceableButton button : tabsList) {
 			button.place(count, guiLeft, guiTop);
-			button.id = buttons.size();
+			button.id = buttons.size()+2;//Due to GuiInventory and GuiContainerCreative button performed actions, without them having buttons...
 			count++;
 			buttons.add(button);
 		}

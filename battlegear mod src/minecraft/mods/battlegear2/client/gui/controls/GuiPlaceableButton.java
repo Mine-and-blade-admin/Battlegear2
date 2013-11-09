@@ -1,7 +1,9 @@
 package mods.battlegear2.client.gui.controls;
 
+import mods.battlegear2.client.gui.BattlegearSigilGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -19,11 +21,26 @@ public abstract class GuiPlaceableButton extends GuiButton {
 	@Override
 	public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
 		boolean inWindow = super.mousePressed(mc, mouseX, mouseY);
-		if (inWindow) {
-			this.clicked(mc);
+		if (inWindow && !isInGui(mc.currentScreen)) {
+			this.openGui(mc);
 		}
 		return inWindow;
 	}
+	
+	private boolean isInGui(GuiScreen currentScreen) {
+		return currentScreen.getClass()==getGUIClass();
+	}
 
-	protected abstract void clicked(Minecraft mc);
+	@Override
+	protected int getHoverState(boolean isMouseOver)
+    {
+		if(!isInGui(Minecraft.getMinecraft().currentScreen)){
+			return super.getHoverState(isMouseOver);
+		}
+		return 0;
+    }
+
+	protected abstract Class<? extends GuiScreen> getGUIClass();
+
+	protected abstract void openGui(Minecraft mc);
 }
