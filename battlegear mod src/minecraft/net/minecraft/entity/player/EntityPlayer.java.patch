@@ -32,18 +32,18 @@
 +	 * provided are not needed, they do however provide more simple access.
 +	 * 
 +	 * The only other edit is to replace the instance of Inventory player with
-+	 * the custom Inventory class. It has also been marked as private to prevent
++	 * the custom Inventory class. It has also been marked as final to prevent
 +	 * other mods changing this later.
 +	 * 
-+	 * The method in OnUpdate has not been added in the transfomer yet
++	 * The method in OnUpdate has not been added in the transformer yet
 +	 */
 +	
 +	// -----MB-addFilds-----
-+	public float offHandSwingProgress;
-+	public float prevOffHandSwingProgress;
-+	public int offHandSwingProgressInt;
-+	public boolean isOffHandSwingInProgress;
-+    public int specialActionTimer;
++	public float offHandSwingProgress = 0.0F;
++	public float prevOffHandSwingProgress = 0.0F;
++	public int offHandSwingProgressInt = 0;
++	public boolean isOffHandSwingInProgress = false;
++    public int specialActionTimer = 0;
 +	
 +	// -----MB-AddMethod-----
 +	public void attackTargetEntityWithCurrentOffItem(Entity target) {
@@ -132,7 +132,7 @@
 +        }else
 +            return false;
 +    }
-+    //-----MB-AddMethod-----  (TODO: Add to coremod)
++    //-----MB-AddMethod-----
 +    public void setBlockingWithShield(boolean block){
 +        if(block &&
 +                ((InventoryPlayerBattle)inventory).getCurrentOffhandWeapon() != null &&
@@ -147,7 +147,7 @@
      /** Inventory of the player */
 -    public InventoryPlayer inventory = new InventoryPlayer(this);
 +    //-----MB-Edited-----
-+    public final InventoryPlayer inventory = BattlegearUtils.replaceInventory(this);
++    public final InventoryPlayer inventory = new InventoryPlayerBattle(this);
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
  
      /**
@@ -156,7 +156,7 @@
      }
  
 +
-+    //-----MB-Edited-----  (TODO: test coremod)
++    //-----MB-Edited-----
      protected void entityInit()
      {
          super.entityInit();

@@ -103,7 +103,7 @@ public class ItemInWorldTransformer implements IClassTransformer {
 
                 //Do Nothing
             } else if (node.getOpcode() == AASTORE) {
-                newList.add(new MethodInsnNode(INVOKEVIRTUAL, itemStackClassName, setInventorySlotMethodName, setInventorySlotMethodDesc));
+                newList.add(new MethodInsnNode(INVOKEVIRTUAL, inventoryPlayerClassName, setInventorySlotMethodName, setInventorySlotMethodDesc));
             } else {
                 newList.add(node);
             }

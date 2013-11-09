@@ -15,7 +15,7 @@ import static org.objectweb.asm.Opcodes.ASM4;
 
 public class PlayerControllerMPTransformer implements IClassTransformer {
 
-    private String entityOtherPlayerMPClassName;
+    private String entityPlayerClassName;
     private String playerInventoryFieldName;
 
 
@@ -26,7 +26,7 @@ public class PlayerControllerMPTransformer implements IClassTransformer {
     public byte[] transform(String name, String transformedName, byte[] bytes) {
         if (transformedName.equals("net.minecraft.client.multiplayer.PlayerControllerMP")) {
 
-            entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityOtherPlayerMP");
+            entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
 
             playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
 
@@ -48,7 +48,7 @@ public class PlayerControllerMPTransformer implements IClassTransformer {
                 if (method.name.equals(playerControllerMPsendUseItemMethodName) &&
                         method.desc.equals(playerControllerMPsendUseItemMethodDesc)) {
                     System.out.println("\tPatching method sendUseItem in PlayerControllerMP");
-                    TransformerUtils.replaceInventoryArrayAccess(method, entityOtherPlayerMPClassName, playerInventoryFieldName, 9, 13);
+                    TransformerUtils.replaceInventoryArrayAccess(method, entityPlayerClassName, playerInventoryFieldName, 9, 13);
                 }
             }
 

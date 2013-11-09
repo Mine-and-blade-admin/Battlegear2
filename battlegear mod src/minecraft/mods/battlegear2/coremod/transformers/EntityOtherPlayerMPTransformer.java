@@ -84,7 +84,7 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
 
                 if (mn.name.equals(onUpdateMethodName) &&
                         mn.desc.equals(onUpdateMethodDesc)) {
-                    processOnUpdateMethod(mn);
+                    processOnUpdateMethod2(mn);
                 }
 
             }
@@ -105,7 +105,7 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
         }
     }
     
-    
+    @Deprecated
     private void processOnUpdateMethod(MethodNode mn) {
 
         System.out.println("\tPatching method onUpdate in EntityOtherPlayerMP");
@@ -187,17 +187,23 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
                     ((FieldInsnNode) node).owner.equals(entityOtherPlayerMPClassName) &&
                     ((FieldInsnNode) node).name.equals(limbSwingFieldName)){
                 newList.add(node);
-
                 newList.add(new VarInsnNode(ALOAD, 0));
                 newList.add(new VarInsnNode(ALOAD, 0));
                 newList.add(new VarInsnNode(ALOAD, 0));
-
 
                 newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, isItemInUseFieldName, "Z"));
                 newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearClientUtils", "entityOtherPlayerIsItemInUseHook", "(L"+entityOtherPlayerMPClassName+";Z)Z"));
                 newList.add(new FieldInsnNode(PUTFIELD, entityOtherPlayerMPClassName, isItemInUseFieldName, "Z"));
 
-                newList.add(new InsnNode(RETURN));
+                node = it.next();
+                while(!(node instanceof InsnNode && node.getOpcode() == RETURN)){
+                	node = it.next();
+                }
+            	newList.add(node);
+                while(it.hasNext()){
+                	node = it.next();
+                	newList.add(node);
+                }
 
                 done = true;
             }else{

@@ -37,12 +37,13 @@
  
              if (this.isCreative())
              {
-@@ -372,7 +387,7 @@
+@@ -372,7 +387,8 @@
  
              if (itemstack1.stackSize == 0)
              {
 -                par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = null;
-+            	par1EntityPlayer.inventory.setInventorySlotContents(par1EntityPlayer.inventory.currentItem, null);
++            	//-----MB-Edited-----
++            	BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, null);
                  MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thisPlayerMP, itemstack1));
              }
  

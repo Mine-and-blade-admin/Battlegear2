@@ -21,14 +21,14 @@
 +	 * Added Fields: 4
 +	 * 
 +	 * Because rendering the offhand item is quite complex the edits only defer the actual rendering to 
-+	 * another method in BattlegearRenderHelper. This makes the coremod infinatly simpeler.
++	 * another method in BattlegearRenderHelper. This makes the coremod infinitely simpler.
 +	 */
 +		
 +	//-----MB-AddFields-----(4)
 +	public ItemStack offHandItemToRender;
-+	public int equippedItemOffhandSlot;
-+	public float equippedOffHandProgress;
-+	public float prevEquippedOffHandProgress;
++	public int equippedItemOffhandSlot = 0;
++	public float equippedOffHandProgress = 0.0F;
++	public float prevEquippedOffHandProgress = 0.0F;
 +	
 +	
      private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");

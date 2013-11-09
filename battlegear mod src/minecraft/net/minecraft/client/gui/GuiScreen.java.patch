@@ -8,6 +8,15 @@
  import java.util.ArrayList;
  import java.util.List;
  import net.minecraft.client.Minecraft;
+@@ -28,7 +29,7 @@
+     public int height;
+ 
+     /** A list of all the buttons in this container. */
+-    protected List buttonList = new ArrayList();
++    public List buttonList = new ArrayList();
+     public boolean allowUserInput;
+ 
+     /** The FontRenderer used by GuiScreen */
 @@ -43,8 +44,7 @@
      /**
       * Draws the screen and all the components in it.

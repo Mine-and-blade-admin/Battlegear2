@@ -1,0 +1,17 @@
+--- 
++++ 
+@@ -46,12 +46,12 @@
+     /**
+      * Starting X position for the Gui. Inconsistent use for Gui backgrounds.
+      */
+-    protected int guiLeft;
++    public int guiLeft;
+ 
+     /**
+      * Starting Y position for the Gui. Inconsistent use for Gui backgrounds.
+      */
+-    protected int guiTop;
++    public int guiTop;
+     private Slot theSlot;
+ 
+     /** Used when touchscreen is enabled */

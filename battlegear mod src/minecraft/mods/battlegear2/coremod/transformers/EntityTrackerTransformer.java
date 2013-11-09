@@ -41,7 +41,6 @@ public class EntityTrackerTransformer  implements IClassTransformer {
             tryStartTrackingMethodDesc = BattlegearTranslator.getMapedMethodDesc("EntityTrackerEntry", "func_73117_b");
             sendPacketToPlayerMethodName = BattlegearTranslator.getMapedMethodName("NetServerHandler", "func_72567_b");
             sendPacketToPlayerMethodDesc = BattlegearTranslator.getMapedMethodDesc("NetServerHandler", "func_72567_b");
-
             System.out.println("M&B - Patching Class EntityTrackerEntry (" + name + ")");
 
             ClassReader cr = new ClassReader(bytes);
@@ -60,18 +59,16 @@ public class EntityTrackerTransformer  implements IClassTransformer {
                     InsnList newList = new InsnList();
                     ListIterator<AbstractInsnNode> insn = method.instructions.iterator();
                     boolean done = false;
+                    AbstractInsnNode next;
                     while(insn.hasNext()){
-                        AbstractInsnNode next = insn.next();
+                        next = insn.next();
                         if(!done &&
                                 next instanceof TypeInsnNode &&
                                 next.getOpcode() == CHECKCAST &&
                                 ((TypeInsnNode) next).desc.equals(entityPlayerClassName)){
 
                             newList.add(next);
-                            next = insn.next();
-                            newList.add(new VarInsnNode(ASTORE, 10));
-                            //TODO: Fix entityplayer variable management
-
+                            newList.add(insn.next());
                             newList.add(new VarInsnNode(ALOAD, 1));
 
                             newList.add(new FieldInsnNode(GETFIELD, entityPlayerMPClassName, playerMPplayerNetServerHandlerField, "L"+netServerHandlerClasName +";"));
@@ -79,9 +76,7 @@ public class EntityTrackerTransformer  implements IClassTransformer {
 
                             newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/packet/BattlegearSyncItemPacket", "generatePacket", "(L"+entityPlayerClassName+";)L"+packet250CustomPayloadClassName+";"));
                             newList.add(new MethodInsnNode(INVOKEVIRTUAL, netServerHandlerClasName, sendPacketToPlayerMethodName, sendPacketToPlayerMethodDesc));
-
                             done = true;
-
                         }else{
                             newList.add(next);
                         }
