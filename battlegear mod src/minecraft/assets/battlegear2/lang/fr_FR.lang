@@ -39,6 +39,11 @@ item.battlegear2:knights_armour.plate.name=Cuirasse de chevalier
 item.battlegear2:knights_armour.legs.name=Jambiere de chevalier
 item.battlegear2:knights_armour.boots.name=Bottes de chevalier
 
+item.battlegear2:cloak.name=Cape
+
+enchantment.slow_fall=Chute ralentie
+enchantment.super_jump=Super Saut
+
 tile.battlegear2:banner.name=Etendard
 
 sigil.pattern.title=Motif
@@ -52,7 +57,18 @@ sigil.banner.title=Banniere
 sigil.helm.title=Heaume
 sigil.colour.select=Selection
 
-tooltip.attack=Degats
+gui.sigil.add=Ajout
+gui.sigil.remove=Enleve
+gui.sigil.crest=Cimier
+gui.sigil.pattern=Fond
+
 attribute.weapon.penetrateArmor=Penetration d'armure
 attribute.weapon.extendedReach=Allonge
 attribute.weapon.daze=Etourdissement
+attribute.weapon.attackSpeed=Vitesse
+attribute.weapon.backstab=Coup en traitre
+attribute.weapon.mountedBonus=Degat sur monture
+attribute.shield.block.time=s Block
+attribute.shield.arrow.count=Fleches
+attribute.quiver.arrow.empty=Vide
+attribute.quiver.arrow.count=Fleches
