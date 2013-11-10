@@ -52,11 +52,7 @@ public class BattlegearInGameGUI extends Gui {
                 	previousGui=null;
                 }
                 if(mc.currentScreen instanceof InventoryEffectRenderer && mc.currentScreen.getClass()!=previousGui){
-                	int movX=0;
-                	if(mc.thePlayer.capabilities.isCreativeMode){
-                		movX=-50;
-                	}
-                	BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList,((GuiContainer)mc.currentScreen).guiLeft+movX,((GuiContainer)mc.currentScreen).guiTop);
+                	BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList,((GuiContainer)mc.currentScreen).guiLeft-40,((GuiContainer)mc.currentScreen).guiTop);
                 	previousGui = (Class<? extends InventoryEffectRenderer>) mc.currentScreen.getClass();
                 }
                 this.mc.renderEngine.bindTexture(resourceLocation);

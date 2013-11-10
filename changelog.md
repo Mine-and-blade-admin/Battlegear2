@@ -1,3 +1,6 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.3.7 ==
+* Moved switch buttons to avoid Tinker's Construct conflict
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.3.6 ==  
 * Finished coremod fixes
 * Replaced inventory and heraldry keys with switch buttons in inventory gui

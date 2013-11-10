@@ -9,13 +9,14 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 public abstract class GuiPlaceableButton extends GuiButton {
+	public static final int HEIGHT = 20;
 	public GuiPlaceableButton(int par1, int par2, int par3, String name) {
-		super(par1, par2, par3, 24, 20, name);
+		super(par1, par2, par3, 24, HEIGHT, name);
 	}
 
 	public void place(int count, int guiLeft, int guiTop) {
-		this.xPosition = guiLeft + count * 24;
-		this.yPosition = guiTop - 24;
+		this.xPosition = guiLeft;
+		this.yPosition = guiTop + count * HEIGHT - 24;
 	}
 
 	@Override
