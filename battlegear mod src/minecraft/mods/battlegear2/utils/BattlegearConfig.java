@@ -44,7 +44,6 @@ public class BattlegearConfig {
 	
 	
 	public static void getConfig(Configuration config) {
-		//System.out.println("Config");
 		config.load();
 
         heradricItem = new HeraldryCrest(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());

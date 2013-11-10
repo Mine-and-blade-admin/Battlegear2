@@ -37,7 +37,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 
     public BattlegearKeyHandeler() {
         //super(new KeyBinding[]{battleInv, drawWeapons, openSigilEditor}, new boolean[]{false, false, false});
-        super(new KeyBinding[]{drawWeapons, special}, new boolean[]{false, false, false, false});
+        super(new KeyBinding[]{drawWeapons, special}, new boolean[]{false, false});
     }
 
     @Override

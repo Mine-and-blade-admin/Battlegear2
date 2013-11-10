@@ -16,6 +16,7 @@ import mods.mud.ModUpdateDetector;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
@@ -26,6 +27,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -57,7 +61,7 @@ public class Battlegear {
     public static EnumArmorMaterial knightArmourMaterial;
 
     public static boolean battlegearEnabled = true;
-
+    public static boolean tconstructEnabled = false;
     public static boolean debug = false;
 
     @EventHandler
@@ -106,6 +110,32 @@ public class Battlegear {
         NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
         GameRegistry.registerPlayerTracker(new BgPlayerTracker());
 
-
+        if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
+        	Class tabRegistry;
+        	Class abstractTab;
+        	try {
+        		tabRegistry = Class.forName("tconstruct.client.tabs.TabRegistry");
+        		abstractTab = Class.forName("tconstruct.client.tabs.AbstractTab");
+			} catch (ClassNotFoundException e) {
+				return;
+			}
+        	Method registerTab;
+        	try {
+        		registerTab = tabRegistry.getMethod("registerTab", abstractTab);
+			} catch (NoSuchMethodException e) {
+				return;
+			} catch (SecurityException e) {
+				return;
+			}
+        	try {
+        		registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab").newInstance());
+        		if(debug){
+        			registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.SigilTab").newInstance());
+        		}
+			} catch (Exception e) {
+				return;
+			}
+        	tconstructEnabled = true;
+        }
     }
 }

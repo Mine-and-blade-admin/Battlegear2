@@ -48,12 +48,14 @@ public class BattlegearInGameGUI extends Gui {
             if (!this.mc.playerController.enableEverythingIsScrewedUpMode()) {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-                if(previousGui!=null && mc.currentScreen==null) {
-                	previousGui=null;
-                }
-                if(mc.currentScreen instanceof InventoryEffectRenderer && mc.currentScreen.getClass()!=previousGui){
-                	BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList,((GuiContainer)mc.currentScreen).guiLeft-40,((GuiContainer)mc.currentScreen).guiTop);
-                	previousGui = (Class<? extends InventoryEffectRenderer>) mc.currentScreen.getClass();
+                if(!Battlegear.tconstructEnabled || mc.thePlayer.capabilities.isCreativeMode){
+	                if(previousGui!=null && mc.currentScreen==null) {
+	                	previousGui=null;
+	                }
+	                if(mc.currentScreen instanceof InventoryEffectRenderer && mc.currentScreen.getClass()!=previousGui){
+	                	BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList,((GuiContainer)mc.currentScreen).guiLeft-40,((GuiContainer)mc.currentScreen).guiTop);
+	                	previousGui = (Class<? extends InventoryEffectRenderer>) mc.currentScreen.getClass();
+	                }
                 }
                 this.mc.renderEngine.bindTexture(resourceLocation);
                 InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
