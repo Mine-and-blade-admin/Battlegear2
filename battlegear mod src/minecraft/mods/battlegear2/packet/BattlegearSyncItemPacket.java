@@ -19,46 +19,25 @@ import java.io.*;
 public class BattlegearSyncItemPacket extends AbstractMBPacket {
 
     public static final String packetName = "MB2|SyncItem";
+	private String user;
+	private InventoryPlayer inventory;
+	private EntityPlayer player;
 
-    public static Packet250CustomPayload generatePacket(EntityPlayer player){
-        return generatePacket(player.username, player.inventory, player);
+    public BattlegearSyncItemPacket(EntityPlayer player){
+        this(player.username, player.inventory, player);
     }
 
-    public static Packet250CustomPayload generatePacket(String user, InventoryPlayer inventory, EntityPlayer player) {
-        ByteArrayOutputStream bos = null;
-        DataOutputStream outputStream = null;
-
-        try {
-            bos = new ByteArrayOutputStream();
-            outputStream = new DataOutputStream(bos);
-
-            Packet.writeString(user, outputStream);
-            outputStream.writeInt(inventory.currentItem);
-            Packet.writeItemStack(inventory.getCurrentItem(), outputStream);
-
-            for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
-                Packet.writeItemStack(inventory.getStackInSlot(i + InventoryPlayerBattle.OFFSET), outputStream);
-            }
-            if(player.worldObj.isRemote){//client-side only thing
-            	Packet.writeItemStack(player.getItemInUse(), outputStream);
-            	outputStream.writeInt(player.getItemInUseCount());
-            }
-
-            return new Packet250CustomPayload(packetName, bos.toByteArray());
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            BattlegearUtils.closeStream(outputStream);
-        }
-
-
-
-        return null;
+    public BattlegearSyncItemPacket(String user, InventoryPlayer inventory, EntityPlayer player) {
+            this.user = user;
+            this.inventory = inventory;
+            this.player = player;
     }
 
 
-    @Override
+    public BattlegearSyncItemPacket() {
+	}
+
+	@Override
     public void process(Packet250CustomPayload packet, EntityPlayer player) {
         DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 
@@ -86,4 +65,24 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
             BattlegearUtils.closeStream(inputStream);
         }
     }
+
+	@Override
+	public String getChannel() {
+		return packetName;
+	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+		Packet.writeString(user, out);
+        out.writeInt(inventory.currentItem);
+        Packet.writeItemStack(inventory.getCurrentItem(), out);
+
+        for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
+            Packet.writeItemStack(inventory.getStackInSlot(i + InventoryPlayerBattle.OFFSET), out);
+        }
+        if(player.worldObj.isRemote){//client-side only thing
+        	Packet.writeItemStack(player.getItemInUse(), out);
+        	out.writeInt(player.getItemInUseCount());
+        }
+	}
 }

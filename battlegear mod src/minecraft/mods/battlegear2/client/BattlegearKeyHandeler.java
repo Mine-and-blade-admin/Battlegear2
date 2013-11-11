@@ -1,31 +1,33 @@
 package mods.battlegear2.client;
 
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import mods.battlegear2.Battlegear;
+import mods.battlegear2.BowHookContainerClass2;
+import mods.battlegear2.api.IShield;
+import mods.battlegear2.enchantments.BaseEnchantment;
+import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.packet.BattlegearAnimationPacket;
+import mods.battlegear2.utils.EnumBGAnimations;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet250CustomPayload;
+
+import org.lwjgl.input.Keyboard;
+
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.relauncher.Side;
-import mods.battlegear2.Battlegear;
-import mods.battlegear2.BowHookContainerClass2;
-import mods.battlegear2.api.IShield;
-import mods.battlegear2.api.quiver.IArrowContainer2;
-import mods.battlegear2.gui.BattlegearGUIHandeler;
-import mods.battlegear2.inventory.InventoryPlayerBattle;
-import mods.battlegear2.packet.BattlegearAnimationPacket;
-import mods.battlegear2.packet.BattlegearGUIPacket;
-import mods.battlegear2.packet.SpecialActionPacket;
-import mods.battlegear2.utils.EnumBGAnimations;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import org.lwjgl.input.Keyboard;
-
-import java.util.EnumSet;
 
 public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 
@@ -36,7 +38,6 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
     public static int previousBattlemode = InventoryPlayerBattle.OFFSET;
 
     public BattlegearKeyHandeler() {
-        //super(new KeyBinding[]{battleInv, drawWeapons, openSigilEditor}, new boolean[]{false, false, false});
         super(new KeyBinding[]{drawWeapons, special}, new boolean[]{false, false});
     }
 
@@ -46,8 +47,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
     }
 
     @Override
-    public void keyDown(EnumSet<TickType> types, KeyBinding kb,
-                        boolean tickEnd, boolean isRepeat) {
+    public void keyDown(EnumSet<TickType> types, KeyBinding kb, boolean tickEnd, boolean isRepeat) {
 
         if(Battlegear.battlegearEnabled){
             Minecraft mc = FMLClientHandler.instance().getClient();
@@ -55,8 +55,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
             //null checks to prevent any crash outside the world (and to make sure we have no screen open)
             if (mc != null && mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
 
-                EntityClientPlayerMP player = FMLClientHandler.instance().getClient().thePlayer;
-
+                EntityClientPlayerMP player = mc.thePlayer;
 
                 if (kb.keyCode == special.keyCode &&
                         player.specialActionTimer == 0 &&
@@ -66,20 +65,24 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
                     ItemStack quiver = BowHookContainerClass2.getArrowContainer(main, player);
 
                     if(quiver != null){
-                        Packet250CustomPayload p = BattlegearAnimationPacket.generatePacket(EnumBGAnimations.SpecialAction, player.username);
+                        Packet p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player.username).generatePacket();
                         PacketDispatcher.sendPacketToServer(p);
                         player.specialActionTimer = 2;
                     }else if(player.isBattlemode()){
                         ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 
-
                         if(offhand != null && offhand.getItem() instanceof IShield){
-
                             //TODO: Enchantments?
                             float shieldBashPenalty = 0.33F;
+                        	Map<Integer,Integer> enchants = EnchantmentHelper.getEnchantments(offhand);
+                        	for(Entry<Integer, Integer> data:enchants.entrySet()){
+                        		if(data.getKey() == BaseEnchantment.shieldBash.effectId){
+                        			shieldBashPenalty-=0.6F*data.getValue();
+                        		}
+                        	}
 
                             if(BattlegearClientTickHandeler.blockBar >= shieldBashPenalty){
-                                Packet250CustomPayload p = BattlegearAnimationPacket.generatePacket(EnumBGAnimations.SpecialAction, player.username);
+                                Packet p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player.username).generatePacket();
                                 PacketDispatcher.sendPacketToServer(p);
                                 player.specialActionTimer = ((IShield)offhand.getItem()).getBashTimer(offhand);
 

@@ -17,7 +17,7 @@ public class GuiBGInventoryButton extends GuiPlaceableButton{
 	@Override
 	protected void openGui(Minecraft mc) {
 		//send packet to open container on server
-        PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.equipID));
+        PacketDispatcher.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.equipID).generatePacket());
 	}
 
 	@Override

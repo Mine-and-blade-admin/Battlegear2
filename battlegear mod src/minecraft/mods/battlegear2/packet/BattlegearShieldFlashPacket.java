@@ -14,6 +14,8 @@ import java.io.*;
 public class BattlegearShieldFlashPacket extends AbstractMBPacket{
 
     public static final String packetName = "MB2|ShieldFlash";
+	private String username;
+	private float damage;
 
     @Override
     public void process(Packet250CustomPayload packet, EntityPlayer player) {
@@ -33,23 +35,22 @@ public class BattlegearShieldFlashPacket extends AbstractMBPacket{
         }
     }
 
-    public static Packet250CustomPayload generatePacket(EntityPlayer player, float damage) {
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(300);
-        DataOutputStream outputStream = new DataOutputStream(bos);
-        try {
-            Packet.writeString(player.username, outputStream);
-            outputStream.writeFloat(damage);
-
-            return new Packet250CustomPayload(packetName, bos.toByteArray());
-
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }  finally {
-            BattlegearUtils.closeStream(outputStream);
-        }
-
-        return null;
+    public BattlegearShieldFlashPacket(EntityPlayer player, float damage) {
+    	this.username = player.username;
+    	this.damage = damage;
     }
+
+	public BattlegearShieldFlashPacket() {
+	}
+
+	@Override
+	public String getChannel() {
+		return packetName;
+	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+        Packet.writeString(username, out);
+        out.writeFloat(damage);
+	}
 }

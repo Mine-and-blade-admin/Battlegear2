@@ -58,13 +58,13 @@ public class BattlegearClientTickHandeler implements ITickHandler {
                     if(blockBar > 0){
                         if(!wasBlocking){
 
-                            PacketDispatcher.sendPacketToServer(BattlegearShieldBlockPacket.generatePacket(true, player.username));
+                            PacketDispatcher.sendPacketToServer(new BattlegearShieldBlockPacket(true, player.username).generatePacket());
                         }
                         wasBlocking = true;
                     }else{
                         if(wasBlocking){
                             //Send packet
-                            PacketDispatcher.sendPacketToServer(BattlegearShieldBlockPacket.generatePacket(false, player.username));
+                            PacketDispatcher.sendPacketToServer(new BattlegearShieldBlockPacket(false, player.username).generatePacket());
 
                         }
                         wasBlocking = false;
@@ -74,7 +74,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
 
                     if(wasBlocking){
                         //send packet
-                        PacketDispatcher.sendPacketToServer(BattlegearShieldBlockPacket.generatePacket(false, player.username));
+                        PacketDispatcher.sendPacketToServer(new BattlegearShieldBlockPacket(false, player.username).generatePacket());
                     }
                     wasBlocking = false;
 

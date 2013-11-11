@@ -17,28 +17,18 @@ import java.io.*;
 public class BattlegearAnimationPacket extends AbstractMBPacket {
 
     public static final String packetName = "MB2|Animation";
+	private Enum<EnumBGAnimations> animation;
+	private String username;
 
-    public static Packet250CustomPayload generatePacket(EnumBGAnimations animation, String username) {
-
-        ByteArrayOutputStream bos = null;
-        DataOutputStream outputStream = null;
-        try {
-            bos = new ByteArrayOutputStream(300);
-            outputStream = new DataOutputStream(bos);
-
-            outputStream.writeInt(animation.ordinal());
-            Packet.writeString(username, outputStream);
-
-            return new Packet250CustomPayload(packetName, bos.toByteArray());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            BattlegearUtils.closeStream(outputStream);
-        }
-        return null;
+    public BattlegearAnimationPacket(EnumBGAnimations animation, String username) {
+    	this.animation = animation;
+    	this.username = username;
     }
 
-    @Override
+    public BattlegearAnimationPacket() {
+	}
+
+	@Override
     public void process(Packet250CustomPayload packet, EntityPlayer player) {
         DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 
@@ -66,4 +56,15 @@ public class BattlegearAnimationPacket extends AbstractMBPacket {
 			}
         }
     }
+
+	@Override
+	public String getChannel() {
+		return packetName;
+	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+		out.writeInt(animation.ordinal());
+        Packet.writeString(username, out);
+	}
 }

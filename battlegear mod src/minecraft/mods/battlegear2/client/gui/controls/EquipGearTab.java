@@ -16,7 +16,7 @@ public class EquipGearTab extends AbstractTab {
 	@Override
 	public void onTabClicked() {
 		//send packet to open container on server
-        PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.equipID));
+        PacketDispatcher.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.equipID).generatePacket());
 	}
 
 	@Override

@@ -31,7 +31,7 @@
                          EntityPlayer entityplayer = (EntityPlayer)this.myEntity;
 +                        //-----MB-Added-----
 +                        //This is a hook to properly sync battleitems
-+                        par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(BattlegearSyncItemPacket.generatePacket(entityplayer));
++                        par1EntityPlayerMP.playerNetServerHandler.sendPacketToPlayer(new BattlegearSyncItemPacket(entityplayer).generatePacket());
  
                          if (entityplayer.isPlayerSleeping())
                          {

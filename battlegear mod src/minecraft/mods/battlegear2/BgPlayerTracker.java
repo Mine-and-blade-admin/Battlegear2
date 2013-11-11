@@ -18,7 +18,7 @@ public class BgPlayerTracker implements IPlayerTracker{
     @Override
     public void onPlayerLogin(EntityPlayer player) {
         if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER){
-            PacketDispatcher.sendPacketToPlayer(LoginPacket.generate(), (Player)player);
+            PacketDispatcher.sendPacketToPlayer(new LoginPacket().generatePacket(), (Player)player);
         }else{
 
         }

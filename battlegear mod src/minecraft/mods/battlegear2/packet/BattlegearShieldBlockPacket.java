@@ -13,31 +13,18 @@ import java.io.*;
 
 public class BattlegearShieldBlockPacket extends AbstractMBPacket{
     public static final String packetName = "MB2|Block";
+	private boolean block;
+	private String username;
 
-    public static Packet250CustomPayload generatePacket(boolean block, String username) {
-
-        ByteArrayOutputStream bos = null;
-        DataOutputStream outputStream = null;
-        try {
-            bos = new ByteArrayOutputStream();
-            outputStream = new DataOutputStream(bos);
-
-            outputStream.writeBoolean(block);
-            Packet.writeString(username, outputStream);
-
-            return new Packet250CustomPayload(packetName, bos.toByteArray());
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            BattlegearUtils.closeStream(outputStream);
-        }
-
-
-        return null;
+    public BattlegearShieldBlockPacket(boolean block, String username) {
+    	this.block = block;
+    	this.username = username;
     }
 
-    @Override
+    public BattlegearShieldBlockPacket() {
+	}
+
+	@Override
     public void process(Packet250CustomPayload packet, EntityPlayer player) {
         DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
 
@@ -66,4 +53,16 @@ public class BattlegearShieldBlockPacket extends AbstractMBPacket{
             }
         }
     }
+
+	@Override
+	public String getChannel() {
+		return packetName;
+	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+
+        out.writeBoolean(block);
+        Packet.writeString(username, out);
+	}
 }

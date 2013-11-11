@@ -54,7 +54,7 @@ public class BattlegearTickHandeler implements ITickHandler {
                     ((WorldServer)entityPlayer.worldObj)
                             .getEntityTracker().sendPacketToAllAssociatedPlayers(
                             entityPlayer,
-                            BattlegearSyncItemPacket.generatePacket(entityPlayer)
+                            new BattlegearSyncItemPacket(entityPlayer).generatePacket()
                     );
 
                     entityPlayer.specialActionTimer = 0;
@@ -70,7 +70,7 @@ public class BattlegearTickHandeler implements ITickHandler {
                     ((WorldServer)entityPlayer.worldObj)
                             .getEntityTracker().sendPacketToAllAssociatedPlayers(
                             entityPlayer,
-                            BattlegearSyncItemPacket.generatePacket(entityPlayer)
+                            new BattlegearSyncItemPacket(entityPlayer).generatePacket()
                     );
                 }
                 

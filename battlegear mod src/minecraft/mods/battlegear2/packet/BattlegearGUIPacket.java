@@ -17,24 +17,14 @@ public class BattlegearGUIPacket extends AbstractMBPacket {
 
     public static final String packetName = "MB2|GUI";
 
-    public static Packet250CustomPayload generatePacket(int equipid) {
-        ByteArrayOutputStream bos = null;
-        DataOutputStream outputStream = null;
-        try {
-            bos = new ByteArrayOutputStream(4);
-            outputStream = new DataOutputStream(bos);
-
-            outputStream.writeInt(equipid);
-
-            return new Packet250CustomPayload(packetName, bos.toByteArray());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            BattlegearUtils.closeStream(outputStream);
-        }
-
-        return null;
+    public BattlegearGUIPacket(int equipid) {
+        this.equipid = equipid;
     }
+
+	public BattlegearGUIPacket() {
+	}
+
+	private int equipid;
 
 
     @Override
@@ -54,4 +44,16 @@ public class BattlegearGUIPacket extends AbstractMBPacket {
             player.openGui(Battlegear.INSTANCE, windowID, player.worldObj, 0, 0, 0);
         }
     }
+
+
+	@Override
+	public String getChannel() {
+		return packetName;
+	}
+
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+		out.writeInt(equipid);
+	}
 }

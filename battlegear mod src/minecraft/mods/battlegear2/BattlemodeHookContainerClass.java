@@ -47,7 +47,7 @@ public class BattlemodeHookContainerClass {
             EntityPlayer entityPlayer = (EntityPlayer)event.entity;
 
             PacketDispatcher.sendPacketToPlayer(
-                    BattlegearSyncItemPacket.generatePacket(entityPlayer),
+                    new BattlegearSyncItemPacket(entityPlayer).generatePacket(),
                     (Player)entityPlayer);
 
         }
@@ -262,7 +262,7 @@ public class BattlemodeHookContainerClass {
                         event.setCanceled(true);
 
                         PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 32, player.dimension,
-                                BattlegearShieldFlashPacket.generatePacket(player, event.ammount));
+                                new BattlegearShieldFlashPacket(player, event.ammount).generatePacket());
 
                         if(event.source.isProjectile()){
                             if(event.source instanceof EntityDamageSourceIndirect){

@@ -21,10 +21,11 @@ public class EntityTrackerTransformer  implements IClassTransformer {
     private String entityPlayerClassName;
     private String entityPlayerMPClassName;
     private String netServerHandlerClasName;
-    private String packet250CustomPayloadClassName;
+    private String packetClassName;
     private String playerMPplayerNetServerHandlerField;
     private String sendPacketToPlayerMethodName;
     private String sendPacketToPlayerMethodDesc;
+    private String syncPacket = "mods/battlegear2/packet/BattlegearSyncItemPacket";
 
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
@@ -33,7 +34,7 @@ public class EntityTrackerTransformer  implements IClassTransformer {
             entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
             entityPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityPlayerMP");
             netServerHandlerClasName =BattlegearTranslator.getMapedClassName("NetServerHandler");
-            packet250CustomPayloadClassName = BattlegearTranslator.getMapedClassName("Packet250CustomPayload");
+            packetClassName = BattlegearTranslator.getMapedClassName("Packet");
 
             playerMPplayerNetServerHandlerField = BattlegearTranslator.getMapedFieldName("EntityPlayerMP", "field_71135_a");
 
@@ -69,12 +70,14 @@ public class EntityTrackerTransformer  implements IClassTransformer {
 
                             newList.add(next);
                             newList.add(insn.next());
+
                             newList.add(new VarInsnNode(ALOAD, 1));
-
                             newList.add(new FieldInsnNode(GETFIELD, entityPlayerMPClassName, playerMPplayerNetServerHandlerField, "L"+netServerHandlerClasName +";"));
+                            newList.add(new TypeInsnNode(NEW, syncPacket));
+                            newList.add(new InsnNode(DUP));
                             newList.add(new VarInsnNode(ALOAD, 10));
-
-                            newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/packet/BattlegearSyncItemPacket", "generatePacket", "(L"+entityPlayerClassName+";)L"+packet250CustomPayloadClassName+";"));
+                            newList.add(new MethodInsnNode(INVOKESPECIAL, syncPacket, "<init>", "(L"+entityPlayerClassName+";)V"));
+                            newList.add(new MethodInsnNode(INVOKEVIRTUAL, syncPacket, "generatePacket", "()L"+packetClassName+";"));
                             newList.add(new MethodInsnNode(INVOKEVIRTUAL, netServerHandlerClasName, sendPacketToPlayerMethodName, sendPacketToPlayerMethodDesc));
                             done = true;
                         }else{

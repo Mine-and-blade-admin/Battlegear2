@@ -27,6 +27,8 @@ import java.io.*;
 public class SpecialActionPacket extends AbstractMBPacket{
 
     public static final String packetName = "MB2|Special";
+	private EntityPlayer player;
+	private Entity entityHit;
 
     @Override
     public void process(Packet250CustomPayload packet, EntityPlayer player) {
@@ -96,37 +98,32 @@ public class SpecialActionPacket extends AbstractMBPacket{
         }
     }
 
-    public static Packet250CustomPayload generatePacket(EntityPlayer player, ItemStack mainhand, ItemStack offhand, Entity entityHit) {
-
-        ByteArrayOutputStream bos = null;
-        DataOutputStream outputStream = null;
-
-        boolean isPlayer = entityHit instanceof EntityPlayer;
-
-
-        try {
-            bos = new ByteArrayOutputStream();
-            outputStream = new DataOutputStream(bos);
-
-            Packet.writeString(player.username, outputStream);
-
-            outputStream.writeBoolean(isPlayer);
-            if(isPlayer){
-                Packet.writeString(((EntityPlayer) entityHit).username, outputStream);
-            }else{
-                if(entityHit != null)
-                    outputStream.writeInt(entityHit.entityId);
-            }
-
-            return new Packet250CustomPayload(packetName, bos.toByteArray());
-
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            BattlegearUtils.closeStream(outputStream);
-        }
-
-        return null;
+    public SpecialActionPacket(EntityPlayer player, ItemStack mainhand, ItemStack offhand, Entity entityHit) {
+    	this.player = player;
+    	this.entityHit = entityHit;
+        
     }
+
+	public SpecialActionPacket() {
+	}
+
+	@Override
+	public String getChannel() {
+		return packetName;
+	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+		boolean isPlayer = entityHit instanceof EntityPlayer;
+
+        Packet.writeString(player.username, out);
+
+        out.writeBoolean(isPlayer);
+        if(isPlayer){
+            Packet.writeString(((EntityPlayer) entityHit).username, out);
+        }else{
+            if(entityHit != null)
+                out.writeInt(entityHit.entityId);
+        }
+	}
 }
