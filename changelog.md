@@ -1,3 +1,10 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.3.8 ==
+* Fixed config file being a folder on first launch
+* Added back keys for inventory and heraldry, disabled by default
+**(See in config file the Enable GUI Keys setting)
+* Added support for Tinker's Construct inventory tabs
+* Code improvements for packets
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.3.7 ==
 * Moved switch buttons to avoid Tinker's Construct conflict
 

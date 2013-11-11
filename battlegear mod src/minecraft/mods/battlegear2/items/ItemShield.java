@@ -1,12 +1,14 @@
 package mods.battlegear2.items;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.util.List;
+
 import mods.battlegear2.api.IDyable;
+import mods.battlegear2.api.IEnchantable;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumShield;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,11 +17,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.World;
 
-import java.util.List;
-
-public class ItemShield extends Item implements IShield, IDyable{
+public class ItemShield extends Item implements IShield, IDyable, IEnchantable{
 
     public EnumShield enumShield;
 
@@ -219,4 +218,9 @@ public class ItemShield extends Item implements IShield, IDyable{
 
         nbttagcompound1.setInteger("color", par2);
     }
+
+	@Override
+	public boolean isEnchantable(BaseEnchantment baseEnchantment, ItemStack stack) {
+		return baseEnchantment.effectId == BaseEnchantment.shieldBash.effectId;
+	}
 }
