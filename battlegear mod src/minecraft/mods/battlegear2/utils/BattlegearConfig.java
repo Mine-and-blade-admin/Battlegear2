@@ -23,13 +23,14 @@ import java.util.Arrays;
 public class BattlegearConfig {
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
 	public static boolean forceBackSheath = false;
+	public static boolean enableGUIKeys = false;
 	public static final String[] itemNames = new String[] {"heraldric","chain","quiver", "dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow"};
 	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
     public static final String[] shieldTypes = new String[] {"wood", "hide", "iron", "diamond", "gold"};
 	public static final String[] armourTypes = new String[] {"helmet", "plate", "legs", "boots"};
 	public static final int firstDefaultItemIndex = 26201;
 	public static int[] itemOffests = new int[]{0, 1, 2, 5, 10, 15, 20, 25, 30, 35};
-	
+	public static int shieldBashEnchantId = 125;
 	public static ItemWeapon[] dagger=new ItemWeapon[5],warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5];
     public static ItemShield[] shield=new ItemShield[5];
 	public static Item chain,quiver,heradricItem, MbArrows;
@@ -52,6 +53,9 @@ public class BattlegearConfig {
     	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).setTextureName("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
         	
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
+        enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", false).getBoolean(false);
+        
+        shieldBashEnchantId = config.get("EnchantmentsID", "Shield Bash", shieldBashEnchantId).getInt();
         
         config.get("Coremod", "ASM debug Mode", false);
         

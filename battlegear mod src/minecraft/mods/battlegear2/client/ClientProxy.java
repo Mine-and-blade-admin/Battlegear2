@@ -1,17 +1,14 @@
 package mods.battlegear2.client;
 
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
+import java.util.List;
+
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
+import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
 import mods.battlegear2.client.renderer.*;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
@@ -25,13 +22,17 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet15Place;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.*;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
-
-import java.util.List;
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.client.registry.KeyBindingRegistry;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
 
@@ -41,6 +42,9 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerKeyHandelers() {
         KeyBindingRegistry.registerKeyBinding(new BattlegearKeyHandeler());
+        if(BattlegearConfig.enableGUIKeys){
+        	KeyBindingRegistry.registerKeyBinding(new BattlegearGuiKeyHandler());
+        }
     }
 
     @Override
@@ -54,10 +58,9 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {
-
         if (entityPlayer instanceof EntityClientPlayerMP) {
             ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
-                    BattlegearAnimationPacket.generatePacket(animation, entityPlayer.username));
+                    new BattlegearAnimationPacket(animation, entityPlayer.username).generatePacket());
         }
     }
 
@@ -140,9 +143,9 @@ public class ClientProxy extends CommonProxy {
                 mop = getMouseOver(1, 4);
             }
 
-            Packet250CustomPayload p;
+            Packet p;
             if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase){
-                p = SpecialActionPacket.generatePacket(entityPlayer, mainhand, offhand, mop.entityHit);
+                p = new SpecialActionPacket(entityPlayer, mainhand, offhand, mop.entityHit).generatePacket();
                 PacketDispatcher.sendPacketToServer(p);
 
                 if(mop.entityHit instanceof EntityPlayer){
@@ -150,7 +153,7 @@ public class ClientProxy extends CommonProxy {
                 }
 
             }else{
-                p = SpecialActionPacket.generatePacket(entityPlayer, mainhand, offhand, null);
+                p = new SpecialActionPacket(entityPlayer, mainhand, offhand, null).generatePacket();
             }
             PacketDispatcher.sendPacketToServer(p);
         }

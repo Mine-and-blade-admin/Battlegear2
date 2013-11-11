@@ -71,10 +71,12 @@ public class BattlegearUtils {
 
 
     public static boolean isBlockingWithShield(EntityPlayer player){
-        //TODO: Change this so it will check the offhand item
-        return player.isSneaking() &&
-                player.getCurrentEquippedItem() != null &&
-                player.getCurrentEquippedItem().getItem() instanceof ItemShield;
+        //TODO: Use this ?
+    	if(!player.isSneaking()){
+    		return false;
+    	}
+    	ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+        return offhand != null && offhand.getItem() instanceof IShield;
     }
 
     public static boolean isPlayerInBattlemode(EntityPlayer player) {
