@@ -76,7 +76,8 @@ public class BattlegearTranslator implements IFMLCallHook {
         setup(deobFile);
         //parse the config file
         File config = new File(mcLocation+File.separator+"config"+File.separator+"battlegear2.cfg");
-        config.mkdirs();
+        config.getParentFile().mkdirs();
+        config.createNewFile();
         if(config.exists()){
         	readConfig(config);
         }else{
