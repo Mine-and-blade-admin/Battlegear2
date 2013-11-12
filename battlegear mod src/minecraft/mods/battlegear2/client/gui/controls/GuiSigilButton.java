@@ -15,9 +15,7 @@ public class GuiSigilButton extends GuiPlaceableButton {
 
 	@Override
 	protected void openGui(Minecraft mc) {
-		//PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.sigilEditor));
-		mc.thePlayer.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.sigilEditor, mc.theWorld,
-				(int) mc.thePlayer.posX, (int) mc.thePlayer.posY, (int) mc.thePlayer.posZ);
+		BattlegearSigilGUI.open(mc.thePlayer);
 	}
 
 	@Override

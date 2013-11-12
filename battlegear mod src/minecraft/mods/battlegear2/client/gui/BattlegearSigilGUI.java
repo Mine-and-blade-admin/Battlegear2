@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 
 import org.lwjgl.opengl.GL11;
 
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.gui.controls.GUICrestElementList;
@@ -18,6 +19,7 @@ import mods.battlegear2.client.gui.controls.IControlListener;
 import mods.battlegear2.client.heraldry.PatternStore;
 import mods.battlegear2.client.renderer.HeraldryCrestItemRenderer;
 import mods.battlegear2.client.renderer.HeraldryItemRenderer;
+import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.mud.gui.GuiSlotModList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -25,6 +27,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -292,7 +295,11 @@ public class BattlegearSigilGUI extends GuiScreen{
         tessellator.draw();
     }
 
-	
+	public static void open(EntityPlayer player){
+		//send packet to open container on server
+        //PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.sigilEditor));
+        player.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.sigilEditor, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+	}
 
 
 }

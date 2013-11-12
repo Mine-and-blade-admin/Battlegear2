@@ -38,19 +38,10 @@ public class BattlegearGuiKeyHandler extends KeyBindingRegistry.KeyHandler{
             if (mc != null && mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
                 EntityClientPlayerMP player = mc.thePlayer;
                 if (kb.keyCode == battleInv.keyCode) {
-                    //send packet to open container on server
-                    PacketDispatcher.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.equipID).generatePacket());
-                    //Also open on client
-                    player.openGui(
-                            Battlegear.INSTANCE, BattlegearGUIHandeler.equipID, mc.theWorld,
-                            (int) player.posX, (int) player.posY, (int) player.posZ);
+                	BattleEquipGUI.open(player);
                 }
                 else if (kb.keyCode == openSigilEditor.keyCode) {
-                    //send packet to open container on server
-                    //PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.sigilEditor));
-                    player.openGui(
-                            Battlegear.INSTANCE, BattlegearGUIHandeler.sigilEditor, mc.theWorld,
-                            (int) player.posX, (int) player.posY, (int) player.posZ);
+                    BattlegearSigilGUI.open(player);
                 }
             }
 		}

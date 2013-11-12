@@ -1,13 +1,18 @@
 package mods.battlegear2.client.gui;
 
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.client.BattlegearClientEvents;
+import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.gui.ContainerBattle;
+import mods.battlegear2.packet.BattlegearGUIPacket;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class BattleEquipGUI extends InventoryEffectRenderer {
 
@@ -53,5 +58,11 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
         //GuiInventory.drawPlayerOnGui(this.mc, var5 + 31, var6 + 75, 30, (float) (var5 + 51) - this.xSize_lo, (float) (var6 + 75 - 50) - this.ySize_lo);
         GuiInventory.func_110423_a(var5 + 31, var6 + 75, 30, (float) (var5 + 51) - this.xSize_lo, (float) (var6 + 75 - 50) - this.ySize_lo, mc.thePlayer);
     }
-
+    
+    public static void open(EntityPlayer player){
+    	//send packet to open container on server
+        PacketDispatcher.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.equipID).generatePacket());
+        //Also open on client
+        player.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.equipID, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+    }
 }
