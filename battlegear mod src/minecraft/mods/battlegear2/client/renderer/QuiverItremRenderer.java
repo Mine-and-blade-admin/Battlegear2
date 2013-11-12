@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
@@ -56,9 +57,9 @@ public class QuiverItremRenderer implements IItemRenderer{
 
         Icon icon =  item.getIconIndex();
         Tessellator tessellator = Tessellator.instance;
+        GL11.glPushMatrix();
         switch (type){
             case INVENTORY:
-                GL11.glPushMatrix();
                 GL11.glColor3f(red,green,blue);
                 itemRenderer.renderIcon(0, 0, icon, 16, 16);
                 GL11.glColor3f(1, 1, 1);
@@ -68,12 +69,11 @@ public class QuiverItremRenderer implements IItemRenderer{
                     icon = quiver.quiverArrows;
                     itemRenderer.renderIcon(0, 0, icon, 16, 16);
                 }
-                GL11.glPopMatrix();
                 break;
+        	case ENTITY:
+        		GL11.glTranslatef(-0.5F, -0.25F, 0);
             case EQUIPPED:
             case EQUIPPED_FIRST_PERSON:
-
-                GL11.glPushMatrix();
                 GL11.glColor3f(red,green,blue);
                 RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
                 		icon.getMaxU(),
@@ -93,8 +93,6 @@ public class QuiverItremRenderer implements IItemRenderer{
                         icon.getIconWidth(),
                         icon.getIconHeight(), 16F / 256F);
 
-
-
                 if(hasArrows){
                     GL11.glTranslated(0, 0, -4F/256F);
                     icon = quiver.quiverArrows;
@@ -106,11 +104,9 @@ public class QuiverItremRenderer implements IItemRenderer{
                             icon.getIconWidth(),
                             icon.getIconHeight(), 8F / 256F);
                 }
-                GL11.glPopMatrix();
                 break;
-
         }
-
+        GL11.glPopMatrix();
 
 
     }
