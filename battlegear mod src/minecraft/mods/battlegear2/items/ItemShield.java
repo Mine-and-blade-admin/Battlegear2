@@ -9,6 +9,7 @@ import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumShield;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -103,7 +104,14 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable{
 
     @Override
     public float getDecayRate(ItemStack shield) {
-        return enumShield.getDecayRate();
+    	int use = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.shieldUsage.effectId, shield);
+        return enumShield.getDecayRate()*(1-use*0.1F);
+    }
+    
+    @Override
+    public float getRecoveryRate(ItemStack shield){
+    	int recover = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.shieldRecover.effectId, shield);
+    	return 0.01F*(1+recover*0.2F);//should take 5 seconds to fully recover without enchantment
     }
 
     @Override
@@ -221,6 +229,11 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable{
 
 	@Override
 	public boolean isEnchantable(BaseEnchantment baseEnchantment, ItemStack stack) {
-		return baseEnchantment.effectId == BaseEnchantment.shieldBash.effectId;
+		return true;
 	}
+	
+	@Override
+	public int getItemEnchantability(){
+        return enumShield.getEnchantability();
+    }
 }

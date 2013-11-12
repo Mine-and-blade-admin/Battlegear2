@@ -9,7 +9,6 @@ import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
-import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;

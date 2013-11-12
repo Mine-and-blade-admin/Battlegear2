@@ -10,8 +10,10 @@ import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
+import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.utils.BattlegearUtils;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
@@ -20,6 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet106Transaction;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 
 import java.io.*;
@@ -59,18 +62,24 @@ public class SpecialActionPacket extends AbstractMBPacket{
 	            } else if(targetHit != null && targetHit instanceof EntityLivingBase){
 	
 	                if(offhand != null && offhand.getItem() instanceof IShield){
-	                    double d0 = targetHit.posX - targetPlayer.posX;
-	                    double d1;
-	
-	                    for (d1 = targetHit.posZ - targetPlayer.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D)
-	                    {
-	                        d0 = (Math.random() - Math.random()) * 0.01D;
-	                    }
-	
-	
-	                    ((EntityLivingBase) targetHit).knockBack(player, 0, -d0, -d1);
-	
-	
+	                	if(((EntityLivingBase) targetHit).canBePushed()){
+		                    double d0 = targetHit.posX - targetPlayer.posX;
+		                    double d1;
+		
+		                    for (d1 = targetHit.posZ - targetPlayer.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D){
+		                        d0 = (Math.random() - Math.random()) * 0.01D;
+		                    }
+		                    double pow = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower.effectId, offhand)*0.1D;
+		
+		                    ((EntityLivingBase) targetHit).knockBack(player, 0, -d0*(1+pow), -d1*(1+pow));
+	                	}
+	                	if(((EntityLivingBase) targetHit).getDistanceToEntity(player)<2){
+	                		float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage.effectId, offhand)*2F;
+	                		if(dam>0) {
+	                			targetHit.attackEntityFrom(DamageSource.causeThornsDamage(player), dam);
+	                			targetHit.playSound("damage.thorns", 0.5F, 1.0F);
+	                		}
+	                	}
 	                    if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER &&
 	                            targetHit instanceof EntityPlayer){
 	                        PacketDispatcher.sendPacketToPlayer(packet, (Player)targetHit);

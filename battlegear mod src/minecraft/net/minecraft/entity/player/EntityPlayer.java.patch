@@ -1,17 +1,16 @@
 --- 
 +++ 
-@@ -10,6 +10,10 @@
+@@ -10,6 +10,9 @@
  import java.util.List;
  import java.util.Map.Entry;
  
 +import mods.battlegear2.api.IShield;
 +import mods.battlegear2.inventory.InventoryPlayerBattle;
-+import mods.battlegear2.items.ItemShield;
 +import mods.battlegear2.utils.BattlegearUtils;
  import net.minecraft.block.Block;
  import net.minecraft.block.BlockBed;
  import net.minecraft.block.material.Material;
-@@ -67,6 +71,7 @@
+@@ -67,6 +70,7 @@
  import net.minecraft.util.Vec3;
  import net.minecraft.world.EnumGameType;
  import net.minecraft.world.World;
@@ -19,7 +18,7 @@
  import net.minecraft.world.chunk.IChunkProvider;
  
  import net.minecraftforge.common.ForgeHooks;
-@@ -83,9 +88,130 @@
+@@ -83,9 +87,130 @@
  
  public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
  {
@@ -136,7 +135,7 @@
 +    public void setBlockingWithShield(boolean block){
 +        if(block &&
 +                ((InventoryPlayerBattle)inventory).getCurrentOffhandWeapon() != null &&
-+                ((InventoryPlayerBattle)inventory).getCurrentOffhandWeapon().getItem() instanceof ItemShield){
++                ((InventoryPlayerBattle)inventory).getCurrentOffhandWeapon().getItem() instanceof IShield){
 +            dataWatcher.updateObject(25, (byte)1);
 +        }else{
 +            dataWatcher.updateObject(25, (byte)0);
@@ -151,7 +150,7 @@
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
  
      /**
-@@ -202,12 +328,16 @@
+@@ -202,12 +327,16 @@
          this.getAttributeMap().func_111150_b(SharedMonsterAttributes.attackDamage).setAttribute(1.0D);
      }
  
@@ -168,7 +167,7 @@
      }
  
      @SideOnly(Side.CLIENT)
-@@ -283,6 +413,7 @@
+@@ -283,6 +412,7 @@
          if (this.itemInUse != null)
          {
              ItemStack itemstack = this.inventory.getCurrentItem();
@@ -176,7 +175,7 @@
  
              if (itemstack == this.itemInUse)
              {
-@@ -469,11 +600,12 @@
+@@ -469,11 +599,12 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
@@ -191,7 +190,7 @@
                  }
              }
  
-@@ -2398,7 +2530,8 @@
+@@ -2398,7 +2529,8 @@
      {
          if (par1 == 0)
          {

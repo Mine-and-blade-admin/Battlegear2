@@ -100,7 +100,7 @@ public class BattlemodeHookContainerClass {
                             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                         }
 
-                    }else if (offhandItem != null && offhandItem.getItem() instanceof ItemShield){
+                    }else if (offhandItem != null && offhandItem.getItem() instanceof IShield){
                         event.useItem = Result.DENY;
                     } else if (offhandItem != null && offhandItem.getItem() instanceof ItemBlock && offhandItem.getItem().itemID == Block.torchWood.blockID){
                         event.useItem = Result.DENY;
@@ -147,7 +147,7 @@ public class BattlemodeHookContainerClass {
                                 Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                             }
 
-                        } else if (offhandItem != null && offhandItem.getItem() instanceof ItemShield){
+                        } else if (offhandItem != null && offhandItem.getItem() instanceof IShield){
                             event.useItem = Result.DENY;
                         }else{
                             event.entityPlayer.swingOffItem();
@@ -196,7 +196,7 @@ public class BattlemodeHookContainerClass {
                     }
                 }
 
-            } else if (offhandItem != null && offhandItem.getItem() instanceof ItemShield){
+            } else if (offhandItem != null && offhandItem.getItem() instanceof IShield){
                 event.setCanceled(true);
                 event.setResult(Result.DENY);
             }else{

@@ -47,24 +47,24 @@ public class BattlegearConfig {
 	public static void getConfig(Configuration config) {
 		config.load();
 
-        heradricItem = new HeraldryCrest(config.get(config.CATEGORY_ITEM, itemNames[0], firstDefaultItemIndex).getInt());
+        heradricItem = new HeraldryCrest(config.getItem(itemNames[0], firstDefaultItemIndex).getInt());
 
-        chain = new Item(config.get(config.CATEGORY_ITEM, itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
+        chain = new Item(config.getItem(itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
     	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).setTextureName("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
         	
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", false).getBoolean(false);
         
-        shieldBashEnchantId = config.get("EnchantmentsID", "Shield Bash", shieldBashEnchantId).getInt();
+        shieldBashEnchantId = config.get("EnchantmentsID", "Shield", shieldBashEnchantId, "Store 5 enchantments in a sequence starting from this id").getInt();
         
         config.get("Coremod", "ASM debug Mode", false);
         
 
         if(Battlegear.debug){
-            quiver = new ItemQuiver(config.get(config.CATEGORY_ITEM, itemNames[2], firstDefaultItemIndex+2).getInt());
+            quiver = new ItemQuiver(config.getItem(itemNames[2], firstDefaultItemIndex+2).getInt());
             quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).setTextureName("battlegear2:quiver/"+itemNames[2]).setCreativeTab(customTab);
 
-            MbArrows = new ItemMBArrow(config.get(config.CATEGORY_ITEM, itemNames[9], firstDefaultItemIndex+itemOffests[9]).getInt());
+            MbArrows = new ItemMBArrow(config.getItem(itemNames[9], firstDefaultItemIndex+itemOffests[9]).getInt());
             MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).setTextureName("battlegear2:" + itemNames[9]).setCreativeTab(customTab);
 
             String customArrowSpawn = "Skeleton CustomArrow Spawn Rate";
@@ -120,23 +120,23 @@ public class BattlegearConfig {
         	EnumToolMaterial material = EnumToolMaterial.values()[i];
 
             warAxe[i]=new ItemWaraxe(
-                    config.get(config.CATEGORY_ITEM, itemNames[4]+toolTypes[i], firstDefaultItemIndex+itemOffests[4]+i).getInt(),
+                    config.getItem(itemNames[4]+toolTypes[i], firstDefaultItemIndex+itemOffests[4]+i).getInt(),
                     material, itemNames[4], i==4?2:1);
 
         	dagger[i]=new ItemDagger(
-        			config.get(config.CATEGORY_ITEM, itemNames[3]+"_"+toolTypes[i], firstDefaultItemIndex+itemOffests[3]+i).getInt(),
+        			config.getItem(itemNames[3]+"_"+toolTypes[i], firstDefaultItemIndex+itemOffests[3]+i).getInt(),
         			material, itemNames[3]);
 
     		mace[i]=new ItemMace(
-    				config.get(config.CATEGORY_ITEM, itemNames[5]+toolTypes[i], firstDefaultItemIndex+itemOffests[5]+i).getInt(),
+    				config.getItem(itemNames[5]+toolTypes[i], firstDefaultItemIndex+itemOffests[5]+i).getInt(),
     				material, itemNames[5], 0.05F + 0.05F*i);
     		spear[i]=new ItemSpear(
-    				config.get(config.CATEGORY_ITEM, itemNames[6]+toolTypes[i], firstDefaultItemIndex+itemOffests[6]+i).getInt(),
+    				config.getItem(itemNames[6]+toolTypes[i], firstDefaultItemIndex+itemOffests[6]+i).getInt(),
     				material, itemNames[6]);
 
 
             shield[i] = new ItemShield(
-                    config.get(config.CATEGORY_ITEM, itemNames[7]+shieldTypes[i], firstDefaultItemIndex+itemOffests[7]+i).getInt(),
+                    config.getItem(itemNames[7]+shieldTypes[i], firstDefaultItemIndex+itemOffests[7]+i).getInt(),
                     EnumShield.values()[i]
             );
 

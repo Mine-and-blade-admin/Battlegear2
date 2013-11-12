@@ -1,25 +1,26 @@
 package mods.battlegear2.client;
 
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.network.PacketDispatcher;
+import java.util.EnumSet;
+
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.items.ItemShield;
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.packet.BattlegearShieldBlockPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
 import org.lwjgl.input.Mouse;
 
-import java.util.EnumSet;
+import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class BattlegearClientTickHandeler implements ITickHandler {
 
 
     public static float blockBar = 1;
     public static boolean wasBlocking = false;
-    public static final float recoveryRate = 0.01F; //should take 5 secods to fully recover
     public static final float[] COLOUR_DEFAULT = new float[]{0, 0.75F, 1};
     public static final float[] COLOUR_RED = new float[]{1, 0.1F, 0.1F};
     public static final float[] COLOUR_YELLOW = new float[]{1, 1F, 0.1F};
@@ -41,7 +42,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
             ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
             if(player.isBattlemode() &&
                     offhand != null &&
-                    offhand.getItem() instanceof ItemShield){
+                    offhand.getItem() instanceof IShield){
 
                 if(flashTimer == 30){
                     player.motionY = player.motionY/2;
@@ -54,7 +55,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
 
 
                 if(Mouse.isButtonDown(1) && !player.isSwingInProgress){
-                    blockBar -= ((ItemShield) offhand.getItem()).getDecayRate(offhand);
+                    blockBar -= ((IShield) offhand.getItem()).getDecayRate(offhand);
                     if(blockBar > 0){
                         if(!wasBlocking){
 
@@ -78,7 +79,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
                     }
                     wasBlocking = false;
 
-                    blockBar += recoveryRate;
+                    blockBar += ((IShield) offhand.getItem()).getRecoveryRate(offhand);
                     if(blockBar > 1){
                         blockBar = 1;
                     }
@@ -107,7 +108,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
             ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
             if(player.isBattlemode() &&
                     offhand != null &&
-                    offhand.getItem() instanceof ItemShield){
+                    offhand.getItem() instanceof IShield){
 
                 if(Mouse.isButtonDown(1) && !player.isSwingInProgress && blockBar > 0){
                     player.motionX = player.motionX/5;

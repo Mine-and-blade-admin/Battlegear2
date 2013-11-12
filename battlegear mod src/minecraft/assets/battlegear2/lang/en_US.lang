@@ -4,6 +4,11 @@ item.battlegear2:heraldric.name=Heraldic Icon
 item.battlegear2:chain.name=Chain
 item.battlegear2:quiver.name=Quiver
 
+
+item.battlegear2:mb.arrow.ender.name=Ender Arrow
+item.battlegear2:mb.arrow.explosive.name=Explosive Arrow
+item.battlegear2:mb.arrow.flame.name=Flaming Arrow
+
 item.battlegear2:dagger.wood.name=Wood Dagger
 item.battlegear2:dagger.stone.name=Stone Dagger
 item.battlegear2:dagger.iron.name=Iron Dagger
@@ -41,8 +46,11 @@ item.battlegear2:knights_armour.boots.name=Knight's Boots
 
 item.battlegear2:cloak.name=Cloak
 
-enchantment.slow_fall=Slow Fall
-enchantment.super_jump=Super Jump
+enchantment.bash.weightless=Bash Weightless
+enchantment.bash.power=Bash Power
+enchantment.bash.damage=Bash Damage
+enchantment.shield.usage=Shield Efficiency
+enchantment.shield.recover=Shield Recovery
 
 tile.battlegear2:banner.name=Banner
 

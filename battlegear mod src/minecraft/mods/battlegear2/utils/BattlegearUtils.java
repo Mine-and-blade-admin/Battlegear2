@@ -7,7 +7,6 @@ import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
-import mods.battlegear2.items.ItemShield;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentThorns;

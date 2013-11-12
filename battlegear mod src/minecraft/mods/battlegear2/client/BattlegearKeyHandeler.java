@@ -56,56 +56,43 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
             if (mc != null && mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
 
                 EntityClientPlayerMP player = mc.thePlayer;
-
-                if (kb.keyCode == special.keyCode &&
-                        player.specialActionTimer == 0 &&
-                        FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
-
-                    ItemStack main = player.getCurrentEquippedItem();
-                    ItemStack quiver = BowHookContainerClass2.getArrowContainer(main, player);
-
-                    if(quiver != null){
-                        Packet p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player.username).generatePacket();
-                        PacketDispatcher.sendPacketToServer(p);
-                        player.specialActionTimer = 2;
-                    }else if(player.isBattlemode()){
-                        ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
-
-                        if(offhand != null && offhand.getItem() instanceof IShield){
-                            //TODO: Enchantments?
-                            float shieldBashPenalty = 0.33F;
-                        	Map<Integer,Integer> enchants = EnchantmentHelper.getEnchantments(offhand);
-                        	for(Entry<Integer, Integer> data:enchants.entrySet()){
-                        		if(data.getKey() == BaseEnchantment.shieldBash.effectId){
-                        			shieldBashPenalty-=0.6F*data.getValue();
-                        		}
-                        	}
-
-                            if(BattlegearClientTickHandeler.blockBar >= shieldBashPenalty){
-                                Packet p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player.username).generatePacket();
-                                PacketDispatcher.sendPacketToServer(p);
-                                player.specialActionTimer = ((IShield)offhand.getItem()).getBashTimer(offhand);
-
-                                BattlegearClientTickHandeler.blockBar = BattlegearClientTickHandeler.blockBar - shieldBashPenalty;
-                            }
-
-                        }
-                    }
-
-
-                } else
-                if (kb.keyCode == drawWeapons.keyCode && tickEnd) {
-
-                    InventoryPlayer playerInventory = player.inventory;
-                    if (player.isBattlemode()) {
-                        previousBattlemode = playerInventory.currentItem;
-                        playerInventory.currentItem = previousNormal;
-
-                    } else {
-                        previousNormal = playerInventory.currentItem;
-                        playerInventory.currentItem = previousBattlemode;
-                    }
-                    mc.playerController.updateController();
+                if(tickEnd){
+	                if (kb.keyCode == special.keyCode && player.specialActionTimer == 0){
+	                    ItemStack main = player.getCurrentEquippedItem();
+	                    ItemStack quiver = BowHookContainerClass2.getArrowContainer(main, player);
+	
+	                    if(quiver != null){
+	                        Packet p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player.username).generatePacket();
+	                        PacketDispatcher.sendPacketToServer(p);
+	                        player.specialActionTimer = 2;
+	                    }else if(player.isBattlemode()){
+	                        ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+	
+	                        if(offhand != null && offhand.getItem() instanceof IShield){
+	                            float shieldBashPenalty = 0.33F - 0.06F*EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashWeight.effectId, offhand);
+	
+	                            if(BattlegearClientTickHandeler.blockBar >= shieldBashPenalty){
+	                                Packet p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player.username).generatePacket();
+	                                PacketDispatcher.sendPacketToServer(p);
+	                                player.specialActionTimer = ((IShield)offhand.getItem()).getBashTimer(offhand);
+	
+	                                BattlegearClientTickHandeler.blockBar = BattlegearClientTickHandeler.blockBar - shieldBashPenalty;
+	                            }
+	                        }
+	                    }
+	
+	                } else if (kb.keyCode == drawWeapons.keyCode) {
+	                    InventoryPlayer playerInventory = player.inventory;
+	                    if (player.isBattlemode()) {
+	                        previousBattlemode = playerInventory.currentItem;
+	                        playerInventory.currentItem = previousNormal;
+	
+	                    } else {
+	                        previousNormal = playerInventory.currentItem;
+	                        playerInventory.currentItem = previousBattlemode;
+	                    }
+	                    mc.playerController.updateController();
+	                }
                 }
             }
         }
