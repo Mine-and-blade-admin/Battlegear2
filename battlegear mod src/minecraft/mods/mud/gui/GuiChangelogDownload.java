@@ -104,6 +104,7 @@ public class GuiChangelogDownload extends GuiScreen
         buttonList.add(urlButton);
     }
 
+    @Override
     protected void keyTyped(char par1, int par2)
     {
         if(!isDownloading){
@@ -170,13 +171,6 @@ public class GuiChangelogDownload extends GuiScreen
         }
         super.actionPerformed(button);
     }
-
-
-    @Override
-    public void handleMouseInput() {
-        super.handleMouseInput();
-    }
-
 
     @Override
     public void drawDefaultBackground() {

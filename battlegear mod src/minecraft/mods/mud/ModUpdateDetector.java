@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatMessageComponent;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -28,18 +29,18 @@ public class ModUpdateDetector {
     private static Map<String, UpdateEntry> updateMap;
     public static boolean hasChecked = false;
     public static boolean enabled = true;
+    private static ICommandSender sender = null;
 
     /*
      * The time between update checks in minutes.
      * A value <=0 will only run the updater when a player joins the world.
      */
     private static int Timer = 60*60*20;
-    private static MinecraftServer server;
 
 
     public static void registerMod(ModContainer mc, URL updateXML, URL changelog){
         if(!hasInitialised){
-            initialise(mc);
+            initialise();
             hasInitialised = true;
         }
 
@@ -47,14 +48,6 @@ public class ModUpdateDetector {
     }
 
     public static void runUpdateChecker(){
-
-
-        if(server == null || server != FMLCommonHandler.instance().getMinecraftServerInstance()){
-            server = FMLCommonHandler.instance().getMinecraftServerInstance();
-            CommandHandler ch = (CommandHandler) server.getCommandManager();
-            ch.registerCommand(new MudCommands());
-
-        }
 
         if(enabled){
             ICommandSender sender = getSender();
@@ -73,29 +66,31 @@ public class ModUpdateDetector {
         return updateMap.values();
     }
 
-    private static void initialise(ModContainer mc) {
+    private static void initialise() {
         updateMap = new HashMap<String, UpdateEntry>();
-
-        Configuration config = new Configuration(new File(Loader.instance().getConfigDir(), "MUD.cfg"));
-
-        config.load();
-
-        Timer = config.get(Configuration.CATEGORY_GENERAL, "Update Time", 60, "The time in minutes between update checks").getInt() * 60 * 20;
-        enabled = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates").getBoolean(true);
-
-        if(config.hasChanged()){
-            config.save();
+        try{
+	        Configuration config = new Configuration(new File(Loader.instance().getConfigDir(), "MUD.cfg"));
+	        config.load();
+	
+	        Timer = config.get(Configuration.CATEGORY_GENERAL, "Update Time", 60, "The time in minutes between update checks").getInt() * 60 * 20;
+	        enabled = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates").getBoolean(true);
+	
+	        if(config.hasChanged()){
+	            config.save();
+	        }
+        }catch(Exception handled){
+        	handled.printStackTrace();
         }
 
         TickRegistry.registerTickHandler(new ModUpdateDetectorTickHandeler(Timer), Side.CLIENT);
+        ClientCommandHandler.instance.registerCommand(new MudCommands());
     }
 
     public static ICommandSender getSender() {
-        if(FMLCommonHandler.instance().getSide() == Side.CLIENT){
-            return Minecraft.getMinecraft().thePlayer;
-        }else{
-            return MinecraftServer.getServer();
+        if(sender == null){
+        	sender = Minecraft.getMinecraft().thePlayer;
         }
+        return sender;
     }
 
 

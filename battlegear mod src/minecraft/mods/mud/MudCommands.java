@@ -1,14 +1,12 @@
 package mods.mud;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
+import java.util.List;
+
 import mods.mud.gui.GuiChangelogDownload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-
-import java.util.List;
 
 public class MudCommands extends CommandBase{
 
@@ -16,12 +14,13 @@ public class MudCommands extends CommandBase{
     public String getCommandName() {
         return "mud";
     }
-
+    
     @Override
-    public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
-        return super.addTabCompletionOptions(par1ICommandSender, par2ArrayOfStr);
+    public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return getListOfStringsMatchingLastWord(par2ArrayOfStr, getCommandName());
     }
-
+    
     @Override
     public int getRequiredPermissionLevel() {
         return 0;
@@ -34,12 +33,6 @@ public class MudCommands extends CommandBase{
 
     @Override
     public void processCommand(ICommandSender icommandsender, String[] astring) {
-        if(icommandsender instanceof EntityPlayer){
-            if(FMLCommonHandler.instance().getSide() == Side.CLIENT){
-                GuiChangelogDownload gui = new GuiChangelogDownload();
-                Minecraft.getMinecraft().displayGuiScreen(gui);
-            }
-
-        }
+        Minecraft.getMinecraft().displayGuiScreen(new GuiChangelogDownload());
     }
 }

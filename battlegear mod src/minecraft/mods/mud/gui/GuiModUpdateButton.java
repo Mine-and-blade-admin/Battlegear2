@@ -57,10 +57,8 @@ public class GuiModUpdateButton extends GuiButton{
     public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3) {
         boolean press = super.mousePressed(par1Minecraft, par2, par3);
         if(press){
-            GuiChangelogDownload gui = new GuiChangelogDownload(parent);
-            Minecraft.getMinecraft().displayGuiScreen(gui);
+            Minecraft.getMinecraft().displayGuiScreen(new GuiChangelogDownload(parent));
         }
-
         return press;
     }
 }

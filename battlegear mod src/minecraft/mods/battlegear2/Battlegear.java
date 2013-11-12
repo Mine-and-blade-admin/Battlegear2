@@ -72,7 +72,7 @@ public class Battlegear {
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
 
-        if(event.getSourceFile().getName().endsWith(".jar")){
+        if((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient()){
             try {
                 ModUpdateDetector.registerMod(
                         FMLCommonHandler.instance().findContainerFor(this),
