@@ -30,6 +30,38 @@ public class EntityEnderArrow extends AbstractMBArrow{
 
     @Override
     public boolean onHitEntity(Entity entityHit) {
+    	if(entityHit instanceof EntityLivingBase){
+            if (!this.worldObj.isRemote && shootingEntity instanceof EntityPlayerMP){
+                EntityPlayerMP entityplayermp = (EntityPlayerMP)this.shootingEntity;
+                double x = entityplayermp.posX;
+                double y = entityplayermp.posY;
+                double z = entityplayermp.posZ;
+            	if (!entityplayermp.playerNetServerHandler.connectionClosed && entityplayermp.worldObj == this.worldObj)
+                {
+                    EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, entityHit.posX+0.5F, entityHit.posY, entityHit.posZ+0.5F, 9.0F);
+                    if (!MinecraftForge.EVENT_BUS.post(event)){
+                        if (shootingEntity.isRiding()){
+                            shootingEntity.mountEntity((Entity)null);
+                        }
+                        entityplayermp.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
+                        entityplayermp.fallDistance = 0.0F;
+                        entityplayermp.attackEntityFrom(DamageSource.fall, event.attackDamage);
+                    }
+                    event = new EnderTeleportEvent((EntityLivingBase) entityHit, x+0.5F, y, z+0.5F, ((EntityLivingBase) entityHit).getMaxHealth()/10);
+                    if (!MinecraftForge.EVENT_BUS.post(event)){
+                        if (entityHit.isRiding()){
+                        	entityHit.mountEntity((Entity)null);
+                        }
+                        ((EntityLivingBase) entityHit).setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
+                        entityHit.fallDistance = 0.0F;
+                        entityHit.attackEntityFrom(DamageSource.fall, event.attackDamage);
+                    }
+                }
+            }
+        	this.setDead();
+            return true;
+        }
+    	this.setDead();
         return false;
     }
 
