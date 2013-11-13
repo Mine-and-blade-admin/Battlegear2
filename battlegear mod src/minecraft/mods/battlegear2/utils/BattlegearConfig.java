@@ -23,7 +23,7 @@ import java.util.Arrays;
 public class BattlegearConfig {
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
 	public static boolean forceBackSheath = false;
-	public static boolean enableGUIKeys = false;
+	public static boolean enableGUIKeys = false, enableGuiButtons = true;
 	public static final String[] itemNames = new String[] {"heraldric","chain","quiver", "dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow"};
 	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
     public static final String[] shieldTypes = new String[] {"wood", "hide", "iron", "diamond", "gold"};
@@ -54,6 +54,7 @@ public class BattlegearConfig {
         	
         forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", false).getBoolean(false);
+        enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", true).getBoolean(true);
         
         shieldBashEnchantId = config.get("EnchantmentsID", "Shield", shieldBashEnchantId, "Store 5 enchantments in a sequence starting from this id").getInt();
         

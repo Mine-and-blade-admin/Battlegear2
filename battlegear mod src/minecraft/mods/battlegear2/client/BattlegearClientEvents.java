@@ -12,6 +12,7 @@ import mods.battlegear2.client.heraldry.PatternStore;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemQuiver;
+import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderBiped;
@@ -233,12 +234,14 @@ public class BattlegearClientEvents {
 	}
 
 	public static void onOpenGui(List buttons, int guiLeft, int guiTop) {
-		int count = 0;
-		for (GuiPlaceableButton button : tabsList) {
-			button.place(count, guiLeft, guiTop);
-			button.id = buttons.size()+2;//Due to GuiInventory and GuiContainerCreative button performed actions, without them having buttons...
-			count++;
-			buttons.add(button);
-		}
+        if(BattlegearConfig.enableGuiButtons){
+			int count = 0;
+			for (GuiPlaceableButton button : tabsList) {
+				button.place(count, guiLeft, guiTop);
+				button.id = buttons.size()+2;//Due to GuiInventory and GuiContainerCreative button performed actions, without them having buttons...
+				count++;
+				buttons.add(button);
+			}
+        }
 	}
 }
