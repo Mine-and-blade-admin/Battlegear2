@@ -6,6 +6,10 @@ item.battlegear2:heraldric.name=纹章图标
 item.battlegear2:chain.name=铁链
 item.battlegear2:quiver.name=箭袋
 
+item.battlegear2:mb.arrow.ender.name=末影箭
+item.battlegear2:mb.arrow.explosive.name=爆裂箭
+item.battlegear2:mb.arrow.flame.name=烈焰箭
+
 item.battlegear2:dagger.wood.name=木匕首
 item.battlegear2:dagger.stone.name=石头匕首
 item.battlegear2:dagger.iron.name=铁匕首
@@ -43,8 +47,11 @@ item.battlegear2:knights_armour.boots.name=骑士靴子
 
 item.battlegear2:cloak.name=披风
 
-enchantment.slow_fall=羽落
-enchantment.super_jump=梯云纵
+enchantment.bash.weightless=举重若轻
+enchantment.bash.power=强打
+enchantment.bash.damage=怒击
+enchantment.shield.usage=护盾效能
+enchantment.shield.recover=护盾回复
 
 tile.battlegear2:banner.name=旗帜
 
