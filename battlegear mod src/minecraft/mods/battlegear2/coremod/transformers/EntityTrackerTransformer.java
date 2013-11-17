@@ -70,6 +70,7 @@ public class EntityTrackerTransformer  implements IClassTransformer {
 
                             newList.add(next);
                             newList.add(insn.next());
+                            newList.add(insn.next());
 
                             newList.add(new VarInsnNode(ALOAD, 1));
                             newList.add(new FieldInsnNode(GETFIELD, entityPlayerMPClassName, playerMPplayerNetServerHandlerField, "L"+netServerHandlerClasName +";"));
