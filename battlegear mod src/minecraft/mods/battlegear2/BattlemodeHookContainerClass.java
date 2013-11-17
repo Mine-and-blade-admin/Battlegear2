@@ -263,7 +263,8 @@ public class BattlemodeHookContainerClass {
 
                         PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 32, player.dimension,
                                 new BattlegearShieldFlashPacket(player, event.ammount).generatePacket());
-
+                    	player.worldObj.playSoundAtEntity(player, "battlegear2:shield", 1, 1);
+                    	
                         if(event.source.isProjectile()){
                             if(event.source instanceof EntityDamageSourceIndirect){
                                 if(event.source.getEntity() instanceof EntityArrow){

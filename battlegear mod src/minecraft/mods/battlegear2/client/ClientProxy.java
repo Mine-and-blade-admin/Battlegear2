@@ -79,11 +79,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void startFlash(EntityPlayer player, float damage) {
-
-    	player.worldObj.playSoundAtEntity(player, "battlegear2:shield", 1, 1);
-        //Minecraft.getMinecraft().sndManager.playSound("battlegear2:shield", (float)player.posX, (float)player.posY, (float)player.posZ, 1, 1);
-
-        if(player.username.equals(Minecraft.getMinecraft().thePlayer.username)){
+    	if(player.username.equals(Minecraft.getMinecraft().thePlayer.username)){
             BattlegearClientTickHandeler.flashTimer = 30;
             ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 
