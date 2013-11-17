@@ -156,6 +156,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     /**
      * Get if a specifiied item id is inside the inventory.
      */
+    @Override
     public boolean hasItem(int par1) {
         if (super.hasItem(par1)) {
             return true;

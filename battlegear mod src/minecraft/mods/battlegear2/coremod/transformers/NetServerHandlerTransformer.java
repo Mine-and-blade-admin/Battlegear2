@@ -145,7 +145,12 @@ public class NetServerHandlerTransformer implements IClassTransformer {
                     newList.add(new MethodInsnNode(INVOKESTATIC,
                             "mods/battlegear2/utils/BattlegearUtils",
                             "setPlayerCurrentItem", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
-
+                    while(it.hasNext() && ! (nextNode instanceof JumpInsnNode && ((JumpInsnNode) nextNode).getOpcode()==IFNE)){
+                    	nextNode = it.next();
+                    	newList.add(nextNode);
+                    }
+                    newList.add(new VarInsnNode(ALOAD, 9));
+                    newList.add(new JumpInsnNode(IFNULL, ((JumpInsnNode) nextNode).label));
 
                 } else {
                     newList.add(nextNode);

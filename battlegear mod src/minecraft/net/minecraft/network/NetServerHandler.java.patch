@@ -29,7 +29,7 @@
      /** The underlying network manager for this server handler. */
      public final INetworkManager netManager;
  
-@@ -598,16 +613,20 @@
+@@ -598,21 +613,24 @@
  
          itemstack = this.playerEntity.inventory.getCurrentItem();
  
@@ -48,11 +48,16 @@
 -            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = ItemStack.copyItemStack(this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem]);
 +            //-----MB-Edited-----
 +            BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
-+            
              Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
              this.playerEntity.openContainer.detectAndSendChanges();
              this.playerEntity.playerInventoryBeingManipulated = false;
-@@ -680,8 +699,8 @@
+ 
+-            if (!ItemStack.areItemStacksEqual(this.playerEntity.inventory.getCurrentItem(), par1Packet15Place.getItemStack()))
++            if (!ItemStack.areItemStacksEqual(this.playerEntity.inventory.getCurrentItem(), par1Packet15Place.getItemStack()) && slot!=null)//-----MB-Edited-----
+             {
+                 this.sendPacketToPlayer(new Packet103SetSlot(this.playerEntity.openContainer.windowId, slot.slotNumber, this.playerEntity.inventory.getCurrentItem()));
+             }
+@@ -680,8 +698,8 @@
  
      public void handleBlockItemSwitch(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
      {
