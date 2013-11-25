@@ -139,14 +139,14 @@ public class EntityPlayerTransformer implements IClassTransformer {
 
 
             System.out.println("\tCreating new methods in EntityPlayer");
-            cn.methods.add(0, generateAttackOffhandMethod());
-            cn.methods.add(1, generateSwingOffhand());
-            cn.methods.add(2, generateGetOffSwingMethod());
-            cn.methods.add(3, generateSwingAnimationEnd2());
-            cn.methods.add(4, generateUpdateSwingArm());
-            cn.methods.add(5, generateIsBattleMode());
-            cn.methods.add(6, generateIsBlockingWithShield());
-            cn.methods.add(7, generateSetBlockingWithShield());
+            cn.methods.add(cn.methods.size(), generateAttackOffhandMethod());
+            cn.methods.add(cn.methods.size(), generateSwingOffhand());
+            cn.methods.add(cn.methods.size(), generateGetOffSwingMethod());
+            cn.methods.add(cn.methods.size(), generateSwingAnimationEnd2());
+            cn.methods.add(cn.methods.size(), generateUpdateSwingArm());
+            cn.methods.add(cn.methods.size(), generateIsBattleMode());
+            cn.methods.add(cn.methods.size(), generateIsBlockingWithShield());
+            cn.methods.add(cn.methods.size(), generateSetBlockingWithShield());
 
             ClassWriter cw = new ClassWriter(0);
             cn.accept(cw);
@@ -168,11 +168,11 @@ public class EntityPlayerTransformer implements IClassTransformer {
 
     private void processFields(ClassNode cn) {
         System.out.println("\tAdding new fields to EntityPlayer");
-        cn.fields.add(0, new FieldNode(ACC_PUBLIC, "offHandSwingProgress", "F", null, 0F));
-        cn.fields.add(1, new FieldNode(ACC_PUBLIC, "prevOffHandSwingProgress", "F", null, 0F));
-        cn.fields.add(2, new FieldNode(ACC_PUBLIC, "offHandSwingProgressInt", "I", null, 0));
-        cn.fields.add(3, new FieldNode(ACC_PUBLIC, "isOffHandSwingInProgress", "Z", null, false));
-        cn.fields.add(4, new FieldNode(ACC_PUBLIC, "specialActionTimer", "I", null, 0));
+        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgress", "F", null, 0F));
+        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "prevOffHandSwingProgress", "F", null, 0F));
+        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgressInt", "I", null, 0));
+        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "isOffHandSwingInProgress", "Z", null, false));
+        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "specialActionTimer", "I", null, 0));
 
         for (Object fnObj : cn.fields) {
             FieldNode fn = (FieldNode) fnObj;

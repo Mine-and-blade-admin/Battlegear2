@@ -18,14 +18,14 @@
  import net.minecraft.world.chunk.IChunkProvider;
  
  import net.minecraftforge.common.ForgeHooks;
-@@ -83,9 +87,130 @@
+@@ -83,9 +87,26 @@
  
  public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
  {
 +	/*
 +	 * Mine & Blade: Notes Edits made by: nerd-boy
 +	 * 
-+	 * Edits: 4 Added Methods: 6 Added Fields: 4 edits?
++	 * Edits: 4 Added Methods: 6 Added Fields: 5
 +	 * 
 +	 * Adding methods and fields is relatively easy. Some of the methods
 +	 * provided are not needed, they do however provide more simple access.
@@ -37,13 +37,79 @@
 +	 * The method in OnUpdate has not been added in the transformer yet
 +	 */
 +	
-+	// -----MB-addFilds-----
++		
+     public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
+     /** Inventory of the player */
+-    public InventoryPlayer inventory = new InventoryPlayer(this);
++    //-----MB-Edited-----
++    public final InventoryPlayer inventory = new InventoryPlayerBattle(this);
+     private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
+ 
+     /**
+@@ -202,12 +223,16 @@
+         this.getAttributeMap().func_111150_b(SharedMonsterAttributes.attackDamage).setAttribute(1.0D);
+     }
+ 
++
++    //-----MB-Edited-----
+     protected void entityInit()
+     {
+         super.entityInit();
+         this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
+         this.dataWatcher.addObject(17, Float.valueOf(0.0F));
+         this.dataWatcher.addObject(18, Integer.valueOf(0));
++
++        this.dataWatcher.addObject(25, (byte)0);
+     }
+ 
+     @SideOnly(Side.CLIENT)
+@@ -283,6 +308,7 @@
+         if (this.itemInUse != null)
+         {
+             ItemStack itemstack = this.inventory.getCurrentItem();
++
+ 
+             if (itemstack == this.itemInUse)
+             {
+@@ -469,11 +495,12 @@
+ 
+             if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
+             {
+-                this.inventory.mainInventory[this.inventory.currentItem] = itemstack;
++            	//-----MB-Edited-----
++            	BattlegearUtils.setPlayerCurrentItem(this, itemstack);
+ 
+                 if (itemstack.stackSize == 0)
+                 {
+-                    this.inventory.mainInventory[this.inventory.currentItem] = null;
++                	BattlegearUtils.setPlayerCurrentItem(this, null);
+                 }
+             }
+ 
+@@ -2398,7 +2425,8 @@
+     {
+         if (par1 == 0)
+         {
+-            this.inventory.mainInventory[this.inventory.currentItem] = par2ItemStack;
++        	//-----MB-Edited-----
++        	BattlegearUtils.setPlayerCurrentItem(this, par2ItemStack);
+         }
+         else
+         {
+@@ -2514,4 +2542,111 @@
+     {
+         this.displayname = ForgeEventFactory.getPlayerDisplayName(this, this.username);
+     }
++    
++    /* ===================================== Battlegear2 START =====================================*/
++
++	// -----MB-addFields-----
 +	public float offHandSwingProgress = 0.0F;
 +	public float prevOffHandSwingProgress = 0.0F;
 +	public int offHandSwingProgressInt = 0;
 +	public boolean isOffHandSwingInProgress = false;
 +    public int specialActionTimer = 0;
-+	
++
 +	// -----MB-AddMethod-----
 +	public void attackTargetEntityWithCurrentOffItem(Entity target) {
 +
@@ -141,62 +207,4 @@
 +            dataWatcher.updateObject(25, (byte)0);
 +        }
 +    }
-+		
-     public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
-     /** Inventory of the player */
--    public InventoryPlayer inventory = new InventoryPlayer(this);
-+    //-----MB-Edited-----
-+    public final InventoryPlayer inventory = new InventoryPlayerBattle(this);
-     private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
- 
-     /**
-@@ -202,12 +327,16 @@
-         this.getAttributeMap().func_111150_b(SharedMonsterAttributes.attackDamage).setAttribute(1.0D);
-     }
- 
-+
-+    //-----MB-Edited-----
-     protected void entityInit()
-     {
-         super.entityInit();
-         this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
-         this.dataWatcher.addObject(17, Float.valueOf(0.0F));
-         this.dataWatcher.addObject(18, Integer.valueOf(0));
-+
-+        this.dataWatcher.addObject(25, (byte)0);
-     }
- 
-     @SideOnly(Side.CLIENT)
-@@ -283,6 +412,7 @@
-         if (this.itemInUse != null)
-         {
-             ItemStack itemstack = this.inventory.getCurrentItem();
-+
- 
-             if (itemstack == this.itemInUse)
-             {
-@@ -469,11 +599,12 @@
- 
-             if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
-             {
--                this.inventory.mainInventory[this.inventory.currentItem] = itemstack;
-+            	//-----MB-Edited-----
-+            	BattlegearUtils.setPlayerCurrentItem(this, itemstack);
- 
-                 if (itemstack.stackSize == 0)
-                 {
--                    this.inventory.mainInventory[this.inventory.currentItem] = null;
-+                	BattlegearUtils.setPlayerCurrentItem(this, null);
-                 }
-             }
- 
-@@ -2398,7 +2529,8 @@
-     {
-         if (par1 == 0)
-         {
--            this.inventory.mainInventory[this.inventory.currentItem] = par2ItemStack;
-+        	//-----MB-Edited-----
-+        	BattlegearUtils.setPlayerCurrentItem(this, par2ItemStack);
-         }
-         else
-         {
+ }

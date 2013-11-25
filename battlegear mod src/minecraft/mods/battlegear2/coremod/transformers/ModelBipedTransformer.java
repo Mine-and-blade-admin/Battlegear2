@@ -43,7 +43,7 @@ public class ModelBipedTransformer implements IClassTransformer {
             ClassNode cn = new ClassNode(ASM4);
             cr.accept(cn, 0);
 
-            cn.fields.add(0, new FieldNode(ACC_PUBLIC, "onGroundOffhand", "F", null, null));
+            cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "onGroundOffhand", "F", null, null));
 
             for (Object mnObj : cn.methods) {
                 MethodNode method = (MethodNode)mnObj;

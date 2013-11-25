@@ -138,9 +138,9 @@ public class ItemRendererTransformer implements IClassTransformer {
 
     private void processFields(ClassNode cn) {
         System.out.println("\tAdding new fields to ItemRenderer");
-        cn.fields.add(0, new FieldNode(ACC_PUBLIC, "offHandItemToRender", "L" + itemStackClass + ";", null, null));
-        cn.fields.add(1, new FieldNode(ACC_PUBLIC, "equippedItemOffhandSlot", "I", null, 0));
-        cn.fields.add(2, new FieldNode(ACC_PUBLIC, "equippedOffHandProgress", "F", null, 0F));
-        cn.fields.add(3, new FieldNode(ACC_PUBLIC, "prevEquippedOffHandProgress", "F", null, 0F));
+        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "offHandItemToRender", "L" + itemStackClass + ";", null, null));
+        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "equippedItemOffhandSlot", "I", null, 0));
+        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "equippedOffHandProgress", "F", null, 0F));
+        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "prevEquippedOffHandProgress", "F", null, 0F));
     }
 }
