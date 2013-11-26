@@ -30,7 +30,7 @@ public abstract class OneHandedWeapon extends ItemWeapon{
 	}
 
 	@Override
-	public boolean sheatheOnBack() {
+	public boolean sheatheOnBack(ItemStack item) {
 		return false;
 	}
 	

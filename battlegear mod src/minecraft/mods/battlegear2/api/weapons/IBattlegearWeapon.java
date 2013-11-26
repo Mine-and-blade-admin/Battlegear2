@@ -1,10 +1,11 @@
 package mods.battlegear2.api.weapons;
 
 import cpw.mods.fml.relauncher.Side;
+import mods.battlegear2.api.ISheathed;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public interface IBattlegearWeapon {
+public interface IBattlegearWeapon extends ISheathed{
 
     /**
      * Returns true if the weapon will allow other weapons to be placed in the partner offhand slot
@@ -20,11 +21,6 @@ public interface IBattlegearWeapon {
      * Returns true if the weapon be dual wielded in the offhand slot
      */
     public boolean isOffhandHandDualWeapon();
-
-    /**
-     * Returns true if the weapon should always be sheathed on the back, false if it should be sheathed on the hip
-     */
-    public boolean sheatheOnBack();
 
     /**
      * Perform any function when the item is held in the offhand and the user right clicks an entity.

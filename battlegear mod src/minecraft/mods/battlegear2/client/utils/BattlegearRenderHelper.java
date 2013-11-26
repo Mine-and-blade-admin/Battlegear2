@@ -1,11 +1,12 @@
 package mods.battlegear2.client.utils;
 
 
+import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
+import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
+import mods.battlegear2.api.ISheathed;
 import mods.battlegear2.api.IShield;
-import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.client.BattlegearKeyHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
-import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.items.ItemSpear;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.BattlegearUtils;
@@ -16,7 +17,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
@@ -28,10 +28,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
+
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
-import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
 public class BattlegearRenderHelper {
 
@@ -544,8 +543,8 @@ public class BattlegearRenderHelper {
         if(mainhandSheathed != null){
 
             boolean onBack = BattlegearConfig.forceBackSheath;
-            if(mainhandSheathed.getItem() instanceof IBattlegearWeapon){
-                onBack = ((IBattlegearWeapon) mainhandSheathed.getItem()).sheatheOnBack();
+            if(mainhandSheathed.getItem() instanceof ISheathed){
+                onBack = ((ISheathed) mainhandSheathed.getItem()).sheatheOnBack(mainhandSheathed);
             }else if (mainhandSheathed.getItem() instanceof ItemBow){
                 onBack = true;
             }
@@ -609,10 +608,8 @@ public class BattlegearRenderHelper {
 
         if(offhandSheathed != null){
             boolean onBack = BattlegearConfig.forceBackSheath;
-            if(offhandSheathed.getItem() instanceof IBattlegearWeapon){
-                onBack = ((IBattlegearWeapon) offhandSheathed.getItem()).sheatheOnBack();
-            }else if (offhandSheathed.getItem() instanceof IShield){
-                onBack = true;
+            if(offhandSheathed.getItem() instanceof ISheathed){
+                onBack = ((ISheathed) offhandSheathed.getItem()).sheatheOnBack(offhandSheathed);
             }
 
             ModelBiped target = modelBipedMain;

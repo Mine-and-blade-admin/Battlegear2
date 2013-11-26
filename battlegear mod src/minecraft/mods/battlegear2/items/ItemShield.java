@@ -4,6 +4,7 @@ import java.util.List;
 
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
+import mods.battlegear2.api.ISheathed;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -19,7 +20,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.StatCollector;
 
-public class ItemShield extends Item implements IShield, IDyable, IEnchantable{
+public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed{
 
     public EnumShield enumShield;
 
@@ -236,4 +237,9 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable{
 	public int getItemEnchantability(){
         return enumShield.getEnchantability();
     }
+
+	@Override
+	public boolean sheatheOnBack(ItemStack item) {
+		return true;
+	}
 }
