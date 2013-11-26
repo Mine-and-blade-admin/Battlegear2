@@ -49,7 +49,7 @@ public class BattlegearShieldBlockPacket extends AbstractMBPacket{
 	                ((WorldServer) player.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entity, packet);
 	            }
 	
-	            player.setBlockingWithShield(block);
+	            entity.setBlockingWithShield(block);
             }
         }
     }

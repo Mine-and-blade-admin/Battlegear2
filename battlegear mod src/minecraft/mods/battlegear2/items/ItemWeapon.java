@@ -53,7 +53,6 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 
 
         this.setCreativeTab(BattlegearConfig.customTab);
-		this.maxStackSize = 1;
 		
 		if(material == EnumToolMaterial.EMERALD){
 			this.name = named+".diamond";
