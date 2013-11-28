@@ -7,6 +7,7 @@ import mods.battlegear2.api.IShield;
 import mods.battlegear2.packet.BattlegearShieldBlockPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -54,7 +55,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
                 }
 
 
-                if(Mouse.isButtonDown(1) && !player.isSwingInProgress){
+                if(GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem) && !player.isSwingInProgress){
                     blockBar -= ((IShield) offhand.getItem()).getDecayRate(offhand);
                     if(blockBar > 0){
                         if(!wasBlocking){
@@ -110,7 +111,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
                     offhand != null &&
                     offhand.getItem() instanceof IShield){
 
-                if(Mouse.isButtonDown(1) && !player.isSwingInProgress && blockBar > 0){
+                if(GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem) && !player.isSwingInProgress && blockBar > 0){
                     player.motionX = player.motionX/5;
                     player.motionZ = player.motionZ/5;
                 }
