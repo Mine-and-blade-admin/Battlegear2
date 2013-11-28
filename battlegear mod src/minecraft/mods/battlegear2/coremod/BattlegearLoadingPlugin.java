@@ -1,10 +1,16 @@
 package mods.battlegear2.coremod;
 
-import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-
 import java.io.File;
 import java.util.Map;
 
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.MCVersion;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.Name;
+import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
+
+@MCVersion("1.6.4")
+@TransformerExclusions({"mods.battlegear2.coremod"})
+@Name("Mine and Blade: Battlegear2")
 public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 
     public static final String EntityPlayerTransformer = "mods.battlegear2.coremod.transformers.EntityPlayerTransformer";
@@ -18,7 +24,7 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
     public static final String ItemInWorldTransformer = "mods.battlegear2.coremod.transformers.ItemInWorldTransformer";
     public static final String EntityAIControlledTransformer = "mods.battlegear2.coremod.transformers.EntityAIControlledByPlayerTransformer";
     public static final String EntityOtherPlayerMPTransformer = "mods.battlegear2.coremod.transformers.EntityOtherPlayerMPTransformer";
-    //public static final String EntityArrowTransformer = "mods.battlegear2.coremod.transformers.EntityArrowTransformer";
+    public static final String EntityArrowTransformer = "mods.battlegear2.coremod.transformers.EntityArrowTransformer";
     public static final String EntityTrackerTransformer = "mods.battlegear2.coremod.transformers.EntityTrackerTransformer";
     //Setting this to true will enable the output of all edited classes as .class files
     public static boolean debug = false;
@@ -37,7 +43,7 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 		        ItemInWorldTransformer,
 		        EntityAIControlledTransformer,
 		        EntityOtherPlayerMPTransformer,
-		        //EntityArrowTransformer,
+		        EntityArrowTransformer,
 		        EntityTrackerTransformer
    			};
 
