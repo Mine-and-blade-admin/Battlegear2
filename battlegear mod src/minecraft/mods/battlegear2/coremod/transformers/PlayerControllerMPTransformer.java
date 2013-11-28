@@ -1,73 +1,29 @@
 package mods.battlegear2.coremod.transformers;
 
-
-
 import mods.battlegear2.coremod.BattlegearTranslator;
-import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.ClassNode;
+
 import org.objectweb.asm.tree.MethodNode;
 
-import static org.objectweb.asm.Opcodes.ASM4;
+public class PlayerControllerMPTransformer extends TransformerMethodProcess {
 
+    public PlayerControllerMPTransformer() {
+		super("net.minecraft.client.multiplayer.PlayerControllerMP", "func_78769_a");
+	}
 
-public class PlayerControllerMPTransformer implements IClassTransformer {
-
-    private String entityPlayerClassName;
+	private String entityPlayerClassName;
     private String playerInventoryFieldName;
 
-
-    private String playerControllerMPsendUseItemMethodName;
-    private String playerControllerMPsendUseItemMethodDesc;
-
     @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
-        if (transformedName.equals("net.minecraft.client.multiplayer.PlayerControllerMP")) {
-
-            entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
-
-            playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
-
-            playerControllerMPsendUseItemMethodName =
-                    BattlegearTranslator.getMapedMethodName("PlayerControllerMP", "func_78769_a");
-            playerControllerMPsendUseItemMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("PlayerControllerMP", "func_78769_a");
-
-            System.out.println("M&B - Patching Class PlayerControllerMP (" + name + ")");
-
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(ASM4);
-
-            cr.accept(cn, 0);
-
-
-            for (Object mnObj : cn.methods) {
-                MethodNode method = (MethodNode)mnObj;
-                if (method.name.equals(playerControllerMPsendUseItemMethodName) &&
-                        method.desc.equals(playerControllerMPsendUseItemMethodDesc)) {
-                    System.out.println("\tPatching method sendUseItem in PlayerControllerMP");
-                    TransformerUtils.replaceInventoryArrayAccess(method, entityPlayerClassName, playerInventoryFieldName, 9, 13);
-                }
-            }
-
-            ClassWriter cw = new ClassWriter(0);
-            cn.accept(cw);
-
-
-            System.out.println("M&B - Patching Class PlayerControllerMP (" + name + ") done");
-
-            if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
-            }
-
-            return cw.toByteArray();
-
-        } else {
-            return bytes;
-        }
-
+	void processMethod(MethodNode method) {
+        sendPatchLog("sendUseItem");
+        replaceInventoryArrayAccess(method, entityPlayerClassName, playerInventoryFieldName, 9, 13);
     }
+
+	@Override
+	void setupMappings() {
+		super.setupMappings();
+		entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
+        playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+	}
 
 }

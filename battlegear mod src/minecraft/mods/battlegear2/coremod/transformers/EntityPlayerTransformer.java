@@ -1,6 +1,5 @@
 package mods.battlegear2.coremod.transformers;
 
-
 import mods.battlegear2.coremod.BattlegearLoadingPlugin;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import net.minecraft.launchwrapper.IClassTransformer;
@@ -8,13 +7,18 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
 
+import java.util.List;
 import java.util.ListIterator;
 
 import static org.objectweb.asm.Opcodes.*;
 
-public class EntityPlayerTransformer implements IClassTransformer {
+public class EntityPlayerTransformer extends TransformerBase {
 
-    private String entityPlayerClassName;
+    public EntityPlayerTransformer() {
+		super("net.minecraft.entity.player.EntityPlayer");
+	}
+
+	private String entityPlayerClassName;
     private String inventoryClassName;
     private String itemStackClassName;
     private String entityClassName;
@@ -54,138 +58,27 @@ public class EntityPlayerTransformer implements IClassTransformer {
     private String dataWatcherUpdateObjectMethodName;
     private String dataWatcherUpdateObjectMethodDesc;
 
-
     @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
-
-        if (transformedName.equals("net.minecraft.entity.player.EntityPlayer")) {
-
-            entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
-            inventoryClassName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
-            itemStackClassName = BattlegearTranslator.getMapedClassName("ItemStack");
-            entityClassName = BattlegearTranslator.getMapedClassName("Entity");
-            potionClassName = BattlegearTranslator.getMapedClassName("Potion");
-            potionEffectClassName = BattlegearTranslator.getMapedClassName("PotionEffect");
-            entityLivingClassName = BattlegearTranslator.getMapedClassName("EntityLivingBase");
-            dataWatcherClassName = BattlegearTranslator.getMapedClassName("DataWatcher");
-
-            playerInventoryFieldName =
-                    BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
-            inventoryCurrentItremField =
-                    BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c");
-            potionDigSpeedField =
-                    BattlegearTranslator.getMapedFieldName("Potion", "field_76422_e");
-            potionDigSlowField =
-                    BattlegearTranslator.getMapedFieldName("Potion", "field_76419_f");
-            playerDataWatcherField =
-                    BattlegearTranslator.getMapedFieldName("Entity", "field_70180_af");
-
-
-            onItemFinishMethodName =
-                    BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71036_o");
-            onItemFinishMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_71036_o");
-            setCurrentItemArmourMethodName =
-                    BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70062_b");
-            setCurrentItemArmourMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70062_b");
-            attackTargetMethodName =
-                    BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71059_n");
-            attackTargetMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_71059_n");
-            playerPotionActiveMethodName =
-                    BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70644_a");
-            playerPotionActiveMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70644_a");
-            playerGetActivePotionMethodName =
-                    BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70660_b");
-            playerGetActivePotionMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70660_b");
-            potionEffectGetAmpMethodName =
-                    BattlegearTranslator.getMapedMethodName("PotionEffect", "func_76458_c");
-            playerUpdateArmSwingMethodName =
-                    BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_82168_bl");
-            dataWatcherAddObjectMethodName =
-                    BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75682_a");
-            dataWatcherAddObjectMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75682_a");
-            playerInitMethodName =
-                    BattlegearTranslator.getMapedMethodName("EntityPlayer","func_70088_a");
-            playerInitMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70088_a");
-            itemStackGetItemMethodName =
-                    BattlegearTranslator.getMapedMethodName("ItemStack","func_77973_b");
-            itemStackGetItemMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("ItemStack", "func_77973_b");
-            dataWatcherGetByteMethodName =
-                    BattlegearTranslator.getMapedMethodName("DataWatcher","func_75683_a");
-            dataWatcherGetByteMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75683_a");
-            dataWatcherUpdateObjectMethodName =
-                    BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75692_b");
-            dataWatcherUpdateObjectMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75692_b");
-
-
-            System.out.println("M&B - Patching Class EntityPlayer (" + name + ")");
-
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(ASM4);
-
-            cr.accept(cn, 0);
-
-            processFields(cn);
-            processMethods(cn);
-
-
-            System.out.println("\tCreating new methods in EntityPlayer");
-            cn.methods.add(cn.methods.size(), generateAttackOffhandMethod());
-            cn.methods.add(cn.methods.size(), generateSwingOffhand());
-            cn.methods.add(cn.methods.size(), generateGetOffSwingMethod());
-            cn.methods.add(cn.methods.size(), generateSwingAnimationEnd2());
-            cn.methods.add(cn.methods.size(), generateUpdateSwingArm());
-            cn.methods.add(cn.methods.size(), generateIsBattleMode());
-            cn.methods.add(cn.methods.size(), generateIsBlockingWithShield());
-            cn.methods.add(cn.methods.size(), generateSetBlockingWithShield());
-
-            ClassWriter cw = new ClassWriter(0);
-            cn.accept(cw);
-
-
-            System.out.println("M&B - Patching Class EntityPlayer done");
-
-
-            if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
-            }
-
-
-            return cw.toByteArray();
-
-        } else
-            return bytes;
-    }
-
-    private void processFields(ClassNode cn) {
+    void processFields(List<FieldNode> fields) {
         System.out.println("\tAdding new fields to EntityPlayer");
-        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgress", "F", null, 0F));
-        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "prevOffHandSwingProgress", "F", null, 0F));
-        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgressInt", "I", null, 0));
-        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "isOffHandSwingInProgress", "Z", null, false));
-        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "specialActionTimer", "I", null, 0));
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgress", "F", null, 0F));
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "prevOffHandSwingProgress", "F", null, 0F));
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgressInt", "I", null, 0));
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "isOffHandSwingInProgress", "Z", null, false));
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "specialActionTimer", "I", null, 0));
 
-        for (Object fnObj : cn.fields) {
-            FieldNode fn = (FieldNode) fnObj;
+        for (FieldNode fn : fields) {
             if (fn.name.equals(playerInventoryFieldName) && fn.desc.equals("L"+inventoryClassName + ";")) {
                 System.out.println("M&B - Marking field inventory as final in EntityPlayer");
                 fn.access = ACC_PUBLIC | ACC_FINAL;
+                return;
             }
         }
     }
 
-    private void processMethods(ClassNode cn) {
-    	for (Object mnObj : cn.methods) {
-            MethodNode mn = (MethodNode)mnObj;
+    @Override
+	void processMethods(List<MethodNode> methods) {
+    	for (MethodNode mn : methods) {
             if (mn.name.equals("<init>")) {
                 System.out.println("\tPatching constructor in EntityPlayer");
                 ListIterator<AbstractInsnNode> it = mn.instructions.iterator();
@@ -205,18 +98,18 @@ public class EntityPlayerTransformer implements IClassTransformer {
                 }
             } else if (mn.name.equals(onItemFinishMethodName) &&
                     mn.desc.equals(onItemFinishMethodDesc)) {
-                System.out.println("\tPatching method onItemUseFinish in EntityPlayer");
 
-                TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
+                sendPatchLog("onItemUseFinish");
+                replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
             } else if (mn.name.equals(setCurrentItemArmourMethodName) &&
                     mn.desc.equals(setCurrentItemArmourMethodDesc)) {
-                System.out.println("\tPatching method setCurrentItemOrArmor in EntityPlayer");
 
-                TransformerUtils.replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
+                sendPatchLog("setCurrentItemOrArmor");
+                replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
             } else if(mn.name.equals(playerInitMethodName) &&
                     mn.desc.equals(playerInitMethodDesc)) {
 
-                System.out.println("\tPatching method entityInit in EntityPlayer");
+            	sendPatchLog("entityInit");
 
                 InsnList newList = new InsnList();
                 ListIterator<AbstractInsnNode> it = mn.instructions.iterator();
@@ -238,6 +131,16 @@ public class EntityPlayerTransformer implements IClassTransformer {
                 mn.instructions = newList;
             }
         }
+
+        System.out.println("\tCreating new methods in EntityPlayer");
+        methods.add(methods.size(), generateAttackOffhandMethod());
+        methods.add(methods.size(), generateSwingOffhand());
+        methods.add(methods.size(), generateGetOffSwingMethod());
+        methods.add(methods.size(), generateSwingAnimationEnd2());
+        methods.add(methods.size(), generateUpdateSwingArm());
+        methods.add(methods.size(), generateIsBattleMode());
+        methods.add(methods.size(), generateIsBlockingWithShield());
+        methods.add(methods.size(), generateSetBlockingWithShield());
     }
 
     private MethodNode generateIsBlockingWithShield() {
@@ -597,6 +500,75 @@ public class EntityPlayerTransformer implements IClassTransformer {
 
         return mn;
     }
+
+	@Override
+	void setupMappings() {
+		entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
+        inventoryClassName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
+        itemStackClassName = BattlegearTranslator.getMapedClassName("ItemStack");
+        entityClassName = BattlegearTranslator.getMapedClassName("Entity");
+        potionClassName = BattlegearTranslator.getMapedClassName("Potion");
+        potionEffectClassName = BattlegearTranslator.getMapedClassName("PotionEffect");
+        entityLivingClassName = BattlegearTranslator.getMapedClassName("EntityLivingBase");
+        dataWatcherClassName = BattlegearTranslator.getMapedClassName("DataWatcher");
+
+        playerInventoryFieldName =
+                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+        inventoryCurrentItremField =
+                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c");
+        potionDigSpeedField =
+                BattlegearTranslator.getMapedFieldName("Potion", "field_76422_e");
+        potionDigSlowField =
+                BattlegearTranslator.getMapedFieldName("Potion", "field_76419_f");
+        playerDataWatcherField =
+                BattlegearTranslator.getMapedFieldName("Entity", "field_70180_af");
+
+
+        onItemFinishMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71036_o");
+        onItemFinishMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_71036_o");
+        setCurrentItemArmourMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70062_b");
+        setCurrentItemArmourMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70062_b");
+        attackTargetMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71059_n");
+        attackTargetMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_71059_n");
+        playerPotionActiveMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70644_a");
+        playerPotionActiveMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70644_a");
+        playerGetActivePotionMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70660_b");
+        playerGetActivePotionMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70660_b");
+        potionEffectGetAmpMethodName =
+                BattlegearTranslator.getMapedMethodName("PotionEffect", "func_76458_c");
+        playerUpdateArmSwingMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_82168_bl");
+        dataWatcherAddObjectMethodName =
+                BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75682_a");
+        dataWatcherAddObjectMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75682_a");
+        playerInitMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityPlayer","func_70088_a");
+        playerInitMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70088_a");
+        itemStackGetItemMethodName =
+                BattlegearTranslator.getMapedMethodName("ItemStack","func_77973_b");
+        itemStackGetItemMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("ItemStack", "func_77973_b");
+        dataWatcherGetByteMethodName =
+                BattlegearTranslator.getMapedMethodName("DataWatcher","func_75683_a");
+        dataWatcherGetByteMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75683_a");
+        dataWatcherUpdateObjectMethodName =
+                BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75692_b");
+        dataWatcherUpdateObjectMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75692_b");
+	}
 
 
 }

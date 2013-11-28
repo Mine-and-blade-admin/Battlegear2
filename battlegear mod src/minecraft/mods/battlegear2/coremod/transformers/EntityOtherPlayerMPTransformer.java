@@ -1,19 +1,21 @@
 package mods.battlegear2.coremod.transformers;
 
-import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import mods.battlegear2.coremod.BattlegearTranslator;
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.*;
-
-import java.util.Iterator;
-
 import static org.objectweb.asm.Opcodes.*;
 
-public class EntityOtherPlayerMPTransformer implements IClassTransformer {
+import java.util.Iterator;
+import java.util.List;
 
-    private String inventoryPlayerClassName;
+import mods.battlegear2.coremod.BattlegearTranslator;
+
+import org.objectweb.asm.tree.*;
+
+public class EntityOtherPlayerMPTransformer extends TransformerBase {
+
+    public EntityOtherPlayerMPTransformer() {
+		super("net.minecraft.client.entity.EntityOtherPlayerMP");
+	}
+
+	private String inventoryPlayerClassName;
     private String itemStackClassName;
     private String entityOtherPlayerMPClassName;
     private String itemClassName;
@@ -30,85 +32,10 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
     private String setCurrentItemMethodDesc;
     private String isItemInUseFieldName;
     private String limbSwingFieldName;
-
-    @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
-        if (transformedName.equals("net.minecraft.client.entity.EntityOtherPlayerMP")) {
-
-            System.out.println("M&B - Patching Class EntityOtherPlayerMP (" + name + ")");
-
-            inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
-            itemStackClassName = BattlegearTranslator.getMapedClassName("ItemStack");
-            entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityOtherPlayerMP");
-            itemClassName = BattlegearTranslator.getMapedClassName("Item");
-
-            isItemInUseFieldName = BattlegearTranslator.getMapedFieldName("EntityOtherPlayerMP", "field_71186_a");
-            limbSwingFieldName = BattlegearTranslator.getMapedFieldName("EntityLivingBase", "field_70754_ba");
-
-            currentItemFieldName =
-                    BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c");
-            mainInventoryArrayFieldName =
-                    BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a");
-            playerInventoryFieldName =
-                    BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
-
-
-            getStackInSlotMethodName =
-                    BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70301_a");
-            getStackInSlotMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("InventoryPlayer", "func_70301_a");
-            setCurrentItemMethodName =
-                    BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70062_b");
-            setCurrentItemMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70062_b");
-            onUpdateMethodName =
-                    BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70071_h_");
-            onUpdateMethodDesc =
-                    BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70071_h_");
-
-            
-
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(ASM4);
-
-            cr.accept(cn, 0);
-
-
-            for (Object mnObj : cn.methods) {
-                MethodNode mn = (MethodNode)mnObj;
-
-                if (mn.name.equals(setCurrentItemMethodName) &&
-                        mn.desc.equals(setCurrentItemMethodDesc)) {
-                    processSetCurrentItemMethod(mn);
-                }
-
-                if (mn.name.equals(onUpdateMethodName) &&
-                        mn.desc.equals(onUpdateMethodDesc)) {
-                    processOnUpdateMethod2(mn);
-                }
-
-            }
-
-
-            ClassWriter cw = new ClassWriter(0);
-            cn.accept(cw);
-
-            System.out.println("M&B - Patching Class EntityOtherPlayerMP done");
-
-            if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
-            }
-            return cw.toByteArray();
-
-        } else {
-            return bytes;
-        }
-    }
     
     @Deprecated
     private void processOnUpdateMethod(MethodNode mn) {
-
-        System.out.println("\tPatching method onUpdate in EntityOtherPlayerMP");
+    	sendPatchLog("onUpdate");
         InsnList newList = new InsnList();
 
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
@@ -174,7 +101,7 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
 
     private void processOnUpdateMethod2(MethodNode mn) {
 
-        System.out.println("\tPatching method onUpdate in EntityOtherPlayerMP");
+    	sendPatchLog("onUpdate");
         InsnList newList = new InsnList();
 
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
@@ -269,9 +196,58 @@ public class EntityOtherPlayerMPTransformer implements IClassTransformer {
 
     private void processSetCurrentItemMethod(MethodNode mn) {
         System.out.println("\tPatching method setCurrentItem in EntityOtherPlayerMP");
-        TransformerUtils.replaceInventoryArrayAccess(mn, entityOtherPlayerMPClassName, playerInventoryFieldName, 4,3,3);
-
-
-
+        replaceInventoryArrayAccess(mn, entityOtherPlayerMPClassName, playerInventoryFieldName, 4,3,3);
     }
+
+	@Override
+	void processMethods(List<MethodNode> methods) {
+		for (MethodNode mn : methods) {
+            if (mn.name.equals(setCurrentItemMethodName) &&
+                    mn.desc.equals(setCurrentItemMethodDesc)) {
+                processSetCurrentItemMethod(mn);
+            }
+
+            if (mn.name.equals(onUpdateMethodName) &&
+                    mn.desc.equals(onUpdateMethodDesc)) {
+                processOnUpdateMethod2(mn);
+            }
+        }
+	}
+
+	@Override
+	void processFields(List<FieldNode> fields) {
+		
+	}
+
+	@Override
+	void setupMappings() {
+		inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
+        itemStackClassName = BattlegearTranslator.getMapedClassName("ItemStack");
+        entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityOtherPlayerMP");
+        itemClassName = BattlegearTranslator.getMapedClassName("Item");
+
+        isItemInUseFieldName = BattlegearTranslator.getMapedFieldName("EntityOtherPlayerMP", "field_71186_a");
+        limbSwingFieldName = BattlegearTranslator.getMapedFieldName("EntityLivingBase", "field_70754_ba");
+
+        currentItemFieldName =
+                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c");
+        mainInventoryArrayFieldName =
+                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a");
+        playerInventoryFieldName =
+                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+
+
+        getStackInSlotMethodName =
+                BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70301_a");
+        getStackInSlotMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("InventoryPlayer", "func_70301_a");
+        setCurrentItemMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70062_b");
+        setCurrentItemMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70062_b");
+        onUpdateMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70071_h_");
+        onUpdateMethodDesc =
+                BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70071_h_");
+	}
 }

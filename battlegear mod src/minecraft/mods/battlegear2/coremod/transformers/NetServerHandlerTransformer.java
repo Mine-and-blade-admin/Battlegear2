@@ -1,20 +1,21 @@
 package mods.battlegear2.coremod.transformers;
 
-
-import mods.battlegear2.coremod.BattlegearTranslator;
-import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.*;
-
-import java.util.Iterator;
-
 import static org.objectweb.asm.Opcodes.*;
 
-public class NetServerHandlerTransformer implements IClassTransformer {
+import java.util.Iterator;
+import java.util.List;
 
-    private String packet16BlockItemSwitchClassName;
+import mods.battlegear2.coremod.BattlegearTranslator;
+
+import org.objectweb.asm.tree.*;
+
+public class NetServerHandlerTransformer extends TransformerBase {
+
+    public NetServerHandlerTransformer() {
+		super("net.minecraft.network.NetServerHandler");
+	}
+
+	private String packet16BlockItemSwitchClassName;
     private String entityPlayerMPClassName;
     private String entityPlayerClassName;
     private String netServiceHandelerClassName;
@@ -34,75 +35,21 @@ public class NetServerHandlerTransformer implements IClassTransformer {
     private String itemStackCopyStackMethodName;
     private String itemStackCopyStackMethodDesc;
 
-
     @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
-
-        if (transformedName.equals("net.minecraft.network.NetServerHandler")) {
-
-            System.out.println("M&B - Patching Class NetServerHandler (" + name + ")");
-
-            netServiceHandelerClassName = BattlegearTranslator.getMapedClassName("NetServerHandler");
-            packet16BlockItemSwitchClassName = BattlegearTranslator.getMapedClassName("Packet16BlockItemSwitch");
-            entityPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityPlayerMP");
-            inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
-            itemStackClassName = BattlegearTranslator.getMapedClassName("ItemStack");
-            entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
-
-            packet16BlockItemSwitchId = BattlegearTranslator.getMapedFieldName("Packet16BlockItemSwitch", "field_73386_a");
-            playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
-            netServiceHandelerPlayerField = BattlegearTranslator.getMapedFieldName("NetServerHandler", "field_72574_e");
-
-
-            handleBlockSwitchMethodName = BattlegearTranslator.getMapedMethodName("NetServerHandler", "func_72502_a");
-            handleBlockSwitchMethodDesc = BattlegearTranslator.getMapedMethodDesc("NetServerHandler", "func_72502_a");
-
-            handlePlaceMethodName = BattlegearTranslator.getMapedMethodName("NetServerHandler", "func_72472_a");
-            handlePlaceMethodDesc = BattlegearTranslator.getMapedMethodDesc("NetServerHandler", "func_72472_a");
-
-            inventoryGetCurrentMethodName = BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70448_g");
-            inventoryGetCurrentMethodDesc = BattlegearTranslator.getMapedMethodDesc("InventoryPlayer", "func_70448_g");
-
-            itemStackCopyStackMethodName = BattlegearTranslator.getMapedMethodName("ItemStack", "func_77944_b");
-            itemStackCopyStackMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemStack", "func_77944_b");
-
-
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(ASM4);
-            cr.accept(cn, 0);
-
-
-            for (Object mnObj : cn.methods) {
-                MethodNode mn = (MethodNode)mnObj;
-                if (mn.name.equals(handleBlockSwitchMethodName) &&
-                        mn.desc.equals(handleBlockSwitchMethodDesc)) {
-                    processSwitchBlockMethod(mn);
-                } else if (mn.name.equals(handlePlaceMethodName) &&
-                        mn.desc.equals(handlePlaceMethodDesc)) {
-                    processPlaceMethod(mn);
-                }
+	void processMethods(List<MethodNode> methods) {
+        for (MethodNode mn : methods) {
+            if (mn.name.equals(handleBlockSwitchMethodName) &&
+                    mn.desc.equals(handleBlockSwitchMethodDesc)) {
+                processSwitchBlockMethod(mn);
+            } else if (mn.name.equals(handlePlaceMethodName) &&
+                    mn.desc.equals(handlePlaceMethodDesc)) {
+                processPlaceMethod(mn);
             }
-
-            ClassWriter cw = new ClassWriter(0);
-            cn.accept(cw);
-
-            System.out.println("M&B - Patching Class NetServiceHandeler done");
-
-
-            if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
-            }
-
-
-            return cw.toByteArray();
-
-        } else {
-            return bytes;
         }
     }
 
     private void processPlaceMethod(MethodNode mn) {
-        System.out.println("\tPatching method handlePlace in NetServerHandler");
+        sendPatchLog("handlePlace");
         InsnList newList = new InsnList();
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
 
@@ -167,7 +114,7 @@ public class NetServerHandlerTransformer implements IClassTransformer {
 
 
     private void processSwitchBlockMethod(MethodNode mn) {
-        System.out.println("\tPatching method handleBlockItemSwitch in NetServerHandler");
+        sendPatchLog("handleBlockItemSwitch");
         InsnList newList = new InsnList();
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
 
@@ -201,8 +148,40 @@ public class NetServerHandlerTransformer implements IClassTransformer {
             }
         }
 
-
         mn.instructions = newList;
 
     }
+
+	@Override
+	void processFields(List<FieldNode> fields) {
+		
+	}
+
+	@Override
+	void setupMappings() {
+		netServiceHandelerClassName = BattlegearTranslator.getMapedClassName("NetServerHandler");
+        packet16BlockItemSwitchClassName = BattlegearTranslator.getMapedClassName("Packet16BlockItemSwitch");
+        entityPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityPlayerMP");
+        inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
+        itemStackClassName = BattlegearTranslator.getMapedClassName("ItemStack");
+        entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
+
+        packet16BlockItemSwitchId = BattlegearTranslator.getMapedFieldName("Packet16BlockItemSwitch", "field_73386_a");
+        playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+        netServiceHandelerPlayerField = BattlegearTranslator.getMapedFieldName("NetServerHandler", "field_72574_e");
+
+
+        handleBlockSwitchMethodName = BattlegearTranslator.getMapedMethodName("NetServerHandler", "func_72502_a");
+        handleBlockSwitchMethodDesc = BattlegearTranslator.getMapedMethodDesc("NetServerHandler", "func_72502_a");
+
+        handlePlaceMethodName = BattlegearTranslator.getMapedMethodName("NetServerHandler", "func_72472_a");
+        handlePlaceMethodDesc = BattlegearTranslator.getMapedMethodDesc("NetServerHandler", "func_72472_a");
+
+        inventoryGetCurrentMethodName = BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70448_g");
+        inventoryGetCurrentMethodDesc = BattlegearTranslator.getMapedMethodDesc("InventoryPlayer", "func_70448_g");
+
+        itemStackCopyStackMethodName = BattlegearTranslator.getMapedMethodName("ItemStack", "func_77944_b");
+        itemStackCopyStackMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemStack", "func_77944_b");
+
+	}
 }

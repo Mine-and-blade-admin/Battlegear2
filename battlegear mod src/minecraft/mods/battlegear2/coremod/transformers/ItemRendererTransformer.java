@@ -1,20 +1,21 @@
 package mods.battlegear2.coremod.transformers;
 
-
-import mods.battlegear2.coremod.BattlegearTranslator;
-import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.*;
-
-import java.util.Iterator;
-
 import static org.objectweb.asm.Opcodes.*;
 
-public class ItemRendererTransformer implements IClassTransformer {
+import java.util.Iterator;
+import java.util.List;
 
-    private String itemStackClass;
+import mods.battlegear2.coremod.BattlegearTranslator;
+
+import org.objectweb.asm.tree.*;
+
+public class ItemRendererTransformer extends TransformerBase {
+
+    public ItemRendererTransformer() {
+		super("net.minecraft.client.renderer.ItemRenderer");
+	}
+
+	private String itemStackClass;
     private String itemRendererClass;
     private String minecraftClass;
 
@@ -26,68 +27,8 @@ public class ItemRendererTransformer implements IClassTransformer {
     private String updateEquippedItemMethodName;
     private String updateEquippedItemMethodDesc;
 
-
-    @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
-
-        if (transformedName.equals("net.minecraft.client.renderer.ItemRenderer")) {
-
-            System.out.println("M&B - Patching Class ItemRenderer (" + name + ")");
-
-
-            itemStackClass = BattlegearTranslator.getMapedClassName("ItemStack");
-            itemRendererClass = BattlegearTranslator.getMapedClassName("ItemRenderer");
-            minecraftClass = BattlegearTranslator.getMapedClassName("Minecraft");
-
-            itemRendererMinecraftField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78455_a");
-            itemRendereriteToRenderField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78453_b");
-
-            renderItem1stPersonMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78440_a");
-            renderItem1stPersonMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78440_a");
-
-            updateEquippedItemMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78441_a");
-            updateEquippedItemMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78441_a");
-
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(ASM4);
-
-            cr.accept(cn, 0);
-
-            processFields(cn);
-
-            for (Object mnObj : cn.methods) {
-                MethodNode mn = (MethodNode)mnObj;
-                if (mn.name.equals(renderItem1stPersonMethodName) &&
-                        mn.desc.equals(renderItem1stPersonMethodDesc)) {
-                    processRenderItemMethod(mn);
-                } else if (mn.name.equals(updateEquippedItemMethodName) &&
-                        mn.desc.equals(updateEquippedItemMethodDesc)) {
-                    processupdateEquippedMethod(mn);
-                }
-            }
-
-
-            ClassWriter cw = new ClassWriter(0);
-            cn.accept(cw);
-
-            System.out.println("M&B - Patching Class ItemRenderer done");
-
-
-            if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
-            }
-
-
-            return cw.toByteArray();
-
-
-        } else {
-            return bytes;
-        }
-    }
-
     private void processupdateEquippedMethod(MethodNode mn) {
-        System.out.println("\tPatching method updateEquippedItem in ItemRenderer");
+        sendPatchLog("updateEquippedItem");
         InsnList newList = new InsnList();
 
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
@@ -112,7 +53,7 @@ public class ItemRendererTransformer implements IClassTransformer {
 
     private void processRenderItemMethod(MethodNode mn) {
 
-        System.out.println("\tPatching method renderItemInFirstPerson in ItemRenderer");
+        sendPatchLog("renderItemInFirstPerson");
         InsnList newList = new InsnList();
 
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
@@ -136,11 +77,42 @@ public class ItemRendererTransformer implements IClassTransformer {
         mn.instructions = newList;
     }
 
-    private void processFields(ClassNode cn) {
-        System.out.println("\tAdding new fields to ItemRenderer");
-        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "offHandItemToRender", "L" + itemStackClass + ";", null, null));
-        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "equippedItemOffhandSlot", "I", null, 0));
-        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "equippedOffHandProgress", "F", null, 0F));
-        cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "prevEquippedOffHandProgress", "F", null, 0F));
+	@Override
+	void processMethods(List<MethodNode> methods) {
+		for (MethodNode mn : methods) {
+            if (mn.name.equals(renderItem1stPersonMethodName) &&
+                    mn.desc.equals(renderItem1stPersonMethodDesc)) {
+                processRenderItemMethod(mn);
+            } else if (mn.name.equals(updateEquippedItemMethodName) &&
+                    mn.desc.equals(updateEquippedItemMethodDesc)) {
+                processupdateEquippedMethod(mn);
+            }
+        }
+	}
+
+	@Override
+	void processFields(List<FieldNode> fields) {
+		System.out.println("\tAdding new fields to ItemRenderer");
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandItemToRender", "L" + itemStackClass + ";", null, null));
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "equippedItemOffhandSlot", "I", null, 0));
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "equippedOffHandProgress", "F", null, 0F));
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "prevEquippedOffHandProgress", "F", null, 0F));
     }
+
+	@Override
+	void setupMappings() {
+		itemStackClass = BattlegearTranslator.getMapedClassName("ItemStack");
+        itemRendererClass = BattlegearTranslator.getMapedClassName("ItemRenderer");
+        minecraftClass = BattlegearTranslator.getMapedClassName("Minecraft");
+
+        itemRendererMinecraftField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78455_a");
+        itemRendereriteToRenderField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78453_b");
+
+        renderItem1stPersonMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78440_a");
+        renderItem1stPersonMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78440_a");
+
+        updateEquippedItemMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78441_a");
+        updateEquippedItemMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78441_a");
+
+	}
 }

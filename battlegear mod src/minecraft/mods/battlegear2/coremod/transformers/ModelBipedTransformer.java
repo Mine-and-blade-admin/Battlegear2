@@ -1,86 +1,51 @@
 package mods.battlegear2.coremod.transformers;
 
-import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import mods.battlegear2.coremod.BattlegearTranslator;
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.*;
-
-import java.util.Iterator;
-
 import static org.objectweb.asm.Opcodes.*;
 
-public class ModelBipedTransformer implements IClassTransformer {
+import java.util.Iterator;
+import java.util.List;
 
-    private String modelBipedClassName;
+import mods.battlegear2.coremod.BattlegearTranslator;
+
+import org.objectweb.asm.tree.*;
+
+public class ModelBipedTransformer extends TransformerMethodProcess {
+
+    public ModelBipedTransformer() {
+		super("net.minecraft.client.model.ModelBiped","func_78088_a");
+	}
+
+	private String modelBipedClassName;
     private String entityClassName;
-
-    private String renderBipedMethodName;
-    private String renderBibedMethodDesc;
 
     private String setRotationAngleMethodName;
     private String setRotationAngleMethodDesc;
 
-
     @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
+    void setupMappings() {
+    	super.setupMappings();
+        modelBipedClassName = BattlegearTranslator.getMapedClassName("ModelBiped");
+        entityClassName = BattlegearTranslator.getMapedClassName("Entity");
 
-        if (transformedName.equals("net.minecraft.client.model.ModelBiped")) {
-
-            modelBipedClassName = BattlegearTranslator.getMapedClassName("ModelBiped");
-            entityClassName = BattlegearTranslator.getMapedClassName("Entity");
-
-            setRotationAngleMethodName = BattlegearTranslator.getMapedMethodName("ModelBiped", "func_78087_a");
-            setRotationAngleMethodDesc = BattlegearTranslator.getMapedMethodDesc("ModelBiped", "func_78087_a");
-
-            renderBipedMethodName = BattlegearTranslator.getMapedMethodName("ModelBiped", "func_78088_a");
-            renderBibedMethodDesc = BattlegearTranslator.getMapedMethodDesc("ModelBiped", "func_78088_a");
-
-
-            System.out.println("M&B - Patching Class ModelBiped (" + name + ")");
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(ASM4);
-            cr.accept(cn, 0);
-
-            cn.fields.add(cn.fields.size(), new FieldNode(ACC_PUBLIC, "onGroundOffhand", "F", null, null));
-
-            for (Object mnObj : cn.methods) {
-                MethodNode method = (MethodNode)mnObj;
-                if (method.name.equals(renderBipedMethodName) &&
-                        method.desc.equals(renderBibedMethodDesc)) {
-
-                    processRotationAnglesMethod(method);
-
-                }
-            }
-
-            ClassWriter cw = new ClassWriter(0);
-            cn.accept(cw);
-
-            System.out.println("M&B - Patching Class ModelBiped (" + name + ") done");
-
-            if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
-            }
-
-            return cw.toByteArray();
-
-        } else {
-            return bytes;
-        }
+        setRotationAngleMethodName = BattlegearTranslator.getMapedMethodName("ModelBiped", "func_78087_a");
+        setRotationAngleMethodDesc = BattlegearTranslator.getMapedMethodDesc("ModelBiped", "func_78087_a");
+	}
+    
+    @Override
+    void processFields(List<FieldNode> fields){
+        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "onGroundOffhand", "F", null, null));
     }
+    
+    @Override
+    void processMethod(MethodNode method){
 
-    private void processRotationAnglesMethod(MethodNode method) {
-
-        System.out.println("\tPatching Method render in ModelBiped");
+        sendPatchLog("render");
         Iterator<AbstractInsnNode> it = method.instructions.iterator();
 
         InsnList newInsn = new InsnList();
 
         while (it.hasNext()) {
             AbstractInsnNode nextInsn = it.next();
-
 
             if(nextInsn.getOpcode() == INVOKEVIRTUAL &&
                     ((MethodInsnNode)nextInsn).name.equals(setRotationAngleMethodName) &&
@@ -97,12 +62,6 @@ public class ModelBipedTransformer implements IClassTransformer {
             }else{
                 newInsn.add(nextInsn);
             }
-
-
-
         }
-
     }
-
-
 }

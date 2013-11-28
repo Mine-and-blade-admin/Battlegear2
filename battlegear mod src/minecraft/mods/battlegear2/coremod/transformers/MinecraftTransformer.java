@@ -1,67 +1,32 @@
 package mods.battlegear2.coremod.transformers;
 
 import mods.battlegear2.coremod.BattlegearTranslator;
-import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.ClassNode;
+
 import org.objectweb.asm.tree.MethodNode;
 
-import static org.objectweb.asm.Opcodes.ASM4;
+public class MinecraftTransformer extends TransformerMethodProcess {
 
-public class MinecraftTransformer implements IClassTransformer {
-
+	public MinecraftTransformer(){
+		super("net.minecraft.client.Minecraft", "func_71402_c");
+	}
+	
     private String entityClientPlayerClass;
 
     private String playerInventoryFieldName;
 
-    private String clickMouseMethodName;
-    private String clickMouseMethodDesc;
+	@Override
+	void processMethod(MethodNode method) {
+        sendPatchLog("Click Mouse");
 
-    @Override
-    public byte[] transform(String name, String transformedName, byte[] bytes) {
+        replaceInventoryArrayAccess(method, entityClientPlayerClass, playerInventoryFieldName, 5, 9, 10);
+	}
 
-        if (transformedName.equals("net.minecraft.client.Minecraft")) {
+	@Override
+	void setupMappings() {
+		super.setupMappings();
+		entityClientPlayerClass = BattlegearTranslator.getMapedClassName("EntityClientPlayerMP");
 
-            entityClientPlayerClass = BattlegearTranslator.getMapedClassName("EntityClientPlayerMP");
-
-            playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
-
-            clickMouseMethodName = BattlegearTranslator.getMapedMethodName("Minecraft", "func_71402_c");
-            clickMouseMethodDesc = BattlegearTranslator.getMapedMethodDesc("Minecraft", "func_71402_c");
-
-
-            System.out.println("M&B - Patching Class Minecraft (" + name + ")");
-            ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(ASM4);
-            cr.accept(cn, 0);
-
-
-            for (Object mnObj : cn.methods) {
-                MethodNode method = (MethodNode)mnObj;
-                if (method.name.equals(clickMouseMethodName) &&
-                        method.desc.equals(clickMouseMethodDesc)) {
-                    System.out.println("\tPatching method Click Mouse in Minecraft");
-
-                    TransformerUtils.replaceInventoryArrayAccess(method, entityClientPlayerClass, playerInventoryFieldName, 5, 9, 10);
-                }
-            }
-
-
-            ClassWriter cw = new ClassWriter(0);
-            cn.accept(cw);
-
-            System.out.println("M&B - Patching Class Minecraft (" + name + ") done");
-
-            if (BattlegearLoadingPlugin.debug) {
-                TransformerUtils.writeClassFile(cw, transformedName.substring(transformedName.lastIndexOf('.')+1)+" ("+name+")");
-            }
-
-            return cw.toByteArray();
-
-        } else
-            return bytes;
-    }
+        playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+	}
 
 }
