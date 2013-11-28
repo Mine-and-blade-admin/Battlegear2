@@ -1,15 +1,13 @@
 Mine and Blade : Battlegear - 2
 ===============================
 	
-Minecraft version: 1.6.2  
-Forge Version: 1.6.2-9.10.1.871 (nightly at the time of writing)  
+Minecraft version: 1.6.4  
+Forge Version: 1.6.4-9.11.1.916  
 
-Note from nerd-boy: Although the source code version will work for this version of Forges, there is still currently an issue with the ASM. I will look into this ass soon as I have some free time, however I am super busy right now. For the moment all users should use the previous version of the mod with minecraft forge 9.10.1.849 or lower.  
-
-Source is updated for Minecraft 1.6.2
+Source is updated for Minecraft 1.6.4
 
 This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft.
-The mod will have a heavy dependency on the use of ASM (coremod) to edit the bytecode of the minecraft base classess. Currently this feature is not avaliable.
+The mod will have a heavy dependency on the use of ASM (coremod) to edit the bytecode of the minecraft base classess. 
 
 What does and doesn't work
 --------------------------
@@ -22,7 +20,7 @@ What does and doesn't work
 * Swinging of offhand items of other players
 * Rendering of offhand weapons on other players
 * Shift Clicking on the inventory screen
-* The Following Weapons
+* The Following (enchantable) Weapons
     +Waraxe
     +Mace
     +Spear
@@ -31,13 +29,14 @@ What does and doesn't work
     + Shield Blocking
     + Shield Bash
     + Arrows being stuck in Shields
+    + Enchantments
 * Quivers
     +Quivers are the "current project" They are not released to the public yet
 
 **Note from nerd-boy:** I am not 100% happy with the way we are syncing items. It works now by sending a packet with all the "battle items" to each player that is viewing a player every 60 ticks. I am not sure if this will be too much or not. Although right now I cannot think of another way to do it that doesn't require more bytecode manipulation. I think we already have enough AccessTransformers planed to keep us busy without adding more that we may in fact not need.
 
 **What does not work**
-* Some of themore "advanced" quiver features
+* Some of the more "advanced" quiver features
     +Rendering on the back
     +Support for multiple types of arrows in the same quiver
 
@@ -62,7 +61,7 @@ on a unix enviroment or
 ``./battlegear-getsrc.cmd``
 on a windows environment
 
-Remember to set the exeuction bit to true on the unix enviroment
+Remember to set the execution bit to true on the unix environment
 
 When the project is in a more mature state I will also include another script (likely an ant script) to retrieve the fully compiled and packaged code
 
