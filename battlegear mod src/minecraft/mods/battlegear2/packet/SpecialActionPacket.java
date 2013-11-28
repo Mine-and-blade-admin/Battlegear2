@@ -1,11 +1,10 @@
 package mods.battlegear2.packet;
 
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.EOFException;
+import java.io.IOException;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
-import mods.battlegear2.Battlegear;
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
@@ -15,17 +14,15 @@ import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet106Transaction;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-
-import java.io.*;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.relauncher.Side;
 
 public class SpecialActionPacket extends AbstractMBPacket{
 
@@ -34,24 +31,20 @@ public class SpecialActionPacket extends AbstractMBPacket{
 	private Entity entityHit;
 
     @Override
-    public void process(Packet250CustomPayload packet, EntityPlayer player) {
-        DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
+    public void process(DataInputStream inputStream, EntityPlayer player) {
         try {
-            EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
-            if(targetPlayer!=null){
-	            Entity targetHit = null;
+            this.player = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
+            if(this.player!=null){
 	            if(inputStream.readBoolean()){
-	                targetHit = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
+	            	entityHit = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
 	            }else{
 	                try{
-	                    targetHit = player.worldObj.getEntityByID(inputStream.readInt());
+	                	entityHit = player.worldObj.getEntityByID(inputStream.readInt());
 	                }catch (EOFException e){}
 	            }
 	
-	
-	
-	            ItemStack mainhand = targetPlayer.getCurrentEquippedItem();
-	            ItemStack offhand = ((InventoryPlayerBattle)targetPlayer.inventory).getCurrentOffhandWeapon();
+	            ItemStack mainhand = this.player.getCurrentEquippedItem();
+	            ItemStack offhand = ((InventoryPlayerBattle)this.player.inventory).getCurrentOffhandWeapon();
 	
 	            ItemStack quiver = BowHookContainerClass2.getArrowContainer(mainhand, player);
 	
@@ -59,30 +52,30 @@ public class SpecialActionPacket extends AbstractMBPacket{
 	                ((IArrowContainer2)quiver.getItem()).setSelectedSlot(quiver,
 	                        (((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver)+1) %
 	                                ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver));
-	            } else if(targetHit != null && targetHit instanceof EntityLivingBase){
+	            } else if(entityHit != null && entityHit instanceof EntityLivingBase){
 	
 	                if(offhand != null && offhand.getItem() instanceof IShield){
-	                	if(((EntityLivingBase) targetHit).canBePushed()){
-		                    double d0 = targetHit.posX - targetPlayer.posX;
+	                	if(((EntityLivingBase) entityHit).canBePushed()){
+		                    double d0 = entityHit.posX - this.player.posX;
 		                    double d1;
 		
-		                    for (d1 = targetHit.posZ - targetPlayer.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D){
+		                    for (d1 = entityHit.posZ - this.player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D){
 		                        d0 = (Math.random() - Math.random()) * 0.01D;
 		                    }
 		                    double pow = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower.effectId, offhand)*0.1D;
 		
-		                    ((EntityLivingBase) targetHit).knockBack(player, 0, -d0*(1+pow), -d1*(1+pow));
+		                    ((EntityLivingBase) entityHit).knockBack(player, 0, -d0*(1+pow), -d1*(1+pow));
 	                	}
-	                	if(((EntityLivingBase) targetHit).getDistanceToEntity(player)<2){
+	                	if(((EntityLivingBase) entityHit).getDistanceToEntity(player)<2){
 	                		float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage.effectId, offhand)*2F;
 	                		if(dam>0) {
-	                			targetHit.attackEntityFrom(DamageSource.causeThornsDamage(player), dam);
-	                			targetHit.playSound("damage.thorns", 0.5F, 1.0F);
+	                			entityHit.attackEntityFrom(DamageSource.causeThornsDamage(player), dam);
+	                			entityHit.playSound("damage.thorns", 0.5F, 1.0F);
 	                		}
 	                	}
 	                    if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER &&
-	                            targetHit instanceof EntityPlayer){
-	                        PacketDispatcher.sendPacketToPlayer(packet, (Player)targetHit);
+	                    		entityHit instanceof EntityPlayer){
+	                        PacketDispatcher.sendPacketToPlayer(this.generatePacket(), (Player)entityHit);
 	                    }
 	
 	
@@ -110,7 +103,6 @@ public class SpecialActionPacket extends AbstractMBPacket{
     public SpecialActionPacket(EntityPlayer player, ItemStack mainhand, ItemStack offhand, Entity entityHit) {
     	this.player = player;
     	this.entityHit = entityHit;
-        
     }
 
 	public SpecialActionPacket() {

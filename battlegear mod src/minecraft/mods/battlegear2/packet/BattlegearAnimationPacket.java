@@ -1,13 +1,14 @@
 package mods.battlegear2.packet;
 
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.IOException;
+
 import mods.battlegear2.utils.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.world.WorldServer;
-
-import java.io.*;
 
 /**
  * User: nerd-boy
@@ -17,7 +18,7 @@ import java.io.*;
 public class BattlegearAnimationPacket extends AbstractMBPacket {
 
     public static final String packetName = "MB2|Animation";
-	private Enum<EnumBGAnimations> animation;
+	private EnumBGAnimations animation;
 	private String username;
 
     public BattlegearAnimationPacket(EnumBGAnimations animation, String username) {
@@ -27,33 +28,25 @@ public class BattlegearAnimationPacket extends AbstractMBPacket {
 
     public BattlegearAnimationPacket() {
 	}
-
+    
 	@Override
-    public void process(Packet250CustomPayload packet, EntityPlayer player) {
-        DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
-
-        String playername = null;
-        EnumBGAnimations animation = null;
+    public void process(DataInputStream in,EntityPlayer player) {
         try {
-            animation = EnumBGAnimations.values()[inputStream.readInt()];
-            playername = Packet.readString(inputStream, 16);
+			animation = EnumBGAnimations.values()[in.readInt()];
+			username = Packet.readString(in, 16);
+	        if (username != null && animation != null) {
+	            EntityPlayer entity = player.worldObj.getPlayerEntityByName(username);
+	            if(entity!=null){
+		            if (player.worldObj instanceof WorldServer) {
+		                ((WorldServer) player.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entity, this.generatePacket());
+		            }
+		            animation.processAnimation(entity);
+				}
+	        }
         } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            BattlegearUtils.closeStream(inputStream);
-        }
-
-        if (playername != null && animation != null) {
-
-            EntityPlayer entity = player.worldObj.getPlayerEntityByName(playername);
-
-            if(entity!=null){
-	            if (player.worldObj instanceof WorldServer) {
-	                ((WorldServer) player.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entity, packet);
-	            }
-	
-	            animation.processAnimation(entity);
-			}
+			e.printStackTrace();
+		} finally {
+            BattlegearUtils.closeStream(in);
         }
     }
 

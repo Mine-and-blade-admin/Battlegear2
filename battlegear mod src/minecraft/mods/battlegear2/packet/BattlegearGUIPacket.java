@@ -1,11 +1,12 @@
 package mods.battlegear2.packet;
 
+import java.io.DataInputStream;
+import java.io.DataOutput;
+import java.io.IOException;
+
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
-
-import java.io.*;
 
 /**
  * User: nerd-boy
@@ -25,32 +26,26 @@ public class BattlegearGUIPacket extends AbstractMBPacket {
 	}
 
 	private int equipid;
-
-
+	
     @Override
-    public void process(Packet250CustomPayload packet, EntityPlayer player) {
-        DataInputStream inputStream = new DataInputStream(new ByteArrayInputStream(packet.data));
-
-        int windowID = -1;
-        try {
-            windowID = inputStream.readInt();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            BattlegearUtils.closeStream(inputStream);
+    public void process(DataInputStream in, EntityPlayer player) {
+    	try {
+		equipid = -1;
+		equipid = in.readInt();
+        if(equipid != -1){
+            player.openGui(Battlegear.INSTANCE, equipid, player.worldObj, 0, 0, 0);
         }
-
-        if(windowID != -1){
-            player.openGui(Battlegear.INSTANCE, windowID, player.worldObj, 0, 0, 0);
+    	}catch(IOException e){
+    		e.printStackTrace();
+    	} finally {
+            BattlegearUtils.closeStream(in);
         }
     }
-
 
 	@Override
 	public String getChannel() {
 		return packetName;
 	}
-
 
 	@Override
 	public void write(DataOutput out) throws IOException {

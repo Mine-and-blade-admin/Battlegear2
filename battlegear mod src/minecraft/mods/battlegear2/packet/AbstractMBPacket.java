@@ -1,13 +1,12 @@
 package mods.battlegear2.packet;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
+import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 import mods.battlegear2.utils.BattlegearUtils;
-import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -40,5 +39,5 @@ public abstract class AbstractMBPacket {
 	
 	public abstract String getChannel();
 	public abstract void write(DataOutput out) throws IOException;
-    public abstract void process(Packet250CustomPayload packet, EntityPlayer player);
+	public abstract void process(DataInputStream in, EntityPlayer player);
 }

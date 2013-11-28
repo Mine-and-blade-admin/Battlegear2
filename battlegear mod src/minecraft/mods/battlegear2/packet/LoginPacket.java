@@ -1,22 +1,19 @@
 package mods.battlegear2.packet;
 
-
+import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.Battlegear;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet250CustomPayload;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class LoginPacket extends AbstractMBPacket{
     public static final String packetName = "MB|Login";
 
     @Override
-    public void process(Packet250CustomPayload packet, EntityPlayer player) {
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
+    public void process(DataInputStream inputStream,EntityPlayer player) {
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient()){
             Battlegear.battlegearEnabled = true;
         }
     }

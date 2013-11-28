@@ -1,13 +1,15 @@
 package mods.battlegear2.packet;
 
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.Player;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.util.Hashtable;
+import java.util.Map;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
-
-import java.util.Hashtable;
-import java.util.Map;
+import cpw.mods.fml.common.network.IPacketHandler;
+import cpw.mods.fml.common.network.Player;
 
 public class BattlegearPacketHandeler implements IPacketHandler {
 
@@ -31,9 +33,8 @@ public class BattlegearPacketHandeler implements IPacketHandler {
     @Override
     public void onPacketData(INetworkManager manager,
                              Packet250CustomPayload packet, Player player) {
-        map.get(packet.channel).process(packet, (EntityPlayer) player);
+        map.get(packet.channel).process(new DataInputStream(new ByteArrayInputStream(packet.data)),(EntityPlayer) player);
 
     }
-
 
 }
