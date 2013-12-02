@@ -1,3 +1,11 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.4.0 ==
+* Fixed shields sound
+* Organized sheathed item rendering into the API
+* Made shields use the "useItem" keybind
+* Fixed server crash with TConstruct
+* Fixed transformers to keep fields and methods order
+* Added EntityArrow transformer
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.3.9 ==
 * Caught config crash with M.U.D
 * Made /mud a client side command
