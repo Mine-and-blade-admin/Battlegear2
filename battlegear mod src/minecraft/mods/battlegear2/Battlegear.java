@@ -61,7 +61,6 @@ public class Battlegear {
     public static EnumArmorMaterial knightArmourMaterial;
 
     public static boolean battlegearEnabled = true;
-    public static boolean tconstructEnabled = false;
     public static boolean debug = false;
 
     @EventHandler
@@ -111,31 +110,7 @@ public class Battlegear {
         GameRegistry.registerPlayerTracker(new BgPlayerTracker());
 
         if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
-        	Class tabRegistry;
-        	Class abstractTab;
-        	try {
-        		tabRegistry = Class.forName("tconstruct.client.tabs.TabRegistry");
-        		abstractTab = Class.forName("tconstruct.client.tabs.AbstractTab");
-			} catch (ClassNotFoundException e) {
-				return;
-			}
-        	Method registerTab;
-        	try {
-        		registerTab = tabRegistry.getMethod("registerTab", abstractTab);
-			} catch (NoSuchMethodException e) {
-				return;
-			} catch (SecurityException e) {
-				return;
-			}
-        	try {
-        		registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab").newInstance());
-        		if(debug){
-        			registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.SigilTab").newInstance());
-        		}
-			} catch (Exception e) {
-				return;
-			}
-        	tconstructEnabled = true;
+            proxy.tryUseTConstruct();
         }
     }
 }

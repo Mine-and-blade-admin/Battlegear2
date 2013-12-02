@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 
 public class CommonProxy {
 
+    public static boolean tconstructEnabled = false;
     public void registerKeyHandelers() {}
 
     public void registerTickHandelers(){
@@ -39,11 +40,10 @@ public class CommonProxy {
     }
 
     public void sendPlaceBlockPacket(EntityPlayer entityPlayer, int x, int y, int z, int face, Vec3 par8Vec3){
-
     }
 
     public void doSpecialAction(EntityPlayer entityPlayer) {}
+
+	public void tryUseTConstruct() {
+	}
 }
-
-
-

@@ -4,6 +4,7 @@ import java.util.List;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BowHookContainerClass2;
+import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.client.BattlegearClientEvents;
@@ -52,7 +53,7 @@ public class BattlegearInGameGUI extends Gui {
             if (!this.mc.playerController.enableEverythingIsScrewedUpMode()) {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-                if(!Battlegear.tconstructEnabled || mc.thePlayer.capabilities.isCreativeMode){
+                if(!CommonProxy.tconstructEnabled || mc.thePlayer.capabilities.isCreativeMode){
 	                if(previousGui!=null && mc.currentScreen==null) {
 	                	previousGui=null;
 	                }

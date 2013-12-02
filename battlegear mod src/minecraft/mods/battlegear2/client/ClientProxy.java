@@ -1,6 +1,7 @@
 package mods.battlegear2.client;
 
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import mods.battlegear2.Battlegear;
@@ -227,4 +228,33 @@ public class ClientProxy extends CommonProxy {
         }
         return null;
     }
+    
+    @Override
+    public void tryUseTConstruct() {
+    	Class tabRegistry;
+    	Class abstractTab;
+    	try {
+    		tabRegistry = Class.forName("tconstruct.client.tabs.TabRegistry");
+    		abstractTab = Class.forName("tconstruct.client.tabs.AbstractTab");
+		} catch (ClassNotFoundException e) {
+			return;
+		}
+    	Method registerTab;
+    	try {
+    		registerTab = tabRegistry.getMethod("registerTab", abstractTab);
+		} catch (NoSuchMethodException e) {
+			return;
+		} catch (SecurityException e) {
+			return;
+		}
+    	try {
+    		registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab").newInstance());
+    		if(Battlegear.debug){
+    			registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.SigilTab").newInstance());
+    		}
+		} catch (Exception e) {
+			return;
+		}
+    	tconstructEnabled = true;
+	}
 }
