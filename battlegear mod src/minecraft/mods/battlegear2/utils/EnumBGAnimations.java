@@ -18,8 +18,6 @@ public enum EnumBGAnimations {
         @Override
         public void processAnimation(Entity entity) {
             if (entity instanceof EntityPlayer){
-
-                ItemStack mainhand = ((EntityPlayer) entity).getCurrentEquippedItem();
                 ItemStack offhand =  ((InventoryPlayerBattle)((EntityPlayer) entity).inventory).getCurrentOffhandWeapon();
 
                 if(offhand != null && offhand.getItem() instanceof IShield){

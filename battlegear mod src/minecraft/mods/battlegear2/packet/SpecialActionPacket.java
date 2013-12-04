@@ -73,7 +73,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
 	                			entityHit.playSound("damage.thorns", 0.5F, 1.0F);
 	                		}
 	                	}
-	                    if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER &&
+	                    if(FMLCommonHandler.instance().getEffectiveSide().isServer() &&
 	                    		entityHit instanceof EntityPlayer){
 	                        PacketDispatcher.sendPacketToPlayer(this.generatePacket(), (Player)entityHit);
 	                    }
@@ -83,7 +83,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
 	                }else if(mainhand != null && offhand != null){
 	                    //This will be handeled elsewhere
 	                }else if (mainhand != null && mainhand.getItem() instanceof IBattlegearWeapon){
-	
+	                	//What's the plan here ?
 	                }
 	                else if(mainhand != null){
 	
