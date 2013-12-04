@@ -1,24 +1,32 @@
 package mods.battlegear2.utils;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import cpw.mods.fml.common.FMLCommonHandler;
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Collection;
+
+import mods.battlegear2.api.IAllowItem;
+import mods.battlegear2.api.IOffhandDual;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
-import net.minecraft.block.Block;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentThorns;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.*;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
+import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -29,12 +37,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
 
 public class BattlegearUtils {
 
@@ -82,7 +87,6 @@ public class BattlegearUtils {
         return player.inventory instanceof InventoryPlayerBattle && ((InventoryPlayerBattle) player.inventory).isBattlemode();
     }
 
-
     public static void setPlayerCurrentItem(EntityPlayer player, ItemStack stack, int offset) {
         ((InventoryPlayerBattle) (player.inventory)).setInventorySlotContents(player.inventory.currentItem + offset, stack, false);
     }
@@ -91,36 +95,27 @@ public class BattlegearUtils {
         setPlayerCurrentItem(player, stack, 0);
     }
 
-    public static boolean isWeapon(int id) {
-
-        if (Item.itemsList[id] instanceof IBattlegearWeapon)
+    public static boolean isWeapon(ItemStack main) {
+        if (main.getItem() instanceof IBattlegearWeapon)
             return true;
         else
-            return weapons[id];
+            return weapons[main.itemID];
     }
 
-    public static boolean isMainHand(int id) {
-        if (Item.itemsList[id] instanceof IBattlegearWeapon)
-            return ((IBattlegearWeapon) Item.itemsList[id]).willAllowOffhandWeapon();
+    public static boolean isMainHand(ItemStack main, ItemStack off) {
+    	if(main.getItem() instanceof IAllowItem)
+            return ((IAllowItem) main.getItem()).allowOffhand(main, off);
         else
-            return mainHandDualWeapons[id];
+            return mainHandDualWeapons[main.itemID];
     }
 
-    public static boolean isOffHand(int id) {
-        if (Item.itemsList[id] instanceof IBattlegearWeapon)
-            return ((IBattlegearWeapon) Item.itemsList[id]).isOffhandHandDualWeapon();
-        else if(Item.itemsList[id] instanceof IShield){
+    public static boolean isOffHand(ItemStack off) {
+    	if(off.getItem() instanceof IOffhandDual)
+            return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);
+        else if(off.getItem() instanceof IShield || off.getItem() instanceof ItemBlock)
             return true;
-        }
         else
-            return offhandDualWeapons[id];
-    }
-
-    public static boolean allowsShield(int itemID) {
-        if (Item.itemsList[itemID] instanceof IBattlegearWeapon)
-            return ((IBattlegearWeapon) Item.itemsList[itemID]).willAllowShield();
-        else
-            return mainHandDualWeapons[itemID];
+            return offhandDualWeapons[off.itemID];
     }
 
     public static void scanAndProcessItems() {
@@ -134,10 +129,6 @@ public class BattlegearUtils {
             mainHandDualWeapons[i] = false;
             offhandDualWeapons[i] = false;
             if (item != null) {
-
-		if(i == Block.torchWood.blockID){
-                    offhandDualWeapons[i] = true;
-                }
 
                 boolean valid = item.getItemStackLimit() == 1 && item.isDamageable();
                 if (valid) {

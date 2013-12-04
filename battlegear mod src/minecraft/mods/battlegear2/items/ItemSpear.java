@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.weapons.ISpecialEffect;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -31,8 +32,8 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 	}
 
 	@Override
-	public boolean willAllowShield() {
-		return true;
+	public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
+		return offhand!=null && offhand.getItem() instanceof IShield;
 	}
 
     @Override

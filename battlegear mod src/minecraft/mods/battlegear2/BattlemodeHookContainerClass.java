@@ -1,12 +1,7 @@
 package mods.battlegear2;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
+import mods.battlegear2.api.IOffhandDual;
 import mods.battlegear2.api.IShield;
-import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.weapons.OffhandAttackEvent;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -15,28 +10,24 @@ import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.utils.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet103SetSlot;
-import net.minecraft.network.packet.Packet15Place;
 import net.minecraft.network.packet.Packet53BlockChange;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 
 public class BattlemodeHookContainerClass {
 
@@ -91,9 +82,9 @@ public class BattlemodeHookContainerClass {
                     break;
                 case RIGHT_CLICK_BLOCK:
 
-                    if (offhandItem != null && offhandItem.getItem() instanceof IBattlegearWeapon) {
+                    if (offhandItem != null && offhandItem.getItem() instanceof IOffhandDual) {
                         event.useItem = Result.DENY;
-                        boolean shouldSwing = ((IBattlegearWeapon) offhandItem.getItem()).offhandClickBlock(event, mainHandItem, offhandItem);
+                        boolean shouldSwing = ((IOffhandDual) offhandItem.getItem()).offhandClickBlock(event, mainHandItem, offhandItem);
 
                         if (shouldSwing) {
                             event.entityPlayer.swingOffItem();
@@ -102,26 +93,24 @@ public class BattlemodeHookContainerClass {
 
                     }else if (offhandItem != null && offhandItem.getItem() instanceof IShield){
                         event.useItem = Result.DENY;
-                    } else if (offhandItem != null && offhandItem.getItem() instanceof ItemBlock && offhandItem.getItem().itemID == Block.torchWood.blockID){
+                    } else if (offhandItem != null && offhandItem.getItem() instanceof ItemBlock){
                         event.useItem = Result.DENY;
                         event.useBlock = Result.DENY;
 
                         int blockId = event.entityLiving.worldObj.getBlockId(event.x, event.y, event.z);
-                        if(Block.blocksList[blockId].canPlaceTorchOnTop(event.entityPlayer.worldObj, event.x, event.y, event.z)){
-
-                            offhandItem.tryPlaceItemIntoWorld(event.entityPlayer, event.entityPlayer.worldObj,
-                                    event.x, event.y, event.z, event.face, 0, 0, 0);
-
+                        if(offhandItem.tryPlaceItemIntoWorld(event.entityPlayer, event.entityPlayer.worldObj,
+                                event.x, event.y, event.z, event.face, 0, 0, 0)){
+                        	
                             if(event.entityPlayer.capabilities.isCreativeMode){
                                 offhandItem.stackSize++;
                             }
 
-                            if(offhandItem.stackSize == 0){
+                            if(offhandItem.stackSize <= 0){
                                 ForgeEventFactory.onPlayerDestroyItem(event.entityPlayer, offhandItem);
                                 event.entityPlayer.inventory.setInventorySlotContents(event.entityPlayer.inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS, null);
                             }
 
-                            if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER){
+                            if(FMLCommonHandler.instance().getEffectiveSide().isServer()){
                                 PacketDispatcher.sendPacketToAllAround(event.x, event.y, event.z, 32, event.entityPlayer.dimension,
                                         new Packet53BlockChange(event.x, event.y, event.z, event.entityPlayer.worldObj));
                             }
@@ -134,13 +123,13 @@ public class BattlemodeHookContainerClass {
 
                 case RIGHT_CLICK_AIR:
 
-                    if (mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem.itemID)) {
+                    if (mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem, offhandItem)) {
 
                         event.useItem = Result.DENY;
                         event.setCanceled(true);
 
-                        if (offhandItem != null && offhandItem.getItem() instanceof IBattlegearWeapon) {
-                            boolean shouldSwing = ((IBattlegearWeapon) offhandItem.getItem()).offhandClickAir(event, mainHandItem, offhandItem);
+                        if (offhandItem != null && offhandItem.getItem() instanceof IOffhandDual) {
+                            boolean shouldSwing = ((IOffhandDual) offhandItem.getItem()).offhandClickAir(event, mainHandItem, offhandItem);
 
                             if (shouldSwing) {
                                 event.entityPlayer.swingOffItem();
@@ -173,12 +162,12 @@ public class BattlemodeHookContainerClass {
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = event.entityPlayer.inventory.getStackInSlot(event.entityPlayer.inventory.currentItem + 3);
 
-            if (offhandItem != null && offhandItem.getItem() instanceof IBattlegearWeapon) {
+            if (offhandItem != null && offhandItem.getItem() instanceof IOffhandDual) {
 
-                if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem.itemID)){
+                if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem, offhandItem)){
                     OffhandAttackEvent offAttackEvent = new OffhandAttackEvent(event);
 
-                    ((IBattlegearWeapon) offhandItem.getItem()).offhandAttackEntity(offAttackEvent, mainHandItem, offhandItem);
+                    ((IOffhandDual) offhandItem.getItem()).offhandAttackEntity(offAttackEvent, mainHandItem, offhandItem);
 
                     if (offAttackEvent.swingOffhand) {
                         event.entityPlayer.swingOffItem();
@@ -200,7 +189,7 @@ public class BattlemodeHookContainerClass {
                 event.setCanceled(true);
                 event.setResult(Result.DENY);
             }else{
-                if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem.itemID)){
+                if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem, offhandItem)){
                     event.setCanceled(true);
                     event.setResult(Result.DENY);
                     event.entityPlayer.swingOffItem();

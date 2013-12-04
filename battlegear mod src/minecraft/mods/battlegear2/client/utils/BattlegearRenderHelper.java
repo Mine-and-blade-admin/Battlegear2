@@ -1,6 +1,5 @@
 package mods.battlegear2.client.utils;
 
-
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 import mods.battlegear2.api.ISheathed;
@@ -51,7 +50,7 @@ public class BattlegearRenderHelper {
         }
 
         if (itemRenderer.offHandItemToRender != dummyStack &&
-                (itemToRender == null || BattlegearUtils.isOffHand(itemToRender.itemID))) {
+                (itemToRender == null || BattlegearUtils.isOffHand(itemToRender))) {
             float progress = itemRenderer.prevEquippedOffHandProgress + (itemRenderer.equippedOffHandProgress - itemRenderer.prevEquippedOffHandProgress) * frame;
 
             EntityClientPlayerMP player = mc.thePlayer;
@@ -313,8 +312,7 @@ public class BattlegearRenderHelper {
 
         ItemStack offhand = var1.isBattlemode() ? var1.inventory.getStackInSlot(var1.inventory.currentItem + 3) : dummyStack;
 
-        offhand = (mainhandToRender == null || BattlegearUtils.isMainHand(mainhandToRender.itemID) ||
-                (BattlegearUtils.allowsShield(mainhandToRender.itemID) && offhand != null && offhand.getItem() instanceof IShield)) ? offhand : dummyStack;
+        offhand = (mainhandToRender == null || BattlegearUtils.isMainHand(mainhandToRender, offhand)) ? offhand : dummyStack;
         var3 = var3 & (itemRenderer.equippedItemOffhandSlot == var1.inventory.currentItem + 3 && offhand == itemRenderer.offHandItemToRender);
 
         float var4 = 0.4F;
@@ -606,7 +604,7 @@ public class BattlegearRenderHelper {
 
         }
 
-        if(offhandSheathed != null){
+        if(offhandSheathed != null && !(offhandSheathed.getItem() instanceof ItemBlock)){
             boolean onBack = BattlegearConfig.forceBackSheath;
             if(offhandSheathed.getItem() instanceof ISheathed){
                 onBack = ((ISheathed) offhandSheathed.getItem()).sheatheOnBack(offhandSheathed);
@@ -618,7 +616,6 @@ public class BattlegearRenderHelper {
             }else if(legsModel != null && !onBack){
                 target = legsModel;
             }
-
 
             GL11.glPushMatrix();
 
@@ -646,7 +643,6 @@ public class BattlegearRenderHelper {
 
             }
 
-
             if (offhandSheathed.getItem().requiresMultipleRenderPasses()) {
                 for (int var27 = 0; var27 < offhandSheathed.getItem().getRenderPasses(offhandSheathed.getItemDamage()); ++var27) {
                     int var26 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, var27);
@@ -672,7 +668,6 @@ public class BattlegearRenderHelper {
 
     public static void renderArrow(boolean isEntity, float x, float y, float depth, float pitch, float yaw){
         GL11.glPushMatrix();
-
 
         //depth = 1;
 

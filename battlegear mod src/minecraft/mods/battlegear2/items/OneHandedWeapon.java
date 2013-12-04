@@ -15,17 +15,12 @@ public abstract class OneHandedWeapon extends ItemWeapon{
 	}
 	
 	@Override
-	public boolean willAllowOffhandWeapon() {
-		return true;
-	}
-	
-	@Override
-	public boolean willAllowShield() {
+	public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
 		return true;
 	}
 
 	@Override
-	public boolean isOffhandHandDualWeapon() {
+	public boolean isOffhandHandDual(ItemStack off) {
 		return true;
 	}
 
@@ -58,8 +53,7 @@ public abstract class OneHandedWeapon extends ItemWeapon{
 	}
 
 	@Override
-	public int getItemEnchantability()
-    {
+	public int getItemEnchantability() {
         return this.getMaterial().getEnchantability();
     }
 }
