@@ -9,6 +9,8 @@ import mods.battlegear2.coremod.BattlegearTranslator;
 
 import org.objectweb.asm.tree.*;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class NetServerHandlerTransformer extends TransformerBase {
 
     public NetServerHandlerTransformer() {
@@ -92,12 +94,15 @@ public class NetServerHandlerTransformer extends TransformerBase {
                     newList.add(new MethodInsnNode(INVOKESTATIC,
                             "mods/battlegear2/utils/BattlegearUtils",
                             "setPlayerCurrentItem", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
-                    while(it.hasNext() && ! (nextNode instanceof JumpInsnNode && ((JumpInsnNode) nextNode).getOpcode()==IFNE)){
-                    	nextNode = it.next();
-                    	newList.add(nextNode);
+                    
+                    if(!FMLCommonHandler.instance().getModName().contains("mcpc")){//MCPC already adds a fix for this
+	                    while(it.hasNext() && ! (nextNode instanceof JumpInsnNode && ((JumpInsnNode) nextNode).getOpcode()==IFNE)){
+	                    	nextNode = it.next();
+	                    	newList.add(nextNode);
+	                    }
+	                    newList.add(new VarInsnNode(ALOAD, 9));
+	                    newList.add(new JumpInsnNode(IFNULL, ((JumpInsnNode) nextNode).label));
                     }
-                    newList.add(new VarInsnNode(ALOAD, 9));
-                    newList.add(new JumpInsnNode(IFNULL, ((JumpInsnNode) nextNode).label));
 
                 } else {
                     newList.add(nextNode);
@@ -107,7 +112,6 @@ public class NetServerHandlerTransformer extends TransformerBase {
             }
 
         }
-
 
         mn.instructions = newList;
     }
