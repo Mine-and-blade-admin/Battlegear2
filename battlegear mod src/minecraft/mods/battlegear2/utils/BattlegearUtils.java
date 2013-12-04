@@ -8,6 +8,7 @@ import mods.battlegear2.api.IAllowItem;
 import mods.battlegear2.api.IOffhandDual;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
+import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -99,14 +100,14 @@ public class BattlegearUtils {
         if (main.getItem() instanceof IBattlegearWeapon)
             return true;
         else
-            return weapons[main.itemID];
+            return weapons[main.itemID] || WeaponRegistry.isWeapon(main);
     }
 
     public static boolean isMainHand(ItemStack main, ItemStack off) {
     	if(main.getItem() instanceof IAllowItem)
             return ((IAllowItem) main.getItem()).allowOffhand(main, off);
         else
-            return mainHandDualWeapons[main.itemID];
+            return mainHandDualWeapons[main.itemID] || WeaponRegistry.isMainHand(main);
     }
 
     public static boolean isOffHand(ItemStack off) {
@@ -115,7 +116,7 @@ public class BattlegearUtils {
         else if(off.getItem() instanceof IShield || off.getItem() instanceof ItemBlock)
             return true;
         else
-            return offhandDualWeapons[off.itemID];
+            return offhandDualWeapons[off.itemID] || WeaponRegistry.isOffHand(off);
     }
 
     public static void scanAndProcessItems() {

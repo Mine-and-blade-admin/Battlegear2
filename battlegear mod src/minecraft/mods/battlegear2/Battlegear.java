@@ -2,8 +2,11 @@ package mods.battlegear2;
 
 import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.*;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
+import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
+import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.items.arrows.EntityEnderArrow;
@@ -32,6 +35,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.logging.Logger;
 
 
 @Mod(modid="battlegear2")
@@ -63,6 +67,8 @@ public class Battlegear {
     public static boolean battlegearEnabled = true;
     public static boolean debug = false;
 
+	public static Logger logger;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         //Set up the Translator
@@ -82,20 +88,19 @@ public class Battlegear {
                 e.printStackTrace();
             }
         }
+        logger = event.getModLog();
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
         BattlegearConfig.registerRecipes();
 	    GameRegistry.registerCraftingHandler(new CraftingHandeler());
-
-        if(Battlegear.debug){
-            QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
-            QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 0, EntityExplossiveArrow.class);
-            QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 1, EntityEnderArrow.class);
-            QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 2, EntityFlameArrow.class);
-        }
-
+	    if(debug){
+	        QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
+	        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 0, EntityExplossiveArrow.class);
+	        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 1, EntityEnderArrow.class);
+	        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 2, EntityFlameArrow.class);
+	    }
 
     }
 
@@ -112,5 +117,38 @@ public class Battlegear {
         if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
             proxy.tryUseTConstruct();
         }
+    }
+    
+    @EventHandler
+    public void onMessage(IMCEvent event){
+    	ItemStack stack = null;
+    	for(IMCMessage message:event.getMessages()){
+    		if(message != null && message.isItemStackMessage()){
+    			stack = message.getItemStackValue();
+    			if(stack!=null){
+		    		if(message.key.equals("Dual")){
+		    			WeaponRegistry.addDualWeapon(stack);
+		    			continue;
+		    		}else if(message.key.equals("MainHand")){
+		    			WeaponRegistry.addTwoHanded(stack);
+		    			continue;
+		    		}else if(message.key.equals("OffHand")){
+		    			WeaponRegistry.addOffhandWeapon(stack);
+		    			continue;
+		    		}else if(message.key.startsWith("Arrow:")){
+		    			Class<?> clazz = null;
+						try {
+							clazz = Class.forName(message.key.split(":")[1]);//Complete key should look like Arrow:package.CustomArrow
+						} catch (ClassNotFoundException ignored) {
+						}
+		    			if(clazz!=null && EntityArrow.class.isAssignableFrom(clazz)){//The arrow entity should use EntityArrow, at least as a superclass
+		    				QuiverArrowRegistry.addArrowToRegistry(stack, (Class<? extends EntityArrow>) clazz);
+		    				continue;
+		    			}
+		    		}
+    			}
+    			logger.warning("Mod "+message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");	    		
+    		}
+    	}
     }
 }
