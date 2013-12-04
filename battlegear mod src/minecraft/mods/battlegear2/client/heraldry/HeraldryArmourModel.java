@@ -3,11 +3,13 @@ package mods.battlegear2.client.heraldry;
 import java.awt.Color;
 import java.util.List;
 
-import mods.battlegear2.api.IHeraldyArmour;
+import mods.battlegear2.api.heraldry.IHeraldyArmour;
 import mods.battlegear2.heraldry.HelaldyArmourPositions;
 import mods.battlegear2.heraldry.HeraldryIcon;
 import mods.battlegear2.heraldry.SigilHelper;
+
 import org.lwjgl.opengl.GL11;
+
 
 
 import cpw.mods.fml.client.FMLClientHandler;

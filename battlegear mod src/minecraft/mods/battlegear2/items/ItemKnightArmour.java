@@ -3,8 +3,8 @@ package mods.battlegear2.items;
 import java.util.List;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.api.IHeraldyArmour;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
+import mods.battlegear2.api.heraldry.IHeraldyArmour;
 import mods.battlegear2.client.heraldry.HeraldryArmourModel;
 import mods.battlegear2.heraldry.HeraldyPattern;
 import mods.battlegear2.heraldry.SigilHelper;

@@ -1,7 +1,6 @@
-package mods.battlegear2.api;
+package mods.battlegear2.api.heraldry;
 
 
-import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.heraldry.HeraldyPattern;
 
 public interface IHeraldyArmour extends IHeraldryItem{
