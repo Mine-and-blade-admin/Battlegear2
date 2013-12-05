@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 public class BattlegearTickHandeler implements ITickHandler {
 
-    public HashMap<String, Integer> currentItemCache = new HashMap<String, Integer>();
+    //public HashMap<String, Integer> currentItemCache = new HashMap<String, Integer>();
 
 
     @Override
@@ -40,14 +40,12 @@ public class BattlegearTickHandeler implements ITickHandler {
             EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
 
             if (entityPlayer.worldObj instanceof WorldServer) {
-            	/*boolean changed = false;
-                if(!currentItemCache.containsKey(entityPlayer.username)||entityPlayer.inventory.currentItem!=currentItemCache.get(entityPlayer.username))
+                /*if(!currentItemCache.containsKey(entityPlayer.username)||entityPlayer.inventory.currentItem!=currentItemCache.get(entityPlayer.username))
                 {
-                	changed = true;
-                }
-            	
-            	((InventoryPlayerBattle)entityPlayer.inventory).hasChanged |= changed;*/
-
+                	entityPlayer.inventory.onInventoryChanged();
+                	currentItemCache.put(entityPlayer.username, entityPlayer.inventory.currentItem);
+                }*/
+                
                 if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 
                     ((WorldServer)entityPlayer.worldObj)
@@ -61,11 +59,9 @@ public class BattlegearTickHandeler implements ITickHandler {
                     ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
 
                 }
-
-
                 //Force update every 3 seconds
                 //TODO: This is a temp fix
-                if(entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
+                else if(entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
                     ((WorldServer)entityPlayer.worldObj)
                             .getEntityTracker().sendPacketToAllAssociatedPlayers(
                             entityPlayer,
@@ -73,12 +69,9 @@ public class BattlegearTickHandeler implements ITickHandler {
                     );
                 }
                 
-                /*if(changed)
-                {
-                	currentItemCache.put(entityPlayer.username, entityPlayer.inventory.currentItem);
-                }*/
             }
-            
+
+        	
             //If we JUST swung an Item
             if (entityPlayer.swingProgressInt == 1) {
                 ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
@@ -110,7 +103,7 @@ public class BattlegearTickHandeler implements ITickHandler {
                 }else if (offhand != null && offhand.getItem() instanceof IArrowContainer2){
                     targetTime = 0;
                 }
-                if(entityPlayer.specialActionTimer == targetTime && FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT){
+                if(entityPlayer.specialActionTimer == targetTime){
                     Battlegear.proxy.doSpecialAction(entityPlayer);
                 }
 

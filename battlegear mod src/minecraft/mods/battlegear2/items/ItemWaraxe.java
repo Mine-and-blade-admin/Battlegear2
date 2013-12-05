@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 
-//Should we make this also use the hearaldry? It actually doesn't look as good as the sword (and makes the sword a little more special)
+//Should we make this also use the heraldry? It actually doesn't look as good as the sword (and makes the sword a little more special)
 public class ItemWaraxe extends OneHandedWeapon implements IPenetrateWeapon{ // implements IHeraldyItem{ Don't know if we want to do this or not
 	
 	private int ignoreDamageAmount;

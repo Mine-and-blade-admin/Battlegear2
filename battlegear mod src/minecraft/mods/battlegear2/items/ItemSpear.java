@@ -37,11 +37,6 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 	}
 
     @Override
-    public EnumAction getItemUseAction(ItemStack par1ItemStack) {
-        return EnumAction.none;
-    }
-
-    @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
         return par1ItemStack;
@@ -69,21 +64,7 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
     public boolean performEffects(EntityLivingBase entityHit, EntityLivingBase entityHitting) {
         if(entityHitting.isRiding() || entityHitting.isSprinting())
         {
-
-            //This has been reworked to prevent an infinate loop.
-            //It was also applying twice to halved the damage because CBF looking for the real cause
             entityHit.attackEntityFrom(new EntityDamageSource("battlegearExtra", entityHitting), mounted_extra_damage/2);
-
-            /*
-            if(entityHitting instanceof EntityPlayer)
-                //Player Damage will cause an infinite loop here
-                entityHit.attackEntityFrom(DamageSource.causePlayerDamage((EntityPlayer)entityHitting), mounted_extra_damage);
-                //entityHit.attackEntityFrom(DamageSource.causeMobDamage(entityHitting), mounted_extra_damage);
-
-            else
-                entityHit.attackEntityFrom(DamageSource.causeMobDamage(entityHitting), mounted_extra_damage);
-                */
-
             return true;
         }else{
             return false;

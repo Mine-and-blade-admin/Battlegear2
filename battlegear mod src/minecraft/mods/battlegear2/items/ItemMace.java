@@ -31,7 +31,6 @@ public class ItemMace extends OneHandedWeapon implements IPotionEffect{
 		this.baseDamage = baseDamage-1;
         effects= new HashMap<PotionEffect,Float>();
         this.stunChance = stunChance;
-        stunChance = 1;
         effects.put(new PotionEffect(2,3*20,100), stunChance);
         effects.put(new PotionEffect(9,3*20,100), stunChance);
         effects.put(new PotionEffect(15,3*20,100), stunChance);

@@ -152,12 +152,10 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     }
 
-
-
-
     /**
      * Return whether the specified armor ItemStack has a color.
      */
+    @Override
     public boolean hasColor(ItemStack par1ItemStack)
     {
         return (!par1ItemStack.hasTagCompound() ? false : (!par1ItemStack.getTagCompound().hasKey("display") ? false : par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color")));
@@ -166,6 +164,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     /**
      * Return the color for the specified armor ItemStack.
      */
+    @Override
     public int getColor(ItemStack par1ItemStack)
     {
         {
@@ -186,6 +185,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     /**
      * Remove the color from the specified armor ItemStack.
      */
+    @Override
     public void removeColor(ItemStack par1ItemStack)
     {
         NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
