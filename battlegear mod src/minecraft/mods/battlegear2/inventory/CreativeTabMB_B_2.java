@@ -20,11 +20,14 @@ public class CreativeTabMB_B_2 extends CreativeTabs{
 	public CreativeTabMB_B_2(String label) {
 		super(label);
 	}
+	
+	@Override
 	@SideOnly(Side.CLIENT)
     public String getTranslatedTabLabel()
     {
         return StatCollector.translateToLocal("name.title");
     }
+	
 	@Override
 	public ItemStack getIconItemStack() {
 		if(stack == null){
@@ -34,6 +37,7 @@ public class CreativeTabMB_B_2 extends CreativeTabs{
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void displayAllReleventItems(List list)
     {
         super.displayAllReleventItems(list);
