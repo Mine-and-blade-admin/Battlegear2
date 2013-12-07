@@ -1,3 +1,10 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.4.1 ==
+* Added block placing by offhand
+* Added WeaponRegistry and FMLInterModComms access for other mods weapons
+* Fixed conflict with MCPC in NetServerHandler transformer
+* TinkersConstruct should have caught our API changes
+**meaning it should be compatible again in their latest version
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.4.0 ==
 * Fixed shields sound
 * Organized sheathed item rendering into the API
