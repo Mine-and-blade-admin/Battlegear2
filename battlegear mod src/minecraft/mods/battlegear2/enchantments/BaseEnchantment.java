@@ -15,11 +15,11 @@ public class BaseEnchantment extends Enchantment{
 	private int max;
 	private int enchantCoeff;
 	private int range;
-	public static final Enchantment bashWeight = new BaseEnchantment(BattlegearConfig.shieldBashEnchantId, 5, 3, 15, 30).setName("bash.weightless");
-	public static final Enchantment bashPower = new BaseEnchantment(BattlegearConfig.shieldBashEnchantId+1, 10, 5, 10, 40).setName("bash.power");
-	public static final Enchantment bashDamage = new BaseEnchantment(BattlegearConfig.shieldBashEnchantId+2, 1, 3, 15, 50).setName("bash.damage");
-	public static final Enchantment shieldUsage = new BaseEnchantment(BattlegearConfig.shieldBashEnchantId+3, 2, 5, 5, 30).setName("shield.usage");
-	public static final Enchantment shieldRecover = new BaseEnchantment(BattlegearConfig.shieldBashEnchantId+4, 3, 4, 20, 20).setName("shield.recover");
+	public static final Enchantment bashWeight = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[0], 5, 3, 15, 30).setName("bash.weightless");
+	public static final Enchantment bashPower = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[1], 10, 5, 10, 40).setName("bash.power");
+	public static final Enchantment bashDamage = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[2], 1, 3, 15, 50).setName("bash.damage");
+	public static final Enchantment shieldUsage = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[3], 2, 5, 5, 30).setName("shield.usage");
+	public static final Enchantment shieldRecover = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[4], 3, 4, 20, 20).setName("shield.recover");
 	
 	public BaseEnchantment(int id, int weight, int limit, int progress, int range) {
 		super(id, weight, EnumEnchantmentType.all);
