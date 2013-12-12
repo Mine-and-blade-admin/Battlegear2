@@ -33,7 +33,7 @@ public class BattlegearPacketHandeler implements IPacketHandler {
     @Override
     public void onPacketData(INetworkManager manager,
                              Packet250CustomPayload packet, Player player) {
-        map.get(packet.channel).process(new DataInputStream(new ByteArrayInputStream(packet.data)),(EntityPlayer) player);
+        map.get(packet.channel).process(packet.data!=null?new DataInputStream(new ByteArrayInputStream(packet.data)):null,(EntityPlayer) player);
 
     }
 
