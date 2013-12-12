@@ -36,6 +36,7 @@ public class BaseEnchantment extends Enchantment{
 		else
 			this.range = 0;
 		enchants.add(this);
+		addToBookList(this);
 	}
 
 	@Override
@@ -45,6 +46,12 @@ public class BaseEnchantment extends Enchantment{
 			return ((IEnchantable) stack.getItem()).isEnchantable(this, stack);
 		}
         return false;
+    }
+	
+	@Override
+	public boolean canApplyAtEnchantingTable(ItemStack stack)
+    {
+        return canApply(stack);//Redundancy for MCPC+ fix
     }
 	
 	@Override
