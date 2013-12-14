@@ -28,12 +28,9 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
 
     private static GuiScreen lastScreen;
 
-
     public ModUpdateDetectorTickHandeler(int timer) {
         this.timer_interval = timer;
-        timer = 0;
     }
-
 
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
@@ -76,7 +73,7 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
     }
 
     private List getButtonList(GuiScreen screen){
-        return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, screen, 3);
+        return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, screen, "buttonList", "field_73887_h");
     }
 
     @Override

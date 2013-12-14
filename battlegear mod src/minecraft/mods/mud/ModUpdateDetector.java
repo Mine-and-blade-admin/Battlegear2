@@ -31,13 +31,6 @@ public class ModUpdateDetector {
     public static boolean enabled = true;
     private static ICommandSender sender = null;
 
-    /*
-     * The time between update checks in minutes.
-     * A value <=0 will only run the updater when a player joins the world.
-     */
-    private static int Timer = 60*60*20;
-
-
     public static void registerMod(ModContainer mc, URL updateXML, URL changelog){
         if(!hasInitialised){
             initialise();
@@ -67,14 +60,18 @@ public class ModUpdateDetector {
     }
 
     private static void initialise() {
-        updateMap = new HashMap<String, UpdateEntry>();
+        updateMap = new HashMap<String, UpdateEntry>();/*
+         * The time between update checks in minutes.
+         * A value <=0 will only run the updater when a player joins the world.
+         */
+        int Timer = 60*60*20;
         try{
 	        Configuration config = new Configuration(new File(Loader.instance().getConfigDir(), "MUD.cfg"));
 	        config.load();
 	
 	        Timer = config.get(Configuration.CATEGORY_GENERAL, "Update Time", 60, "The time in minutes between update checks").getInt() * 60 * 20;
 	        enabled = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates").getBoolean(true);
-	
+	        
 	        if(config.hasChanged()){
 	            config.save();
 	        }
