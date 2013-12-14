@@ -43,7 +43,7 @@ public class WeaponRegistry {
 
 	/**
 	 * Called by a {@link #IMCMessage} with "OffHand" as key, and the {@link #ItemStack} as value
-	 * @param stack registered as wieldable only in main hand
+	 * @param stack registered as wieldable only in offhand
 	 */
 	public static void addOffhandWeapon(ItemStack stack) {
 		if(!BattlegearUtils.checkForRightClickFunction(stack.getItem())){
@@ -65,7 +65,7 @@ public class WeaponRegistry {
 	}
 	
 	static class StackHolder{
-		private ItemStack stack;
+		private final ItemStack stack;
 
 		public StackHolder(ItemStack stack){
 			this.stack = stack;
