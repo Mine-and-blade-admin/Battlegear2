@@ -1,3 +1,8 @@
+== Mine & Blade: Battlegear 2 - Warcry 1.0.4.2 ==
+* Fixed bug of MCPC in enchantment
+* Fixed packet without data crash
+* Added better config options for enchantment ids
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.4.1 ==
 * Added block placing by offhand
 * Added WeaponRegistry and FMLInterModComms access for other mods weapons
