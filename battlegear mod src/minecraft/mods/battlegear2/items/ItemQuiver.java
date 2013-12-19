@@ -143,8 +143,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
                     setStackInSlot(container, i, newStack);
                     left_over = 0;
                 }else{
-
-                    if(newStack.itemID == slotStack.itemID){
+                    if(newStack.itemID == slotStack.itemID && newStack.getItemDamage() == slotStack.getItemDamage()){
                         int newSize = Math.min(64, slotStack.stackSize + left_over);
                         left_over = left_over - (newSize - slotStack.stackSize);
                         slotStack.stackSize = newSize;
@@ -152,14 +151,11 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
                     }
                 }
             }
-
             if(left_over > 0 ){
                 newStack.stackSize = left_over;
                 return newStack;
             }
-
         }
-
         return null;
     }
 

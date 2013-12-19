@@ -42,52 +42,15 @@ public class CraftingHandeler implements ICraftingHandler{
 
                     int nextStackSize = Math.min(arrowCount, 64);
                     arrowCount -= nextStackSize;
-                    player.inventory.addItemStackToInventory(new ItemStack(Item.arrow, nextStackSize));
+                    ItemStack temp = new ItemStack(Item.arrow, nextStackSize);
+                    if(!player.inventory.addItemStackToInventory(temp)){
+                    	player.dropPlayerItem(temp);
+                    }
 
                 }
 
             }
         }
-        /*else if(item.getItem() instanceof IArrowContainer && ((IArrowContainer)item.getItem()).isCraftableWithArrows(item)){
-        	ItemStack quiver = null;
-        	boolean hasArrow = false;
-        	List<ItemStack> arrows = new ArrayList();
-        	for(int i = 0; i < craftMatrix.getSizeInventory(); i++){
-                ItemStack stack = craftMatrix.getStackInSlot(i);
-                if(stack != null){
-                    if(stack.getItem() instanceof IArrowContainer){
-                    	if(quiver == null){
-                    		quiver = stack;
-                    	}
-                    	else
-                    		return;
-                    }
-                    else if(stack.itemID == Item.arrow.itemID){
-                    	arrows.add(stack);
-                    	hasArrow = true;;
-                    }
-                }
-        	}
-        	if(quiver!=null && hasArrow){
-        		Iterator itr = arrows.iterator();
-        		int drop = 0;
-        		while(itr.hasNext() && drop==0){
-        			ItemStack temp = (ItemStack) itr.next();
-        			drop = ((IArrowContainer)quiver.getItem()).addArrows(quiver, temp.stackSize);
-        			if(drop==0)
-        				itr.remove();
-        			else
-        				temp.stackSize = drop;
-        		}
-        		itr = arrows.iterator();
-        		while(itr.hasNext()){
-        			player.inventory.addItemStackToInventory((ItemStack)itr.next());
-        		}
-        		for(int index=0;index<craftMatrix.getSizeInventory();index++){
-        			craftMatrix.setInventorySlotContents(index, null);
-        		}
-        	}
-        }*/
         else if(item.getItem() instanceof IArrowContainer2){
             ItemStack quiver = null;
             ItemStack arrowStack = null;
@@ -139,7 +102,10 @@ public class CraftingHandeler implements ICraftingHandler{
         		}
         		itr = arrows.iterator();
         		while(itr.hasNext()){
-        			player.inventory.addItemStackToInventory((ItemStack)itr.next());
+        			ItemStack temp = (ItemStack) itr.next();
+        			if(!player.inventory.addItemStackToInventory(temp)){
+        				player.dropPlayerItem(temp);
+        			}
         		}
         		for(int index=0;index<craftMatrix.getSizeInventory();index++){
         			craftMatrix.setInventorySlotContents(index, null);
