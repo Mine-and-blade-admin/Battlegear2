@@ -33,6 +33,6 @@ public class MudCommands extends CommandBase{
 
     @Override
     public void processCommand(ICommandSender icommandsender, String[] astring) {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiChangelogDownload());
+        Minecraft.getMinecraft().displayGuiScreen(new GuiChangelogDownload(Minecraft.getMinecraft().currentScreen));
     }
 }
