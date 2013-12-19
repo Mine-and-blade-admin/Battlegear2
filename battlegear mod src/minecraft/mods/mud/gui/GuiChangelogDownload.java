@@ -59,7 +59,7 @@ public class GuiChangelogDownload extends GuiScreen
 
     public GuiChangelogDownload(GuiScreen parent){
         this.parent = parent;
-        changelog = new String[]{"Loading Changelog from server"};
+        changelog = new String[]{StatCollector.translateToLocal("log.message.loading")};
         if(!ModUpdateDetector.hasChecked){
             new UpdateChecker(ModUpdateDetector.getAllUpdateEntries()).run();
         }
@@ -333,11 +333,11 @@ public class GuiChangelogDownload extends GuiScreen
             urlButton.enabled = selectedMod!=null && selectedMod.getLatest()!=null && selectedMod.getLatest().url!=null;
 
             if(selectedMod.getChangelogURL() == null){
-                changelog = new String[]{"No Changelog Provided"};
+                changelog = new String[]{StatCollector.translateToLocal("log.message.none")};
             }else{
                 getChangeLogThread = new Thread(new ChangelogLoader(selectedMod.getChangelogURL()));
                 getChangeLogThread.start();
-                changelog = new String[]{"Loading changelog from server"};
+                changelog = new String[]{StatCollector.translateToLocal("log.message.loading")};
             }
 
             try{
@@ -380,7 +380,7 @@ public class GuiChangelogDownload extends GuiScreen
                 changelog = lines.toArray(new String[0]);
             } catch (IOException e) {
                 e.printStackTrace();
-                changelog = new String[]{"Failed to download changelog"};
+                changelog = new String[]{StatCollector.translateToLocal("log.message.fail")};
             }
         }
     }

@@ -16,3 +16,6 @@ gui.download.complete=Download Successful
 gui.download.failed=Download Failed
 gui.restart=Please Restart Minecraft
 gui.md5.fail=Corrupt or invalid download
+log.message.none=No Changelog Provided
+log.message.loading=Loading changelog from server
+log.message.fail=Failed to download changelog
