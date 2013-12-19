@@ -22,13 +22,6 @@ public class EntityEnderArrow extends AbstractMBArrow{
     }
 
     @Override
-    public void onUpdate() {
-        super.onUpdate();
-
-
-    }
-
-    @Override
     public boolean onHitEntity(Entity entityHit) {
     	if(entityHit instanceof EntityLivingBase){
             if (!this.worldObj.isRemote && shootingEntity instanceof EntityPlayerMP){
@@ -36,8 +29,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                 double x = entityplayermp.posX;
                 double y = entityplayermp.posY;
                 double z = entityplayermp.posZ;
-            	if (!entityplayermp.playerNetServerHandler.connectionClosed && entityplayermp.worldObj == this.worldObj)
-                {
+            	if (!entityplayermp.playerNetServerHandler.connectionClosed && entityplayermp.worldObj == this.worldObj){
                     EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, entityHit.posX+0.5F, entityHit.posY, entityHit.posZ+0.5F, 9.0F);
                     if (!MinecraftForge.EVENT_BUS.post(event)){
                         if (shootingEntity.isRiding()){
@@ -73,26 +65,18 @@ public class EntityEnderArrow extends AbstractMBArrow{
         }
 
         if(shootingEntity != null){
+            if (!this.worldObj.isRemote){
+                if (shootingEntity instanceof EntityPlayerMP){
 
-
-            if (!this.worldObj.isRemote)
-            {
-                if (shootingEntity instanceof EntityPlayerMP)
-                {
-
-                    for (int i = 0; i < 32; ++i)
-                    {
+                    for (int i = 0; i < 32; ++i){
                         this.worldObj.spawnParticle("portal", x+0.5F, y + this.rand.nextDouble() * 2.0D, z+0.5F, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
                     }
 
                     EntityPlayerMP entityplayermp = (EntityPlayerMP)this.shootingEntity;
-                    if (!entityplayermp.playerNetServerHandler.connectionClosed && entityplayermp.worldObj == this.worldObj)
-                    {
+                    if (!entityplayermp.playerNetServerHandler.connectionClosed && entityplayermp.worldObj == this.worldObj){
                         EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x+0.5F, y, z+0.5F, 9.0F);
-                        if (!MinecraftForge.EVENT_BUS.post(event))
-                        {
-                            if (shootingEntity.isRiding())
-                            {
+                        if (!MinecraftForge.EVENT_BUS.post(event)) {
+                            if (shootingEntity.isRiding()){
                                 shootingEntity.mountEntity((Entity)null);
                             }
 

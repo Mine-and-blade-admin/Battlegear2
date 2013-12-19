@@ -34,12 +34,9 @@ public class BattlemodeHookContainerClass {
     @ForgeSubscribe
     public void onEntityJoin(EntityJoinWorldEvent event){
         if(event.entity instanceof EntityPlayer){
-
-            EntityPlayer entityPlayer = (EntityPlayer)event.entity;
-
             PacketDispatcher.sendPacketToPlayer(
-                    new BattlegearSyncItemPacket(entityPlayer).generatePacket(),
-                    (Player)entityPlayer);
+                    new BattlegearSyncItemPacket((EntityPlayer)event.entity).generatePacket(),
+                    (Player)event.entity);
 
         }
     }

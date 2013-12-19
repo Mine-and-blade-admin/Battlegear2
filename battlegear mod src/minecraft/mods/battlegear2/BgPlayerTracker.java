@@ -1,32 +1,24 @@
 package mods.battlegear2;
 
-import cpw.mods.fml.client.FMLClientHandler;
+import mods.battlegear2.packet.LoginPacket;
+import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.IPlayerTracker;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
-import mods.battlegear2.packet.LoginPacket;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ChatMessageComponent;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
 
 public class BgPlayerTracker implements IPlayerTracker{
 
-
     @Override
     public void onPlayerLogin(EntityPlayer player) {
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER){
+        if(FMLCommonHandler.instance().getEffectiveSide().isServer()){
             PacketDispatcher.sendPacketToPlayer(new LoginPacket().generatePacket(), (Player)player);
-        }else{
-
         }
     }
 
     @Override
     public void onPlayerLogout(EntityPlayer player) {
-        if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+        if(FMLCommonHandler.instance().getEffectiveSide().isClient())
             Battlegear.battlegearEnabled = false;
     }
 
