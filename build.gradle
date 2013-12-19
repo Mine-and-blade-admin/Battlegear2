@@ -1,0 +1,87 @@
+buildscript {
+
+    repositories {
+
+        mavenCentral()
+
+        maven {
+
+            name = "forge"
+
+            url = "http://files.minecraftforge.net/maven"
+
+        }
+
+    }
+
+    dependencies {
+
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+
+    }
+}
+
+
+apply plugin: 'forge'
+
+
+// Define properties file
+ext.configFile = file "mod.properties"
+
+
+configFile.withReader {
+    // Load config. Can be referenced as config
+    def prop = new Properties()
+    prop.load(it)
+    project.ext.config = new ConfigSlurper().parse prop
+}
+version = "${config.mcversion}-${config.mod.version}"
+
+minecraft {
+    version = config.mcversion + "-" + config.forge_version
+    replace '${version}', project.version
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir 'battlegear mod src.minecraft'
+        }
+	java {
+	    srcDir 'battlegear mod src.minecraft'
+	}
+    }
+}
+buildDir = ['battlegear dist']
+archivesBaseName = config.dist.name
+processResources
+{
+
+    // replace stuff in mcmod.info, nothing else
+
+    from(sourceSets.main.resources.srcDirs) {
+
+        include 'mcmod/info'
+
+                
+        // replace version and mcversion
+
+        expand 'version':config.mod.version, 'mcversion':config.mcversion
+    }
+        
+    // copy everything else, thats not the mcmod.info
+
+    from(sourceSets.main.resources.srcDirs) {
+
+        exclude 'mcmod.info'
+
+    }
+}
+
+// Add Coremod Manifest
+jar {
+    manifest {
+        attributes 'FMLCorePlugin': config.loadingPlugin
+        attributes 'FMLCorePluginContainsFMLMod': config.containsMod
+    }
+}
