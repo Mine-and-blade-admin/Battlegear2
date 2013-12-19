@@ -95,13 +95,10 @@ public class Battlegear {
     public void init(FMLInitializationEvent event) {
         BattlegearConfig.registerRecipes();
 	    GameRegistry.registerCraftingHandler(new CraftingHandeler());
-	    if(debug){
-	        QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
-	        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 0, EntityExplossiveArrow.class);
-	        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 1, EntityEnderArrow.class);
-	        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 2, EntityFlameArrow.class);
-	    }
-
+        QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 0, EntityExplossiveArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 1, EntityEnderArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 2, EntityFlameArrow.class);
     }
 
     @EventHandler

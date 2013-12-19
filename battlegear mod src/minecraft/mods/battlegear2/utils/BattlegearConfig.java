@@ -28,10 +28,10 @@ public class BattlegearConfig {
 	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
     public static final String[] shieldTypes = new String[] {"wood", "hide", "iron", "diamond", "gold"};
 	public static final String[] armourTypes = new String[] {"helmet", "plate", "legs", "boots"};
+	public static final String[] shieldEnchantsName = {"BashWeight", "BashPower", "BashDamage", "Usage", "Recovery"};
 	public static final int firstDefaultItemIndex = 26201;
 	public static int[] itemOffests = new int[]{0, 1, 2, 5, 10, 15, 20, 25, 30, 35};
 	public static int[] shieldEnchantsId = {125, 126, 127, 128, 129};
-	public static final String[] shieldEnchantsName = {"BashWeight", "BashPower", "BashDamage", "Usage", "Recovery"};
 	public static ItemWeapon[] dagger=new ItemWeapon[5],warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5];
     public static ItemShield[] shield=new ItemShield[5];
 	public static Item chain,quiver,heradricItem, MbArrows;
@@ -62,22 +62,20 @@ public class BattlegearConfig {
         }
         config.get("Coremod", "ASM debug Mode", false);
         
+        quiver = new ItemQuiver(config.getItem(itemNames[2], firstDefaultItemIndex+2).getInt());
+        quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).setTextureName("battlegear2:quiver/"+itemNames[2]).setCreativeTab(customTab);
 
-        if(Battlegear.debug){
-            quiver = new ItemQuiver(config.getItem(itemNames[2], firstDefaultItemIndex+2).getInt());
-            quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).setTextureName("battlegear2:quiver/"+itemNames[2]).setCreativeTab(customTab);
+        MbArrows = new ItemMBArrow(config.getItem(itemNames[9], firstDefaultItemIndex+itemOffests[9]).getInt());
+        MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).setTextureName("battlegear2:" + itemNames[9]).setCreativeTab(customTab);
 
-            MbArrows = new ItemMBArrow(config.getItem(itemNames[9], firstDefaultItemIndex+itemOffests[9]).getInt());
-            MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).setTextureName("battlegear2:" + itemNames[9]).setCreativeTab(customTab);
+        String customArrowSpawn = "Skeleton CustomArrow Spawn Rate";
+        config.addCustomCategoryComment(customArrowSpawn, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
 
-            String customArrowSpawn = "Skeleton CustomArrow Spawn Rate";
-            config.addCustomCategoryComment(customArrowSpawn, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
-
-            //default 10% for everything but ender (which is 0%)
-            for(int i = 0; i < ItemMBArrow.names.length; i++){
-                skeletonArrowSpawnRate[i] = config.get(customArrowSpawn, ItemMBArrow.names[i], i!=1?0.1F:0).getDouble(i!=1?0.1F:0);
-            }
+        //default 10% for everything but ender (which is 0%)
+        for(int i = 0; i < ItemMBArrow.names.length; i++){
+            skeletonArrowSpawnRate[i] = config.get(customArrowSpawn, ItemMBArrow.names[i], i!=1?0.1F:0).getDouble(i!=1?0.1F:0);
         }
+        
         StringBuffer sb = new StringBuffer();
         sb.append("This will disable the crafting recipie for the provided item/blocks.\n");
         sb.append("It should be noted that this WILL NOT remove the item from the game, it will only disable the recipe.\n");
@@ -146,9 +144,8 @@ public class BattlegearConfig {
 
         }
         //validWeaponsID=config.get(config.CATEGORY_GENERAL, "Valid Weapon IDs",new int[]{11,12,16,20,27}).getIntList();
-        if (config.hasChanged())
-        {        
-      	  config.save();     	
+        if (config.hasChanged()){        
+        	config.save();     	
         }
 	}
 
@@ -157,32 +154,29 @@ public class BattlegearConfig {
 		//2 Iron ingots = 3 chain. This is because the chain armour has increased in damage resistance
 
         if(Arrays.binarySearch(disabledRecipies, itemNames[1])  < 0)
-            GameRegistry.addShapedRecipe(new ItemStack(chain, 3), new Object[]{
+            GameRegistry.addShapedRecipe(new ItemStack(chain, 3),
                 "I", "I", Character.valueOf('I'), Item.ingotIron
-            });
+            );
 
-        if(Battlegear.debug){
-            //Quiver recipes :
-            if(Arrays.binarySearch(disabledRecipies, itemNames[2])  < 0)
-                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(quiver), new Object[]
-                    {"X X", "X X","XXX",Character.valueOf('X'), Item.leather}));
+        //Quiver recipes :
+        if(Arrays.binarySearch(disabledRecipies, itemNames[2])  < 0)
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(quiver),
+                "X X", "X X","XXX",Character.valueOf('X'), Item.leather));
 
-            GameRegistry.addRecipe(new QuiverRecipie2());
-
-        }
+        GameRegistry.addRecipe(new QuiverRecipie2());
 
         GameRegistry.addRecipe(new DyeRecipie());
 
         if(Arrays.binarySearch(disabledRecipies, "chain.armour")  < 0){
             //Chain armor recipes
-            GameRegistry.addRecipe(new ItemStack(Item.helmetChain),  new Object[]
-                    {"LLL","L L",Character.valueOf('L'),chain});
-            GameRegistry.addRecipe(new ItemStack(Item.plateChain),  new Object[]
-                    {"L L","LLL","LLL",Character.valueOf('L'),chain});
-            GameRegistry.addRecipe(new ItemStack(Item.legsChain),  new Object[]
-                    {"LLL","L L","L L",Character.valueOf('L'),chain});
-            GameRegistry.addRecipe(new ItemStack(Item.bootsChain),  new Object[]
-                    {"L L","L L",Character.valueOf('L'),chain});
+            GameRegistry.addRecipe(new ItemStack(Item.helmetChain), 
+                    "LLL","L L",Character.valueOf('L'),chain);
+            GameRegistry.addRecipe(new ItemStack(Item.plateChain), 
+                    "L L","LLL","LLL",Character.valueOf('L'),chain);
+            GameRegistry.addRecipe(new ItemStack(Item.legsChain), 
+                    "LLL","L L","L L",Character.valueOf('L'),chain);
+            GameRegistry.addRecipe(new ItemStack(Item.bootsChain), 
+                    "L L","L L",Character.valueOf('L'),chain);
         }
 		//Weapon recipes
 		ItemStack woodStack = new ItemStack(Block.planks.blockID,1,OreDictionary.WILDCARD_VALUE);
@@ -191,107 +185,90 @@ public class BattlegearConfig {
             if(Arrays.binarySearch(disabledRecipies, itemNames[4])  < 0){
                 GameRegistry.addRecipe(
                         new ItemStack(warAxe[i]),
-                        new Object[] {"L L","LSL"," S ",
+                        "L L","LSL"," S ",
                             Character.valueOf('S'), Item.stick,
                             Character.valueOf('L'),
                             i!=0?craftingMaterial:woodStack
-                    });
+                    );
             }
             if(Arrays.binarySearch(disabledRecipies, itemNames[5])  < 0) {
                 GameRegistry.addRecipe(
                         new ItemStack(mace[i]),
-                        new Object[] {" LL"," LL","S  ",
+                        " LL"," LL","S  ",
                                 Character.valueOf('S'), Item.stick,
                                 Character.valueOf('L'),
                                 i!=0?craftingMaterial:woodStack
-                        });
+                        );
             }
             if(Arrays.binarySearch(disabledRecipies, itemNames[3])  < 0){
                 GameRegistry.addRecipe(
                         new ItemStack(dagger[i]),
-                        new Object[] {"L","S",
+                        "L","S",
                                 Character.valueOf('S'), Item.stick,
                                 Character.valueOf('L'),
                                 i!=0?craftingMaterial:woodStack
-                        });
+                        );
             }
 
             if(Arrays.binarySearch(disabledRecipies, itemNames[6])  < 0){
                 if(i == 0){
                     GameRegistry.addRecipe(
                             new ItemStack(spear[i]),
-                            new Object[] {"  S"," S ","S  ",
+                            "  S"," S ","S  ",
                                     Character.valueOf('S'), Item.stick
-                            });
+                            );
                 }else{
                     GameRegistry.addRecipe(
                             new ItemStack(spear[i]),
-                            new Object[] {" L","S ",
+                            " L","S ",
                                     Character.valueOf('S'), spear[0],
                                     Character.valueOf('L'), craftingMaterial
-                            });
+                            );
                 }
             }
 		}
 
         if(Arrays.binarySearch(disabledRecipies, itemNames[7])  < 0){
             //Wood Shield
-            GameRegistry.addRecipe(new ItemStack(shield[0]),
-                    new Object[] {" W ","WWW", " W ",
+            GameRegistry.addRecipe(new ItemStack(shield[0]), " W ","WWW", " W ",
                             Character.valueOf('W'), woodStack
-                    });
+                    );
 
             //Hide Shield
-            GameRegistry.addRecipe(new ItemStack(shield[1]),
-                    new Object[] {" H ","HWH", " H ",
+            GameRegistry.addRecipe(new ItemStack(shield[1]), " H ","HWH", " H ",
                             Character.valueOf('W'), woodStack,
                             Character.valueOf('H'), Item.leather
-                    });
+                    );
             //Iron Shield
-            GameRegistry.addRecipe(new ItemStack(shield[2]),
-                    new Object[] {"I I","IWI", " I ",
+            GameRegistry.addRecipe(new ItemStack(shield[2]), "I I","IWI", " I ",
                             Character.valueOf('W'), woodStack,
                             Character.valueOf('I'), Item.ingotIron
-                    });
+                    );
             //Diamond Shield
-            GameRegistry.addRecipe(new ItemStack(shield[3]),
-                    new Object[] {"I I","IWI", " I ",
+            GameRegistry.addRecipe(new ItemStack(shield[3]), "I I","IWI", " I ",
                             Character.valueOf('W'), woodStack,
                             Character.valueOf('I'), Item.diamond
-                    });
+                    );
             //Gold Shield
-            GameRegistry.addRecipe(new ItemStack(shield[4]),
-                    new Object[] {"I I","IWI", " I ",
+            GameRegistry.addRecipe(new ItemStack(shield[4]), "I I","IWI", " I ",
                             Character.valueOf('W'), woodStack,
                             Character.valueOf('I'), Item.ingotGold
-                    });
+                    );
         }
 
 
         GameRegistry.addRecipe(new ShieldRemoveArrowRecipie());
 
-        if(Battlegear.debug){
-            //Exploding Arrows
-            if(Arrays.binarySearch(disabledRecipies, itemNames[9]+"."+ItemMBArrow.names[0]) < 0){
-                GameRegistry.addRecipe(new ItemStack(MbArrows, 1, 0),
-                        new Object[] {"G","A",
-                                Character.valueOf('G'), Item.gunpowder,
-                                Character.valueOf('A'), Item.arrow
-                        });
-            }
-
-            //Ender Arrows
-            if(Arrays.binarySearch(disabledRecipies, itemNames[9]+"."+ItemMBArrow.names[1]) < 0){
-                GameRegistry.addRecipe(new ItemStack(MbArrows, 1, 0),
-                        new Object[] {"E","A",
-                                Character.valueOf('E'), Item.enderPearl,
-                                Character.valueOf('A'), Item.arrow
-                        });
-            }
+        //Exploding Arrows, Ender Arrows, Fire Arrows
+        Item[] component = {Item.gunpowder, Item.enderPearl, Item.flint};
+        for(int i=0;i<component.length;i++){
+	        if(Arrays.binarySearch(disabledRecipies, itemNames[9]+"."+ItemMBArrow.names[i]) < 0){
+	            GameRegistry.addRecipe(new ItemStack(MbArrows, 1, i), "G","A",
+	                            Character.valueOf('G'), component[i],
+	                            Character.valueOf('A'), Item.arrow
+	                    );
+	        }
         }
-
-
-
 
 		
 		for(int i = 0; i < 4; i++){
@@ -307,22 +284,20 @@ public class BattlegearConfig {
                                 new Color(ItemDye.dyeColors[15 - x]), new Color(ItemDye.dyeColors[15 - y]),
                                 HeraldryIcon.Blank, HeraldryPositions.SINGLE, Color.WHITE, Color.WHITE)
 						);
-				GameRegistry.addRecipe(bannerStack,  new Object[]
-						{" a "," b ", " S ",
+				GameRegistry.addRecipe(bannerStack,
+						" a "," b ", " S ",
 						Character.valueOf('a'), new ItemStack(Block.cloth,0, x),
 						Character.valueOf('b'), new ItemStack(Block.cloth,0, y),
 						Character.valueOf('S'), Item.stick
-						}
+						
 				);
 			}
 		}
 		
-		GameRegistry.addRecipe(new ItemStack(bannerItem),  new Object[]
-				{" W "," W ", " S ",Character.valueOf('W'),Block.cloth, Character.valueOf('S'), Item.stick});
+		GameRegistry.addRecipe(new ItemStack(bannerItem), 
+				" W "," W ", " S ",Character.valueOf('W'),Block.cloth, Character.valueOf('S'), Item.stick);
 		*/
-		
 
 	}
 
-	
 }

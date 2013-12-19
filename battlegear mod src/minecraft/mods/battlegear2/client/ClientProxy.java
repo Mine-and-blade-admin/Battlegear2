@@ -102,19 +102,17 @@ public class ClientProxy extends CommonProxy {
             MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
         }
 
+        MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
+        MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
+
         if(Battlegear.debug){
-
-            MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
             MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem.itemID, new HeraldryCrestItemRenderer());
-
-            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
-        
+            
             for(int i = 0; i < Item.itemsList.length; i++){
             	if(Item.itemsList[i] instanceof IHeraldryItem &&
             			((IHeraldryItem)Item.itemsList[i]).useDefaultRenderer()){
             		MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer());
             	}
-            	
             }
         }
     }
