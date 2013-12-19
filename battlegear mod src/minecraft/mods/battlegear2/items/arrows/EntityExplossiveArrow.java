@@ -17,14 +17,21 @@ public class EntityExplossiveArrow extends AbstractMBArrow{
 
     @Override
     public boolean onHitEntity(Entity entityHit) {
-        this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, this.getIsCritical()?2:1F, true);
-        this.setDead();
+        this.onExplode();
         return false;
     }
 
     @Override
     public void onHitGround(int x, int y, int z) {
-        this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, this.getIsCritical()?2:1F, true);
+    	this.onExplode();
+    }
+    
+    public void onExplode(){
+        this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, getExplosionStrength(this.getIsCritical()), true);
         this.setDead();
     }
+
+	public float getExplosionStrength(boolean isCritical) {
+		return isCritical?2F:1F;
+	}
 }
