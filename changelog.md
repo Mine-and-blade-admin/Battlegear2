@@ -1,3 +1,14 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.4.3 ==
+* Added Quiver with 4 slots to put arrows into
+** Slots are selected with the special action key
+* Added 3 arrows with recipes: Explosive, Ender, Fire
+* Changed the way the bow is rendered, to show selected arrow
+* Quiver is rendered on player's back when a bow is equiped
+* Gave skeletons a chance to use a new arrow type
+** See config options to modify this
+* Added an API for modders to use or make quivers
+** and change the way the bow fire arrows
+
 == Mine & Blade: Battlegear 2 - Warcry 1.0.4.2 ==
 * Fixed bug of MCPC in enchantment
 * Fixed packet without data crash
