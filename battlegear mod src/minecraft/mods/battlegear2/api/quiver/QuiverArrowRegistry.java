@@ -1,17 +1,19 @@
 package mods.battlegear2.api.quiver;
 
-import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
+import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
 public class QuiverArrowRegistry {
 
-    private static Map<ItemStack,  Class<? extends EntityArrow>> map = new TreeMap<ItemStack,  Class<? extends EntityArrow>>(new StackComparator());
-
+    private static Map<ItemStack, Class<? extends EntityArrow>> itemToClasses = new TreeMap<ItemStack, Class<? extends EntityArrow>>(new StackComparator());
+    private static Map<Class<? extends EntityArrow>, ItemStack> classToItems = new HashMap<Class<? extends EntityArrow>, ItemStack>();
+    
     public static void addArrowToRegistry(int itemId, int itemMetadata, Class<? extends EntityArrow> entityArrow){
         ItemStack stack = new ItemStack(itemId, 1, itemMetadata);
         addArrowToRegistry(stack, entityArrow);
@@ -20,11 +22,21 @@ public class QuiverArrowRegistry {
     public static void addArrowToRegistry(ItemStack stack, Class<? extends EntityArrow> entityArrow){
         ItemStack st = stack.copy();
         st.stackSize = 1;
-        map.put(st, entityArrow);
+        itemToClasses.put(st, entityArrow);
+        classToItems.put(entityArrow, st);
     }
 
     public static Class<? extends EntityArrow> getArrowClass(ItemStack stack){
-        return map.get(stack);
+        return itemToClasses.get(stack);
+    }
+    
+    public static ItemStack getItem(Class<? extends EntityArrow> clazz){
+    	ItemStack temp = classToItems.get(clazz);
+        if(temp == null){
+			return new ItemStack(Item.arrow);
+		}else{
+			return temp.copy();
+		}
     }
 
     static class StackComparator implements Comparator<ItemStack> {
@@ -54,9 +66,6 @@ public class QuiverArrowRegistry {
                     }
                 }
             }
-
         }
     }
-
-
 }

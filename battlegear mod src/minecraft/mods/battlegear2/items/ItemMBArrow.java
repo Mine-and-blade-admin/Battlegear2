@@ -15,7 +15,7 @@ public class ItemMBArrow extends Item {
     public Icon[] icons;
 
     public static final String[] names = {"explosive", "ender", "flame", "piercing", "poison"};
-    public static final Class<? extends EntityArrow> arrows[] = new Class[]{EntityExplossiveArrow.class, EntityEnderArrow.class, EntityFlameArrow.class, EntityPiercingArrow.class, EntityPoisonArrow.class};
+    public static final Class<? extends AbstractMBArrow> arrows[] = new Class[]{EntityExplossiveArrow.class, EntityEnderArrow.class, EntityFlameArrow.class, EntityPiercingArrow.class, EntityPoisonArrow.class};
     public static final Item[] component = {Item.gunpowder, Item.enderPearl, Item.flint, Item.diamond, Item.netherStar};
     
     public ItemMBArrow(int id) {
