@@ -15,12 +15,14 @@ public class BaseEnchantment extends Enchantment {
 	private int max;
 	private int enchantCoeff;
 	private int range;
-	public static final Enchantment bashWeight = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[0], 5, 3, 15, 30).setName("bash.weightless");
-	public static final Enchantment bashPower = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[1], 10, 5, 10, 40).setName("bash.power");
-	public static final Enchantment bashDamage = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[2], 1, 3, 15, 50).setName("bash.damage");
-	public static final Enchantment shieldUsage = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[3], 2, 5, 5, 30).setName("shield.usage");
-	public static final Enchantment shieldRecover = new BaseEnchantment(BattlegearConfig.shieldEnchantsId[4], 3, 4, 20, 20).setName("shield.recover");
-
+	public static final Enchantment bashWeight = new BaseEnchantment(BattlegearConfig.enchantsId[0], 5, 3, 15, 30).setName("bash.weightless");
+	public static final Enchantment bashPower = new BaseEnchantment(BattlegearConfig.enchantsId[1], 10, 5, 10, 40).setName("bash.power");
+	public static final Enchantment bashDamage = new BaseEnchantment(BattlegearConfig.enchantsId[2], 1, 3, 15, 50).setName("bash.damage");
+	public static final Enchantment shieldUsage = new BaseEnchantment(BattlegearConfig.enchantsId[3], 2, 5, 5, 30).setName("shield.usage");
+	public static final Enchantment shieldRecover = new BaseEnchantment(BattlegearConfig.enchantsId[4], 3, 4, 20, 20).setName("shield.recover");
+	public static final Enchantment bowLoot = new BaseEnchantment(BattlegearConfig.enchantsId[5], 2, EnumEnchantmentType.bow, 10, 50).setName("bow.loot");
+	public static final Enchantment bowCharge = new BaseEnchantment(BattlegearConfig.enchantsId[6], 1, EnumEnchantmentType.bow, 20, 20).setName("bow.charge");
+	
 	public BaseEnchantment(int id, int weight, int limit, int progress,	int range) {
 		super(id, weight, EnumEnchantmentType.all);
 		if (limit > 1)
@@ -38,11 +40,30 @@ public class BaseEnchantment extends Enchantment {
 		enchants.add(this);
 		addToBookList(this);
 	}
+	
+	public BaseEnchantment(int id, int weight, EnumEnchantmentType type, int coeff, int rng){
+		super(id, weight, type);
+		this.max = 1;
+		if (coeff > 1)
+			this.enchantCoeff = coeff;
+		else
+			this.enchantCoeff = 1;
+		if (range > 0)
+			this.range = rng;
+		else
+			this.range = 0;
+		enchants.add(this);
+		addToBookList(this);
+	}
 
 	@Override
 	public boolean canApply(ItemStack stack) {
-		if (stack.getItem() instanceof IEnchantable) {
-			return ((IEnchantable) stack.getItem()).isEnchantable(this, stack);
+		if(type == EnumEnchantmentType.all){
+			if (stack.getItem() instanceof IEnchantable) {
+				return ((IEnchantable) stack.getItem()).isEnchantable(this, stack);
+			}
+		}else{
+			return super.canApply(stack);
 		}
 		return false;
 	}

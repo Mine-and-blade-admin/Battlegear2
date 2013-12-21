@@ -5,15 +5,20 @@ import mods.battlegear2.api.IOffhandDual;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.weapons.OffhandAttackEvent;
+import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.utils.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet53BlockChange;
 import net.minecraft.util.EntityDamageSourceIndirect;
@@ -21,6 +26,7 @@ import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
@@ -280,6 +286,26 @@ public class BattlemodeHookContainerClass {
             }
 
         }
+    }
+    
+    @ForgeSubscribe
+    public void onDrop(LivingDropsEvent event){
+    	if(event.source.getEntity() instanceof EntityLivingBase){
+    		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getCurrentItemOrArmor(0);
+    		if(stack!=null && stack.getItem() instanceof ItemBow){
+    			int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot.effectId, stack);
+    			if(lvl>0){
+    				ItemStack drop;
+    				for(EntityItem items:event.drops){
+    					drop = items.getEntityItem();
+    					if(drop!=null && drop.getMaxStackSize()<drop.stackSize+lvl){
+    						drop.stackSize+=lvl;
+    						items.setEntityItemStack(drop);
+    					}
+    				}
+    			}
+    		}
+    	}
     }
 
 }

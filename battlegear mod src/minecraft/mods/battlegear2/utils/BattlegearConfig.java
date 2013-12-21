@@ -28,10 +28,10 @@ public class BattlegearConfig {
 	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
     public static final String[] shieldTypes = new String[] {"wood", "hide", "iron", "diamond", "gold"};
 	public static final String[] armourTypes = new String[] {"helmet", "plate", "legs", "boots"};
-	public static final String[] shieldEnchantsName = {"BashWeight", "BashPower", "BashDamage", "Usage", "Recovery"};
+	public static final String[] enchantsName = {"BashWeight", "BashPower", "BashDamage", "ShieldUsage", "ShieldRecovery", "BowLoot", "BowCharge"};
 	public static final int firstDefaultItemIndex = 26201;
 	public static int[] itemOffests = new int[]{0, 1, 2, 5, 10, 15, 20, 25, 30, 35};
-	public static int[] shieldEnchantsId = {125, 126, 127, 128, 129};
+	public static int[] enchantsId = {125, 126, 127, 128, 129, 130, 131};
 	public static ItemWeapon[] dagger=new ItemWeapon[5],warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5];
     public static ItemShield[] shield=new ItemShield[5];
 	public static Item chain,quiver,heradricItem, MbArrows;
@@ -57,8 +57,8 @@ public class BattlegearConfig {
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", false).getBoolean(false);
         enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", true).getBoolean(true);
         
-        for(int i=0; i<shieldEnchantsName.length; i++){
-        	shieldEnchantsId[i] = config.get("ShieldEnchantmentsID", shieldEnchantsName[i], shieldEnchantsId[i]).getInt();
+        for(int i=0; i<enchantsName.length; i++){
+        	enchantsId[i] = config.get("EnchantmentsID", enchantsName[i], enchantsId[i]).getInt();
         }
         config.get("Coremod", "ASM debug Mode", false);
         

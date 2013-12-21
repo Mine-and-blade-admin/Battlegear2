@@ -52,6 +52,8 @@ enchantment.bash.power=Bash Power
 enchantment.bash.damage=Bash Damage
 enchantment.shield.usage=Shield Efficiency
 enchantment.shield.recover=Shield Recovery
+enchantment.bow.loot=Bow Luck
+enchantment.bow.charge=Bow Drawnback
 
 tile.battlegear2:banner.name=Banner
 

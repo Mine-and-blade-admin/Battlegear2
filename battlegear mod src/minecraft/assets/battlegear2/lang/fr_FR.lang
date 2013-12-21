@@ -52,6 +52,8 @@ enchantment.bash.power=Puissance de Frappe de Bouclier
 enchantment.bash.damage=Bouclier d'Epines
 enchantment.shield.usage=Bouclier Efficace
 enchantment.shield.recover=Récupération de Bouclier
+enchantment.bow.loot=Chance
+enchantment.bow.charge=Souplesse
 
 tile.battlegear2:banner.name=Etendard
 

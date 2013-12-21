@@ -4,6 +4,7 @@ import java.util.Random;
 
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowEvent;
+import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.items.arrows.AbstractMBArrow;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -19,19 +20,25 @@ import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
 public class BowHookContainerClass2 {
-    @ForgeSubscribe
+    @ForgeSubscribe(receiveCanceled=true)
     public void onBowUse(ArrowNockEvent event){
+    	boolean canDrawBow = false;
         if(event.entityPlayer.capabilities.isCreativeMode
                 || event.entityPlayer.inventory.hasItem(Item.arrow.itemID)){
-            return;
+        	canDrawBow = true;
         }
-        ItemStack quiver = getArrowContainer(event.result,event.entityPlayer);
-        if(quiver != null &&
-                ((IArrowContainer2)quiver.getItem()).
-                        hasArrowFor(quiver, event.result, event.entityPlayer, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver))){
-
-            event.entityPlayer.setItemInUse(event.result, event.result.getItem().getMaxItemUseDuration(event.result));
+        if(!canDrawBow){
+        	ItemStack quiver = getArrowContainer(event.result,event.entityPlayer);
+	        if(quiver != null &&
+	                ((IArrowContainer2)quiver.getItem()).
+	                        hasArrowFor(quiver, event.result, event.entityPlayer, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver))){
+	        	canDrawBow = true;
+	        }
         }
+	    if(canDrawBow){
+            event.entityPlayer.setItemInUse(event.result, event.result.getItem().getMaxItemUseDuration(event.result)-EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId,event.result)*20000);
+            event.setCanceled(true);
+	    }
     }
 
     public static ItemStack getArrowContainer(ItemStack result, EntityPlayer entityPlayer) {
@@ -50,7 +57,7 @@ public class BowHookContainerClass2 {
         return  null;
     }
 
-    @ForgeSubscribe
+    @ForgeSubscribe(receiveCanceled=true)
     public void onBowFiring(ArrowLooseEvent event) {
         //Check if bow is charged enough
         int j = new Integer(event.charge);
