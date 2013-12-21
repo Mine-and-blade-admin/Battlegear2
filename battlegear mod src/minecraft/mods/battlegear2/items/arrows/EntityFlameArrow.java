@@ -3,10 +3,15 @@ package mods.battlegear2.items.arrows;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 public class EntityFlameArrow extends AbstractMBArrow{
 
+    public EntityFlameArrow(World par1World) {
+        super(par1World);
+    }
+    
     public EntityFlameArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
         super(par1World, par2EntityLivingBase, par3);
     }
@@ -16,7 +21,7 @@ public class EntityFlameArrow extends AbstractMBArrow{
     }
 
     @Override
-    public boolean onHitEntity(Entity entityHit) {
+    public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
         entityHit.setFire(3);
         return false;
     }

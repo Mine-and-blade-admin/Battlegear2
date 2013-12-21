@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 public abstract class AbstractMBArrow extends EntityArrow {
@@ -21,7 +22,7 @@ public abstract class AbstractMBArrow extends EntityArrow {
         super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5);
     }
 
-    public abstract boolean onHitEntity(Entity entityHit);
+    public abstract boolean onHitEntity(Entity entityHit, DamageSource source, float ammount);
 
     public abstract void onHitGround(int x, int y, int z);
 

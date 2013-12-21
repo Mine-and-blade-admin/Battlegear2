@@ -1,18 +1,19 @@
 package mods.battlegear2.items.arrows;
 
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
 public class EntityEnderArrow extends AbstractMBArrow{
 
+	public EntityEnderArrow(World par1World) {
+		super(par1World);
+	}
+	
     public EntityEnderArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
         super(par1World, par2EntityLivingBase, par3);
     }
@@ -22,7 +23,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
     }
 
     @Override
-    public boolean onHitEntity(Entity entityHit) {
+    public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
     	if(entityHit instanceof EntityLivingBase){
             if (!this.worldObj.isRemote && shootingEntity instanceof EntityPlayerMP){
                 EntityPlayerMP entityplayermp = (EntityPlayerMP)this.shootingEntity;

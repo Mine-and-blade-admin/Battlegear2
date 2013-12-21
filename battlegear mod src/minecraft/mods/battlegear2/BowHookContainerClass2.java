@@ -133,7 +133,7 @@ public class BowHookContainerClass2 {
         if(event.source instanceof EntityDamageSourceIndirect &&
              event.source.getSourceOfDamage() instanceof AbstractMBArrow){
 
-            boolean isCanceled = ((AbstractMBArrow) event.source.getSourceOfDamage()).onHitEntity(event.entity);
+            boolean isCanceled = ((AbstractMBArrow) event.source.getSourceOfDamage()).onHitEntity(event.entity, event.source, event.ammount);
             event.setCanceled(isCanceled);
         }
 

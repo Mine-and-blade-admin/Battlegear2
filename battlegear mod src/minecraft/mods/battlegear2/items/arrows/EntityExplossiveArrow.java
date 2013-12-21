@@ -2,11 +2,15 @@ package mods.battlegear2.items.arrows;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 public class EntityExplossiveArrow extends AbstractMBArrow{
 
+	public EntityExplossiveArrow(World par1World) {
+        super(par1World);
+    }
+	
     public EntityExplossiveArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
         super(par1World, par2EntityLivingBase, par3);
     }
@@ -16,7 +20,7 @@ public class EntityExplossiveArrow extends AbstractMBArrow{
     }
 
     @Override
-    public boolean onHitEntity(Entity entityHit) {
+    public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
         this.onExplode();
         return false;
     }
