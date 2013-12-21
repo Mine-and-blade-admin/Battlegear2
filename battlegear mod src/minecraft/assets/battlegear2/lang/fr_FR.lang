@@ -4,6 +4,12 @@ item.battlegear2:heraldric.name=Blason
 item.battlegear2:chain.name=Chaine
 item.battlegear2:quiver.name=Carquois
 
+item.battlegear2:mb.arrow.ender.name=Flèche d'Ender
+item.battlegear2:mb.arrow.explosive.name=Flèche Explosive
+item.battlegear2:mb.arrow.flame.name=Flèche de Feu
+item.battlegear2:mb.arrow.piercing.name=Flèche Aiguisée
+item.battlegear2:mb.arrow.piercing.name=Flèche Empoisonnée
+
 item.battlegear2:dagger.wood.name=Dague en bois
 item.battlegear2:dagger.stone.name=Dague en pierre
 item.battlegear2:dagger.iron.name=Dague en fer
@@ -41,8 +47,11 @@ item.battlegear2:knights_armour.boots.name=Bottes de chevalier
 
 item.battlegear2:cloak.name=Cape
 
-enchantment.slow_fall=Chute ralentie
-enchantment.super_jump=Super Saut
+enchantment.bash.weightless=Retour de Frappe de Bouclier
+enchantment.bash.power=Puissance de Frappe de Bouclier
+enchantment.bash.damage=Bouclier d'Epines
+enchantment.shield.usage=Bouclier Efficace
+enchantment.shield.recover=Récupération de Bouclier
 
 tile.battlegear2:banner.name=Etendard
 

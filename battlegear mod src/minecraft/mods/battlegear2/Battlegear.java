@@ -9,9 +9,7 @@ import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.coremod.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
-import mods.battlegear2.items.arrows.EntityEnderArrow;
-import mods.battlegear2.items.arrows.EntityExplossiveArrow;
-import mods.battlegear2.items.arrows.EntityFlameArrow;
+import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.packet.*;
 import mods.battlegear2.recipies.CraftingHandeler;
 import mods.battlegear2.utils.*;
@@ -96,9 +94,9 @@ public class Battlegear {
         BattlegearConfig.registerRecipes();
 	    GameRegistry.registerCraftingHandler(new CraftingHandeler());
         QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
-        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 0, EntityExplossiveArrow.class);
-        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 1, EntityEnderArrow.class);
-        QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, 2, EntityFlameArrow.class);
+        for(int i = 0; i<ItemMBArrow.arrows.length; i++){
+        	QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, i, ItemMBArrow.arrows[i]);
+        }
     }
 
     @EventHandler

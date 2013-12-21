@@ -21,8 +21,6 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(new BattlemodeHookContainerClass());
         MinecraftForge.EVENT_BUS.register(new WeaponHookContainerClass());
         MinecraftForge.EVENT_BUS.register(new BowHookContainerClass2());
-
-
         MinecraftForge.EVENT_BUS.register(new MobHookContainerClass());
 
     }

@@ -2,8 +2,10 @@ package mods.battlegear2.items;
 
 import java.util.List;
 
+import mods.battlegear2.items.arrows.*;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
@@ -12,12 +14,13 @@ public class ItemMBArrow extends Item {
 
     public Icon[] icons;
 
-    public static final String[] names = {"explosive", "ender", "flame"};
-
+    public static final String[] names = {"explosive", "ender", "flame", "piercing", "poison"};
+    public static final Class<? extends EntityArrow> arrows[] = new Class[]{EntityExplossiveArrow.class, EntityEnderArrow.class, EntityFlameArrow.class, EntityPiercingArrow.class, EntityPoisonArrow.class};
+    public static final Item[] component = {Item.gunpowder, Item.enderPearl, Item.flint, Item.diamond, Item.netherStar};
+    
     public ItemMBArrow(int id) {
         super(id);
         this.setHasSubtypes(true);
-
     }
 
     @Override
