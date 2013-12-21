@@ -31,11 +31,11 @@ public class EntityExplossiveArrow extends AbstractMBArrow{
     }
     
     public void onExplode(){
-        this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, getExplosionStrength(this.getIsCritical()), true);
+        this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, getExplosionStrength(), true);
         this.setDead();
     }
 
-	public float getExplosionStrength(boolean isCritical) {
-		return isCritical?2F:1F;
+	public float getExplosionStrength() {
+		return getIsCritical()?2F:1F;
 	}
 }

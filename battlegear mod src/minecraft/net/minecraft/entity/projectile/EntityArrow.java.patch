@@ -8,7 +8,7 @@
 -    private int yTile = -1;
 -    private int zTile = -1;
 +    /*
-+    * Mine and blade edits, I am edditing the access to the tile fields for the "arrow API"
++    * Mine and blade edits, I am editing the access to the tile fields for the "arrow API"
 +    * changing access to xTile, yTile, zTile & ticksInGround
 +     */
 +    public int xTile = -1;

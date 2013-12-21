@@ -32,9 +32,7 @@ public class MobHookContainerClass {
                     }
                 }
 
-
             }catch (Exception e){}
-
 
 
         }else if(event.entity.getClass() == EntityArrow.class){
@@ -46,9 +44,9 @@ public class MobHookContainerClass {
                 if(type > -1){
 
                     AbstractMBArrow mbArrow = AbstractMBArrow.generate(type, arrow, skeleton);
-                    if(mbArrow != null && skeleton.getAttackTarget() != null){
+                    if(mbArrow != null){
                         EntityLivingBase target = skeleton.getAttackTarget();
-                        arrow.setDead();
+                        event.setCanceled(true);
 
                         double d0 = skeleton.getDistanceSq(target.posX, target.boundingBox.minY, target.posZ);
                         float pow = MathHelper.sqrt_double(d0) / (15F * 15F);

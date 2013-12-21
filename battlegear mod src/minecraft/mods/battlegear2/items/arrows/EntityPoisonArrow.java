@@ -27,15 +27,17 @@ public class EntityPoisonArrow extends AbstractMBArrow{
 
 	@Override
 	public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
+		boolean flag = false;
 		if(entityHit instanceof EntityLivingBase){
 			((EntityLivingBase)entityHit).addPotionEffect(new PotionEffect(Potion.wither.id, 200));
-			return true;
+			flag = true;
 		}
-		return false;
+		setDead();
+		return flag;
 	}
 
 	@Override
 	public void onHitGround(int x, int y, int z) {
-		
+		setDead();
 	}
 }

@@ -60,7 +60,6 @@ public class EntityEnderArrow extends AbstractMBArrow{
 
     @Override
     public void onHitGround(int x, int y, int z) {
-
         while(y < 255 && !(worldObj.isAirBlock(x,y,z) && worldObj.isAirBlock(x,y+1,z))){
             y++;
         }
@@ -80,21 +79,14 @@ public class EntityEnderArrow extends AbstractMBArrow{
                             if (shootingEntity.isRiding()){
                                 shootingEntity.mountEntity((Entity)null);
                             }
-
                             entityplayermp.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                             entityplayermp.fallDistance = 0.0F;
                             entityplayermp.attackEntityFrom(DamageSource.fall, event.attackDamage);
                         }
                     }
-
                 }
             }
-
         }
-
         this.setDead();
     }
-
-
-
 }
