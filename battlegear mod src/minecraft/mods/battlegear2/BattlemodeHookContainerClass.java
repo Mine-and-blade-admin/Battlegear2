@@ -1,11 +1,11 @@
 package mods.battlegear2;
 
+import mods.battlegear2.api.IArrowCatcher;
 import mods.battlegear2.api.IOffhandDual;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.weapons.OffhandAttackEvent;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
-import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.utils.BattlegearUtils;
@@ -255,8 +255,8 @@ public class BattlemodeHookContainerClass {
                             if(event.source instanceof EntityDamageSourceIndirect){
                                 if(event.source.getEntity() instanceof EntityArrow){
                                     event.source.getEntity().setDead();
-                                    if(shield.getItem() instanceof ItemShield){
-                                        ((ItemShield)shield.getItem()).setArrowCount(shield, ((ItemShield) shield.getItem()).getArrowCount(shield)+1);
+                                    if(shield.getItem() instanceof IArrowCatcher){
+                                        ((IArrowCatcher)shield.getItem()).setArrowCount(shield, ((IArrowCatcher) shield.getItem()).getArrowCount(shield)+1);
                                         ((InventoryPlayerBattle)player.inventory).hasChanged = true;
 
                                         player.setArrowCountInEntity(player.getArrowCountInEntity()-1);

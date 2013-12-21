@@ -2,6 +2,7 @@ package mods.battlegear2.items;
 
 import java.util.List;
 
+import mods.battlegear2.api.IArrowCatcher;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
 import mods.battlegear2.api.ISheathed;
@@ -20,7 +21,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.StatCollector;
 
-public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed{
+public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed, IArrowCatcher{
 
     public EnumShield enumShield;
 
@@ -73,14 +74,16 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         trimIcon = par1IconRegister.registerIcon("battlegear2:shield/shield."+enumShield.getName()+".trim");
 
     }
-
+    
+    @Override
     public int getArrowCount(ItemStack stack){
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey("arrows")){
             return stack.getTagCompound().getShort("arrows");
         }else
             return 0;
     }
-
+    
+    @Override
     public void setArrowCount(ItemStack stack, int count){
 
         if(!stack.hasTagCompound()){
