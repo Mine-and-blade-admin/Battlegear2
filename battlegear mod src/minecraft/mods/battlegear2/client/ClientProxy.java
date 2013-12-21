@@ -2,6 +2,7 @@ package mods.battlegear2.client;
 
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import mods.battlegear2.Battlegear;
@@ -91,19 +92,24 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerItemRenderers() {
+    	if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "spear")  < 0){
+	        SpearRenderer spearRenderer =  new SpearRenderer();
+	        for(Item spear: BattlegearConfig.spear){
+	            MinecraftForgeClient.registerItemRenderer(spear.itemID, spearRenderer);
+	        }
+    	}
 
-        SpearRenderer spearRenderer =  new SpearRenderer();
-        for(Item spear: BattlegearConfig.spear){
-            MinecraftForgeClient.registerItemRenderer(spear.itemID, spearRenderer);
+        if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "shield")  < 0){
+        	ShieldRenderer shieldRenderer = new ShieldRenderer();
+	        for(Item shield : BattlegearConfig.shield){
+	            MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
+	        }
         }
 
-        ShieldRenderer shieldRenderer = new ShieldRenderer();
-        for(Item shield : BattlegearConfig.shield){
-            MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
-        }
-
-        MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
-        MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
+        if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "bow")  < 0)
+        	MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
+        if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver")  < 0)
+        	MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
 
         if(Battlegear.debug){
             MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem.itemID, new HeraldryCrestItemRenderer());

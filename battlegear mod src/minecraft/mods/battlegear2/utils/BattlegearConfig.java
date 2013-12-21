@@ -40,7 +40,7 @@ public class BattlegearConfig {
 	public static ItemArmor[] knightArmor=new ItemArmor[4];
 
     public static String[] disabledRecipies = new String[0];
-
+    public static String[] disabledRenderers = new String[0];
 
     public static double[] skeletonArrowSpawnRate = new double[ItemMBArrow.names.length];
 	
@@ -80,7 +80,7 @@ public class BattlegearConfig {
         sb.append("This will disable the crafting recipie for the provided item/blocks.\n");
         sb.append("It should be noted that this WILL NOT remove the item from the game, it will only disable the recipe.\n");
         sb.append("In this way the items may still be obtained through creative mode and cheats, but playes will be unable to craft them.\n");
-        sb.append("These should all placed on separate lines between the provide \'<\' and \'>\'. The valid values are: \n");
+        sb.append("These should all be placed on separate lines between the provide \'<\' and \'>\'. The valid values are: \n");
 
         int count = 0;
         for(int i = 1; i < itemNames.length; i++){
@@ -115,7 +115,12 @@ public class BattlegearConfig {
         disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], sb.toString()).getStringList();
         Arrays.sort(disabledRecipies);
 
-
+        sb = new StringBuffer();
+        sb.append("This will disable the special rendering for the provided item.\n");
+        sb.append("These should all be placed on separate lines between the provide \'<\' and \'>\'.  \n");
+        sb.append("The valid values are: spear, shield, bow, quiver");
+        disabledRenderers = config.get(config.CATEGORY_GENERAL, "Disabled Renderers", new String[0], sb.toString()).getStringList(); 
+        Arrays.sort(disabledRenderers);
         
         for(int i = 0; i < 5; i++){
         	EnumToolMaterial material = EnumToolMaterial.values()[i];
