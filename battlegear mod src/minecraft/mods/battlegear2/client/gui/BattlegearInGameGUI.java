@@ -6,7 +6,9 @@ import mods.battlegear2.Battlegear;
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.RenderShieldBarEvent;
 import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.RenderQuiverBarEvent;
 import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -21,7 +23,9 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -43,7 +47,7 @@ public class BattlegearInGameGUI extends Gui {
         mc = FMLClientHandler.instance().getClient();
     }
 
-    public void renderGameOverlay(float frame) {
+    public void renderGameOverlay(float frame, int mouseX, int mouseY) {
 
         if(Battlegear.battlegearEnabled){
             ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
@@ -103,18 +107,23 @@ public class BattlegearInGameGUI extends Gui {
                 GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
             }
+        	RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution, mouseX, mouseY);
 
-            if(mc.thePlayer.isBattlemode() &&
-                    mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3) != null &&
-                    mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3).getItem() instanceof IShield){
-
-                renderBlockBar(width, height);
+            if(mc.thePlayer.isBattlemode()){
+                   ItemStack offhand =  mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3);
+                   if(offhand!= null && offhand.getItem() instanceof IShield){
+                	   if(!MinecraftForge.EVENT_BUS.post(new RenderShieldBarEvent.PreRender(renderEvent, offhand)))
+                		   renderBlockBar(width, height);
+                       MinecraftForge.EVENT_BUS.post(new RenderShieldBarEvent.PostRender(renderEvent, offhand));
+                   }
             }
 
             ItemStack mainhand = mc.thePlayer.getCurrentEquippedItem();
             if(mainhand != null){
                 ItemStack quiver = BowHookContainerClass2.getArrowContainer(mainhand, mc.thePlayer);
                 if(quiver != null){
+                	if(MinecraftForge.EVENT_BUS.post(new RenderQuiverBarEvent.PreRender(renderEvent, mainhand, quiver)))
+                		return;
                     GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
                     this.mc.renderEngine.bindTexture(resourceLocation);
@@ -149,8 +158,7 @@ public class BattlegearInGameGUI extends Gui {
                     RenderHelper.disableStandardItemLighting();
                     GL11.glDisable(GL12.GL_RESCALE_NORMAL);
 
-
-
+                    MinecraftForge.EVENT_BUS.post(new RenderQuiverBarEvent.PostRender(renderEvent, mainhand, quiver));
 
                 }
             }

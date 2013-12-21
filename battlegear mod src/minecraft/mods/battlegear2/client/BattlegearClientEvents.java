@@ -57,7 +57,7 @@ public class BattlegearClientEvents {
 	public void postRenderOverlay(RenderGameOverlayEvent.Post event) {
 
 		if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
-			inGameGUI.renderGameOverlay(event.partialTicks);
+			inGameGUI.renderGameOverlay(event.partialTicks, event.mouseX, event.mouseY);
 		}
 	}
 
