@@ -12,6 +12,7 @@ import mods.battlegear2.api.quiver.RenderQuiverBarEvent;
 import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -136,12 +137,12 @@ public class BattlegearInGameGUI extends Gui {
 
                     int maxSlots = ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver);
 
-                    drawTexturedModalRect(width / 2 -(1 + (maxSlots*10)), 0, 0, 0, 1+(maxSlots*10), 22);
-                    drawTexturedModalRect(width / 2 , 0, 182-(1+(maxSlots*10)), 0, (1+(maxSlots*10)), 22);
+                    drawTexturedModalRect(BattlegearConfig.quiverBarOffset + width / 2 -(1 + (maxSlots*10)), 0, 0, 0, 1+maxSlots*10, 22);
+                    drawTexturedModalRect(BattlegearConfig.quiverBarOffset + width / 2 , 0, 182-(1+(maxSlots*10)), 0, 1+maxSlots*10, 22);
 
                     int selectedSlot =  ((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver);
 
-                    this.drawTexturedModalRect(width / 2 -(2 + (maxSlots*10)) + 20*selectedSlot, -1, 0, 22, 24, 22);
+                    drawTexturedModalRect(BattlegearConfig.quiverBarOffset + width / 2 -(2 + (maxSlots*10)) + 20*selectedSlot, -1, 0, 22, 24, 22);
 
 
                     GL11.glDisable(GL11.GL_BLEND);
@@ -152,7 +153,7 @@ public class BattlegearInGameGUI extends Gui {
                         int x = width / 2 -((maxSlots*10)-1) + i * 20;
                         int y = 2;
 
-                        renderStackAt(x, y, ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, i), frame);
+                        renderStackAt(BattlegearConfig.quiverBarOffset + x, y, ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, i), frame);
                     }
 
                     RenderHelper.disableStandardItemLighting();
@@ -170,7 +171,7 @@ public class BattlegearInGameGUI extends Gui {
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         this.mc.renderEngine.bindTexture(resourceLocationShield);
         int x = width / 2 - 91;
-        int y = height - 35;
+        int y = BattlegearConfig.shieldBarOffset + height - 35;
 
         EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
         if(player.capabilities.isCreativeMode){

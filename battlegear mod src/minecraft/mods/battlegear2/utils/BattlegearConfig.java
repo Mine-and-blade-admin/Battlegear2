@@ -43,7 +43,7 @@ public class BattlegearConfig {
     public static String[] disabledRenderers = new String[0];
 
     public static double[] skeletonArrowSpawnRate = new double[ItemMBArrow.names.length];
-	
+	public static int quiverBarOffset, shieldBarOffset;
 	
 	public static void getConfig(Configuration config) {
 		config.load();
@@ -119,8 +119,10 @@ public class BattlegearConfig {
         sb.append("This will disable the special rendering for the provided item.\n");
         sb.append("These should all be placed on separate lines between the provide \'<\' and \'>\'.  \n");
         sb.append("The valid values are: spear, shield, bow, quiver");
-        disabledRenderers = config.get(config.CATEGORY_GENERAL, "Disabled Renderers", new String[0], sb.toString()).getStringList(); 
+        disabledRenderers = config.get("Rendering", "Disabled Renderers", new String[0], sb.toString()).getStringList(); 
         Arrays.sort(disabledRenderers);
+        quiverBarOffset = config.get("Rendering", "Quiver hotbar relative horizontal position", 0, "Change to move the bar in your gui").getInt();
+        shieldBarOffset = config.get("Rendering", "Shield bar relative vertical position", 0, "Change to move the bar in your gui").getInt();
         
         for(int i = 0; i < 5; i++){
         	EnumToolMaterial material = EnumToolMaterial.values()[i];
@@ -184,92 +186,70 @@ public class BattlegearConfig {
                     "L L","L L",Character.valueOf('L'),chain);
         }
 		//Weapon recipes
-		ItemStack woodStack = new ItemStack(Block.planks.blockID,1,OreDictionary.WILDCARD_VALUE);
+		String woodStack = "plankWood";
 		for(int i = 0; i < 5; i++){
 			Item craftingMaterial = Item.itemsList[EnumToolMaterial.values()[i].getToolCraftingMaterial()];
             if(Arrays.binarySearch(disabledRecipies, itemNames[4])  < 0){
-                GameRegistry.addRecipe(
-                        new ItemStack(warAxe[i]),
-                        "L L","LSL"," S ",
-                            Character.valueOf('S'), Item.stick,
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(warAxe[i]), "L L","LSL"," S ",
+                            Character.valueOf('S'), "stickWood",
                             Character.valueOf('L'),
-                            i!=0?craftingMaterial:woodStack
-                    );
+                            i!=0?craftingMaterial:woodStack));
             }
             if(Arrays.binarySearch(disabledRecipies, itemNames[5])  < 0) {
-                GameRegistry.addRecipe(
-                        new ItemStack(mace[i]),
-                        " LL"," LL","S  ",
-                                Character.valueOf('S'), Item.stick,
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(mace[i]), " LL"," LL","S  ",
+                                Character.valueOf('S'), "stickWood",
                                 Character.valueOf('L'),
-                                i!=0?craftingMaterial:woodStack
-                        );
+                                i!=0?craftingMaterial:woodStack));
             }
             if(Arrays.binarySearch(disabledRecipies, itemNames[3])  < 0){
-                GameRegistry.addRecipe(
-                        new ItemStack(dagger[i]),
-                        "L","S",
-                                Character.valueOf('S'), Item.stick,
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dagger[i]), "L","S",
+                                Character.valueOf('S'), "stickWood",
                                 Character.valueOf('L'),
-                                i!=0?craftingMaterial:woodStack
-                        );
+                                i!=0?craftingMaterial:woodStack));
             }
 
             if(Arrays.binarySearch(disabledRecipies, itemNames[6])  < 0){
                 if(i == 0){
-                    GameRegistry.addRecipe(
-                            new ItemStack(spear[i]),
-                            "  S"," S ","S  ",
-                                    Character.valueOf('S'), Item.stick
-                            );
+                    GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(spear[i]), "  S"," S ","S  ",
+                                    Character.valueOf('S'), "stickWood"));
                 }else{
-                    GameRegistry.addRecipe(
-                            new ItemStack(spear[i]),
-                            " L","S ",
+                    GameRegistry.addRecipe(new ItemStack(spear[i]), " L","S ",
                                     Character.valueOf('S'), spear[0],
-                                    Character.valueOf('L'), craftingMaterial
-                            );
+                                    Character.valueOf('L'), craftingMaterial);
                 }
             }
 		}
 
         if(Arrays.binarySearch(disabledRecipies, itemNames[7])  < 0){
             //Wood Shield
-            GameRegistry.addRecipe(new ItemStack(shield[0]), " W ","WWW", " W ",
-                            Character.valueOf('W'), woodStack
-                    );
-
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[0]), " W ","WWW", " W ",
+                            Character.valueOf('W'), woodStack));
             //Hide Shield
-            GameRegistry.addRecipe(new ItemStack(shield[1]), " H ","HWH", " H ",
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[1]), " H ","HWH", " H ",
                             Character.valueOf('W'), woodStack,
-                            Character.valueOf('H'), Item.leather
-                    );
+                            Character.valueOf('H'), Item.leather));
             //Iron Shield
-            GameRegistry.addRecipe(new ItemStack(shield[2]), "I I","IWI", " I ",
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[2]), "I I","IWI", " I ",
                             Character.valueOf('W'), woodStack,
-                            Character.valueOf('I'), Item.ingotIron
-                    );
+                            Character.valueOf('I'), Item.ingotIron));
             //Diamond Shield
-            GameRegistry.addRecipe(new ItemStack(shield[3]), "I I","IWI", " I ",
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[3]), "I I","IWI", " I ",
                             Character.valueOf('W'), woodStack,
-                            Character.valueOf('I'), Item.diamond
-                    );
+                            Character.valueOf('I'), Item.diamond));
             //Gold Shield
-            GameRegistry.addRecipe(new ItemStack(shield[4]), "I I","IWI", " I ",
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[4]), "I I","IWI", " I ",
                             Character.valueOf('W'), woodStack,
-                            Character.valueOf('I'), Item.ingotGold
-                    );
+                            Character.valueOf('I'), Item.ingotGold));
         }
 
 
         GameRegistry.addRecipe(new ShieldRemoveArrowRecipie());
 
         //Exploding Arrows, Ender Arrows, Fire Arrows
-        Item[] component = {Item.gunpowder, Item.enderPearl, Item.flint};
-        for(int i=0;i<component.length;i++){
+        for(int i=0;i<ItemMBArrow.component.length;i++){
 	        if(Arrays.binarySearch(disabledRecipies, itemNames[9]+"."+ItemMBArrow.names[i]) < 0){
 	            GameRegistry.addRecipe(new ItemStack(MbArrows, 1, i), "G","A",
-	                            Character.valueOf('G'), component[i],
+	                            Character.valueOf('G'), ItemMBArrow.component[i],
 	                            Character.valueOf('A'), Item.arrow
 	                    );
 	        }
