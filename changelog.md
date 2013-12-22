@@ -1,10 +1,19 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.4.4 ==
+* Added 3 arrows with recipes: Piercing, Poison, Mystery
+* Added uncrafting recipes for all arrows
+* Added options to disable items special rendering
+* Added options to move shield stamina bar and quiver hotbar
+* Added bow enchantments: loot, charging
+* Fixed ender arrow teleport going through bedrock
+* Fixed picking arrow on the ground returning wrong arrow
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.4.3 ==
 * Added Quiver with 4 slots to put arrows into
 ** Slots are selected with the special action key
 * Added 3 arrows with recipes: Explosive, Ender, Fire
 * Changed the way the bow is rendered, to show selected arrow
 * Quiver is rendered on player's back when a bow is equiped
-* Gave skeletons a chance to use a new arrow type
+* Gave skeletons a chance to use new arrow types
 ** See config options to modify this
 * Added an API for modders to use or make quivers
 ** and change the way the bow fire arrows

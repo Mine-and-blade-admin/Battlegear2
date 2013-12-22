@@ -1,5 +1,10 @@
 <mod modid="battlegear2">
 	<mcVersion version="1.6.4">
+	<release type="release" version="1.0.4.4"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
+                 download="http://www.curseforge.com/media/files/761/976/1.6.4-MB_Battlegear2-Bullseye-1.0.4.4.jar"
+                 md5="22cd8e7e8b3b550b53537063562c79ce"
+                />
 	<release type="release" version="1.0.4.3"
                  url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
                  download="http://www.curseforge.com/media/files/761/423/1.6.4-MB_Battlegear2-Bullseye-1.0.4.3.jar"
