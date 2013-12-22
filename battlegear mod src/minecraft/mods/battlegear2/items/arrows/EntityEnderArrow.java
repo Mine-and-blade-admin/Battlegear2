@@ -1,5 +1,6 @@
 package mods.battlegear2.items.arrows;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -60,10 +61,23 @@ public class EntityEnderArrow extends AbstractMBArrow{
 
     @Override
     public void onHitGround(int x, int y, int z) {
-        while(y < 255 && !(worldObj.isAirBlock(x,y,z) && worldObj.isAirBlock(x,y+1,z))){
-            y++;
+    	while(y < 255 && !(worldObj.isAirBlock(x,y,z) && worldObj.isAirBlock(x,y+1,z))){
+        	y++;
+        	if(worldObj.getBlockId(x, y, z)==Block.bedrock.blockID){
+            	break;
+        	}
         }
-
+        if(!worldObj.isAirBlock(x,y,z)){
+        	while(y > 0 && !(worldObj.isAirBlock(x,y,z) && worldObj.isAirBlock(x,y-1,z))){
+            	y--;
+            	if(worldObj.getBlockId(x, y, z)==Block.bedrock.blockID){
+                	break;
+            	}
+            }
+        }
+        if(!worldObj.isAirBlock(x,y,z)){
+        	return;
+        }
         if(shootingEntity != null){
             if (!this.worldObj.isRemote){
                 if (shootingEntity instanceof EntityPlayerMP){
