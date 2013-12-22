@@ -8,6 +8,8 @@ public class RenderQuiverBarEvent {
 	public static class PreRender extends RenderGameOverlayEvent.Pre{
 		public ItemStack main;
 		public ItemStack quiver;
+		public int xOffset = 0;
+		public int yOffset = 0;
 
 		public PreRender(RenderGameOverlayEvent parent, ItemStack mainhand, ItemStack quiver) {
 			super(parent, null);

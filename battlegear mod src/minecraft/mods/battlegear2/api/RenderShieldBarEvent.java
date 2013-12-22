@@ -6,6 +6,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class RenderShieldBarEvent {
 	public static class PreRender extends RenderGameOverlayEvent.Pre{
 		public ItemStack shield;
+		public int xOffset = 0;
+		public int yOffset = 0;
 
 		public PreRender(RenderGameOverlayEvent parent, ItemStack shield) {
 			super(parent, null);

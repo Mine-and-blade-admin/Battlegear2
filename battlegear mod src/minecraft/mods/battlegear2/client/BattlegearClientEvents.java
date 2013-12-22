@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mods.battlegear2.BowHookContainerClass2;
+import mods.battlegear2.api.RenderShieldBarEvent;
+import mods.battlegear2.api.quiver.RenderQuiverBarEvent;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
 import mods.battlegear2.client.gui.controls.GuiPlaceableButton;
@@ -55,10 +57,19 @@ public class BattlegearClientEvents {
 
 	@ForgeSubscribe
 	public void postRenderOverlay(RenderGameOverlayEvent.Post event) {
-
 		if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
 			inGameGUI.renderGameOverlay(event.partialTicks, event.mouseX, event.mouseY);
 		}
+	}
+	
+	@ForgeSubscribe
+	public void preRenderQuiver(RenderQuiverBarEvent.PreRender event){
+		event.xOffset = BattlegearConfig.quiverBarOffset;
+	}
+	
+	@ForgeSubscribe
+	public void preRenderShield(RenderShieldBarEvent.PreRender event){
+		event.yOffset = - BattlegearConfig.shieldBarOffset;
 	}
 
 	@ForgeSubscribe
