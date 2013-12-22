@@ -66,14 +66,14 @@ public class BattlegearConfig {
         quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).setTextureName("battlegear2:quiver/"+itemNames[2]).setCreativeTab(customTab);
 
         MbArrows = new ItemMBArrow(config.getItem(itemNames[9], firstDefaultItemIndex+itemOffests[9]).getInt());
-        MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).setTextureName("battlegear2:" + itemNames[9]).setCreativeTab(customTab);
+        MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).setTextureName("battlegear2:" + itemNames[9]).setCreativeTab(customTab).setContainerItem(Item.arrow);
 
         String customArrowSpawn = "Skeleton CustomArrow Spawn Rate";
         config.addCustomCategoryComment(customArrowSpawn, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
 
         //default 10% for everything but ender (which is 0%)
         for(int i = 0; i < ItemMBArrow.names.length; i++){
-            skeletonArrowSpawnRate[i] = config.get(customArrowSpawn, ItemMBArrow.names[i], i!=1?0.1F:0).getDouble(i!=1?0.1F:0);
+            skeletonArrowSpawnRate[i] = config.get(customArrowSpawn, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0).getDouble(i!=1?0.1F:0);
         }
         
         StringBuffer sb = new StringBuffer();
@@ -242,16 +242,17 @@ public class BattlegearConfig {
                             Character.valueOf('I'), Item.ingotGold));
         }
 
-
         GameRegistry.addRecipe(new ShieldRemoveArrowRecipie());
 
-        //Exploding Arrows, Ender Arrows, Fire Arrows
         for(int i=0;i<ItemMBArrow.component.length;i++){
 	        if(Arrays.binarySearch(disabledRecipies, itemNames[9]+"."+ItemMBArrow.names[i]) < 0){
 	            GameRegistry.addRecipe(new ItemStack(MbArrows, 1, i), "G","A",
 	                            Character.valueOf('G'), ItemMBArrow.component[i],
 	                            Character.valueOf('A'), Item.arrow
 	                    );
+	            if(i!=2){
+	            	GameRegistry.addShapelessRecipe(new ItemStack(ItemMBArrow.component[i]), new ItemStack(MbArrows, 1, i));
+	            }
 	        }
         }
 
