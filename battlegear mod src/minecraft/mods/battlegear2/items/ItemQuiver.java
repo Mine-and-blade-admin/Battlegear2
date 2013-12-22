@@ -1,6 +1,5 @@
 package mods.battlegear2.items;
 
-
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowEvent;
@@ -38,6 +37,15 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
             stack.setTagCompound(compound);
         }
         return stack.getTagCompound();
+    }
+    
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+    	for(int i = 0; i<getSlotCount(stack);i++){
+    		player.dropPlayerItem(getStackInSlot(stack, i));
+    		setStackInSlot(stack, i, null);
+    	}
+        return stack;
     }
 
     @Override
@@ -185,17 +193,13 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     }
 
 
-    /**
-     * Return whether the specified armor ItemStack has a color.
-     */
+    @Override
     public boolean hasColor(ItemStack par1ItemStack)
     {
         return (!par1ItemStack.hasTagCompound() ? false : (!par1ItemStack.getTagCompound().hasKey("display") ? false : par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color")));
     }
 
-    /**
-     * Return the color for the specified armor ItemStack.
-     */
+    @Override
     public int getColor(ItemStack par1ItemStack)
     {
         {
@@ -213,9 +217,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
         }
     }
 
-    /**
-     * Remove the color from the specified armor ItemStack.
-     */
+    @Override
     public void removeColor(ItemStack par1ItemStack)
     {
             NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
