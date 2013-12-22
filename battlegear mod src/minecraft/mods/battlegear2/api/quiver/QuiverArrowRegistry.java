@@ -2,8 +2,11 @@ package mods.battlegear2.api.quiver;
 
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
@@ -37,6 +40,12 @@ public class QuiverArrowRegistry {
 		}else{
 			return temp.copy();
 		}
+    }
+    
+    public static Set<ItemStack> getKnownArrows(){
+    	Set<ItemStack> result = new TreeSet(new StackComparator());
+    	result.addAll(itemToClasses.keySet());
+    	return result;
     }
 
     static class StackComparator implements Comparator<ItemStack> {
