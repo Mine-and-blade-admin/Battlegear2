@@ -31,7 +31,6 @@ public class BowRenderer implements IItemRenderer {
         return false;
     }
 
-
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type){

@@ -33,7 +33,7 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 
 	@Override
 	public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
-		return offhand!=null && offhand.getItem() instanceof IShield;
+		return offhand==null || offhand.getItem() instanceof IShield;
 	}
 
     @Override

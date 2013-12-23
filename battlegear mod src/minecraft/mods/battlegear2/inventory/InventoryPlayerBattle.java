@@ -40,7 +40,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         return (id >= 0 && id < getHotbarSize()) || (id >= OFFSET && id < OFFSET + 2 * WEAPON_SETS);
     }
 
-
     /**
      * Returns a slot index in main inventory containing a specific itemID
      */
@@ -62,7 +61,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
         return -1;
     }
-
 
     @Override
     public ItemStack getCurrentItem() {
@@ -280,7 +278,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
             }
         }
     }
-
 
     @Override
     public ItemStack getStackInSlot(int slot) {

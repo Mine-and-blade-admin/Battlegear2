@@ -28,8 +28,6 @@ public class QuiverModel extends ModelBase
             arrowPos[i] = new float[]{r.nextFloat()*2F/16F, r.nextFloat()*4F, r.nextFloat() * 3F/16F};
         }
 
-
-
         this.textureWidth = 64;
         textureHeight = 32;
 
@@ -68,11 +66,7 @@ public class QuiverModel extends ModelBase
         quiverTop.setTextureSize(64, 32);
         quiverTop.showModel = true;
         setRotation(quiverTop, 0.0F, 0.0F, 0.7853982F);
-
-
     }
-
-
 
     //@Override
     public void render(int arrowCount, float par7) {
@@ -85,14 +79,11 @@ public class QuiverModel extends ModelBase
         quiverLeft.render(par7);
         quiverTop.render(par7);
 
-
         for(int i = 0; i < arrowCount && i < arrowPos.length; i++){
             GL11.glPushMatrix();
             quiverBase.postRender(par7);
             GL11.glTranslatef(-14F/16F + arrowPos[i][2], -3F/16F, 2.5F/16F+arrowPos[i][0]);
             BattlegearRenderHelper.renderArrow(true, 0, -arrowPos[i][1], 1, 0, 0);
-
-
             GL11.glPopMatrix();
         }
 
@@ -104,7 +95,5 @@ public class QuiverModel extends ModelBase
         model.rotateAngleY = y;
         model.rotateAngleZ = z;
     }
-
-
 
 }
