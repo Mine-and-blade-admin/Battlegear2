@@ -2,9 +2,11 @@ package mods.battlegear2.gui;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 
 public class WeaponSlot extends Slot {
@@ -34,7 +36,7 @@ public class WeaponSlot extends Slot {
                 return super.isItemValid(par1ItemStack);
             } else if (mainHand) {
                 if (BattlegearUtils.isWeapon(par1ItemStack)) {
-                    if (partner.getHasStack()) {
+                    if (partner.getHasStack() && !(partner.getStack().getItem() instanceof IArrowContainer2)) {
                         return BattlegearUtils.isMainHand(par1ItemStack, partner.getStack()) ? super.isItemValid(par1ItemStack) : false;                        
                     } else {
                         return super.isItemValid(par1ItemStack);
@@ -44,20 +46,16 @@ public class WeaponSlot extends Slot {
                 }
             } else {
 
-                if(par1ItemStack.getItem() instanceof IShield){
+                if(par1ItemStack.getItem() instanceof IArrowContainer2){
                     if (partner.getHasStack()) {
-                        return BattlegearUtils.isMainHand(partner.getStack(), par1ItemStack);
+                        return partner.getStack().getItem() instanceof ItemBow ? super.isItemValid(par1ItemStack) : false;
                     }else{
-                        return true;
+                        return super.isItemValid(par1ItemStack);
                     }
 
                 }else if (BattlegearUtils.isOffHand(par1ItemStack)) {
                     if (partner.getHasStack()) {
-                        if (BattlegearUtils.isMainHand(partner.getStack(), par1ItemStack)) {
-                            return super.isItemValid(par1ItemStack);
-                        } else {
-                            return false;
-                        }
+                    	return BattlegearUtils.isMainHand(partner.getStack(), par1ItemStack) ? super.isItemValid(par1ItemStack) : false;
                     } else {
                         return super.isItemValid(par1ItemStack);
                     }

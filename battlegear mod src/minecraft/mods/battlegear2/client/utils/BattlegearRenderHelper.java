@@ -4,6 +4,7 @@ import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 import mods.battlegear2.api.ISheathed;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.client.BattlegearKeyHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemSpear;
@@ -388,10 +389,6 @@ public class BattlegearRenderHelper {
 
         if (var21 != null && par1EntityPlayer.isBattlemode()) {
 
-
-
-
-
             float var7;
             float var8;
             float var11;
@@ -422,7 +419,6 @@ public class BattlegearRenderHelper {
                 GL11.glRotatef(45.0F-90, 0.0F, 1.0F, 0.0F);
                 GL11.glRotatef(25, 0.0F, 0.0F, 1.0F);
 
-
                 if (var21.getItem().requiresMultipleRenderPasses()) {
                     for (int var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
                         int var26 = var21.getItem().getColorFromItemStack(var21, var27);
@@ -441,7 +437,7 @@ public class BattlegearRenderHelper {
                     RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
                 }
 
-            }else{
+            }else if(!(var21.getItem() instanceof IArrowContainer2)){
 
                 if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.blocksList[var21.itemID].getRenderType()))) {
                     var7 = 0.5F;
@@ -450,7 +446,7 @@ public class BattlegearRenderHelper {
                     GL11.glRotatef(20.0F, 1.0F, 0.0F, 0.0F);
                     GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
                     GL11.glScalef(-var7, -var7, var7);
-                } else if (var21.itemID == Item.bow.itemID) {
+                } else if (var21.getItem() instanceof ItemBow) {
                     var7 = 0.625F;
                     GL11.glTranslatef(0.0F, 0.125F, 0.3125F);
                     GL11.glRotatef(-20.0F, 0.0F, 1.0F, 0.0F);
@@ -601,10 +597,9 @@ public class BattlegearRenderHelper {
 
             GL11.glPopMatrix();
 
-
         }
 
-        if(offhandSheathed != null && !(offhandSheathed.getItem() instanceof ItemBlock)){
+        if(offhandSheathed != null && !(offhandSheathed.getItem() instanceof ItemBlock || offhandSheathed.getItem() instanceof IArrowContainer2)){
             boolean onBack = BattlegearConfig.forceBackSheath;
             if(offhandSheathed.getItem() instanceof ISheathed){
                 onBack = ((ISheathed) offhandSheathed.getItem()).sheatheOnBack(offhandSheathed);
@@ -672,11 +667,7 @@ public class BattlegearRenderHelper {
         //depth = 1;
 
         Minecraft.getMinecraft().renderEngine.bindTexture(arrowTex);
-
-
-
         Tessellator tessellator = Tessellator.instance;
-
 
         byte b0 = 0;
         float f2 = 12F/32F * depth;
@@ -692,13 +683,9 @@ public class BattlegearRenderHelper {
 
         GL11.glTranslatef(x + 8 + 2.5F, y + 8 + 1.5F, 0);
 
-
-
         GL11.glRotatef( pitch, 0.0F, 1.0F, 0.0F);
         GL11.glRotatef( yaw, 1.0F, 0.0F, 0.0F);
         GL11.glNormal3f(f10, 0.0F, 0.0F);
-
-
 
         for (int i = 0; i < 2; ++i)
         {
@@ -718,10 +705,7 @@ public class BattlegearRenderHelper {
             tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, (double)f2, (double)f4);
             tessellator.draw();
         }
-
         GL11.glPopMatrix();
-
-
     }
 
 }

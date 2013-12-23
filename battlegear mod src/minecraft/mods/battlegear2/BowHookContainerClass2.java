@@ -5,6 +5,7 @@ import java.util.Random;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowEvent;
 import mods.battlegear2.enchantments.BaseEnchantment;
+import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.items.arrows.AbstractMBArrow;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -42,19 +43,36 @@ public class BowHookContainerClass2 {
     }
 
     public static ItemStack getArrowContainer(ItemStack result, EntityPlayer entityPlayer) {
-        //Check for IArrowContainer in player main inventory
+    	//Check for IArrowContainer in player offhand
+    	ItemStack offhand = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
+    	ItemStack temp = tryGetLoadedContainer(offhand, result, entityPlayer);
+    	if(temp!=null)
+    		return temp;
+    	for(int i=3;i<6;i++){
+    		offhand = entityPlayer.inventory.getStackInSlot(i+InventoryPlayerBattle.OFFSET);
+    		temp = tryGetLoadedContainer(offhand, result, entityPlayer);
+    		if(temp!=null)
+        		return temp;
+    	}
+    	//Check for IArrowContainer in player main inventory
         for(ItemStack item : entityPlayer.inventory.mainInventory){
-            if(item!=null && item.getItem() instanceof IArrowContainer2){
-                int maxSlot = ((IArrowContainer2) item.getItem()).getSlotCount(item);
-                for(int i = 0; i < maxSlot; i++){
-                    if(((IArrowContainer2) item.getItem()).hasArrowFor(item, result, entityPlayer, i)){
-                        return item;
-                    }
+        	temp = tryGetLoadedContainer(item, result, entityPlayer);
+        	if(temp!=null)
+        		return temp;
+        }
+        return null;
+    }
+    
+    private static ItemStack tryGetLoadedContainer(ItemStack item, ItemStack bow, EntityPlayer entityPlayer){
+    	if(item!=null && item.getItem() instanceof IArrowContainer2){
+            int maxSlot = ((IArrowContainer2) item.getItem()).getSlotCount(item);
+            for(int i = 0; i < maxSlot; i++){
+                if(((IArrowContainer2) item.getItem()).hasArrowFor(item, bow, entityPlayer, i)){
+                    return item;
                 }
-
             }
         }
-        return  null;
+    	return null;
     }
 
     @ForgeSubscribe(receiveCanceled=true)

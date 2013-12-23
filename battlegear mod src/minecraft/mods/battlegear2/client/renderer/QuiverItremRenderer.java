@@ -1,25 +1,23 @@
 package mods.battlegear2.client.renderer;
 
-
-import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.items.ItemQuiver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
 import net.minecraft.util.Icon;
+import net.minecraftforge.client.IItemRenderer;
+
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.client.FMLClientHandler;
 
 public class QuiverItremRenderer implements IItemRenderer{
 
-
     private Minecraft mc;
     private RenderItem itemRenderer;
-
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -52,8 +50,6 @@ public class QuiverItremRenderer implements IItemRenderer{
         for(int i = 0; i < maxStack && !hasArrows; i++){
             hasArrows = quiver.getStackInSlot(item, i) != null;
         }
-
-
 
         Icon icon =  item.getIconIndex();
         Tessellator tessellator = Tessellator.instance;
@@ -107,7 +103,5 @@ public class QuiverItremRenderer implements IItemRenderer{
                 break;
         }
         GL11.glPopMatrix();
-
-
     }
 }
