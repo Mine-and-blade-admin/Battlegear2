@@ -82,7 +82,7 @@ public class Battlegear {
                         new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml"),
                         new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/changelog.md")
                 );
-            } catch (MalformedURLException e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         }
