@@ -133,9 +133,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
 
     @Override
     public boolean isCraftableWithArrows(ItemStack stack, ItemStack arrows) {
-        return arrows != null &&
-                (arrows.getItem().itemID == Item.arrow.itemID ||
-                        arrows.getItem().itemID == BattlegearConfig.MbArrows.itemID);
+        return arrows != null && QuiverArrowRegistry.isKnownArrow(arrows);
     }
 
 
