@@ -94,8 +94,10 @@ public class Battlegear {
         BattlegearConfig.registerRecipes();
 	    GameRegistry.registerCraftingHandler(new CraftingHandeler());
         QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
-        for(int i = 0; i<ItemMBArrow.arrows.length; i++){
-        	QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, i, ItemMBArrow.arrows[i]);
+        if(BattlegearConfig.MbArrows!=null){
+	        for(int i = 0; i<ItemMBArrow.arrows.length; i++){
+	        	QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, i, ItemMBArrow.arrows[i]);
+	        }
         }
     }
 

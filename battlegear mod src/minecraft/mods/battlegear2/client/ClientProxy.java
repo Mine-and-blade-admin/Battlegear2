@@ -95,20 +95,22 @@ public class ClientProxy extends CommonProxy {
     	if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "spear")  < 0){
 	        SpearRenderer spearRenderer =  new SpearRenderer();
 	        for(Item spear: BattlegearConfig.spear){
-	            MinecraftForgeClient.registerItemRenderer(spear.itemID, spearRenderer);
+	        	if(spear!=null)
+	        		MinecraftForgeClient.registerItemRenderer(spear.itemID, spearRenderer);
 	        }
     	}
 
         if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "shield")  < 0){
         	ShieldRenderer shieldRenderer = new ShieldRenderer();
 	        for(Item shield : BattlegearConfig.shield){
-	            MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
+	        	if(shield!=null)
+	        		MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
 	        }
         }
 
         if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "bow")  < 0)
         	MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
-        if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver")  < 0)
+        if(BattlegearConfig.quiver!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver")  < 0)
         	MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
 
         if(Battlegear.debug){
