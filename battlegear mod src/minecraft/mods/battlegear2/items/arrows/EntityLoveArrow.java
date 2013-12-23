@@ -1,10 +1,12 @@
 package mods.battlegear2.items.arrows;
 
+import mods.battlegear2.items.ItemMBArrow;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
@@ -36,6 +38,9 @@ public class EntityLoveArrow extends AbstractMBArrow{
 			return true;
 		}else if(entityHit instanceof EntityCreature){
 			((EntityCreature)entityHit).setTarget(null);
+			if(((EntityCreature) entityHit).getHeldItem()==null){
+				entityHit.setCurrentItemOrArmor(0, new ItemStack(ItemMBArrow.component[5]));
+			}
 			setDead();
 			return true;
 		}else if(entityHit instanceof EntityPlayer){
