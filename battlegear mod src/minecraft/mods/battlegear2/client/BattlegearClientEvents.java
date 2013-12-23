@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mods.battlegear2.BowHookContainerClass2;
-import mods.battlegear2.api.RenderShieldBarEvent;
-import mods.battlegear2.api.quiver.RenderQuiverBarEvent;
+import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
 import mods.battlegear2.client.gui.controls.GuiPlaceableButton;
@@ -63,13 +62,12 @@ public class BattlegearClientEvents {
 	}
 	
 	@ForgeSubscribe
-	public void preRenderQuiver(RenderQuiverBarEvent.PreRender event){
-		event.xOffset = BattlegearConfig.quiverBarOffset;
-	}
-	
-	@ForgeSubscribe
-	public void preRenderShield(RenderShieldBarEvent.PreRender event){
-		event.yOffset = - BattlegearConfig.shieldBarOffset;
+	public void preRenderBars(RenderItemBarEvent.PreRender event){
+		if(event instanceof RenderItemBarEvent.PreDual){
+			event.xOffset = BattlegearConfig.quiverBarOffset;
+		}else{
+			event.yOffset = - BattlegearConfig.shieldBarOffset;
+		}
 	}
 
 	@ForgeSubscribe
@@ -114,8 +112,6 @@ public class BattlegearClientEvents {
 				GL11.glPopMatrix();
 			}
 		}
-
-		event.setResult(Event.Result.ALLOW);
 	}
 
 	@ForgeSubscribe

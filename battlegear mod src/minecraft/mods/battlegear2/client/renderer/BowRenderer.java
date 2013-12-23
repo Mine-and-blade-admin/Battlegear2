@@ -45,7 +45,6 @@ public class BowRenderer implements IItemRenderer {
 
     private void renderEquippedBow(ItemStack item, EntityLivingBase entityLivingBase, boolean firstPerson) {
 
-
         Icon icon = item.getIconIndex();
 
         ItemStack arrowStack = new ItemStack(Item.arrow);

@@ -4,6 +4,7 @@ import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 import mods.battlegear2.api.ISheathed;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.RenderPlayerEventChild.*;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.client.BattlegearKeyHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -16,7 +17,6 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.Entity;
@@ -28,6 +28,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -98,16 +100,15 @@ public class BattlegearRenderHelper {
             float var11;
             float var12;
             float var13;
-            Render var24;
-            RenderPlayer var26;
-
+            RenderPlayer var26 = (RenderPlayer) RenderManager.instance.getEntityRenderObject(mc.thePlayer);
+            RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(player, var26, frame);
+            RenderPlayerEvent postRender = new RenderPlayerEvent.Post(player, var26, frame);
             if (itemRenderer.offHandItemToRender != null) {
 
 	        	if(itemRenderer.offHandItemToRender.getItem() instanceof IShield){
                     GL11.glPushMatrix();
 
 	        		var7 = 0.8F;
-
 
                     float swingProgress =
                             (float)player.specialActionTimer / (
@@ -122,13 +123,12 @@ public class BattlegearRenderHelper {
 	        			GL11.glTranslatef(0.25F, 0.15F, 0);
 	        		}
 
-
 	        		GL11.glRotatef(25, 0, 0, 1);
 	        		GL11.glRotatef(325-35*MathHelper.sin(swingProgress*3.14159F), 0, 1, 0);
 
-
-	        		itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
-
+	        		if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, itemRenderer.offHandItemToRender)))
+	        			itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
+	        		MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, itemRenderer.offHandItemToRender));
 	        		GL11.glPopMatrix();
 
 
@@ -227,30 +227,31 @@ public class BattlegearRenderHelper {
                     if (itemRenderer.offHandItemToRender.getItem().shouldRotateAroundWhenRendering()) {
                         GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
                     }
-
-                    if (itemRenderer.offHandItemToRender.getItem().requiresMultipleRenderPasses()) {
-                        itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
-                        for (int x = 1; x < itemRenderer.offHandItemToRender.getItem().getRenderPasses(itemRenderer.offHandItemToRender.getItemDamage()); x++) {
-                            int var25 = Item.itemsList[itemRenderer.offHandItemToRender.itemID].getColorFromItemStack(itemRenderer.offHandItemToRender, x);
-                            var13 = (float) (var25 >> 16 & 255) / 255.0F;
-                            var14 = (float) (var25 >> 8 & 255) / 255.0F;
-                            var15 = (float) (var25 & 255) / 255.0F;
-                            GL11.glColor4f(var6 * var13, var6 * var14, var6 * var15, 1.0F);
-                            itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, x);
-                        }
-                    } else {
-                        itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
+                    if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, itemRenderer.offHandItemToRender))){  	        		
+	
+                    	if (itemRenderer.offHandItemToRender.getItem().requiresMultipleRenderPasses()) {
+	                        itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
+	                        for (int x = 1; x < itemRenderer.offHandItemToRender.getItem().getRenderPasses(itemRenderer.offHandItemToRender.getItemDamage()); x++) {
+	                            int var25 = Item.itemsList[itemRenderer.offHandItemToRender.itemID].getColorFromItemStack(itemRenderer.offHandItemToRender, x);
+	                            var13 = (float) (var25 >> 16 & 255) / 255.0F;
+	                            var14 = (float) (var25 >> 8 & 255) / 255.0F;
+	                            var15 = (float) (var25 & 255) / 255.0F;
+	                            GL11.glColor4f(var6 * var13, var6 * var14, var6 * var15, 1.0F);
+	                            itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, x);
+	                        }
+	                    } else {
+	                        itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
+	                    }
                     }
-
+                    MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, itemRenderer.offHandItemToRender));
+	        		
                     GL11.glPopMatrix();
                 }
             } else if (!player.isInvisible()) {
                 GL11.glPushMatrix();
                 var7 = 0.8F;
 
-
                 GL11.glScalef(-1.0F, 1.0F, 1.0F);
-
 
                 var20 = player.getOffSwingProgress(frame);
                 var21 = MathHelper.sin(var20 * (float) Math.PI);
@@ -276,11 +277,12 @@ public class BattlegearRenderHelper {
 
                 GL11.glScalef(1.0F, 1.0F, -1.0F);
                 GL11.glTranslatef(5.6F, 0.0F, 0.0F);
-                var24 = RenderManager.instance.getEntityRenderObject(mc.thePlayer);
-                var26 = (RenderPlayer) var24;
                 var13 = 1.0F;
                 GL11.glScalef(var13, var13, var13);
-                var26.renderFirstPersonArm(mc.thePlayer);
+                if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.Mainhand, null))) 	        		              	
+                	var26.renderFirstPersonArm(mc.thePlayer);
+                MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.Mainhand, null));
+	        		
                 GL11.glPopMatrix();
             }
 
@@ -382,8 +384,7 @@ public class BattlegearRenderHelper {
         }
     }
 
-    public static void renderItemIn3rdPerson(EntityPlayer par1EntityPlayer,
-                                             ModelBiped modelBipedMain, double frame) {
+    public static void renderItemIn3rdPerson(EntityPlayer par1EntityPlayer, ModelBiped modelBipedMain, float frame) {
 
         ItemStack var21 = par1EntityPlayer.inventory.getStackInSlot(par1EntityPlayer.inventory.currentItem + 3);
 
@@ -392,8 +393,15 @@ public class BattlegearRenderHelper {
             float var7;
             float var8;
             float var11;
+            RenderPlayer render = (RenderPlayer) RenderManager.instance.getEntityRenderObject(par1EntityPlayer);
+            RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
+            RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
+            
             GL11.glPushMatrix();
-            modelBipedMain.bipedLeftArm.postRender(0.0625F);
+            if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.Offhand, null))) 	        		              	           
+            	modelBipedMain.bipedLeftArm.postRender(0.0625F);
+            MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.Offhand, null));
+        	
             GL11.glTranslatef(0.0625F, 0.4375F, 0.0625F);
 
             if (par1EntityPlayer.fishEntity != null) {
@@ -418,25 +426,26 @@ public class BattlegearRenderHelper {
                 GL11.glRotatef(-100.0F+90, 1.0F, 0.0F, 0.0F);
                 GL11.glRotatef(45.0F-90, 0.0F, 1.0F, 0.0F);
                 GL11.glRotatef(25, 0.0F, 0.0F, 1.0F);
-
-                if (var21.getItem().requiresMultipleRenderPasses()) {
-                    for (int var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
-                        int var26 = var21.getItem().getColorFromItemStack(var21, var27);
-                        float var28 = (float) (var26 >> 16 & 255) / 255.0F;
-                        float var10 = (float) (var26 >> 8 & 255) / 255.0F;
-                        var11 = (float) (var26 & 255) / 255.0F;
-                        GL11.glColor4f(var28, var10, var11, 1.0F);
-                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
-                    }
-                } else {
-                    int var27 = var21.getItem().getColorFromItemStack(var21, 0);
-                    var8 = (float) (var27 >> 16 & 255) / 255.0F;
-                    float var28 = (float) (var27 >> 8 & 255) / 255.0F;
-                    float var10 = (float) (var27 & 255) / 255.0F;
-                    GL11.glColor4f(var8, var28, var10, 1.0F);
-                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
+                if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){ 	        		              	                          
+	                if (var21.getItem().requiresMultipleRenderPasses()) {
+	                    for (int var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
+	                        int var26 = var21.getItem().getColorFromItemStack(var21, var27);
+	                        float var28 = (float) (var26 >> 16 & 255) / 255.0F;
+	                        float var10 = (float) (var26 >> 8 & 255) / 255.0F;
+	                        var11 = (float) (var26 & 255) / 255.0F;
+	                        GL11.glColor4f(var28, var10, var11, 1.0F);
+	                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
+	                    }
+	                } else {
+	                    int var27 = var21.getItem().getColorFromItemStack(var21, 0);
+	                    var8 = (float) (var27 >> 16 & 255) / 255.0F;
+	                    float var28 = (float) (var27 >> 8 & 255) / 255.0F;
+	                    float var10 = (float) (var27 & 255) / 255.0F;
+	                    GL11.glColor4f(var8, var28, var10, 1.0F);
+	                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
+	                }
                 }
-
+                
             }else if(!(var21.getItem() instanceof IArrowContainer2)){
 
                 if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.blocksList[var21.itemID].getRenderType()))) {
@@ -484,26 +493,28 @@ public class BattlegearRenderHelper {
                 float var10;
                 int var27;
                 float var28;
-
-                if (var21.getItem().requiresMultipleRenderPasses()) {
-                    for (var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
-                        int var26 = var21.getItem().getColorFromItemStack(var21, var27);
-                        var28 = (float) (var26 >> 16 & 255) / 255.0F;
-                        var10 = (float) (var26 >> 8 & 255) / 255.0F;
-                        var11 = (float) (var26 & 255) / 255.0F;
-                        GL11.glColor4f(var28, var10, var11, 1.0F);
-                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
-                    }
-                } else {
-                    var27 = var21.getItem().getColorFromItemStack(var21, 0);
-                    var8 = (float) (var27 >> 16 & 255) / 255.0F;
-                    var28 = (float) (var27 >> 8 & 255) / 255.0F;
-                    var10 = (float) (var27 & 255) / 255.0F;
-                    GL11.glColor4f(var8, var28, var10, 1.0F);
-                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
+                if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){ 	        		              	                          
+    	            
+	                if (var21.getItem().requiresMultipleRenderPasses()) {
+	                    for (var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
+	                        int var26 = var21.getItem().getColorFromItemStack(var21, var27);
+	                        var28 = (float) (var26 >> 16 & 255) / 255.0F;
+	                        var10 = (float) (var26 >> 8 & 255) / 255.0F;
+	                        var11 = (float) (var26 & 255) / 255.0F;
+	                        GL11.glColor4f(var28, var10, var11, 1.0F);
+	                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
+	                    }
+	                } else {
+	                    var27 = var21.getItem().getColorFromItemStack(var21, 0);
+	                    var8 = (float) (var27 >> 16 & 255) / 255.0F;
+	                    var28 = (float) (var27 >> 8 & 255) / 255.0F;
+	                    var10 = (float) (var27 & 255) / 255.0F;
+	                    GL11.glColor4f(var8, var28, var10, 1.0F);
+	                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
+	                }
                 }
             }
-
+            MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.ItemOffhand, var21));
             GL11.glPopMatrix();
         } else {
             if(!par1EntityPlayer.isBattlemode())
@@ -511,7 +522,7 @@ public class BattlegearRenderHelper {
         }
     }
 
-    private static void renderSheathedItems(EntityPlayer par1EntityPlayer, ModelBiped modelBipedMain, double frame) {
+    private static void renderSheathedItems(EntityPlayer par1EntityPlayer, ModelBiped modelBipedMain, float frame) {
 
         ItemStack mainhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearKeyHandeler.previousBattlemode);
         ItemStack offhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearKeyHandeler.previousBattlemode+InventoryPlayerBattle.WEAPON_SETS);
@@ -533,7 +544,10 @@ public class BattlegearRenderHelper {
         }
 
         int backCount = hasChestArmour?1:0;
-
+        RenderPlayer render = (RenderPlayer) RenderManager.instance.getEntityRenderObject(par1EntityPlayer);
+        RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
+        RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
+        
         if(mainhandSheathed != null){
 
             boolean onBack = BattlegearConfig.forceBackSheath;
@@ -576,25 +590,29 @@ public class BattlegearRenderHelper {
                 GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
             }
 
-
-            if (mainhandSheathed.getItem().requiresMultipleRenderPasses()) {
-                for (int var27 = 0; var27 < mainhandSheathed.getItem().getRenderPasses(mainhandSheathed.getItemDamage()); ++var27) {
-                    int var26 = mainhandSheathed.getItem().getColorFromItemStack(mainhandSheathed, var27);
-                    float var28 = (float) (var26 >> 16 & 255) / 255.0F;
-                    float var10 = (float) (var26 >> 8 & 255) / 255.0F;
-                    float var11 = (float) (var26 & 255) / 255.0F;
-                    GL11.glColor4f(var28, var10, var11, 1.0F);
-                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, var27);
-                }
-            } else {
-                int var27 = mainhandSheathed.getItem().getColorFromItemStack(mainhandSheathed, 0);
-                float var8 = (float) (var27 >> 16 & 255) / 255.0F;
-                float var28 = (float) (var27 >> 8 & 255) / 255.0F;
-                float var10 = (float) (var27 & 255) / 255.0F;
-                GL11.glColor4f(var8, var28, var10, 1.0F);
-                RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, 0);
+            if(!MinecraftForge.EVENT_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, true, mainhandSheathed))){ 	        		              	                          
+    	        
+	            if (mainhandSheathed.getItem().requiresMultipleRenderPasses()) {
+	                for (int var27 = 0; var27 < mainhandSheathed.getItem().getRenderPasses(mainhandSheathed.getItemDamage()); ++var27) {
+	                    int var26 = mainhandSheathed.getItem().getColorFromItemStack(mainhandSheathed, var27);
+	                    float var28 = (float) (var26 >> 16 & 255) / 255.0F;
+	                    float var10 = (float) (var26 >> 8 & 255) / 255.0F;
+	                    float var11 = (float) (var26 & 255) / 255.0F;
+	                    GL11.glColor4f(var28, var10, var11, 1.0F);
+	                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, var27);
+	                }
+	            } else {
+	                int var27 = mainhandSheathed.getItem().getColorFromItemStack(mainhandSheathed, 0);
+	                float var8 = (float) (var27 >> 16 & 255) / 255.0F;
+	                float var28 = (float) (var27 >> 8 & 255) / 255.0F;
+	                float var10 = (float) (var27 & 255) / 255.0F;
+	                GL11.glColor4f(var8, var28, var10, 1.0F);
+	                RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, 0);
+	            }
             }
-
+            
+            MinecraftForge.EVENT_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, true, mainhandSheathed));
+            
             GL11.glPopMatrix();
 
         }
@@ -637,25 +655,29 @@ public class BattlegearRenderHelper {
                 GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
 
             }
-
-            if (offhandSheathed.getItem().requiresMultipleRenderPasses()) {
-                for (int var27 = 0; var27 < offhandSheathed.getItem().getRenderPasses(offhandSheathed.getItemDamage()); ++var27) {
-                    int var26 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, var27);
-                    float var28 = (float) (var26 >> 16 & 255) / 255.0F;
-                    float var10 = (float) (var26 >> 8 & 255) / 255.0F;
-                    float var11 = (float) (var26 & 255) / 255.0F;
-                    GL11.glColor4f(var28, var10, var11, 1.0F);
-                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, var27);
-                }
-            } else {
-                int var27 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, 0);
-                float var8 = (float) (var27 >> 16 & 255) / 255.0F;
-                float var28 = (float) (var27 >> 8 & 255) / 255.0F;
-                float var10 = (float) (var27 & 255) / 255.0F;
-                GL11.glColor4f(var8, var28, var10, 1.0F);
-                RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, 0);
+            if(!MinecraftForge.EVENT_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, false, offhandSheathed))){ 	        		              	                          
+        	    
+	            if (offhandSheathed.getItem().requiresMultipleRenderPasses()) {
+	                for (int var27 = 0; var27 < offhandSheathed.getItem().getRenderPasses(offhandSheathed.getItemDamage()); ++var27) {
+	                    int var26 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, var27);
+	                    float var28 = (float) (var26 >> 16 & 255) / 255.0F;
+	                    float var10 = (float) (var26 >> 8 & 255) / 255.0F;
+	                    float var11 = (float) (var26 & 255) / 255.0F;
+	                    GL11.glColor4f(var28, var10, var11, 1.0F);
+	                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, var27);
+	                }
+	            } else {
+	                int var27 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, 0);
+	                float var8 = (float) (var27 >> 16 & 255) / 255.0F;
+	                float var28 = (float) (var27 >> 8 & 255) / 255.0F;
+	                float var10 = (float) (var27 & 255) / 255.0F;
+	                GL11.glColor4f(var8, var28, var10, 1.0F);
+	                RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, 0);
+	            }
             }
-
+            
+            MinecraftForge.EVENT_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, false, offhandSheathed));
+            
             GL11.glPopMatrix();
         }
 

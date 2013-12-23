@@ -6,13 +6,11 @@ import mods.battlegear2.Battlegear;
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.IShield;
-import mods.battlegear2.api.RenderShieldBarEvent;
+import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.quiver.IArrowContainer2;
-import mods.battlegear2.api.quiver.RenderQuiverBarEvent;
 import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
-import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
@@ -113,10 +111,10 @@ public class BattlegearInGameGUI extends Gui {
             if(mc.thePlayer.isBattlemode()){
                    ItemStack offhand =  mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3);
                    if(offhand!= null && offhand.getItem() instanceof IShield){
-                	   RenderShieldBarEvent.PreRender shieldEvent = new RenderShieldBarEvent.PreRender(renderEvent, offhand);
+                	   RenderItemBarEvent.PreRender shieldEvent = new RenderItemBarEvent.PreRender(renderEvent, offhand);
                 	   if(!MinecraftForge.EVENT_BUS.post(shieldEvent))
                 		   renderBlockBar(shieldEvent.xOffset+width, shieldEvent.yOffset+height);
-                       MinecraftForge.EVENT_BUS.post(new RenderShieldBarEvent.PostRender(renderEvent, offhand));
+                       MinecraftForge.EVENT_BUS.post(new RenderItemBarEvent.PostRender(renderEvent, offhand));
                    }
             }
 
@@ -124,11 +122,11 @@ public class BattlegearInGameGUI extends Gui {
             if(mainhand != null){
                 ItemStack quiver = BowHookContainerClass2.getArrowContainer(mainhand, mc.thePlayer);
                 if(quiver != null){
-                	RenderQuiverBarEvent.PreRender quiverEvent = new RenderQuiverBarEvent.PreRender(renderEvent, mainhand, quiver);
+                	RenderItemBarEvent.PreRender quiverEvent = new RenderItemBarEvent.PreDual(renderEvent, mainhand, quiver);
                 	if(MinecraftForge.EVENT_BUS.post(quiverEvent))
                 		return;
                 	renderQuiverBar(quiver, frame, quiverEvent.xOffset+width, quiverEvent.yOffset);
-                    MinecraftForge.EVENT_BUS.post(new RenderQuiverBarEvent.PostRender(renderEvent, mainhand, quiver));
+                    MinecraftForge.EVENT_BUS.post(new RenderItemBarEvent.PostDual(renderEvent, mainhand, quiver));
                 }
             }
         }
