@@ -1,3 +1,11 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.4.5 ==
+* Allowed quiver into offhand slots to use with bow
+* Added more rendering events into the API
+* Default quiver now allows all registered arrows
+* Added another effect into the mystery arrow
+* Added config options to disable items completely
+* Moved gui buttons slightly to the right
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.4.4 ==
 * Added 3 arrows with recipes: Piercing, Poison, Mystery
 * Added uncrafting recipes for all arrows
