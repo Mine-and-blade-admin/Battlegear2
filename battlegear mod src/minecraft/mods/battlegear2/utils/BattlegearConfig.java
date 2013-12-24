@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 public class BattlegearConfig {
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
-	public static boolean forceBackSheath = false;
+	public static boolean forceBackSheath = false, arrowForceRendered = true;
 	public static boolean enableGUIKeys = false, enableGuiButtons = true;
 	public static final String[] itemNames = new String[] {"heraldric","chain","quiver", "dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow"};
 	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
@@ -32,12 +32,12 @@ public class BattlegearConfig {
 	public static final int firstDefaultItemIndex = 26201;
 	public static int[] itemOffests = new int[]{0, 1, 2, 5, 10, 15, 20, 25, 30, 35};
 	public static int[] enchantsId = {125, 126, 127, 128, 129, 130, 131};
-	public static ItemWeapon[] dagger=new ItemWeapon[5],warAxe=new ItemWeapon[5],mace=new ItemWeapon[5],spear=new ItemWeapon[5];
-    public static ItemShield[] shield=new ItemShield[5];
+	public static ItemWeapon[] dagger=new ItemWeapon[toolTypes.length],warAxe=new ItemWeapon[toolTypes.length],mace=new ItemWeapon[toolTypes.length],spear=new ItemWeapon[toolTypes.length];
+    public static ItemShield[] shield=new ItemShield[shieldTypes.length];
 	public static Item chain,quiver,heradricItem, MbArrows;
 	public static Block banner;
 	public static ItemBlock bannerItem;
-	public static ItemArmor[] knightArmor=new ItemArmor[4];
+	public static ItemArmor[] knightArmor=new ItemArmor[armourTypes.length];
 
 	public static String[] disabledItems = new String[0];
     public static String[] disabledRecipies = new String[0];
@@ -71,14 +71,13 @@ public class BattlegearConfig {
         	chain = new Item(config.getItem(itemNames[1], firstDefaultItemIndex+itemOffests[1]).getInt());
         	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).setTextureName("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
         }
-        forceBackSheath=config.get(config.CATEGORY_GENERAL, "Force Back Sheath", false).getBoolean(false);
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", false).getBoolean(false);
         enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", true).getBoolean(true);
         
         for(int i=0; i<enchantsName.length; i++){
         	enchantsId[i] = config.get("EnchantmentsID", enchantsName[i], enchantsId[i]).getInt();
         }
-        config.get("Coremod", "ASM debug Mode", false, "Only use for bug reporting.");
+        config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.");
         
         if(Arrays.binarySearch(disabledItems, itemNames[2]) < 0){
         	quiver = new ItemQuiver(config.getItem(itemNames[2], firstDefaultItemIndex+2).getInt());
@@ -88,12 +87,12 @@ public class BattlegearConfig {
         	MbArrows = new ItemMBArrow(config.getItem(itemNames[9], firstDefaultItemIndex+itemOffests[9]).getInt());
         	MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).setTextureName("battlegear2:" + itemNames[9]).setCreativeTab(customTab).setContainerItem(Item.arrow);
         }
-        String customArrowSpawn = "Skeleton CustomArrow Spawn Rate";
-        config.addCustomCategoryComment(customArrowSpawn, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
+        String category = "Skeleton CustomArrow Spawn Rate";
+        config.addCustomCategoryComment(category, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
 
         //default 10% for everything but ender (which is 0%)
         for(int i = 0; i < ItemMBArrow.names.length; i++){
-            skeletonArrowSpawnRate[i] = config.get(customArrowSpawn, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0).getDouble(i!=1?0.1F:0);
+            skeletonArrowSpawnRate[i] = config.get(category, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0).getDouble(i!=1?0.1F:0);
         }
         
         sb = new StringBuffer();
@@ -130,19 +129,21 @@ public class BattlegearConfig {
         if(last_comma > 0){
             sb.deleteCharAt(last_comma);
         }
-
-
         disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], sb.toString()).getStringList();
         Arrays.sort(disabledRecipies);
 
+        category = "Rendering";
+        config.addCustomCategoryComment(category, "This category is client side, you don't have to sync its values with server in multiplayer.");
         sb = new StringBuffer();
         sb.append("This will disable the special rendering for the provided item.\n");
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
         sb.append("The valid values are: spear, shield, bow, quiver");
-        disabledRenderers = config.get("Rendering", "Disabled Renderers", new String[0], sb.toString()).getStringList(); 
+        disabledRenderers = config.get(category, "Disabled Renderers", new String[0], sb.toString()).getStringList(); 
         Arrays.sort(disabledRenderers);
-        quiverBarOffset = config.get("Rendering", "Quiver hotbar relative horizontal position", 0, "Change to move this bar in your gui").getInt();
-        shieldBarOffset = config.get("Rendering", "Shield bar relative vertical position", 0, "Change to move this bar in your gui").getInt();
+        quiverBarOffset = config.get(category, "Quiver hotbar relative horizontal position", 0, "Change to move this bar in your gui").getInt();
+        shieldBarOffset = config.get(category, "Shield bar relative vertical position", 0, "Change to move this bar in your gui").getInt();
+        arrowForceRendered = config.get(category, "Render arrow with bow uncharged", true).getBoolean(true);
+        forceBackSheath=config.get(category, "Force Back Sheath", false).getBoolean(false);
         
         for(int i = 0; i < 5; i++){
         	EnumToolMaterial material = EnumToolMaterial.values()[i];
@@ -169,12 +170,10 @@ public class BattlegearConfig {
         	if(Arrays.binarySearch(disabledItems, itemNames[7]) < 0){
 	            shield[i] = new ItemShield(
 	                    config.getItem(itemNames[7]+shieldTypes[i], firstDefaultItemIndex+itemOffests[7]+i).getInt(),
-	                    EnumShield.values()[i]
-	            );
+	                    EnumShield.values()[i]);
         	}
 
         }
-        //validWeaponsID=config.get(config.CATEGORY_GENERAL, "Valid Weapon IDs",new int[]{11,12,16,20,27}).getIntList();
         if (config.hasChanged()){        
         	config.save();     	
         }
