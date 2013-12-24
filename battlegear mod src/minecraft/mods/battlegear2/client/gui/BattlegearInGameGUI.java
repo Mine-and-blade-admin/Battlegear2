@@ -61,7 +61,7 @@ public class BattlegearInGameGUI extends Gui {
 	                	previousGui=null;
 	                }
 	                if(mc.currentScreen instanceof InventoryEffectRenderer && mc.currentScreen.getClass()!=previousGui){
-                		BattlegearClientEvents.onOpenGui((List) ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, mc.currentScreen, "buttonList", "field_73887_h"),Integer.class.cast(ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class,(GuiContainer)mc.currentScreen, "guiLeft", "field_74198_m")).intValue()-40, Integer.class.cast(ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class,(GuiContainer)mc.currentScreen, "guiTop", "field_74197_n")).intValue());
+                		BattlegearClientEvents.onOpenGui((List) ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, mc.currentScreen, "buttonList", "field_73887_h"),Integer.class.cast(ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class,(GuiContainer)mc.currentScreen, "guiLeft", "field_74198_m")).intValue()-30, Integer.class.cast(ObfuscationReflectionHelper.getPrivateValue(GuiContainer.class,(GuiContainer)mc.currentScreen, "guiTop", "field_74197_n")).intValue());
 						previousGui = (Class<? extends InventoryEffectRenderer>) mc.currentScreen.getClass();
 	                }
                 }
