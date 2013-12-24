@@ -1,9 +1,6 @@
 package mods.battlegear2.client.gui.controls;
 
-import mods.battlegear2.Battlegear;
-import mods.battlegear2.client.gui.BattleEquipGUI;
 import mods.battlegear2.client.gui.BattlegearSigilGUI;
-import mods.battlegear2.gui.BattlegearGUIHandeler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 

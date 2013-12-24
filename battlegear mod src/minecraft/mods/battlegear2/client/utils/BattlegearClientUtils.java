@@ -13,8 +13,7 @@ public class BattlegearClientUtils {
             player.setItemInUse(mainhand, Item.itemsList[mainhand.itemID].getMaxItemUseDuration(mainhand));
             return true;
         }
-        else if (isItemInUse && !player.isEating())
-        {
+        else if (isItemInUse && !player.isEating()){
             player.clearItemInUse();
             return false;
         }else{

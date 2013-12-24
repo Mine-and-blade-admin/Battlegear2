@@ -1,12 +1,8 @@
 package mods.battlegear2.client.gui.controls;
 
-import mods.battlegear2.client.gui.BattlegearSigilGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.ResourceLocation;
-
-import org.lwjgl.opengl.GL11;
 
 public abstract class GuiPlaceableButton extends GuiButton {
 	public static final int HEIGHT = 20;
