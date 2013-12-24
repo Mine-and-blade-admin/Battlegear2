@@ -3,6 +3,7 @@ package mods.battlegear2.client.renderer;
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.MobHookContainerClass;
 import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.ClientProxy;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemMBArrow;
@@ -16,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraft.util.*;
+
 import org.lwjgl.opengl.GL11;
 
 public class BowRenderer implements IItemRenderer {
@@ -49,23 +51,22 @@ public class BowRenderer implements IItemRenderer {
 
         ItemStack arrowStack = new ItemStack(Item.arrow);
         int drawAmount = -2;
+        boolean drawArrows = false;
         if(entityLivingBase instanceof EntityPlayer){
             EntityPlayer player = (EntityPlayer)entityLivingBase;
 
             int timer =  player.getItemInUseDuration();
-            if (timer >= 18)
-                drawAmount = 2;
-            else if (timer > 13)
-                drawAmount = 1;
-            else if (timer > 0)
-                drawAmount = 0;
+            if(timer > 0){
+                drawAmount = timer >= 18?2:timer > 13?1:0;
+                drawArrows = true;
+            }
             ItemStack quiver = BowHookContainerClass2.getArrowContainer(item, (EntityPlayer) entityLivingBase);
             if(quiver != null){
                 arrowStack = ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, ((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver));
             }
 
             if(drawAmount >= 0){
-                if(arrowStack != null && (arrowStack.getItem() instanceof ItemMBArrow || arrowStack.getItem().itemID == Item.arrow.itemID)){
+                if(arrowStack != null && QuiverArrowRegistry.isKnownArrow(arrowStack)){
                     icon = ClientProxy.bowIcons[drawAmount];
                 }else{
                     icon = Item.bow.getItemIconForUseDuration(drawAmount);
@@ -76,14 +77,19 @@ public class BowRenderer implements IItemRenderer {
             if(type > -1){
                 arrowStack = new ItemStack(BattlegearConfig.MbArrows, 1, type);
             }
+            drawArrows = true;
         }else if (entityLivingBase == null || entityLivingBase.equals(BattlegearRenderHelper.dummyEntity)){
             arrowStack = null;
+        }
+        
+        if(BattlegearConfig.arrowForceRendered){
+        	drawArrows = true;
         }
 
         Tessellator tessellator = Tessellator.instance;
         ItemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
 
-        if(arrowStack != null && (arrowStack.getItem() instanceof ItemMBArrow || arrowStack.getItem().itemID == Item.arrow.itemID)){
+        if(drawArrows && arrowStack != null && QuiverArrowRegistry.isKnownArrow(arrowStack)){
             icon = arrowStack.getIconIndex();
             GL11.glPushMatrix();
             GL11.glTranslatef(-(-3F+drawAmount)/16F, -(-2F+drawAmount)/16F, firstPerson?-0.5F/16F:0.5F/16F);
