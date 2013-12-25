@@ -16,9 +16,7 @@ import mods.battlegear2.items.ItemQuiver;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.item.ItemStack;
@@ -30,12 +28,9 @@ import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
-import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 
 public class BattlegearClientEvents {
 
@@ -73,7 +68,8 @@ public class BattlegearClientEvents {
 	@ForgeSubscribe
 	public void render3rdPersonBattlemode(RenderPlayerEvent.Specials.Post event) {
 
-		ModelBiped biped = getModelBiped(event.renderer, 1);
+		ModelBiped biped = (ModelBiped) event.renderer.mainModel;
+		//getModelBiped(event.renderer, 1);
 		BattlegearRenderHelper.renderItemIn3rdPerson(event.entityPlayer, biped,
 				event.partialRenderTick);
 
@@ -119,8 +115,8 @@ public class BattlegearClientEvents {
 
 		if (event.entity instanceof EntitySkeleton
 				&& event.renderer instanceof RenderSkeleton) {
-			ModelBiped model = ObfuscationReflectionHelper.getPrivateValue(
-					RenderBiped.class, (RenderBiped) event.renderer, 0);
+			ModelBiped model = (ModelBiped) event.renderer.mainModel;
+			//ObfuscationReflectionHelper.getPrivateValue(RenderBiped.class, (RenderBiped) event.renderer, 0);
 
 			GL11.glPushMatrix();
 			GL11.glDisable(GL11.GL_CULL_FACE);
@@ -222,10 +218,10 @@ public class BattlegearClientEvents {
 		}
 	}
 
-	public static ModelBiped getModelBiped(RenderPlayer renderPlayer, int i) {
+	/*public static ModelBiped getModelBiped(RenderPlayer renderPlayer, int i) {
 		return ObfuscationReflectionHelper.getPrivateValue(RenderPlayer.class,
 				renderPlayer, i);
-	}
+	}*/
 
 	@ForgeSubscribe
 	public void onSoundLoad(SoundLoadEvent event) {

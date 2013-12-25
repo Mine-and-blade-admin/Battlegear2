@@ -35,10 +35,7 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
         if(type.contains(TickType.PLAYER)){
-            if(timer == 0 &&
-                    tickData[0] == Minecraft.getMinecraft().thePlayer &&
-                    FMLCommonHandler.instance().getMinecraftServerInstance() instanceof IntegratedServer
-                    ){
+            if(timer == 0){
                 ModUpdateDetector.runUpdateChecker();
             }
 

@@ -1,0 +1,11 @@
+--- 
++++ 
+@@ -28,7 +28,7 @@
+     public int height;
+ 
+     /** A list of all the buttons in this container. */
+-    protected List buttonList = new ArrayList();
++    public List buttonList = new ArrayList();
+     public boolean allowUserInput;
+ 
+     /** The FontRenderer used by GuiScreen */
