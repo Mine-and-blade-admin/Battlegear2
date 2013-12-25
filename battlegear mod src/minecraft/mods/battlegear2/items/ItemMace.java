@@ -28,13 +28,14 @@ public class ItemMace extends OneHandedWeapon implements IPotionEffect{
 	public ItemMace(int par1, EnumToolMaterial material, String name, float stunChance) {
 		super(par1,material,name);
 		//set the base damage to that of lower than usual (balance)
-		this.baseDamage = baseDamage-1;
+		this.baseDamage -= 1;
         effects= new HashMap<PotionEffect,Float>();
         this.stunChance = stunChance;
         effects.put(new PotionEffect(2,3*20,100), stunChance);
         effects.put(new PotionEffect(9,3*20,100), stunChance);
         effects.put(new PotionEffect(15,3*20,100), stunChance);
         effects.put(new PotionEffect(18,3*20,100), stunChance);
+        this.setMaxDamage(material.getMaxUses()*2);
 
 	}
 

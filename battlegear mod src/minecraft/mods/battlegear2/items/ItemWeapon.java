@@ -50,8 +50,6 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 		super(par1, material);
 		//May be unsafe, but will allow others to add weapons using custom materials (also more efficent)
 		this.material = material;
-
-
         this.setCreativeTab(BattlegearConfig.customTab);
 		
 		if(material == EnumToolMaterial.EMERALD){
@@ -59,7 +57,6 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 		}else{
 			this.name= named+"."+material.name().toLowerCase();
 		}
-		
 		
 		this.setUnlocalizedName("battlegear2:"+name);
 		this.setTextureName("battlegear2:"+name);

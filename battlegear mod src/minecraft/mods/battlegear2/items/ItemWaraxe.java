@@ -33,7 +33,8 @@ public class ItemWaraxe extends OneHandedWeapon implements IPenetrateWeapon{ // 
 		super(par1,material,name);
 		this.ignoreDamageAmount = ignoreDamageAmount;
 		//set the base damage to that of lower than usual (balance)
-		this.baseDamage = baseDamage-1- ignoreDamageAmount;
+		this.baseDamage -= 1 + ignoreDamageAmount;
+		this.setMaxDamage(material.getMaxUses()*2);
     }
 	
 	@Override
