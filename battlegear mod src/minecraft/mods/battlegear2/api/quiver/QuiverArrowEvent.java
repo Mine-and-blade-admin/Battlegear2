@@ -11,7 +11,7 @@ public class QuiverArrowEvent extends PlayerEventChild{
 	public int bowDamage = 1;
 	public float bowSoundVolume = 1.0F;
 	public boolean addEnchantments = true;
-	public ArrowLooseEvent event;
+	protected final ArrowLooseEvent event;
 
 	public QuiverArrowEvent(ArrowLooseEvent parent) {
 		super(parent);

@@ -9,7 +9,7 @@ public class OffhandAttackEvent extends PlayerEventChild {
 
     public boolean swingOffhand = true;
     public boolean shouldAttack = true;
-    public EntityInteractEvent event;
+    public final EntityInteractEvent event;
 
     public OffhandAttackEvent(EntityInteractEvent parent) {
         super(parent);

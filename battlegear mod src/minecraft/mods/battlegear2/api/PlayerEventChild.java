@@ -7,7 +7,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 
 public class PlayerEventChild extends PlayerEvent{
 
-	public PlayerEvent parent;
+	public final PlayerEvent parent;
 
 	public PlayerEventChild(PlayerEvent parent) {
 		super(parent.entityPlayer);
