@@ -67,7 +67,7 @@ public class SpearRenderer implements IItemRenderer {
                     icon.getIconHeight(), 1F/16F);
 
             if (item != null && item.hasEffect(0)) {
-                //HeraldryItemRenderer.renderEnchantmentEffects(tessellator);
+                renderEnchantmentEffects(tessellator);
             }
 
         }else if (type == ItemRenderType.INVENTORY) {
