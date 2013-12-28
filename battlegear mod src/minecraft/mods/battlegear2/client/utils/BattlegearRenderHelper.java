@@ -279,9 +279,9 @@ public class BattlegearRenderHelper {
                 GL11.glTranslatef(5.6F, 0.0F, 0.0F);
                 var13 = 1.0F;
                 GL11.glScalef(var13, var13, var13);
-                if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.Mainhand, null))) 	        		              	
+                if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.Offhand, null))) 	        		              	
                 	var26.renderFirstPersonArm(mc.thePlayer);
-                MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.Mainhand, null));
+                MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.Offhand, null));
 	        		
                 GL11.glPopMatrix();
             }

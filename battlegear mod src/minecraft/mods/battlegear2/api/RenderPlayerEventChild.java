@@ -6,17 +6,17 @@ import net.minecraftforge.event.Cancelable;
 
 public class RenderPlayerEventChild extends RenderPlayerEvent{
 	public static enum PlayerElementType{
-		Mainhand,
 		Offhand,
 		ItemOffhand,
-		ItemMainhand
+		ItemOffhandSheathed,
+		ItemMainhandSheathed,
 	}
 	
 	public final PlayerElementType type;
 	public final boolean isFirstPerson;
 	public final ItemStack element;
 	/**
-	 * @param type Describe what element is rendered, either the player arms or the item hold
+	 * @param type Describe what element is rendered, either the player arm or the item hold/sheathed
 	 * @param firstPerson True in first person rendering, false in third person rendering
 	 * @param item The element to be rendered, null if a player arm
 	 */
@@ -52,7 +52,7 @@ public class RenderPlayerEventChild extends RenderPlayerEvent{
 		 */
 		public final int backCount;
 		public PreRenderSheathed(RenderPlayerEvent parent, boolean isOnBack, int count, boolean isMainHand, ItemStack item) {
-			super(parent, false, isMainHand?PlayerElementType.ItemMainhand:PlayerElementType.ItemOffhand, item);
+			super(parent, false, isMainHand?PlayerElementType.ItemMainhandSheathed:PlayerElementType.ItemOffhandSheathed, item);
 			this.isOnBack = isOnBack;
 			this.backCount = count;
 		}
@@ -69,7 +69,7 @@ public class RenderPlayerEventChild extends RenderPlayerEvent{
 		 */
 		public final int backCount;
 		public PostRenderSheathed(RenderPlayerEvent parent, boolean isOnBack, int count, boolean isMainHand, ItemStack item) {
-			super(parent, false, isMainHand?PlayerElementType.ItemMainhand:PlayerElementType.ItemOffhand, item);
+			super(parent, false, isMainHand?PlayerElementType.ItemMainhandSheathed:PlayerElementType.ItemOffhandSheathed, item);
 			this.isOnBack = isOnBack;
 			this.backCount = count;
 		}
