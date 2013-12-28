@@ -140,7 +140,7 @@ public class BattlegearUtils {
 
                     if (weapons[i]) {
                         //make sure there are no special functions for offhand/mainhand weapons
-                        boolean rightClickFunction = checkForRightClickFunction(item);
+                        boolean rightClickFunction = checkForRightClickFunction(item, null);
                         //only weapons can be placed in offhand
                         offhandDualWeapons[i] = !(item instanceof ItemTool || item instanceof ItemBow) && !rightClickFunction;
                         mainHandDualWeapons[i] = !(item instanceof ItemBow) && !rightClickFunction;
@@ -151,9 +151,9 @@ public class BattlegearUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static boolean checkForRightClickFunction(Item item) {
+    public static boolean checkForRightClickFunction(Item item, ItemStack stack) {
         try {
-            if (item.getItemUseAction(null) == EnumAction.block || item.getItemUseAction(null) == EnumAction.none) {
+            if (item.getItemUseAction(stack) == EnumAction.block || item.getItemUseAction(stack) == EnumAction.none) {
 
                 Class c = item.getClass();
                 while (!(c.equals(Item.class) || c.equals(ItemTool.class) || c.equals(ItemSword.class))) {

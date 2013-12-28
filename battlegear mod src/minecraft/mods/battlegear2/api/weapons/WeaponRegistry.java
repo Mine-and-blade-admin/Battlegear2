@@ -23,7 +23,7 @@ public class WeaponRegistry {
 	 * @param stack registered as dual wieldable
 	 */
 	public static void addDualWeapon(ItemStack stack) {
-		if(!BattlegearUtils.checkForRightClickFunction(stack.getItem())){
+		if(!BattlegearUtils.checkForRightClickFunction(stack.getItem(), stack)){
 			weapons.add(new StackHolder(stack));
 			mainHand.add(new StackHolder(stack));
 			offHand.add(new StackHolder(stack));
@@ -35,7 +35,7 @@ public class WeaponRegistry {
 	 * @param stack registered as wieldable only in main hand
 	 */
 	public static void addTwoHanded(ItemStack stack) {
-		if(!BattlegearUtils.checkForRightClickFunction(stack.getItem())){
+		if(!BattlegearUtils.checkForRightClickFunction(stack.getItem(), stack)){
 			weapons.add(new StackHolder(stack));
 			mainHand.add(new StackHolder(stack));
 		}
@@ -46,7 +46,7 @@ public class WeaponRegistry {
 	 * @param stack registered as wieldable only in offhand
 	 */
 	public static void addOffhandWeapon(ItemStack stack) {
-		if(!BattlegearUtils.checkForRightClickFunction(stack.getItem())){
+		if(!BattlegearUtils.checkForRightClickFunction(stack.getItem(), stack)){
 			weapons.add(new StackHolder(stack));
 			offHand.add(new StackHolder(stack));
 		}
