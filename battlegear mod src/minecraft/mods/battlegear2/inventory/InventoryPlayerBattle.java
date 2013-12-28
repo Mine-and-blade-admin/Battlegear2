@@ -1,13 +1,13 @@
 package mods.battlegear2.inventory;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * User: nerd-boy
@@ -81,8 +81,11 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
         if (isBattlemode()) {
 
-            direction = Math.min(direction, 1);
-            direction = Math.max(direction, -1);
+        	if (direction > 0){
+        		direction = 1;
+            }else if (direction != 0){
+            	direction = -1;
+            }
 
             //noinspection StatementWithEmptyBody
             for (currentItem -= direction; currentItem < OFFSET; currentItem += WEAPON_SETS) {

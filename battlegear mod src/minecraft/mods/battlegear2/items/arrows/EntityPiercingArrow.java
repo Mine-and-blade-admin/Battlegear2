@@ -55,6 +55,7 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 			Block block = Block.blocksList[worldObj.getBlockId(x, y, z)];
 			if(block != null){
 				worldObj.playAuxSFX(2001, x, y, z, block.blockID + (worldObj.getBlockMetadata(x, y, z) << 12));
+				worldObj.setBlockToAir(x, y, z);
 			}
 		}else if (!worldObj.isRemote){
 			int id = worldObj.getBlockId(x, y, z);

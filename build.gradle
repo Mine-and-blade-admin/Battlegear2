@@ -45,10 +45,10 @@ minecraft {
 sourceSets {
     main {
         resources {
-            srcDir 'battlegear mod src.minecraft'
+            srcDir 'battlegear mod src/minecraft'
         }
 	java {
-	    srcDir 'battlegear mod src.minecraft'
+	    srcDir 'battlegear mod src/minecraft'
 	}
     }
 }
