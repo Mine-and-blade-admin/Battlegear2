@@ -57,8 +57,7 @@ public class BattlemodeHookContainerClass {
                 float reachMod = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
                 if(reachMod < 0){
                     if(reachMod + 4 < event.entityPlayer.getDistanceToEntity(event.target)){
-                        //event.setCanceled(true);
-                        event.setResult(Result.DENY);
+                        event.setCanceled(true);
                     }
                 }
             }
@@ -74,11 +73,8 @@ public class BattlemodeHookContainerClass {
     public void playerInterect(PlayerInteractEvent event) {
         if(event.entityPlayer.specialActionTimer > 0){
             event.setCanceled(true);
-            event.setResult(Result.DENY);
-            event.useBlock = Result.DENY;
-            event.useItem = Result.DENY;
             event.entityPlayer.isSwingInProgress = false;
-        } else if (event.entityPlayer.isBattlemode()) {
+        }else if (event.entityPlayer.isBattlemode()) {
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = event.entityPlayer.inventory.getStackInSlot(event.entityPlayer.inventory.currentItem + 3);
 
@@ -142,16 +138,14 @@ public class BattlemodeHookContainerClass {
                                 Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                             }
 
-                        } else if (offhandItem != null && offhandItem.getItem() instanceof IShield){
+                        }else if (offhandItem != null && offhandItem.getItem() instanceof IShield){
                             event.useItem = Result.DENY;
                         }else{
                             event.entityPlayer.swingOffItem();
                             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                         }
-                        break;
-                    } else {
-                        break;
                     }
+                    break;
             }
         }
 
@@ -192,7 +186,6 @@ public class BattlemodeHookContainerClass {
 
                         BattlegearUtils.attackTargetEntityWithCurrentOffItem(event.entityPlayer, event.target);
 
-
                         event.setCanceled(true);
                         event.setResult(Result.DENY);
                     }
@@ -222,23 +215,19 @@ public class BattlemodeHookContainerClass {
     public void shieldHook(LivingHurtEvent event){
 
         if(event.entity instanceof EntityPlayer){
-
             EntityPlayer player = (EntityPlayer)event.entity;
-
             if(player.specialActionTimer > 0){
                 event.setCanceled(true);
             } else if(player.isBlockingWithShield()){
                 ItemStack shield = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
                 if(((IShield)shield.getItem()).canBlock(shield, event.source)){
-
                     boolean shouldBlock = true;
                     Entity opponent = event.source.getEntity();
                     if(opponent != null){
                         double d0 = opponent.posX - event.entity.posX;
                         double d1;
 
-                        for (d1 = opponent.posZ - player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D)
-                        {
+                        for (d1 = opponent.posZ - player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D){
                             d0 = (Math.random() - Math.random()) * 0.01D;
                         }
 
@@ -255,10 +244,8 @@ public class BattlemodeHookContainerClass {
                         float blockAngle = ((IShield) shield.getItem()).getBlockAngle(shield);
 
                         shouldBlock = yaw < blockAngle && yaw > -blockAngle;
-
                         //player.knockBack(opponent, 50, 100, 100);
                     }
-
 
                     if(shouldBlock){
                         event.setCanceled(true);
@@ -267,21 +254,14 @@ public class BattlemodeHookContainerClass {
                                 new BattlegearShieldFlashPacket(player, event.ammount).generatePacket());
                     	player.worldObj.playSoundAtEntity(player, "battlegear2:shield", 1, 1);
                     	
-                        if(event.source.isProjectile()){
-                            if(event.source instanceof EntityDamageSourceIndirect){
-                                if(event.source.getEntity() instanceof EntityArrow){
-                                    event.source.getEntity().setDead();
-                                    if(shield.getItem() instanceof IArrowCatcher){
-                                        ((IArrowCatcher)shield.getItem()).setArrowCount(shield, ((IArrowCatcher) shield.getItem()).getArrowCount(shield)+1);
-                                        ((InventoryPlayerBattle)player.inventory).hasChanged = true;
-
-                                        player.setArrowCountInEntity(player.getArrowCountInEntity()-1);
-
-                                    }
-                                }
+                        if(event.source.isProjectile() && event.source.getEntity() instanceof EntityArrow){
+                            event.source.getEntity().setDead();
+                            if(shield.getItem() instanceof IArrowCatcher){
+                                ((IArrowCatcher)shield.getItem()).setArrowCount(shield, ((IArrowCatcher) shield.getItem()).getArrowCount(shield)+1);
+                                ((InventoryPlayerBattle)player.inventory).hasChanged = true;
+                                player.setArrowCountInEntity(player.getArrowCountInEntity()-1);
                             }
                         }
-
 
                         if(!player.capabilities.isCreativeMode){
                             shield.damageItem((int)event.ammount, player);
@@ -294,7 +274,6 @@ public class BattlemodeHookContainerClass {
                     }
                 }
             }
-
         }
     }
     

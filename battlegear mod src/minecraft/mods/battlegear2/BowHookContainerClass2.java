@@ -154,13 +154,9 @@ public class BowHookContainerClass2 {
     //Start hooks for arrows
     @ForgeSubscribe
     public void onEntityHitByArrow(LivingAttackEvent event){
-
-        if(event.source instanceof EntityDamageSourceIndirect &&
-             event.source.getSourceOfDamage() instanceof AbstractMBArrow){
-
+        if(event.source.isProjectile() && event.source.getSourceOfDamage() instanceof AbstractMBArrow){
             boolean isCanceled = ((AbstractMBArrow) event.source.getSourceOfDamage()).onHitEntity(event.entity, event.source, event.ammount);
             event.setCanceled(isCanceled);
         }
-
     }
 }
