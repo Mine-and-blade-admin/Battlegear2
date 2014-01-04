@@ -9,6 +9,9 @@ item.battlegear2:quiver.name=箭袋
 item.battlegear2:mb.arrow.ender.name=末影箭
 item.battlegear2:mb.arrow.explosive.name=爆裂箭
 item.battlegear2:mb.arrow.flame.name=烈焰箭
+item.battlegear2:mb.arrow.piercing.name=穿刺箭
+item.battlegear2:mb.arrow.poison.name=剧毒箭
+item.battlegear2:mb.arrow.mystery.name=奥秘箭
 
 item.battlegear2:dagger.wood.name=木匕首
 item.battlegear2:dagger.stone.name=石头匕首
@@ -52,6 +55,8 @@ enchantment.bash.power=强打
 enchantment.bash.damage=怒击
 enchantment.shield.usage=护盾效能
 enchantment.shield.recover=护盾回复
+enchantment.bow.loot=时运之矢
+enchantment.bow.charge=张弦
 
 tile.battlegear2:banner.name=旗帜
 
