@@ -1,10 +1,9 @@
 package mods.battlegear2.coremod.transformers;
 
-import mods.battlegear2.coremod.BattlegearLoadingPlugin;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.coremod.BattlegearTranslator;
-import net.minecraft.launchwrapper.IClassTransformer;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
+
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 import java.util.List;
@@ -57,6 +56,11 @@ public class EntityPlayerTransformer extends TransformerBase {
     private String dataWatcherGetByteMethodDesc;
     private String dataWatcherUpdateObjectMethodName;
     private String dataWatcherUpdateObjectMethodDesc;
+    
+    @Override
+    void addInterface(List<String> interfaces) {
+        interfaces.add(Type.getInternalName(IBattlePlayer.class));
+    }
 
     @Override
     void processFields(List<FieldNode> fields) {
@@ -141,6 +145,8 @@ public class EntityPlayerTransformer extends TransformerBase {
         methods.add(methods.size(), generateIsBattleMode());
         methods.add(methods.size(), generateIsBlockingWithShield());
         methods.add(methods.size(), generateSetBlockingWithShield());
+        methods.add(methods.size(), generateGetter(entityPlayerClassName, "getSpecialActionTimer", "specialActionTimer", "I"));
+        methods.add(methods.size(), generateSetter(entityPlayerClassName, "setSpecialActionTimer", "specialActionTimer", "I"));
     }
 
     private MethodNode generateIsBlockingWithShield() {
@@ -503,71 +509,71 @@ public class EntityPlayerTransformer extends TransformerBase {
 
 	@Override
 	void setupMappings() {
-		entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
-        inventoryClassName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
-        itemStackClassName = BattlegearTranslator.getMapedClassName("ItemStack");
-        entityClassName = BattlegearTranslator.getMapedClassName("Entity");
-        potionClassName = BattlegearTranslator.getMapedClassName("Potion");
-        potionEffectClassName = BattlegearTranslator.getMapedClassName("PotionEffect");
-        entityLivingClassName = BattlegearTranslator.getMapedClassName("EntityLivingBase");
-        dataWatcherClassName = BattlegearTranslator.getMapedClassName("DataWatcher");
+		entityPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer");
+        inventoryClassName = BattlegearTranslator.getMapedClassName("entity.player.InventoryPlayer");
+        itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
+        entityClassName = BattlegearTranslator.getMapedClassName("entity.Entity");
+        potionClassName = BattlegearTranslator.getMapedClassName("potion.Potion");
+        potionEffectClassName = BattlegearTranslator.getMapedClassName("potion.PotionEffect");
+        entityLivingClassName = BattlegearTranslator.getMapedClassName("entity.EntityLivingBase");
+        dataWatcherClassName = BattlegearTranslator.getMapedClassName("entity.DataWatcher");
 
         playerInventoryFieldName =
-                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
         inventoryCurrentItremField =
-                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c");
+                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c", "currentItem");
         potionDigSpeedField =
-                BattlegearTranslator.getMapedFieldName("Potion", "field_76422_e");
+                BattlegearTranslator.getMapedFieldName("Potion", "field_76422_e", "digSpeed");
         potionDigSlowField =
-                BattlegearTranslator.getMapedFieldName("Potion", "field_76419_f");
+                BattlegearTranslator.getMapedFieldName("Potion", "field_76419_f", "digSlowdown");
         playerDataWatcherField =
-                BattlegearTranslator.getMapedFieldName("Entity", "field_70180_af");
+                BattlegearTranslator.getMapedFieldName("Entity", "field_70180_af", "dataWatcher");
 
 
         onItemFinishMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71036_o");
+                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71036_o", "onItemUseFinish");
         onItemFinishMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_71036_o");
+                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_71036_o", "()V");
         setCurrentItemArmourMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70062_b");
+                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70062_b", "setCurrentItemOrArmor");
         setCurrentItemArmourMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70062_b");
+                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70062_b", "(IL"+itemStackClassName+";)V");
         attackTargetMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71059_n");
+                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71059_n", "attackTargetEntityWithCurrentItem");
         attackTargetMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_71059_n");
+                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_71059_n", "(Lnet/minecraft/entity/Entity;)V");
         playerPotionActiveMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70644_a");
+                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70644_a", "isPotionActive");
         playerPotionActiveMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70644_a");
+                BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70644_a", "(L"+potionClassName+";)Z");
         playerGetActivePotionMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70660_b");
+                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70660_b", "getActivePotionEffect");
         playerGetActivePotionMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70660_b");
+                BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70660_b", "(L"+potionClassName+";)L"+potionEffectClassName+";");
         potionEffectGetAmpMethodName =
-                BattlegearTranslator.getMapedMethodName("PotionEffect", "func_76458_c");
+                BattlegearTranslator.getMapedMethodName("PotionEffect", "func_76458_c", "getAmplifier");
         playerUpdateArmSwingMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_82168_bl");
+                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_82168_bl", "updateArmSwingProgress");
         dataWatcherAddObjectMethodName =
-                BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75682_a");
+                BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75682_a", "addObject");
         dataWatcherAddObjectMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75682_a");
+                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75682_a", "(ILjava/lang/Object;)V");
         playerInitMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityPlayer","func_70088_a");
+                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70088_a", "entityInit");
         playerInitMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70088_a");
+                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70088_a", "()V");
         itemStackGetItemMethodName =
-                BattlegearTranslator.getMapedMethodName("ItemStack","func_77973_b");
+                BattlegearTranslator.getMapedMethodName("ItemStack", "func_77973_b", "getItem");
         itemStackGetItemMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("ItemStack", "func_77973_b");
+                BattlegearTranslator.getMapedMethodDesc("ItemStack", "func_77973_b", "()Lnet/minecraft/item/Item;");
         dataWatcherGetByteMethodName =
-                BattlegearTranslator.getMapedMethodName("DataWatcher","func_75683_a");
+                BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75683_a", "getWatchableObjectByte");
         dataWatcherGetByteMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75683_a");
+                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75683_a", "(I)B");
         dataWatcherUpdateObjectMethodName =
-                BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75692_b");
+                BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75692_b", "updateObject");
         dataWatcherUpdateObjectMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75692_b");
+                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75692_b", "(ILjava/lang/Object;)V");
 	}
 
 

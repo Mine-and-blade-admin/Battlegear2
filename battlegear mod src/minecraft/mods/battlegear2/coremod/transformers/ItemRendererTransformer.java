@@ -5,8 +5,11 @@ import static org.objectweb.asm.Opcodes.*;
 import java.util.Iterator;
 import java.util.List;
 
+import mods.battlegear2.api.core.IBattlePlayer;
+import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.coremod.BattlegearTranslator;
 
+import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 public class ItemRendererTransformer extends TransformerBase {
@@ -27,7 +30,12 @@ public class ItemRendererTransformer extends TransformerBase {
     private String updateEquippedItemMethodName;
     private String updateEquippedItemMethodDesc;
 
-    private void processupdateEquippedMethod(MethodNode mn) {
+    @Override
+    void addInterface(List<String> interfaces) {
+        interfaces.add(Type.getInternalName(IOffhandRender.class));
+    }
+
+    private void processUpdateEquippedMethod(MethodNode mn) {
         sendPatchLog("updateEquippedItem");
         InsnList newList = new InsnList();
 
@@ -85,9 +93,17 @@ public class ItemRendererTransformer extends TransformerBase {
                 processRenderItemMethod(mn);
             } else if (mn.name.equals(updateEquippedItemMethodName) &&
                     mn.desc.equals(updateEquippedItemMethodDesc)) {
-                processupdateEquippedMethod(mn);
+                processUpdateEquippedMethod(mn);
             }
         }
+        methods.add(methods.size(),generateSetter(itemRendererClass, "setItemToRender", "offHandItemToRender", "L" + itemStackClass + ";"));
+        methods.add(methods.size(),generateSetter(itemRendererClass, "setEquippedItemSlot", "equippedItemOffhandSlot", "I"));
+        methods.add(methods.size(),generateSetter(itemRendererClass, "setEquippedProgress", "equippedOffHandProgress", "F"));
+        methods.add(methods.size(),generateSetter(itemRendererClass, "setPrevEquippedProgress", "prevEquippedOffHandProgress", "F"));
+        methods.add(methods.size(),generateGetter(itemRendererClass, "getItemToRender", "offHandItemToRender", "L" + itemStackClass + ";"));
+        methods.add(methods.size(),generateGetter(itemRendererClass, "getEquippedItemSlot", "equippedItemOffhandSlot", "I"));
+        methods.add(methods.size(),generateGetter(itemRendererClass, "getEquippedProgress", "equippedOffHandProgress", "F"));
+        methods.add(methods.size(),generateGetter(itemRendererClass, "getPrevEquippedProgress", "prevEquippedOffHandProgress", "F"));
 	}
 
 	@Override
@@ -101,18 +117,18 @@ public class ItemRendererTransformer extends TransformerBase {
 
 	@Override
 	void setupMappings() {
-		itemStackClass = BattlegearTranslator.getMapedClassName("ItemStack");
-        itemRendererClass = BattlegearTranslator.getMapedClassName("ItemRenderer");
-        minecraftClass = BattlegearTranslator.getMapedClassName("Minecraft");
+		itemStackClass = BattlegearTranslator.getMapedClassName("item.ItemStack");
+        itemRendererClass = BattlegearTranslator.getMapedClassName("client.renderer.ItemRenderer");
+        minecraftClass = BattlegearTranslator.getMapedClassName("client.Minecraft");
 
-        itemRendererMinecraftField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78455_a");
-        itemRendereriteToRenderField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78453_b");
+        itemRendererMinecraftField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78455_a", "mc");
+        itemRendereriteToRenderField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78453_b", "itemToRender");
 
-        renderItem1stPersonMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78440_a");
-        renderItem1stPersonMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78440_a");
+        renderItem1stPersonMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78440_a", "renderItemInFirstPerson");
+        renderItem1stPersonMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78440_a", "(F)V");
 
-        updateEquippedItemMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78441_a");
-        updateEquippedItemMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78441_a");
+        updateEquippedItemMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78441_a", "updateEquippedItem");
+        updateEquippedItemMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78441_a", "()V");
 
 	}
 }

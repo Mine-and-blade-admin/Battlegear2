@@ -20,7 +20,7 @@
  import net.minecraftforge.common.ForgeHooks;
 @@ -83,9 +87,26 @@
  
- public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
+ public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender, IBattlePlayer
  {
 +	/*
 +	 * Mine & Blade: Notes Edits made by: nerd-boy
@@ -115,8 +115,6 @@
 +
 +        inventory.currentItem = inventory.currentItem
 +				+ InventoryPlayerBattle.WEAPON_SETS;
-+
-+        System.out.println(getCurrentEquippedItem());
 +
 +		attackTargetEntityWithCurrentItem(target);
 +
