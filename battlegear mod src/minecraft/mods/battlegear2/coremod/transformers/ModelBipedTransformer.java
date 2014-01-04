@@ -12,7 +12,7 @@ import org.objectweb.asm.tree.*;
 public class ModelBipedTransformer extends TransformerMethodProcess {
 
     public ModelBipedTransformer() {
-		super("net.minecraft.client.model.ModelBiped","func_78088_a");
+		super("net.minecraft.client.model.ModelBiped","func_78088_a",new String[]{"render", "(Lnet/minecraft/entity/Entity;FFFFFF)V"});
 	}
 
 	private String modelBipedClassName;
@@ -24,11 +24,11 @@ public class ModelBipedTransformer extends TransformerMethodProcess {
     @Override
     void setupMappings() {
     	super.setupMappings();
-        modelBipedClassName = BattlegearTranslator.getMapedClassName("ModelBiped");
-        entityClassName = BattlegearTranslator.getMapedClassName("Entity");
+        modelBipedClassName = BattlegearTranslator.getMapedClassName("client.model.ModelBiped");
+        entityClassName = BattlegearTranslator.getMapedClassName("entity.Entity");
 
-        setRotationAngleMethodName = BattlegearTranslator.getMapedMethodName("ModelBiped", "func_78087_a");
-        setRotationAngleMethodDesc = BattlegearTranslator.getMapedMethodDesc("ModelBiped", "func_78087_a");
+        setRotationAngleMethodName = BattlegearTranslator.getMapedMethodName("ModelBiped", "func_78087_a", "setRotationAngles");
+        setRotationAngleMethodDesc = BattlegearTranslator.getMapedMethodDesc("ModelBiped", "func_78087_a", "(FFFFFFL"+entityClassName+";)V");
 	}
     
     @Override
@@ -54,7 +54,7 @@ public class ModelBipedTransformer extends TransformerMethodProcess {
 
                 newInsn.add(new VarInsnNode(ALOAD, 1));
                 newInsn.add(new VarInsnNode(ALOAD, 0));
-                newInsn.add(new VarInsnNode(FLOAD, 7));;
+                newInsn.add(new VarInsnNode(FLOAD, 7));
 
                 newInsn.add(new MethodInsnNode(INVOKESTATIC,
                         "mods/battlegear2/client/utils/BattlegearRenderHelper",

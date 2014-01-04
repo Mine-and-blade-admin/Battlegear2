@@ -11,13 +11,12 @@ import org.objectweb.asm.tree.*;
 public class ItemInWorldTransformer extends TransformerMethodProcess {
 
     public ItemInWorldTransformer() {
-		super("net.minecraft.item.ItemInWorldManager", "func_73085_a");
+		super("net.minecraft.item.ItemInWorldManager", "func_73085_a", new String[]{"tryUseItem", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"});
 	}
 
 	private String entityPlayerClassName;
     private String inventoryPlayerClassName;
     private String itemStackClassName;
-    private String entityOtherPlayerMPClassName;
 
     private String playerInventoryFieldName;
     private String mainInventoryArrayFieldName;
@@ -56,19 +55,19 @@ public class ItemInWorldTransformer extends TransformerMethodProcess {
 	@Override
 	void setupMappings() {
 		super.setupMappings();
-		entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
-        inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
-        itemStackClassName = BattlegearTranslator.getMapedClassName("ItemStack");
+		entityPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer");
+        inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.InventoryPlayer");
+        itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
 
         playerInventoryFieldName =
-                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
         mainInventoryArrayFieldName =
-                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a");
+                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a", "mainInventory");
 
         setInventorySlotMethodName =
-                BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70299_a");
+                BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70299_a", "setInventorySlotContents");
         setInventorySlotMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("InventoryPlayer", "func_70299_a");
+                BattlegearTranslator.getMapedMethodDesc("InventoryPlayer", "func_70299_a", "(IL"+itemStackClassName+";)V");
 	}
 
 }

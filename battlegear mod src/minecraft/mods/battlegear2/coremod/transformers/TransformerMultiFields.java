@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import mods.battlegear2.coremod.BattlegearLoadingPlugin;
 import mods.battlegear2.coremod.BattlegearTranslator;
 
 import org.objectweb.asm.tree.FieldNode;
@@ -15,9 +16,9 @@ public class TransformerMultiFields extends TransformerBase{
 
 	private final List<String> fieldNames;
 	private List<String> translatedNames = new ArrayList<String>();
-	public TransformerMultiFields(String classPath, String... fieldNames) {
+	public TransformerMultiFields(String classPath, String[][] fieldNames) {
 		super(classPath);
-		this.fieldNames = Arrays.asList(fieldNames);
+		this.fieldNames = Arrays.asList(fieldNames[BattlegearLoadingPlugin.obfuscatedEnv?0:1]);
 	}
 	
 	@Override
@@ -41,7 +42,7 @@ public class TransformerMultiFields extends TransformerBase{
 	@Override
 	void setupMappings() {
 		for(String field:fieldNames){
-			translatedNames.add(BattlegearTranslator.getMapedFieldName(unobfClass,field));
+			translatedNames.add(BattlegearTranslator.getMapedFieldName(unobfClass,field,field));
 		}
 	}
 }

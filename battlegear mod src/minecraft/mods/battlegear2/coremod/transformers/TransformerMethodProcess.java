@@ -2,6 +2,7 @@ package mods.battlegear2.coremod.transformers;
 
 import java.util.List;
 
+import mods.battlegear2.coremod.BattlegearLoadingPlugin;
 import mods.battlegear2.coremod.BattlegearTranslator;
 
 import org.objectweb.asm.tree.FieldNode;
@@ -13,9 +14,15 @@ public abstract class TransformerMethodProcess extends TransformerBase{
 	private String methName;
 	private String methDesc;
 
-	public TransformerMethodProcess(String classPath, String method) {
+	public TransformerMethodProcess(String classPath, String method, String[] devs) {
 		super(classPath);
-		this.meth = method;
+        if(BattlegearLoadingPlugin.obfuscatedEnv){
+		    this.meth = method;
+        }else{
+            this.meth = null;
+            this.methName = devs[0];
+            this.methDesc = devs[1];
+        }
 	}
 
 	@Override
@@ -37,10 +44,12 @@ public abstract class TransformerMethodProcess extends TransformerBase{
 
 	@Override
 	void setupMappings() {
-		methName =
-                BattlegearTranslator.getMapedMethodName(unobfClass, meth);
-		methDesc =
-                BattlegearTranslator.getMapedMethodDesc(unobfClass, meth);
+        if(meth!=null){
+		    methName =
+                BattlegearTranslator.getMapedMethodName(unobfClass, meth, meth);
+		    methDesc =
+                BattlegearTranslator.getMapedMethodDesc(unobfClass, meth, meth);
+        }
 	}
 
 }

@@ -11,7 +11,7 @@ import org.objectweb.asm.tree.*;
 public class EntityTrackerTransformer extends TransformerMethodProcess {
 
     public EntityTrackerTransformer() {
-		super("net.minecraft.entity.EntityTrackerEntry", "func_73117_b");
+		super("net.minecraft.entity.EntityTrackerEntry", "func_73117_b", new String[]{"tryStartWachingThis", "(Lnet/minecraft/entity/EntityPlayerMP;)V"});
 	}
 
     private String entityPlayerClassName;
@@ -62,14 +62,14 @@ public class EntityTrackerTransformer extends TransformerMethodProcess {
 	@Override
 	void setupMappings() {
 		super.setupMappings();
-		 entityPlayerClassName = BattlegearTranslator.getMapedClassName("EntityPlayer");
-         entityPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityPlayerMP");
-         netServerHandlerClasName =BattlegearTranslator.getMapedClassName("NetServerHandler");
-         packetClassName = BattlegearTranslator.getMapedClassName("Packet");
+		 entityPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer");
+         entityPlayerMPClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayerMP");
+         netServerHandlerClasName =BattlegearTranslator.getMapedClassName("network.NetServerHandler");
+         packetClassName = BattlegearTranslator.getMapedClassName("network.packet.Packet");
 
-         playerMPplayerNetServerHandlerField = BattlegearTranslator.getMapedFieldName("EntityPlayerMP", "field_71135_a");
+         playerMPplayerNetServerHandlerField = BattlegearTranslator.getMapedFieldName("EntityPlayerMP", "field_71135_a", "playerNetServerHandler");
 
-         sendPacketToPlayerMethodName = BattlegearTranslator.getMapedMethodName("NetServerHandler", "func_72567_b");
-         sendPacketToPlayerMethodDesc = BattlegearTranslator.getMapedMethodDesc("NetServerHandler", "func_72567_b");
+         sendPacketToPlayerMethodName = BattlegearTranslator.getMapedMethodName("NetServerHandler", "func_72567_b", "sendPacketToPlayer");
+         sendPacketToPlayerMethodDesc = BattlegearTranslator.getMapedMethodDesc("NetServerHandler", "func_72567_b", "(L"+packetClassName+";)V");
 	}
 }

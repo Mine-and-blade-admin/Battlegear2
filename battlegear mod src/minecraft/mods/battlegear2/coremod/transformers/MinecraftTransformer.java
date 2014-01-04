@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.MethodNode;
 public class MinecraftTransformer extends TransformerMethodProcess {
 
 	public MinecraftTransformer(){
-		super("net.minecraft.client.Minecraft", "func_71402_c");
+		super("net.minecraft.client.Minecraft", "func_71402_c", new String[]{"clickMouse", "(I)V"});
 	}
 	
     private String entityClientPlayerClass;
@@ -24,9 +24,9 @@ public class MinecraftTransformer extends TransformerMethodProcess {
 	@Override
 	void setupMappings() {
 		super.setupMappings();
-		entityClientPlayerClass = BattlegearTranslator.getMapedClassName("EntityClientPlayerMP");
+		entityClientPlayerClass = BattlegearTranslator.getMapedClassName("client.entity.EntityClientPlayerMP");
 
-        playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+        playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
 	}
 
 }

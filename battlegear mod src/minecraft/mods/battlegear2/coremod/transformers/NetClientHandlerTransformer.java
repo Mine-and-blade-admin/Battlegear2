@@ -75,19 +75,19 @@ public class NetClientHandlerTransformer extends TransformerBase {
 	@Override
 	void setupMappings() {
 
-        entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityOtherPlayerMP");
-        packet20NamedEntitySpawnClassName = BattlegearTranslator.getMapedClassName("Packet20NamedEntitySpawn");
-        playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+        entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("client.entity.EntityOtherPlayerMP");
+        packet20NamedEntitySpawnClassName = BattlegearTranslator.getMapedClassName("network.packet.Packet20NamedEntitySpawn");
+        playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
 
         netClientHandlerHandleNamedEntitySpawnMethodName =
-                BattlegearTranslator.getMapedMethodName("NetClientHandler", "func_72518_a");
+                BattlegearTranslator.getMapedMethodName("NetClientHandler", "func_72518_a", "handleNamedEntitySpawn");
         netClientHandlerHandleNamedEntitySpawnMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("NetClientHandler", "func_72518_a");
+                BattlegearTranslator.getMapedMethodDesc("NetClientHandler", "func_72518_a", "(L"+packet20NamedEntitySpawnClassName+";)V");
 
         netClientHandlerHandleBlockItemSwitchMethodName =
-                BattlegearTranslator.getMapedMethodName("NetClientHandler", "func_72502_a");
+                BattlegearTranslator.getMapedMethodName("NetClientHandler", "func_72502_a", "handleBlockItemSwitch");
         netClientHandlerHandleBlockItemSwitchMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("NetClientHandler", "func_72502_a");
+                BattlegearTranslator.getMapedMethodDesc("NetClientHandler", "func_72502_a", "(Lnet/minecraft/network/packet/Packet16BlockItemSwitch;)V");
 	}
 
 }

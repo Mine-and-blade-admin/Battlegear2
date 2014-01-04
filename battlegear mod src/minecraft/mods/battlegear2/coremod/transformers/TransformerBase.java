@@ -38,6 +38,7 @@ public abstract class TransformerBase implements IClassTransformer{
             setupMappings();
             processFields(cn.fields);
             processMethods(cn.methods);
+            addInterface(cn.interfaces);
             
 			ClassWriter cw = new ClassWriter(0);
             cn.accept(cw);
@@ -51,6 +52,8 @@ public abstract class TransformerBase implements IClassTransformer{
         } else
             return bytes;
 	}
+
+	void addInterface(List<String> interfaces) {}
 
 	abstract void processMethods(List<MethodNode> methods);
 
@@ -89,8 +92,8 @@ public abstract class TransformerBase implements IClassTransformer{
                     nextNode.getNext() instanceof FieldInsnNode &&
                     ((FieldInsnNode) nextNode).owner.equals(className) &&
                     ((FieldInsnNode) nextNode).name.equals(fieldName) &&
-                    ((FieldInsnNode) nextNode.getNext()).owner.equals(BattlegearTranslator.getMapedClassName("InventoryPlayer")) &&
-                    ((FieldInsnNode) nextNode.getNext()).name.equals(BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a"))
+                    ((FieldInsnNode) nextNode.getNext()).owner.equals(BattlegearTranslator.getMapedClassName("entity.player.InventoryPlayer")) &&
+                    ((FieldInsnNode) nextNode.getNext()).name.equals(BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a", "mainInventory"))
                     ) {
 
                 //skip the next 4
@@ -108,8 +111,8 @@ public abstract class TransformerBase implements IClassTransformer{
                 newList.add(new MethodInsnNode(INVOKESTATIC,
                         "mods/battlegear2/utils/BattlegearUtils",
                         "setPlayerCurrentItem",
-                        "(L" + BattlegearTranslator.getMapedClassName("EntityPlayer") +
-                                ";L" + BattlegearTranslator.getMapedClassName("ItemStack") + ";)V"));
+                        "(L" + BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer") +
+                                ";L" + BattlegearTranslator.getMapedClassName("item.ItemStack") + ";)V"));
 
             } else {
                 newList.add(nextNode);
@@ -127,5 +130,50 @@ public abstract class TransformerBase implements IClassTransformer{
     
     public void sendPatchLog(String method){
     	System.out.println("\tPatching method "+method+" in "+unobfClass);
+    }
+
+    public static MethodNode generateSetter(String className, String methodName, String fieldName, String fieldType){
+        MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, methodName, "("+fieldType+")V", null, null);
+        mn.instructions.add(new VarInsnNode(ALOAD, 0));
+        int opCode = 0;
+        if(fieldType.equals("I")){
+            opCode = ILOAD;
+        }else if(fieldType.equals("L")){
+            opCode = LLOAD;
+        }else if(fieldType.equals("F")){
+            opCode = FLOAD;
+        }else if(fieldType.equals("D")){
+            opCode = DLOAD;
+        }else {
+            opCode = ALOAD;
+        }
+        mn.instructions.add(new VarInsnNode(opCode, 1));
+        mn.instructions.add(new FieldInsnNode(PUTFIELD, className, fieldName, fieldType));
+        mn.instructions.add(new InsnNode(RETURN));
+        mn.maxStack = 2;
+        mn.maxLocals = 2;
+        return mn;
+    }
+
+    public static MethodNode generateGetter(String className, String methodName, String fieldName, String fieldType){
+        MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, methodName, "()"+fieldType, null, null);
+        mn.instructions.add(new VarInsnNode(ALOAD, 0));
+        mn.instructions.add(new FieldInsnNode(GETFIELD, className, fieldName, fieldType));
+        int opCode = 0;
+        if(fieldType.equals("I")){
+            opCode = IRETURN;
+        }else if(fieldType.equals("L")){
+            opCode = LRETURN;
+        }else if(fieldType.equals("F")){
+            opCode = FRETURN;
+        }else if(fieldType.equals("D")){
+            opCode = DRETURN;
+        }else {
+            opCode = ARETURN;
+        }
+        mn.instructions.add(new InsnNode(opCode));
+        mn.maxStack = 1;
+        mn.maxLocals = 1;
+        return mn;
     }
 }

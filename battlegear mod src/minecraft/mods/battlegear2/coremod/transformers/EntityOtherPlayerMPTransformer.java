@@ -221,33 +221,33 @@ public class EntityOtherPlayerMPTransformer extends TransformerBase {
 
 	@Override
 	void setupMappings() {
-		inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("InventoryPlayer");
-        itemStackClassName = BattlegearTranslator.getMapedClassName("ItemStack");
-        entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("EntityOtherPlayerMP");
-        itemClassName = BattlegearTranslator.getMapedClassName("Item");
+		inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.InventoryPlayer");
+        itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
+        entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("client.entity.EntityOtherPlayerMP");
+        itemClassName = BattlegearTranslator.getMapedClassName("item.Item");
 
-        isItemInUseFieldName = BattlegearTranslator.getMapedFieldName("EntityOtherPlayerMP", "field_71186_a");
-        limbSwingFieldName = BattlegearTranslator.getMapedFieldName("EntityLivingBase", "field_70754_ba");
+        isItemInUseFieldName = BattlegearTranslator.getMapedFieldName("EntityOtherPlayerMP", "field_71186_a", "isItemInUse");
+        limbSwingFieldName = BattlegearTranslator.getMapedFieldName("EntityLivingBase", "field_70754_ba", "limbSwing");
 
         currentItemFieldName =
-                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c");
+                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c", "currentItem");
         mainInventoryArrayFieldName =
-                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a");
+                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a", "mainInventory");
         playerInventoryFieldName =
-                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by");
+                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
 
 
         getStackInSlotMethodName =
-                BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70301_a");
+                BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70301_a", "getStackInSlot");
         getStackInSlotMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("InventoryPlayer", "func_70301_a");
+                BattlegearTranslator.getMapedMethodDesc("InventoryPlayer", "func_70301_a", "(I)L"+itemStackClassName);
         setCurrentItemMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70062_b");
+                BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70062_b", "setCurrentItemOrArmor");
         setCurrentItemMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70062_b");
+                BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70062_b", "(IL"+itemStackClassName+";)V");
         onUpdateMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70071_h_");
+                BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70071_h_", "onUpdate");
         onUpdateMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70071_h_");
+                BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70071_h_", "()V");
 	}
 }

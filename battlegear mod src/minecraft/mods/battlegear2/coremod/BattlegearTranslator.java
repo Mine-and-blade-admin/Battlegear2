@@ -3,10 +3,10 @@ package mods.battlegear2.coremod;
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
 import com.google.common.io.InputSupplier;
+
 import cpw.mods.fml.common.asm.transformers.deobf.LZMAInputSupplier;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.IFMLCallHook;
-import net.minecraft.src.BaseMod;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,8 +15,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class BattlegearTranslator implements IFMLCallHook {
 
@@ -28,20 +26,26 @@ public class BattlegearTranslator implements IFMLCallHook {
     private static HashMap<String, String> methodNameMap = new HashMap<String, String>();
     private static HashMap<String, String> methodDescMap = new HashMap<String, String>();
 
-    public static String getMapedFieldName(String className, String fieldName) {
-        return fieldNameMap.get(className + "." + fieldName);
+    public static String getMapedFieldName(String className, String fieldName, String devName) {
+        return BattlegearLoadingPlugin.obfuscatedEnv?fieldNameMap.get(className + "." + fieldName):devName;
     }
 
     public static String getMapedClassName(String className) {
-        return classNameMap.get(className);
+    	if(BattlegearLoadingPlugin.obfuscatedEnv)
+    		return classNameMap.get(className.substring(className.lastIndexOf(".")+1));
+    	else{
+    		StringBuffer clas = new StringBuffer("net/minecraft/");
+    		clas.append(className.replace(".", "/"));
+    		return clas.toString();
+    	}
     }
 
-    public static String getMapedMethodName(String className, String methodName) {
-        return methodNameMap.get(className + "." + methodName);
+    public static String getMapedMethodName(String className, String methodName, String devName) {
+        return BattlegearLoadingPlugin.obfuscatedEnv?methodNameMap.get(className + "." + methodName):devName;
     }
 
-    public static String getMapedMethodDesc(String className, String methodName) {
-        return methodDescMap.get(className + "." + methodName);
+    public static String getMapedMethodDesc(String className, String methodName, String devDesc) {
+        return BattlegearLoadingPlugin.obfuscatedEnv?methodDescMap.get(className + "." + methodName):devDesc;
     }
 
     public static void setup(String deobFileName){
@@ -52,8 +56,7 @@ public class BattlegearTranslator implements IFMLCallHook {
 
             for (String line : srgList) {
 
-                line.replaceAll(" #C", "");
-                line.replaceAll(" #S", "");
+                line = line.replace(" #C", "").replace(" #S", "");
 
                 if (line.startsWith("CL")) {
                     parseClass(line);
@@ -77,13 +80,9 @@ public class BattlegearTranslator implements IFMLCallHook {
         //parse the config file
         File config = new File(mcLocation+File.separator+"config"+File.separator+"battlegear2.cfg");
         config.getParentFile().mkdirs();
-        config.createNewFile();
-        if(config.exists()){
+        if(config.createNewFile() || config.exists()){
         	readConfig(config);
-        }else{
-        	
         }
-        
         
         return null;
     }
@@ -97,6 +96,7 @@ public class BattlegearTranslator implements IFMLCallHook {
     		while(line != null){
     			if(line.toLowerCase().contains("asm debug mode")){
     				BattlegearLoadingPlugin.debug = line.toLowerCase().contains("true");
+                    break;
     			}
     			line = br.readLine();
     		}
