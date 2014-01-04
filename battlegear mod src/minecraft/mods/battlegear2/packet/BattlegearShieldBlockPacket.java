@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
 
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet;
@@ -31,11 +32,11 @@ public class BattlegearShieldBlockPacket extends AbstractMBPacket {
 			if (username != null) {
 				EntityPlayer entity = player.worldObj
 						.getPlayerEntityByName(username);
-				if (entity != null) {
+				if (entity instanceof IBattlePlayer) {
 					if (player.worldObj instanceof WorldServer) {
 						((WorldServer) player.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entity,	this.generatePacket());
 					}
-					entity.setBlockingWithShield(block);
+					((IBattlePlayer) entity).setBlockingWithShield(block);
 				}
 			}
 		} catch (IOException e) {

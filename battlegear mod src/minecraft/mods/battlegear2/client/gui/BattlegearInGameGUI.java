@@ -3,6 +3,7 @@ package mods.battlegear2.client.gui;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.CommonProxy;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.quiver.IArrowContainer2;
@@ -13,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.ScreenAccess;
+import net.minecraft.client.gui.inventory.ContainerAccess;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -57,7 +60,7 @@ public class BattlegearInGameGUI extends Gui {
 	                	previousGui=null;
 	                }
 	                if(mc.currentScreen instanceof InventoryEffectRenderer && mc.currentScreen.getClass()!=previousGui){
-                		BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList,((GuiContainer)mc.currentScreen).guiLeft-30, ((GuiContainer)mc.currentScreen).guiTop);
+                		BattlegearClientEvents.onOpenGui(ScreenAccess.getButtons(mc.currentScreen), ContainerAccess.getLeft((GuiContainer) mc.currentScreen)-30, ContainerAccess.getTop((GuiContainer)mc.currentScreen));
 						previousGui = (Class<? extends InventoryEffectRenderer>) mc.currentScreen.getClass();
 	                }
                 }
@@ -76,7 +79,7 @@ public class BattlegearInGameGUI extends Gui {
                 drawTexturedModalRect(width / 2 - 91 - 15 - 31 - 15, height - 22, 151, 0, 31, 22);
 
 
-                if (mc.thePlayer.isBattlemode()) {
+                if (mc.thePlayer instanceof IBattlePlayer && ((IBattlePlayer) mc.thePlayer).isBattlemode()) {
 
                     this.drawTexturedModalRect(width / 2 - 169 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20 - 15,
                             height - 22 - 1, 0, 22, 24, 22);
@@ -104,7 +107,7 @@ public class BattlegearInGameGUI extends Gui {
             }
         	RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution, mouseX, mouseY);
 
-            if(mc.thePlayer.isBattlemode()){
+            if(mc.thePlayer instanceof IBattlePlayer && ((IBattlePlayer) mc.thePlayer).isBattlemode()){
                    ItemStack offhand =  mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3);
                    if(offhand!= null && offhand.getItem() instanceof IShield){
                 	   RenderItemBarEvent.PreRender shieldEvent = new RenderItemBarEvent.PreRender(renderEvent, offhand);

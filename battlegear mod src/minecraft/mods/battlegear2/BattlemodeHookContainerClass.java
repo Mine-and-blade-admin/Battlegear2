@@ -1,6 +1,7 @@
 package mods.battlegear2;
 
 import mods.battlegear2.api.IArrowCatcher;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.IOffhandDual;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
@@ -21,7 +22,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet53BlockChange;
-import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.event.Event.Result;
@@ -63,7 +63,7 @@ public class BattlemodeHookContainerClass {
             }
         }
 
-        if(event.entityPlayer.specialActionTimer > 0){
+        if(event.entityPlayer instanceof IBattlePlayer && ((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
         }
 
@@ -71,10 +71,11 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void playerInterect(PlayerInteractEvent event) {
-        if(event.entityPlayer.specialActionTimer > 0){
+        if (event.entityPlayer instanceof IBattlePlayer)
+        if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
             event.entityPlayer.isSwingInProgress = false;
-        }else if (event.entityPlayer.isBattlemode()) {
+        }else if(((IBattlePlayer) event.entityPlayer).isBattlemode()) {
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = event.entityPlayer.inventory.getStackInSlot(event.entityPlayer.inventory.currentItem + 3);
 
@@ -88,7 +89,7 @@ public class BattlemodeHookContainerClass {
                         boolean shouldSwing = ((IOffhandDual) offhandItem.getItem()).offhandClickBlock(event, mainHandItem, offhandItem);
 
                         if (shouldSwing) {
-                            event.entityPlayer.swingOffItem();
+                        	((IBattlePlayer) event.entityPlayer).swingOffItem();
                             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                         }
 
@@ -118,7 +119,7 @@ public class BattlemodeHookContainerClass {
                             }
                         }
                     }else{
-                        event.entityPlayer.swingOffItem();
+                    	((IBattlePlayer) event.entityPlayer).swingOffItem();
                         Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                     }
                     break;
@@ -134,14 +135,14 @@ public class BattlemodeHookContainerClass {
                             boolean shouldSwing = ((IOffhandDual) offhandItem.getItem()).offhandClickAir(event, mainHandItem, offhandItem);
 
                             if (shouldSwing) {
-                                event.entityPlayer.swingOffItem();
+                            	((IBattlePlayer) event.entityPlayer).swingOffItem();
                                 Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                             }
 
                         }else if (offhandItem != null && offhandItem.getItem() instanceof IShield){
                             event.useItem = Result.DENY;
                         }else{
-                            event.entityPlayer.swingOffItem();
+                        	((IBattlePlayer) event.entityPlayer).swingOffItem();
                             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                         }
                     }
@@ -160,11 +161,12 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void playerIntereactEntity(EntityInteractEvent event) {
-        if(event.entityPlayer.specialActionTimer > 0){
+        if (event.entityPlayer instanceof IBattlePlayer)
+        if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
             event.setResult(Result.DENY);
             event.entityPlayer.isSwingInProgress = false;
-        } else if (event.entityPlayer.isBattlemode()) {
+        } else if (((IBattlePlayer) event.entityPlayer).isBattlemode()) {
 
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = event.entityPlayer.inventory.getStackInSlot(event.entityPlayer.inventory.currentItem + 3);
@@ -177,7 +179,7 @@ public class BattlemodeHookContainerClass {
                     ((IOffhandDual) offhandItem.getItem()).offhandAttackEntity(offAttackEvent, mainHandItem, offhandItem);
 
                     if (offAttackEvent.swingOffhand) {
-                        event.entityPlayer.swingOffItem();
+                        ((IBattlePlayer) event.entityPlayer).swingOffItem();
                         Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                     }
 
@@ -198,7 +200,7 @@ public class BattlemodeHookContainerClass {
                 if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem, offhandItem)){
                     event.setCanceled(true);
                     event.setResult(Result.DENY);
-                    event.entityPlayer.swingOffItem();
+                    ((IBattlePlayer) event.entityPlayer).swingOffItem();
                     BattlegearUtils.attackTargetEntityWithCurrentOffItem(event.entityPlayer, event.target);
 
                     Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
@@ -214,11 +216,11 @@ public class BattlemodeHookContainerClass {
     @ForgeSubscribe
     public void shieldHook(LivingHurtEvent event){
 
-        if(event.entity instanceof EntityPlayer){
+        if(event.entity instanceof IBattlePlayer){
             EntityPlayer player = (EntityPlayer)event.entity;
-            if(player.specialActionTimer > 0){
+            if(((IBattlePlayer) player).getSpecialActionTimer() > 0){
                 event.setCanceled(true);
-            } else if(player.isBlockingWithShield()){
+            } else if(((IBattlePlayer) player).isBlockingWithShield()){
                 ItemStack shield = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
                 if(((IShield)shield.getItem()).canBlock(shield, event.source)){
                     boolean shouldBlock = true;

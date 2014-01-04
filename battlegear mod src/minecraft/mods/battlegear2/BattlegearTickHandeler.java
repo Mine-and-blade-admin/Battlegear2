@@ -1,10 +1,9 @@
 package mods.battlegear2;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.relauncher.Side;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
@@ -19,7 +18,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
 
 import java.util.EnumSet;
-import java.util.HashMap;
 
 public class BattlegearTickHandeler implements ITickHandler {
 
@@ -54,7 +52,7 @@ public class BattlegearTickHandeler implements ITickHandler {
                             new BattlegearSyncItemPacket(entityPlayer).generatePacket()
                     );
 
-                    entityPlayer.specialActionTimer = 0;
+                    ((IBattlePlayer)entityPlayer).setSpecialActionTimer(0);
 
                     ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
 
@@ -92,22 +90,23 @@ public class BattlegearTickHandeler implements ITickHandler {
             }
 
 
-            if(entityPlayer.specialActionTimer > 0){
-                entityPlayer.specialActionTimer --;
+            if(entityPlayer instanceof IBattlePlayer){
+                int timer = ((IBattlePlayer)entityPlayer).getSpecialActionTimer();
+                if(timer > 0){
+                    ((IBattlePlayer)entityPlayer).setSpecialActionTimer(timer-1);;
 
-                int targetTime = 0;
+                    int targetTime = 0;
 
-                ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
-                if(offhand != null && offhand.getItem() instanceof IShield){
-                    targetTime = ((IShield) offhand.getItem()).getBashTimer(offhand) / 2;
-                }else if (offhand != null && offhand.getItem() instanceof IArrowContainer2){
-                    targetTime = 0;
+                    ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
+                    if(offhand != null && offhand.getItem() instanceof IShield){
+                        targetTime = ((IShield) offhand.getItem()).getBashTimer(offhand) / 2;
+                    }else if (offhand != null && offhand.getItem() instanceof IArrowContainer2){
+                        targetTime = 0;
+                    }
+                    if(((IBattlePlayer)entityPlayer).getSpecialActionTimer() == targetTime){
+                        Battlegear.proxy.doSpecialAction(entityPlayer);
+                    }
                 }
-                if(entityPlayer.specialActionTimer == targetTime){
-                    Battlegear.proxy.doSpecialAction(entityPlayer);
-                }
-
-
             }
 
         }

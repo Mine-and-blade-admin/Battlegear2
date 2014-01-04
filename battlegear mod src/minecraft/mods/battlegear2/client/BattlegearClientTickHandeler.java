@@ -3,6 +3,7 @@ package mods.battlegear2.client;
 import java.util.EnumSet;
 
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.packet.BattlegearShieldBlockPacket;
 import net.minecraft.client.Minecraft;
@@ -10,8 +11,6 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
-import org.lwjgl.input.Mouse;
 
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
@@ -41,7 +40,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
             }
 
             ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
-            if(player.isBattlemode() &&
+            if(player instanceof IBattlePlayer && ((IBattlePlayer) player).isBattlemode() &&
                     offhand != null &&
                     offhand.getItem() instanceof IShield){
 
@@ -103,11 +102,10 @@ public class BattlegearClientTickHandeler implements ITickHandler {
 
     @Override
     public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-
         if(type.contains(TickType.PLAYER)){
+            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
             ItemStack offhand = player.inventory.getStackInSlot(player.inventory.currentItem + 3);
-            if(player.isBattlemode() &&
+            if(player instanceof IBattlePlayer && ((IBattlePlayer) player).isBattlemode() &&
                     offhand != null &&
                     offhand.getItem() instanceof IShield){
 

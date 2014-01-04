@@ -17,7 +17,7 @@ public class HeraldryTextureSmall extends AbstractTexture {
     }
 
     @Override
-    public void loadTexture(ResourceManager resourcemanager) throws IOException {
+    public void loadTexture(ResourceManager resourcemanager) {
         BufferedImage image = null;
 
         image = new BufferedImage(PatternStore.small_rgbs[heraldryData.getPattern()][0].length, PatternStore.small_rgbs[heraldryData.getPattern()][0][0].length,BufferedImage.TYPE_4BYTE_ABGR);

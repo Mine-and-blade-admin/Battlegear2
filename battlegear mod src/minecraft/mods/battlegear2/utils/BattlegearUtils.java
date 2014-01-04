@@ -58,8 +58,8 @@ public class BattlegearUtils {
             };
         } else {
             itemBlackListMethodNames = new String[]{
-                    BattlegearTranslator.getMapedMethodName("Item", "func_77648_a"),
-                    BattlegearTranslator.getMapedMethodName("Item", "func_77659_a")
+                    BattlegearTranslator.getMapedMethodName("Item", "func_77648_a", "onItemUse"),
+                    BattlegearTranslator.getMapedMethodName("Item", "func_77659_a", "onItemRightClick")
             };
         }
 

@@ -1,11 +1,10 @@
 package mods.battlegear2.client;
 
 import java.util.EnumSet;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BowHookContainerClass2;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -18,16 +17,13 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet250CustomPayload;
 
 import org.lwjgl.input.Keyboard;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.relauncher.Side;
 
 public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 
@@ -56,16 +52,16 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
             if (mc != null && mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
 
                 EntityClientPlayerMP player = mc.thePlayer;
-                if(tickEnd){
-	                if (kb.keyCode == special.keyCode && player.specialActionTimer == 0){
+                if(tickEnd && player instanceof IBattlePlayer){
+	                if (kb.keyCode == special.keyCode && ((IBattlePlayer) player).getSpecialActionTimer() == 0){
 	                    ItemStack main = player.getCurrentEquippedItem();
 	                    ItemStack quiver = BowHookContainerClass2.getArrowContainer(main, player);
 	
 	                    if(quiver != null){
 	                        Packet p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player.username).generatePacket();
 	                        PacketDispatcher.sendPacketToServer(p);
-	                        player.specialActionTimer = 2;
-	                    }else if(player.isBattlemode()){
+                            ((IBattlePlayer) player).setSpecialActionTimer(2);
+	                    }else if(((IBattlePlayer) player).isBattlemode()){
 	                        ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 	
 	                        if(offhand != null && offhand.getItem() instanceof IShield){
@@ -74,16 +70,16 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 	                            if(BattlegearClientTickHandeler.blockBar >= shieldBashPenalty){
 	                                Packet p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player.username).generatePacket();
 	                                PacketDispatcher.sendPacketToServer(p);
-	                                player.specialActionTimer = ((IShield)offhand.getItem()).getBashTimer(offhand);
+                                    ((IBattlePlayer) player).setSpecialActionTimer(((IShield)offhand.getItem()).getBashTimer(offhand));
 	
 	                                BattlegearClientTickHandeler.blockBar = BattlegearClientTickHandeler.blockBar - shieldBashPenalty;
 	                            }
 	                        }
 	                    }
 	
-	                } else if (kb.keyCode == drawWeapons.keyCode) {
+	                } else if (kb.keyCode == drawWeapons.keyCode && player instanceof IBattlePlayer) {
 	                    InventoryPlayer playerInventory = player.inventory;
-	                    if (player.isBattlemode()) {
+	                    if (((IBattlePlayer) player).isBattlemode()) {
 	                        previousBattlemode = playerInventory.currentItem;
 	                        playerInventory.currentItem = previousNormal;
 	

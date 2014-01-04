@@ -31,15 +31,13 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
     public static final DecimalFormat decimal_format = new DecimalFormat("#.###");
 
     protected static final UUID penetrateArmourUUID = UUID.fromString("DB3F55D3-645C-4F38-A497-9C13A33DB5CF");
-    protected static final RangedAttribute armourPenatrate = new RangedAttribute("weapon.penetrateArmor", 0.0D, 0.0D, Double.MAX_VALUE);
+    protected static final RangedAttribute armourPenetrate = new RangedAttribute("weapon.penetrateArmor", 0.0D, 0.0D, Double.MAX_VALUE);
 
     protected static final UUID dazeUUID = UUID.fromString("927f0df6-946e-4e78-a479-c2c13034edb5");
     protected static final RangedAttribute daze = new RangedAttribute("weapon.daze", 3.0D, 0.0D, Double.MAX_VALUE);
 
     protected static final UUID extendReachUUID = UUID.fromString("fb557a05-866e-4017-990b-aab8450bf41b");
     protected static final RangedAttribute extendedReach = new RangedAttribute("weapon.extendedReach", 2.0D, 0.0D, Double.MAX_VALUE);
-
-
 
 
     protected final EnumToolMaterial material;
@@ -70,8 +68,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 	}
 	
 	@Override
-	public Multimap getItemAttributeModifiers()
-    {
+	public Multimap getItemAttributeModifiers() {
 		Multimap map = HashMultimap.create();
 		map.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)this.baseDamage, 0));
 

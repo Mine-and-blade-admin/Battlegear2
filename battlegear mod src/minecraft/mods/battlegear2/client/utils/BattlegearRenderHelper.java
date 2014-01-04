@@ -2,9 +2,11 @@ package mods.battlegear2.client.utils;
 
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.ISheathed;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.RenderPlayerEventChild.*;
+import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.client.BattlegearKeyHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -52,9 +54,11 @@ public class BattlegearRenderHelper {
             dummyEntity = new EntityChicken(mc.theWorld);
         }
 
-        if (itemRenderer.offHandItemToRender != dummyStack &&
+        IOffhandRender offhandRender = (IOffhandRender)itemRenderer;
+
+        if (offhandRender.getItemToRender() != dummyStack &&
                 (itemToRender == null || BattlegearUtils.isOffHand(itemToRender))) {
-            float progress = itemRenderer.prevEquippedOffHandProgress + (itemRenderer.equippedOffHandProgress - itemRenderer.prevEquippedOffHandProgress) * frame;
+            float progress = offhandRender.getPrevEquippedProgress() + (offhandRender.getEquippedProgress() - offhandRender.getPrevEquippedProgress()) * frame;
 
             EntityClientPlayerMP player = mc.thePlayer;
 
@@ -87,8 +91,8 @@ public class BattlegearRenderHelper {
             float var21;
             float var20;
 
-            if (itemRenderer.offHandItemToRender != null) {
-                var18 = Item.itemsList[itemRenderer.offHandItemToRender.itemID].getColorFromItemStack(itemRenderer.offHandItemToRender, 0);
+            if (offhandRender.getItemToRender() != null) {
+                var18 = Item.itemsList[offhandRender.getItemToRender().itemID].getColorFromItemStack(offhandRender.getItemToRender(), 0);
                 var20 = (float) (var18 >> 16 & 255) / 255.0F;
                 var21 = (float) (var18 >> 8 & 255) / 255.0F;
                 var10 = (float) (var18 & 255) / 255.0F;
@@ -103,32 +107,32 @@ public class BattlegearRenderHelper {
             RenderPlayer var26 = (RenderPlayer) RenderManager.instance.getEntityRenderObject(mc.thePlayer);
             RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(player, var26, frame);
             RenderPlayerEvent postRender = new RenderPlayerEvent.Post(player, var26, frame);
-            if (itemRenderer.offHandItemToRender != null) {
+            if (offhandRender.getItemToRender() != null) {
 
-	        	if(itemRenderer.offHandItemToRender.getItem() instanceof IShield){
+	        	if(offhandRender.getItemToRender().getItem() instanceof IShield){
                     GL11.glPushMatrix();
 
 	        		var7 = 0.8F;
 
                     float swingProgress =
-                            (float)player.specialActionTimer / (
-                                    float)((IShield)itemRenderer.offHandItemToRender.getItem()).getBashTimer(
-                                    itemRenderer.offHandItemToRender);
+                            (float)((IBattlePlayer)player).getSpecialActionTimer() / (
+                                    float)((IShield)offhandRender.getItemToRender().getItem()).getBashTimer(
+                                    offhandRender.getItemToRender());
 
 	        		GL11.glTranslatef(-0.7F * var7 + 0.25F*MathHelper.sin(swingProgress*3.14159F),
 	        				-0.65F * var7 - (1.0F - progress) * 0.6F - 0.4F,
                             -0.9F * var7+0.1F - 0.25F*MathHelper.sin(swingProgress*3.14159F));
 
-	        		if(player.isBlockingWithShield()){
+	        		if(((IBattlePlayer)player).isBlockingWithShield()){
 	        			GL11.glTranslatef(0.25F, 0.15F, 0);
 	        		}
 
 	        		GL11.glRotatef(25, 0, 0, 1);
 	        		GL11.glRotatef(325-35*MathHelper.sin(swingProgress*3.14159F), 0, 1, 0);
 
-	        		if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, itemRenderer.offHandItemToRender)))
-	        			itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
-	        		MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, itemRenderer.offHandItemToRender));
+	        		if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender())))
+	        			itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
+	        		MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()));
 	        		GL11.glPopMatrix();
 
 
@@ -137,11 +141,11 @@ public class BattlegearRenderHelper {
                     var7 = 0.8F;
 
                     if (player.getItemInUseCount() > 0) {
-                        EnumAction action = itemRenderer.offHandItemToRender.getItemUseAction();
+                        EnumAction action = offhandRender.getItemToRender().getItemUseAction();
 
                         if (action == EnumAction.eat || action == EnumAction.drink) {
                             var21 = (float) player.getItemInUseCount() - frame + 1.0F;
-                            var10 = 1.0F - var21 / (float) itemRenderer.offHandItemToRender.getMaxItemUseDuration();
+                            var10 = 1.0F - var21 / (float) offhandRender.getItemToRender().getMaxItemUseDuration();
                             var11 = 1.0F - var10;
                             var11 = var11 * var11 * var11;
                             var11 = var11 * var11 * var11;
@@ -154,7 +158,7 @@ public class BattlegearRenderHelper {
                             GL11.glRotatef(var12 * 30.0F, 0.0F, 0.0F, 1.0F);
                         }
                     } else {
-                        var20 = player.getOffSwingProgress(frame);
+                        var20 = ((IBattlePlayer)player).getOffSwingProgress(frame);
                         var21 = MathHelper.sin(var20 * (float) Math.PI);
                         var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI);
                         //Flip the (x direction)
@@ -167,7 +171,7 @@ public class BattlegearRenderHelper {
                     GL11.glRotatef(-45.0F, 0.0F, 1.0F, 0.0F);
 
                     GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                    var20 = player.getOffSwingProgress(frame);
+                    var20 = ((IBattlePlayer)player).getOffSwingProgress(frame);
 
 
                     var21 = MathHelper.sin(var20 * var20 * (float) Math.PI);
@@ -188,7 +192,7 @@ public class BattlegearRenderHelper {
                     float var15;
 
                     if (player.getItemInUseCount() > 0) {
-                        EnumAction action = itemRenderer.offHandItemToRender.getItemUseAction();
+                        EnumAction action = offhandRender.getItemToRender().getItemUseAction();
 
                         if (action == EnumAction.block) {
                             GL11.glTranslatef(-0.5F, 0.2F, 0.0F);
@@ -200,7 +204,7 @@ public class BattlegearRenderHelper {
                             GL11.glRotatef(-12.0F, 0.0F, 1.0F, 0.0F);
                             GL11.glRotatef(-8.0F, 1.0F, 0.0F, 0.0F);
                             GL11.glTranslatef(-0.9F, 0.2F, 0.0F);
-                            var13 = (float) itemRenderer.offHandItemToRender.getMaxItemUseDuration() - ((float) player.getItemInUseCount() - frame + 1.0F);
+                            var13 = (float) offhandRender.getItemToRender().getMaxItemUseDuration() - ((float) player.getItemInUseCount() - frame + 1.0F);
                             var14 = var13 / 20.0F;
                             var14 = (var14 * var14 + var14 * 2.0F) / 3.0F;
 
@@ -224,26 +228,26 @@ public class BattlegearRenderHelper {
                         }
                     }
 
-                    if (itemRenderer.offHandItemToRender.getItem().shouldRotateAroundWhenRendering()) {
+                    if (offhandRender.getItemToRender().getItem().shouldRotateAroundWhenRendering()) {
                         GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
                     }
-                    if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, itemRenderer.offHandItemToRender))){  	        		
+                    if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()))){
 	
-                    	if (itemRenderer.offHandItemToRender.getItem().requiresMultipleRenderPasses()) {
-	                        itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
-	                        for (int x = 1; x < itemRenderer.offHandItemToRender.getItem().getRenderPasses(itemRenderer.offHandItemToRender.getItemDamage()); x++) {
-	                            int var25 = Item.itemsList[itemRenderer.offHandItemToRender.itemID].getColorFromItemStack(itemRenderer.offHandItemToRender, x);
+                    	if (offhandRender.getItemToRender().getItem().requiresMultipleRenderPasses()) {
+	                        itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
+	                        for (int x = 1; x < offhandRender.getItemToRender().getItem().getRenderPasses(offhandRender.getItemToRender().getItemDamage()); x++) {
+	                            int var25 = Item.itemsList[offhandRender.getItemToRender().itemID].getColorFromItemStack(offhandRender.getItemToRender(), x);
 	                            var13 = (float) (var25 >> 16 & 255) / 255.0F;
 	                            var14 = (float) (var25 >> 8 & 255) / 255.0F;
 	                            var15 = (float) (var25 & 255) / 255.0F;
 	                            GL11.glColor4f(var6 * var13, var6 * var14, var6 * var15, 1.0F);
-	                            itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, x);
+	                            itemRenderer.renderItem(player, offhandRender.getItemToRender(), x);
 	                        }
 	                    } else {
-	                        itemRenderer.renderItem(player, itemRenderer.offHandItemToRender, 0);
+	                        itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
 	                    }
                     }
-                    MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, itemRenderer.offHandItemToRender));
+                    MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()));
 	        		
                     GL11.glPopMatrix();
                 }
@@ -253,7 +257,7 @@ public class BattlegearRenderHelper {
 
                 GL11.glScalef(-1.0F, 1.0F, 1.0F);
 
-                var20 = player.getOffSwingProgress(frame);
+                var20 = ((IBattlePlayer)player).getOffSwingProgress(frame);
                 var21 = MathHelper.sin(var20 * (float) Math.PI);
                 var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI);
                 GL11.glTranslatef(-var10 * 0.3F, MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI * 2.0F) * 0.4F, -var21 * 0.4F);
@@ -262,7 +266,7 @@ public class BattlegearRenderHelper {
                 GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
 
                 GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                var20 = player.getOffSwingProgress(frame);
+                var20 = ((IBattlePlayer)player).getOffSwingProgress(frame);
                 var21 = MathHelper.sin(var20 * var20 * (float) Math.PI);
                 var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI);
                 GL11.glRotatef(var10 * 70.0F, 0.0F, 1.0F, 0.0F);
@@ -292,35 +296,36 @@ public class BattlegearRenderHelper {
     }
 
     public static void updateEquippedItem(ItemRenderer itemRenderer, Minecraft mc, ItemStack mainhandToRender) {
-        itemRenderer.prevEquippedOffHandProgress = itemRenderer.equippedOffHandProgress;
+        IOffhandRender offhandRender = (IOffhandRender)itemRenderer;
+        offhandRender.setPrevEquippedProgress(offhandRender.getEquippedProgress());
         EntityClientPlayerMP var1 = mc.thePlayer;
-        ItemStack var2 = var1.isBattlemode() && itemRenderer.equippedItemOffhandSlot > 0 ?
-                var1.inventory.getStackInSlot(itemRenderer.equippedItemOffhandSlot) : dummyStack;
+        ItemStack var2 = ((IBattlePlayer)var1).isBattlemode() && offhandRender.getEquippedItemSlot() > 0 ?
+                var1.inventory.getStackInSlot(offhandRender.getEquippedItemSlot()) : dummyStack;
 
-        boolean var3 = itemRenderer.equippedItemOffhandSlot == var1.inventory.currentItem + 3 && var2 == itemRenderer.offHandItemToRender;
+        boolean var3 = offhandRender.getEquippedItemSlot() == var1.inventory.currentItem + 3 && var2 == offhandRender.getItemToRender();
 
-        if (itemRenderer.offHandItemToRender == null && var2 == null) {
+        if (offhandRender.getItemToRender() == null && var2 == null) {
             var3 = true;
         }
 
         if (var2 != null &&
-                itemRenderer.offHandItemToRender != null &&
-                var2 != itemRenderer.offHandItemToRender &&
-                var2.itemID == itemRenderer.offHandItemToRender.itemID &&
-                var2.getItemDamage() == itemRenderer.offHandItemToRender.getItemDamage()) {
-            itemRenderer.offHandItemToRender = var2;
+                offhandRender.getItemToRender() != null &&
+                var2 != offhandRender.getItemToRender() &&
+                var2.itemID == offhandRender.getItemToRender().itemID &&
+                var2.getItemDamage() == offhandRender.getItemToRender().getItemDamage()) {
+            offhandRender.setItemToRender(var2);
             var3 = true;
         }
 
 
-        ItemStack offhand = var1.isBattlemode() ? var1.inventory.getStackInSlot(var1.inventory.currentItem + 3) : dummyStack;
+        ItemStack offhand = ((IBattlePlayer)var1).isBattlemode() ? var1.inventory.getStackInSlot(var1.inventory.currentItem + 3) : dummyStack;
 
         offhand = (mainhandToRender == null || BattlegearUtils.isMainHand(mainhandToRender, offhand)) ? offhand : dummyStack;
-        var3 = var3 & (itemRenderer.equippedItemOffhandSlot == var1.inventory.currentItem + 3 && offhand == itemRenderer.offHandItemToRender);
+        var3 = var3 & (offhandRender.getEquippedItemSlot() == var1.inventory.currentItem + 3 && offhand == offhandRender.getItemToRender());
 
         float var4 = 0.4F;
         float var5 = var3 ? 1.0F : 0.0F;
-        float var6 = var5 - itemRenderer.equippedOffHandProgress;
+        float var6 = var5 - offhandRender.getEquippedProgress();
 
         if (var6 < -var4) {
             var6 = -var4;
@@ -330,26 +335,26 @@ public class BattlegearRenderHelper {
             var6 = var4;
         }
 
-        itemRenderer.equippedOffHandProgress += var6;
+        offhandRender.setEquippedProgress(offhandRender.getEquippedProgress()+var6);
 
-        if (itemRenderer.equippedOffHandProgress < 0.1F) {
-            itemRenderer.offHandItemToRender = var2;
-            itemRenderer.equippedItemOffhandSlot = var1.inventory.currentItem + 3;
+        if (offhandRender.getEquippedProgress() < 0.1F) {
+            offhandRender.setItemToRender(var2);
+            offhandRender.setEquippedItemSlot(var1.inventory.currentItem + 3);
         }
     }
 
     public static void moveOffHandArm(Entity entity, ModelBiped biped, float frame) {
-        if (entity instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) entity;
+        if (entity instanceof IBattlePlayer) {
+            IBattlePlayer player = (IBattlePlayer) entity;
             float offhandSwing = player.getOffSwingProgress(frame);
 
-            if(((EntityPlayer) entity).isBattlemode()){
+            if(player.isBattlemode()){
                 ItemStack offhand = ((InventoryPlayerBattle)((EntityPlayer) entity).inventory).getCurrentOffhandWeapon();
                 if(offhand != null && offhand.getItem() instanceof IShield){
-                    offhandSwing = (float)player.specialActionTimer / (float)((IShield)offhand.getItem()).getBashTimer(offhand);
+                    offhandSwing = (float)player.getSpecialActionTimer() / (float)((IShield)offhand.getItem()).getBashTimer(offhand);
                 }
 
-                boolean isBlockWithShield = ((EntityPlayer) entity).isBlockingWithShield();
+                boolean isBlockWithShield = player.isBlockingWithShield();
                 //biped.heldItemLeft = isBlockWithShield?3:1;
 
                 if(offhand != null)
@@ -388,7 +393,7 @@ public class BattlegearRenderHelper {
 
         ItemStack var21 = par1EntityPlayer.inventory.getStackInSlot(par1EntityPlayer.inventory.currentItem + 3);
 
-        if (var21 != null && par1EntityPlayer.isBattlemode()) {
+        if (var21 != null && par1EntityPlayer instanceof IBattlePlayer && ((IBattlePlayer) par1EntityPlayer).isBattlemode()) {
 
             float var7;
             float var8;
@@ -517,7 +522,7 @@ public class BattlegearRenderHelper {
             MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.ItemOffhand, var21));
             GL11.glPopMatrix();
         } else {
-            if(!par1EntityPlayer.isBattlemode())
+            if(!((IBattlePlayer) par1EntityPlayer).isBattlemode())
                 renderSheathedItems(par1EntityPlayer, modelBipedMain, frame);
         }
     }
