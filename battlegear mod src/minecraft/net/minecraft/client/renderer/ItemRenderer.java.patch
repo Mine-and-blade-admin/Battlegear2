@@ -10,7 +10,7 @@
  import net.minecraft.client.Minecraft;
 @@ -36,6 +37,18 @@
  @SideOnly(Side.CLIENT)
- public class ItemRenderer
+ public class ItemRenderer implements IOffhandRender
  {
 +	/*
 +	 * Mine & Blade: Notes
