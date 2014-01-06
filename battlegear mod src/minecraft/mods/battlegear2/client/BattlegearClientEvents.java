@@ -16,7 +16,6 @@ import mods.battlegear2.items.ItemQuiver;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.entity.MainModelAccess;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.monster.EntitySkeleton;
@@ -69,7 +68,7 @@ public class BattlegearClientEvents {
 	@ForgeSubscribe
 	public void render3rdPersonBattlemode(RenderPlayerEvent.Specials.Post event) {
 
-		ModelBiped biped = (ModelBiped)MainModelAccess.getMainModel(event.renderer);
+		ModelBiped biped = (ModelBiped) event.renderer.mainModel;
 		//getModelBiped(event.renderer, 1);
 		BattlegearRenderHelper.renderItemIn3rdPerson(event.entityPlayer, biped,
 				event.partialRenderTick);
@@ -156,7 +155,7 @@ public class BattlegearClientEvents {
 			GL11.glTranslatef(0, -1.5F, 0);
 
 			GL11.glRotatef(event.entity.rotationPitch, 0, 1, 0);
-            ((ModelBiped)MainModelAccess.getMainModel(event.renderer)).bipedBody.postRender(0.0625F);
+            ((ModelBiped)event.renderer.mainModel).bipedBody.postRender(0.0625F);
 			GL11.glScalef(1.05F, 1.05F, 1.05F);
 			quiverModel.render(arrowCount, 0.0625F);
 

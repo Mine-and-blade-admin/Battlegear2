@@ -14,8 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.gui.ScreenAccess;
-import net.minecraft.client.gui.inventory.ContainerAccess;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.RenderHelper;
@@ -60,7 +58,7 @@ public class BattlegearInGameGUI extends Gui {
 	                	previousGui=null;
 	                }
 	                if(mc.currentScreen instanceof InventoryEffectRenderer && mc.currentScreen.getClass()!=previousGui){
-                		BattlegearClientEvents.onOpenGui(ScreenAccess.getButtons(mc.currentScreen), ContainerAccess.getLeft((GuiContainer) mc.currentScreen)-30, ContainerAccess.getTop((GuiContainer)mc.currentScreen));
+                		BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList, ((GuiContainer) mc.currentScreen).guiLeft-30, ((GuiContainer)mc.currentScreen).guiTop);
 						previousGui = (Class<? extends InventoryEffectRenderer>) mc.currentScreen.getClass();
 	                }
                 }

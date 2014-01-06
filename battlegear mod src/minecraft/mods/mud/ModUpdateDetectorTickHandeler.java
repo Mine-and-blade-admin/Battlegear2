@@ -56,7 +56,7 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
                     y = 10;
                 }
 
-                List buttonList = getButtonList(Minecraft.getMinecraft().currentScreen);
+                List buttonList = Minecraft.getMinecraft().currentScreen.buttonList;
                 boolean hasMumButton = false;
                 for(Object o : buttonList){
                     hasMumButton = hasMumButton || o instanceof GuiModUpdateButton;
@@ -67,10 +67,6 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
                 lastScreen = Minecraft.getMinecraft().currentScreen;
             }
         }
-    }
-
-    private List getButtonList(GuiScreen screen){
-        return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, screen, "buttonList", "field_73887_h");
     }
 
     @Override

@@ -5,85 +5,74 @@ buildscript {
         mavenCentral()
 
         maven {
-
             name = "forge"
-
             url = "http://files.minecraftforge.net/maven"
-
         }
 
     }
 
     dependencies {
-
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
-
     }
 }
 
 apply plugin: 'forge'
 
-dependencies {
-
-	runtime files('mods/battlegear_dummy.jar')
-    }
-
 // Define properties file
 ext.configFile = file "mod.properties"
-
-
 configFile.withReader {
     // Load config. Can be referenced as config
     def prop = new Properties()
     prop.load(it)
     project.ext.config = new ConfigSlurper().parse prop
 }
-version = "${config.modversion}"
-
+//Set things from the properties file
+version = config.modversion
 minecraft {
     version = config.mcversion + "-" + config.forgeversion
     replace '${version}', project.version
 }
-
+archivesBaseName = config.mcversion + "-" + config.distname
+//Set the workspace
 sourceSets {
     main {
         resources {
-            srcDir 'battlegear mod src/minecraft/'
+            srcDir 'battlegear mod src/minecraft/' exclude('net/minecraft/**')
         }
-	java {
-	    srcDir 'battlegear mod src/minecraft/'
-	}
+	    java {
+	        srcDir 'battlegear mod src/minecraft/'
+	    }
     }
 }
-archivesBaseName = "${config.mcversion} " + config.dist.name
-processResources
-{
 
-    // replace stuff in mcmod.info, nothing else
+processResources {
 
-    from(project.projectDir) {
-
-        include 'mcmod/info'
-
-                
+    from(projectDir) {
+        // replace stuff in mcmod.info, nothing else
+        include 'mcmod.info'
         // replace version and mcversion
-
         expand 'version':config.modversion, 'mcversion':config.mcversion
     }
         
-    // copy everything else, thats not the mcmod.info
-
+    // copy everything else
     from(sourceSets.main.resources.srcDirs) {
-
-        exclude 'mcmod.info'
-
+        include('*.lang', '*.wav', '*.png', '*.cfg')
     }
 }
 
-// Add Coremod Manifest
 jar {
+    //Place jar into distribution folder
+    destinationDir = file "battlegear dist/"
+    //Keep the jar as clean as possible
+    includeEmptyDirs = false
+    exclude('*.java', 'tconstruct/**')
+    // Add Coremod Manifest
     manifest {
         attributes 'FMLCorePlugin': config.loadingPlugin
         attributes 'FMLCorePluginContainsFMLMod': config.containsMod
     }
+}
+//Perform checksum and add it next to the jar
+jar.doLast { task ->
+    ant.checksum file: task.archivePath
 }

@@ -31,21 +31,15 @@ What does and doesn't work
     + Arrows being stuck in Shields
     + Enchantments
 * Quivers
-    +Quivers are the "current project" They are not released to the public yet
+* Arrows
 
 **Note from nerd-boy:** I am not 100% happy with the way we are syncing items. It works now by sending a packet with all the "battle items" to each player that is viewing a player every 60 ticks. I am not sure if this will be too much or not. Although right now I cannot think of another way to do it that doesn't require more bytecode manipulation. I think we already have enough AccessTransformers planed to keep us busy without adding more that we may in fact not need.
 
-**What does not work**
-* Some of the more "advanced" quiver features
-    +Rendering on the back
-    +Support for multiple types of arrows in the same quiver
 
-
-
-Instalation
+Installation
 -----------
 The files contained within the repository must be placed inside a minecraft forge-universal src installation.
-Due to potential legal issues of re-distributing Majong .java files, all base class edits are distributed as .java.patch files.
+Due to potential legal issues of re-distributing Mojang .java files, all base class edits are distributed as .java.patch files.
 
 The full battlegear source can be obtained by running
 
@@ -63,16 +57,16 @@ on a windows environment
 
 Remember to set the execution bit to true on the unix environment
 
-When the project is in a more mature state I will also include another script (likely an ant script) to retrieve the fully compiled and packaged code
-
+You can also set a dev environment by Gradle, with IntelliJIdea:
+`` gradlew setupDevWorkspace idea genIntellijRuns``
+then import the build.gradle file.
 
 Compiling the Mod
 -----------------
-The mod can be compiled using the following ant command
-``ant clean compile build``
+The mod can be compiled using the following gradle command
+``gradlew build``
 
-This will generate a jar file in the battlegear dist folder.
-This command should only be ran after the instalation command
+This will generate a jar file in the battlegear dist folder, along with its checksum.
 
 
 Translations

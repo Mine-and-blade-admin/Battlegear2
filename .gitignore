@@ -25,9 +25,10 @@
 
 #Also don't ignore the install scripts
 !battlegear-*
+!gradlew*
 
 #Or this file ;) (or readme)
-!.getignore
+!.gitignore
 !README.md
 !ForumPost
 !ItemStats.md
