@@ -1,0 +1,21 @@
+mud.name=Detecteur de version de mods
+message.checking=Recherche de nouvelles versions de mods.
+message.check.done=Recherche terminee
+message.you.have=Vous avez
+message.outdated=mises a jour de mod en attente
+message.type=Utiliser la commande
+message.to.view=pour voir les mises a jour disponibles
+message.up.to.date=Tous vos mods sont a jour
+
+button.download.latest=Telecharger la plus recente version
+gui.downloading=Telechargement
+button.close=Fermer
+button.ok=Ok
+button.url=Ouvrir page officielle du mod
+gui.download.complete=Telechargement reussi
+gui.download.failed=Echec du telechargement
+gui.restart=Redemarrer Minecraft
+gui.md5.fail=Telechargement corrompu ou impossible
+log.message.none=Aucun journal de dev fourni
+log.message.loading=Telechargement du journal de dev sur server
+log.message.fail=Echec de telechargement du journal de dev
