@@ -237,27 +237,14 @@ public class ClientProxy extends CommonProxy {
     
     @Override
     public void tryUseTConstruct() {
-    	Class tabRegistry;
-    	Class abstractTab;
     	try {
-    		tabRegistry = Class.forName("tconstruct.client.tabs.TabRegistry");
-    		abstractTab = Class.forName("tconstruct.client.tabs.AbstractTab");
-		} catch (ClassNotFoundException e) {
-			return;
-		}
-    	Method registerTab;
-    	try {
-    		registerTab = tabRegistry.getMethod("registerTab", abstractTab);
-		} catch (NoSuchMethodException e) {
-			return;
-		} catch (SecurityException e) {
-			return;
-		}
-    	try {
-    		registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab").newInstance());
-    		if(Battlegear.debug){
-    			registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.SigilTab").newInstance());
-    		}
+            Class tabRegistry = Class.forName("tconstruct.client.tabs.TabRegistry");
+            Class abstractTab = Class.forName("tconstruct.client.tabs.AbstractTab");
+            Method registerTab = tabRegistry.getMethod("registerTab", abstractTab);
+            registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab").newInstance());
+            if(Battlegear.debug){
+                registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.SigilTab").newInstance());
+            }
 		} catch (Exception e) {
 			return;
 		}
