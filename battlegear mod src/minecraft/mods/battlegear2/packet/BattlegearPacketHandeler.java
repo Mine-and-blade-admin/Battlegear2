@@ -27,7 +27,7 @@ public class BattlegearPacketHandeler implements IPacketHandler {
         map.put(BattlegearShieldFlashPacket.packetName, new BattlegearShieldFlashPacket());
         map.put(SpecialActionPacket.packetName, new SpecialActionPacket());
         map.put(LoginPacket.packetName, new LoginPacket());
-
+        map.put(OffhandPlaceBlockPacket.packetName, new OffhandPlaceBlockPacket());
     }
 
     @Override

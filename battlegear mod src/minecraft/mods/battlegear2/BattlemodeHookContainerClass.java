@@ -95,29 +95,6 @@ public class BattlemodeHookContainerClass {
 
                     }else if (offhandItem != null && offhandItem.getItem() instanceof IShield){
                         event.useItem = Result.DENY;
-                    }else if (offhandItem != null && offhandItem.getItem() instanceof ItemBlock){
-                        event.useItem = Result.DENY;
-                        event.useBlock = Result.DENY;
-
-                        int blockId = event.entityLiving.worldObj.getBlockId(event.x, event.y, event.z);
-                        MovingObjectPosition obj = rayTrace(event.entityLiving, event.entityPlayer.capabilities.isCreativeMode?5F:4.5F);
-                        if(obj!=null && offhandItem.tryPlaceItemIntoWorld(event.entityPlayer, event.entityPlayer.worldObj,
-                                event.x, event.y, event.z, event.face, (float)obj.hitVec.xCoord-event.x, (float)obj.hitVec.yCoord-event.y, (float)obj.hitVec.zCoord-event.z)){
-                        	
-                            if(event.entityPlayer.capabilities.isCreativeMode){
-                                offhandItem.stackSize++;
-                            }
-
-                            if(offhandItem.stackSize <= 0){
-                                ForgeEventFactory.onPlayerDestroyItem(event.entityPlayer, offhandItem);
-                                event.entityPlayer.inventory.setInventorySlotContents(event.entityPlayer.inventory.currentItem+InventoryPlayerBattle.WEAPON_SETS, null);
-                            }
-
-                            if(FMLCommonHandler.instance().getEffectiveSide().isServer()){
-                                PacketDispatcher.sendPacketToAllAround(event.x, event.y, event.z, 32, event.entityPlayer.dimension,
-                                        new Packet53BlockChange(event.x, event.y, event.z, event.entityPlayer.worldObj));
-                            }
-                        }
                     }else{
                     	((IBattlePlayer) event.entityPlayer).swingOffItem();
                         Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
@@ -150,13 +127,6 @@ public class BattlemodeHookContainerClass {
             }
         }
 
-    }
-    
-    public static MovingObjectPosition rayTrace(EntityLivingBase entity, double dist) {
-        Vec3 vec3 = entity.worldObj.getWorldVec3Pool().getVecFromPool(entity.posX, entity.posY, entity.posZ);
-        Vec3 vec31 = entity.getLookVec();
-        Vec3 vec32 = vec3.addVector(vec31.xCoord * dist, vec31.yCoord * dist, vec31.zCoord * dist);
-        return entity.worldObj.clip(vec3, vec32);
     }
 
     @ForgeSubscribe
@@ -206,7 +176,6 @@ public class BattlemodeHookContainerClass {
                     Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                 }
             }
-
 
         }
     }

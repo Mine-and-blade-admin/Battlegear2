@@ -47,7 +47,9 @@ import java.util.logging.Logger;
                 BattlegearShieldBlockPacket.packetName,
                 BattlegearShieldFlashPacket.packetName,
                 SpecialActionPacket.packetName,
-                LoginPacket.packetName},
+                LoginPacket.packetName,
+                OffhandPlaceBlockPacket.packetName
+        },
         packetHandler = BattlegearPacketHandeler.class)
 public class Battlegear {
 
