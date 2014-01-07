@@ -1,7 +1,6 @@
 package mods.battlegear2.gui;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.inventory.IInventory;
@@ -37,7 +36,7 @@ public class WeaponSlot extends Slot {
             } else if (mainHand) {
                 if (BattlegearUtils.isWeapon(par1ItemStack)) {
                     if (partner.getHasStack() && !(partner.getStack().getItem() instanceof IArrowContainer2)) {
-                        return BattlegearUtils.isMainHand(par1ItemStack, partner.getStack()) ? super.isItemValid(par1ItemStack) : false;                        
+                        return BattlegearUtils.isMainHand(par1ItemStack, partner.getStack()) && super.isItemValid(par1ItemStack);
                     } else {
                         return super.isItemValid(par1ItemStack);
                     }
@@ -48,14 +47,14 @@ public class WeaponSlot extends Slot {
 
                 if(par1ItemStack.getItem() instanceof IArrowContainer2){
                     if (partner.getHasStack()) {
-                        return partner.getStack().getItem() instanceof ItemBow ? super.isItemValid(par1ItemStack) : false;
+                        return partner.getStack().getItem() instanceof ItemBow && super.isItemValid(par1ItemStack);
                     }else{
                         return super.isItemValid(par1ItemStack);
                     }
 
                 }else if (BattlegearUtils.isOffHand(par1ItemStack)) {
                     if (partner.getHasStack()) {
-                    	return BattlegearUtils.isMainHand(partner.getStack(), par1ItemStack) ? super.isItemValid(par1ItemStack) : false;
+                    	return BattlegearUtils.isMainHand(partner.getStack(), par1ItemStack) && super.isItemValid(par1ItemStack);
                     } else {
                         return super.isItemValid(par1ItemStack);
                     }

@@ -7,9 +7,7 @@ import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
@@ -20,14 +18,14 @@ public class ContainerBattle extends Container {
      * Determines if inventory manipulation should be handled.
      */
     public boolean isLocalWorld = false;
-    private final EntityPlayer thePlayer;
+    public final EntityPlayer thePlayer;
 
     public ContainerBattle(InventoryPlayer inventoryPlayer, boolean local, EntityPlayer player) {
         this.thePlayer = player;
         this.isLocalWorld = local;
         //Armour slots,range [0-3]
         for (int i = 0; i < 4; i++) {
-            this.addSlotToContainer(new ArmourSlot(this, inventoryPlayer, inventoryPlayer.getSizeInventory() - 1 - i, 98, 8 + i * 18, i));
+            this.addSlotToContainer(new SlotArmor(new ContainerPlayer(inventoryPlayer, local, player), inventoryPlayer, inventoryPlayer.getSizeInventory() - 1 - i, 98, 8 + i * 18, i));
         }
 
         //Normal inventory slots[4-30]
@@ -104,7 +102,7 @@ public class ContainerBattle extends Container {
             }
             if (itemStack1.stackSize == 0)
             {
-                slot.putStack((ItemStack)null);
+                slot.putStack(null);
             }
             else
             {
