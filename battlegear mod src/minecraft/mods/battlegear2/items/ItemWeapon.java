@@ -4,13 +4,8 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
-import mods.battlegear2.api.*;
-import mods.battlegear2.api.weapons.IBackStabbable;
-import mods.battlegear2.api.weapons.IBattlegearWeapon;
-import mods.battlegear2.api.weapons.IExtendedReachWeapon;
-import mods.battlegear2.api.weapons.IHitTimeModifier;
-import mods.battlegear2.api.weapons.IPenetrateWeapon;
-import mods.battlegear2.api.weapons.ISpecialEffect;
+import cpw.mods.fml.common.registry.GameRegistry;
+import mods.battlegear2.api.weapons.*;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
@@ -60,6 +55,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 		this.setTextureName("battlegear2:"+name);
 		
 		this.baseDamage = 4 + material.getDamageVsEntity();
+        GameRegistry.registerItem(this, this.name);
 	}
 	
 	

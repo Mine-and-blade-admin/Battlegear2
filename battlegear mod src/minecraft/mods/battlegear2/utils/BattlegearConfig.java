@@ -1,6 +1,5 @@
 package mods.battlegear2.utils;
 
-import mods.battlegear2.Battlegear;
 import mods.battlegear2.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.items.*;
 import mods.battlegear2.recipies.DyeRecipie;
@@ -14,10 +13,10 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.registry.GameRegistry;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class BattlegearConfig {
@@ -312,6 +311,18 @@ public class BattlegearConfig {
 		GameRegistry.addRecipe(new ItemStack(bannerItem), 
 				" W "," W ", " S ",Character.valueOf('W'),Block.cloth, Character.valueOf('S'), Item.stick);
 		*/
+        try{
+            for(Field f: BattlegearConfig.class.getFields()){
+                if(Item.class.isAssignableFrom(f.getType())){
+                    Item it = (Item)f.get(null);
+                    if(it!=null){
+                        GameRegistry.registerItem(it, it.getUnlocalizedName());
+                    }
+                }
+            }
+        }catch(Exception e){
+
+        }
 
 	}
 
