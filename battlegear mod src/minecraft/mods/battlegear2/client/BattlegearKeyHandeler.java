@@ -77,7 +77,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
 	                        }
 	                    }
 	
-	                } else if (kb.keyCode == drawWeapons.keyCode && player instanceof IBattlePlayer) {
+	                } else if (kb.keyCode == drawWeapons.keyCode) {
 	                    InventoryPlayer playerInventory = player.inventory;
 	                    if (((IBattlePlayer) player).isBattlemode()) {
 	                        previousBattlemode = playerInventory.currentItem;

@@ -96,7 +96,6 @@ public class EntityOtherPlayerMPTransformer extends TransformerBase {
         	newList.add(it.next());
         }
         mn.instructions = newList;
-        mn.maxLocals = mn.maxLocals;
     }
 
     private void processOnUpdateMethod2(MethodNode mn) {
@@ -139,7 +138,6 @@ public class EntityOtherPlayerMPTransformer extends TransformerBase {
 
         }
         mn.instructions = newList;
-        mn.maxLocals = mn.maxLocals;
 
 
 
@@ -195,7 +193,7 @@ public class EntityOtherPlayerMPTransformer extends TransformerBase {
     }
 
     private void processSetCurrentItemMethod(MethodNode mn) {
-        System.out.println("\tPatching method setCurrentItem in EntityOtherPlayerMP");
+        sendPatchLog("setCurrentItem");
         replaceInventoryArrayAccess(mn, entityOtherPlayerMPClassName, playerInventoryFieldName, 4,3,3);
     }
 

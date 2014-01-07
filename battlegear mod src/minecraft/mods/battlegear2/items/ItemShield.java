@@ -2,6 +2,7 @@ package mods.battlegear2.items;
 
 import java.util.List;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.api.IArrowCatcher;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
@@ -64,6 +65,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         this.setMaxDamage(enumShield.getMaxDamage());
         this.setMaxStackSize(1);
         this.setHasSubtypes(false);
+        GameRegistry.registerItem(this, this.getUnlocalizedName());
     }
 
     @Override
@@ -161,7 +163,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     @Override
     public boolean hasColor(ItemStack par1ItemStack)
     {
-        return (!par1ItemStack.hasTagCompound() ? false : (!par1ItemStack.getTagCompound().hasKey("display") ? false : par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color")));
+        return par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().hasKey("display") && par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color");
     }
 
     /**

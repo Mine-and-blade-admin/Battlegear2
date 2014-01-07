@@ -3,8 +3,6 @@ package mods.battlegear2.client.gui;
 import java.util.EnumSet;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.gui.BattlegearGUIHandeler;
-import mods.battlegear2.packet.BattlegearGUIPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.settings.KeyBinding;
@@ -14,7 +12,6 @@ import org.lwjgl.input.Keyboard;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.KeyBindingRegistry;
 import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class BattlegearGuiKeyHandler extends KeyBindingRegistry.KeyHandler{
 

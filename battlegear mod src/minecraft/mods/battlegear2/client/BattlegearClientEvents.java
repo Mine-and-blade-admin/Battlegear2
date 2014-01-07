@@ -23,10 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.ForgeSubscribe;
 
@@ -41,7 +38,7 @@ public class BattlegearClientEvents {
 			"battlegear2", "textures/armours/quiver/QuiverDetails.png");
 	private final ResourceLocation quiverBase = new ResourceLocation(
 			"battlegear2", "textures/armours/quiver/QuiverBase.png");
-	public static List<GuiPlaceableButton> tabsList = new ArrayList();
+	public static List<GuiPlaceableButton> tabsList = new ArrayList<GuiPlaceableButton>();
 	static {
 		tabsList.add(new GuiBGInventoryButton(0, 10, 10));
 		tabsList.add(new GuiSigilButton(1, 20, 20));
@@ -85,10 +82,9 @@ public class BattlegearClientEvents {
 				float red = (float) (col >> 16 & 255) / 255.0F;
 				float green = (float) (col >> 8 & 255) / 255.0F;
 				float blue = (float) (col & 255) / 255.0F;
-				boolean hasArrows = false;
 				int maxStack = quiver.getSlotCount(quiverStack);
 				int arrowCount = 0;
-				for (int i = 0; i < maxStack && !hasArrows; i++) {
+				for (int i = 0; i < maxStack; i++) {
 					arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0
 							: 1;
 				}
@@ -215,11 +211,6 @@ public class BattlegearClientEvents {
 
 		}
 	}
-
-	/*public static ModelBiped getModelBiped(RenderPlayer renderPlayer, int i) {
-		return ObfuscationReflectionHelper.getPrivateValue(RenderPlayer.class,
-				renderPlayer, i);
-	}*/
 
 	@ForgeSubscribe
 	public void onSoundLoad(SoundLoadEvent event) {

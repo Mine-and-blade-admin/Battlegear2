@@ -1,8 +1,6 @@
 package mods.battlegear2.items;
 
-import mods.battlegear2.api.weapons.IBackStabbable;
 import mods.battlegear2.api.weapons.IPotionEffect;
-import mods.battlegear2.api.weapons.ISpecialEffect;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumToolMaterial;

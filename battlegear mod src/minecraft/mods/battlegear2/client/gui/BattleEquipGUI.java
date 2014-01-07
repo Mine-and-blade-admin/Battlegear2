@@ -1,7 +1,6 @@
 package mods.battlegear2.client.gui;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.gui.ContainerBattle;
 import mods.battlegear2.packet.BattlegearGUIPacket;

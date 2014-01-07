@@ -34,7 +34,7 @@ public class BattlegearTranslator implements IFMLCallHook {
     	if(BattlegearLoadingPlugin.obfuscatedEnv)
     		return classNameMap.get(className.substring(className.lastIndexOf(".")+1));
     	else{
-    		StringBuffer clas = new StringBuffer("net/minecraft/");
+    		StringBuilder clas = new StringBuilder("net/minecraft/");
     		clas.append(className.replace(".", "/"));
     		return clas.toString();
     	}

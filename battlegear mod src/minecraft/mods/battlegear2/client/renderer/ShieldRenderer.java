@@ -5,11 +5,11 @@ import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.utils.EnumShield;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
 import net.minecraft.util.Icon;
@@ -59,8 +59,8 @@ public class ShieldRenderer implements IItemRenderer{
                     GL11.glTranslatef(-0.5F, -0.25F, 0);
 
                     GL11.glColor3f(red, green, blue);
-                    RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                    		icon.getMaxU(),
+                    ItemRenderer.renderItemIn2D(tessellator,
+                            icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
                             icon.getMaxV(),
@@ -72,7 +72,7 @@ public class ShieldRenderer implements IItemRenderer{
 
                     GL11.glTranslatef(0, 0, -16F/256F);
                     icon = shield.getBackIcon();
-                    RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                    ItemRenderer.renderItemIn2D(tessellator,
                     		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
@@ -83,7 +83,7 @@ public class ShieldRenderer implements IItemRenderer{
 
                     GL11.glTranslatef(0, 0, 24F/256F);
                     icon = shield.getTrimIcon();
-                    RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                    ItemRenderer.renderItemIn2D(tessellator,
                     		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
@@ -98,7 +98,7 @@ public class ShieldRenderer implements IItemRenderer{
                 case EQUIPPED_FIRST_PERSON:
 
                     GL11.glColor3f(red, green, blue);
-                    RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                    ItemRenderer.renderItemIn2D(tessellator,
                     		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
@@ -112,7 +112,7 @@ public class ShieldRenderer implements IItemRenderer{
 
                     GL11.glTranslatef(0, 0, 1F/256F);
                     icon = shield.getBackIcon();
-                    RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                    ItemRenderer.renderItemIn2D(tessellator,
                     		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),
@@ -124,7 +124,7 @@ public class ShieldRenderer implements IItemRenderer{
 
                     GL11.glTranslatef(0, 0, -1F/256F);
                     icon = shield.getTrimIcon();
-                    RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                    ItemRenderer.renderItemIn2D(tessellator,
                     		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),

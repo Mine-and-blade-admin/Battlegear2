@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 
 public class BaseEnchantment extends Enchantment {
 
-	private static List<Enchantment> enchants = new ArrayList();
+	private static List<Enchantment> enchants = new ArrayList<Enchantment>();
 	private int max;
 	private int enchantCoeff;
 	private int range;

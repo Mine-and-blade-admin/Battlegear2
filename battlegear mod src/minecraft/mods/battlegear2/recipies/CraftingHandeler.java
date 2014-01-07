@@ -53,7 +53,6 @@ public class CraftingHandeler implements ICraftingHandler{
         }
         else if(item.getItem() instanceof IArrowContainer2){
             ItemStack quiver = null;
-            ItemStack arrowStack = null;
 
             for(int i = 0; i < craftMatrix.getSizeInventory(); i++){
                 ItemStack stack = craftMatrix.getStackInSlot(i);
@@ -70,7 +69,7 @@ public class CraftingHandeler implements ICraftingHandler{
 
             if(quiver == null)
                 return;
-            List<ItemStack> arrows = new ArrayList();
+            List<ItemStack> arrows = new ArrayList<ItemStack>();
             for(int i = 0; i < craftMatrix.getSizeInventory(); i++){
                 ItemStack stack = craftMatrix.getStackInSlot(i);
                 if(stack != null && stack != quiver){

@@ -22,7 +22,6 @@ import net.minecraft.util.DamageSource;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
 
 public class SpecialActionPacket extends AbstractMBPacket{
 
@@ -55,7 +54,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
 	            } else if(entityHit != null && entityHit instanceof EntityLivingBase){
 	
 	                if(offhand != null && offhand.getItem() instanceof IShield){
-	                	if(((EntityLivingBase) entityHit).canBePushed()){
+	                	if(entityHit.canBePushed()){
 		                    double d0 = entityHit.posX - this.player.posX;
 		                    double d1;
 		
@@ -66,7 +65,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
 		
 		                    ((EntityLivingBase) entityHit).knockBack(player, 0, -d0*(1+pow), -d1*(1+pow));
 	                	}
-	                	if(((EntityLivingBase) entityHit).getDistanceToEntity(player)<2){
+	                	if(entityHit.getDistanceToEntity(player)<2){
 	                		float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage.effectId, offhand)*2F;
 	                		if(dam>0) {
 	                			entityHit.attackEntityFrom(DamageSource.causeThornsDamage(player), dam);

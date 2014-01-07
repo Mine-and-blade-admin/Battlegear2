@@ -5,7 +5,6 @@ import static org.objectweb.asm.Opcodes.*;
 import java.util.Iterator;
 import java.util.List;
 
-import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.coremod.BattlegearTranslator;
 

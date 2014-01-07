@@ -4,12 +4,10 @@ import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowEvent;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
-import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
@@ -194,7 +192,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     @Override
     public boolean hasColor(ItemStack par1ItemStack)
     {
-        return (!par1ItemStack.hasTagCompound() ? false : (!par1ItemStack.getTagCompound().hasKey("display") ? false : par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color")));
+        return par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().hasKey("display") && par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color");
     }
 
     @Override

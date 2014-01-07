@@ -2,6 +2,7 @@ package mods.battlegear2.client.renderer;
 
 import mods.battlegear2.items.ItemQuiver;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -71,8 +72,8 @@ public class QuiverItremRenderer implements IItemRenderer{
             case EQUIPPED:
             case EQUIPPED_FIRST_PERSON:
                 GL11.glColor3f(red,green,blue);
-                RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-                		icon.getMaxU(),
+                ItemRenderer.renderItemIn2D(tessellator,
+                        icon.getMaxU(),
                         icon.getMinV(),
                         icon.getMinU(),
                         icon.getMaxV(),
@@ -81,7 +82,7 @@ public class QuiverItremRenderer implements IItemRenderer{
 
                 GL11.glColor3f(1, 1, 1);
                 icon = quiver.quiverDetails;
-                RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                ItemRenderer.renderItemIn2D(tessellator,
                         icon.getMaxU(),
                         icon.getMinV(),
                         icon.getMinU(),
@@ -92,7 +93,7 @@ public class QuiverItremRenderer implements IItemRenderer{
                 if(hasArrows){
                     GL11.glTranslated(0, 0, -4F/256F);
                     icon = quiver.quiverArrows;
-                    RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+                    ItemRenderer.renderItemIn2D(tessellator,
                     		icon.getMaxU(),
                             icon.getMinV(),
                             icon.getMinU(),

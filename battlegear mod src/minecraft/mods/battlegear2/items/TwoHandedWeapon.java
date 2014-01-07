@@ -2,7 +2,6 @@ package mods.battlegear2.items;
 
 import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.weapons.OffhandAttackEvent;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;

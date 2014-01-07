@@ -96,7 +96,7 @@ public class NetServerHandlerTransformer extends TransformerBase {
                             "setPlayerCurrentItem", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
                     
                     if(!FMLCommonHandler.instance().getModName().contains("mcpc")){//MCPC already adds a fix for this
-	                    while(it.hasNext() && ! (nextNode instanceof JumpInsnNode && ((JumpInsnNode) nextNode).getOpcode()==IFNE)){
+	                    while(it.hasNext() && ! (nextNode instanceof JumpInsnNode && nextNode.getOpcode()==IFNE)){
 	                    	nextNode = it.next();
 	                    	newList.add(nextNode);
 	                    }

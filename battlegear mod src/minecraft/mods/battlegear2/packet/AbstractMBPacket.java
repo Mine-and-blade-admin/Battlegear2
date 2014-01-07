@@ -20,10 +20,9 @@ public abstract class AbstractMBPacket {
 
 	public final Packet generatePacket() {
 
-        ByteArrayOutputStream bos = null;
         DataOutputStream outputStream = null;
         try {
-            bos = new ByteArrayOutputStream();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
             outputStream = new DataOutputStream(bos);
 
             write(outputStream);

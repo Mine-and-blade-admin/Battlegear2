@@ -6,7 +6,6 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.ClientProxy;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
-import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;

@@ -3,9 +3,9 @@ package mods.battlegear2.client.renderer;
 import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.items.ItemSpear;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
@@ -58,13 +58,13 @@ public class SpearRenderer implements IItemRenderer {
             GL11.glScalef(2,2,1);
             Icon icon = ((ItemSpear)item.getItem()).bigIcon;
 
-            RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
-            		icon.getMaxU(),
+            ItemRenderer.renderItemIn2D(tessellator,
+                    icon.getMaxU(),
                     icon.getMinV(),
                     icon.getMinU(),
                     icon.getMaxV(),
                     icon.getIconWidth(),
-                    icon.getIconHeight(), 1F/16F);
+                    icon.getIconHeight(), 1F / 16F);
 
             if (item != null && item.hasEffect(0)) {
                 renderEnchantmentEffects(tessellator);
@@ -79,7 +79,7 @@ public class SpearRenderer implements IItemRenderer {
         }else if (type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
             Icon icon = item.getIconIndex();
 
-            RenderManager.instance.itemRenderer.renderItemIn2D(tessellator,
+            ItemRenderer.renderItemIn2D(tessellator,
             		icon.getMaxU(),
                     icon.getMinV(),
                     icon.getMinU(),
@@ -111,14 +111,14 @@ public class SpearRenderer implements IItemRenderer {
         float f9 = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
         GL11.glTranslatef(f9, 0.0F, 0.0F);
         GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
-        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
+        ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glScalef(f8, f8, f8);
         f9 = (float) (Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
         GL11.glTranslatef(-f9, 0.0F, 0.0F);
         GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
-        RenderManager.instance.itemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
+        ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
         GL11.glPopMatrix();
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glDisable(GL11.GL_BLEND);

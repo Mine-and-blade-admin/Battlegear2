@@ -21,7 +21,7 @@ public class EntityTrackerTransformer extends TransformerMethodProcess {
     private String playerMPplayerNetServerHandlerField;
     private String sendPacketToPlayerMethodName;
     private String sendPacketToPlayerMethodDesc;
-    private String syncPacket = "mods/battlegear2/packet/BattlegearSyncItemPacket";
+    private static final String syncPacket = "mods/battlegear2/packet/BattlegearSyncItemPacket";
 
     @Override
 	void processMethod(MethodNode method) {

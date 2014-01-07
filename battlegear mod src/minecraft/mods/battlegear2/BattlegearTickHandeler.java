@@ -93,7 +93,7 @@ public class BattlegearTickHandeler implements ITickHandler {
             if(entityPlayer instanceof IBattlePlayer){
                 int timer = ((IBattlePlayer)entityPlayer).getSpecialActionTimer();
                 if(timer > 0){
-                    ((IBattlePlayer)entityPlayer).setSpecialActionTimer(timer-1);;
+                    ((IBattlePlayer)entityPlayer).setSpecialActionTimer(timer-1);
 
                     int targetTime = 0;
 

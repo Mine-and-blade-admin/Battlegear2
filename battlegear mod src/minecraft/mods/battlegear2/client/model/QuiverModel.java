@@ -4,7 +4,6 @@ package mods.battlegear2.client.model;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
 import java.util.Random;

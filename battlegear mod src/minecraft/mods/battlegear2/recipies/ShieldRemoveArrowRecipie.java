@@ -24,11 +24,8 @@ public class ShieldRemoveArrowRecipie implements IRecipe{
                 }else
                     return false;
             }
-
         }
-
         return foundStack;
-
     }
 
     @Override
@@ -45,7 +42,6 @@ public class ShieldRemoveArrowRecipie implements IRecipe{
                     return shieldCopy;
                 }
             }
-
         }
 
         return null;

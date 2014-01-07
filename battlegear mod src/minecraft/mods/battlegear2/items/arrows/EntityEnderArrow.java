@@ -35,7 +35,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                     EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, entityHit.posX+0.5F, entityHit.posY, entityHit.posZ+0.5F, 9.0F);
                     if (!MinecraftForge.EVENT_BUS.post(event)){
                         if (shootingEntity.isRiding()){
-                            shootingEntity.mountEntity((Entity)null);
+                            shootingEntity.mountEntity(null);
                         }
                         entityplayermp.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                         entityplayermp.fallDistance = 0.0F;
@@ -44,7 +44,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                     event = new EnderTeleportEvent((EntityLivingBase) entityHit, x+0.5F, y, z+0.5F, ((EntityLivingBase) entityHit).getMaxHealth()/10);
                     if (!MinecraftForge.EVENT_BUS.post(event)){
                         if (entityHit.isRiding()){
-                        	entityHit.mountEntity((Entity)null);
+                        	entityHit.mountEntity(null);
                         }
                         ((EntityLivingBase) entityHit).setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                         entityHit.fallDistance = 0.0F;
@@ -91,7 +91,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                         EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x+0.5F, y, z+0.5F, 9.0F);
                         if (!MinecraftForge.EVENT_BUS.post(event)) {
                             if (shootingEntity.isRiding()){
-                                shootingEntity.mountEntity((Entity)null);
+                                shootingEntity.mountEntity(null);
                             }
                             entityplayermp.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                             entityplayermp.fallDistance = 0.0F;
