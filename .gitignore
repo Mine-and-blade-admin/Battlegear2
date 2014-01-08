@@ -22,10 +22,12 @@
 !battlegear dist/
 !battlegear dist/*
 
+!mods/
 
 #Also don't ignore the install scripts
 !battlegear-*
 !gradlew*
+!gradle/
 
 #Or this file ;) (or readme)
 !.gitignore
@@ -40,7 +42,7 @@
 !battlegear_update.xml
 !changelog.md
 !build.gradle
-
+!battlegear_dummy.jar
 
 *~
 *.rej
