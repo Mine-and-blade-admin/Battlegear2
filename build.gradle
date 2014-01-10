@@ -53,8 +53,10 @@ processResources {
         // replace version and mcversion
         expand 'version':config.modversion, 'mcversion':config.mcversion
     }
-        
     // copy everything else
+    from(projectDir) {
+        include('LICENCE', 'README.md')
+    }
     from(sourceSets.main.resources.srcDirs) {
         include('*.lang', '*.wav', '*.png', '*.cfg')
     }
