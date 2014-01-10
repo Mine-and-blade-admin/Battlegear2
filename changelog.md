@@ -1,3 +1,14 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.4.6 ==
+* Fixed piercing arrow
+* Organized config file, added more comments
+* Added default enchantment rendering on spear
+* Improved durability for mace and waraxe
+* Added chinese and french locals for MUD
+* Transition towards 1.7 secured
+* Perfected block placing with offhand
+* Added leech arrow: heals with the enemy life
+* Improved ender arrow: gives block if player sneak
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.4.5 ==
 * Allowed quiver into offhand slots to use with bow
 * Added more rendering events into the API
