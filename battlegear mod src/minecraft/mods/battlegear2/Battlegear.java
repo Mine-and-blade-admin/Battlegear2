@@ -41,8 +41,8 @@ import java.util.logging.Logger;
         channels = {
                 BattlegearAnimationPacket.packetName,
                 BattlegearSyncItemPacket.packetName,
-                //BattlegearBannerPacket.packetName,
-                //BattlegearChangeHeraldryPacket.packetName,
+                BattlegearBannerPacket.packetName,
+                BattlegearChangeHeraldryPacket.packetName,
                 BattlegearGUIPacket.packetName,
                 BattlegearShieldBlockPacket.packetName,
                 BattlegearShieldFlashPacket.packetName,

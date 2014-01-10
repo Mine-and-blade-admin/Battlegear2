@@ -19,8 +19,8 @@ public class BattlegearPacketHandeler implements IPacketHandler {
     public BattlegearPacketHandeler() {
 
         map.put(BattlegearAnimationPacket.packetName, new BattlegearAnimationPacket());
-        //map.put(BattlegearBannerPacket.packetName, new BattlegearBannerPacket());
-        //map.put(BattlegearChangeHeraldryPacket.packetName, new BattlegearChangeHeraldryPacket());
+        map.put(BattlegearBannerPacket.packetName, new BattlegearBannerPacket());
+        map.put(BattlegearChangeHeraldryPacket.packetName, new BattlegearChangeHeraldryPacket());
         map.put(BattlegearGUIPacket.packetName, new BattlegearGUIPacket());
         map.put(BattlegearSyncItemPacket.packetName, new BattlegearSyncItemPacket());
         map.put(BattlegearShieldBlockPacket.packetName, new BattlegearShieldBlockPacket());
