@@ -85,14 +85,17 @@ public class ItemRendererTransformer extends TransformerBase {
     }
 
 	@Override
-	void processMethods(List<MethodNode> methods) {
+	boolean processMethods(List<MethodNode> methods) {
+        int found = 0;
 		for (MethodNode mn : methods) {
             if (mn.name.equals(renderItem1stPersonMethodName) &&
                     mn.desc.equals(renderItem1stPersonMethodDesc)) {
                 processRenderItemMethod(mn);
+                found++;
             } else if (mn.name.equals(updateEquippedItemMethodName) &&
                     mn.desc.equals(updateEquippedItemMethodDesc)) {
                 processUpdateEquippedMethod(mn);
+                found++;
             }
         }
         methods.add(methods.size(),generateSetter(itemRendererClass, "setItemToRender", "offHandItemToRender", "L" + itemStackClass + ";"));
@@ -103,15 +106,17 @@ public class ItemRendererTransformer extends TransformerBase {
         methods.add(methods.size(),generateGetter(itemRendererClass, "getEquippedItemSlot", "equippedItemOffhandSlot", "I"));
         methods.add(methods.size(),generateGetter(itemRendererClass, "getEquippedProgress", "equippedOffHandProgress", "F"));
         methods.add(methods.size(),generateGetter(itemRendererClass, "getPrevEquippedProgress", "prevEquippedOffHandProgress", "F"));
+        return found == 2;
 	}
 
 	@Override
-	void processFields(List<FieldNode> fields) {
+	boolean processFields(List<FieldNode> fields) {
 		System.out.println("\tAdding new fields to ItemRenderer");
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandItemToRender", "L" + itemStackClass + ";", null, null));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "equippedItemOffhandSlot", "I", null, 0));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "equippedOffHandProgress", "F", null, 0F));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "prevEquippedOffHandProgress", "F", null, 0F));
+        return true;
     }
 
 	@Override

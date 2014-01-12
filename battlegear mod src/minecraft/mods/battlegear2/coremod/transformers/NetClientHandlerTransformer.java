@@ -27,13 +27,15 @@ public class NetClientHandlerTransformer extends TransformerBase {
     private String netClientHandlerHandleBlockItemSwitchMethodDesc;
 
     @Override
-	void processMethods(List<MethodNode> methods) {
+	boolean processMethods(List<MethodNode> methods) {
+        int found = 0;
         for (MethodNode method : methods) {
             if (method.name.equals(netClientHandlerHandleNamedEntitySpawnMethodName) &&
                     method.desc.equals(netClientHandlerHandleNamedEntitySpawnMethodDesc)) {
                 sendPatchLog("handleNamedEntitySpawn");
 
                 replaceInventoryArrayAccess(method, entityOtherPlayerMPClassName, playerInventoryFieldName, 9, 13);
+                found++;
             }else if (method.name.equals(netClientHandlerHandleBlockItemSwitchMethodName) &&
                     method.desc.equals(netClientHandlerHandleBlockItemSwitchMethodDesc)) {
                 sendPatchLog("handleBlockItemSwitch");
@@ -62,14 +64,15 @@ public class NetClientHandlerTransformer extends TransformerBase {
                 }
 
                 method.instructions = newList;
-
+                found++;
             }
         }
+        return found == 2;
     }
 
 	@Override
-	void processFields(List<FieldNode> fields) {
-		
+	boolean processFields(List<FieldNode> fields) {
+		return true;
 	}
 
 	@Override

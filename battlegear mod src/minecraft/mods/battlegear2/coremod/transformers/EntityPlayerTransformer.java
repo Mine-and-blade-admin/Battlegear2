@@ -63,7 +63,7 @@ public class EntityPlayerTransformer extends TransformerBase {
     }
 
     @Override
-    void processFields(List<FieldNode> fields) {
+    boolean processFields(List<FieldNode> fields) {
         System.out.println("\tAdding new fields to EntityPlayer");
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgress", "F", null, 0F));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "prevOffHandSwingProgress", "F", null, 0F));
@@ -75,13 +75,15 @@ public class EntityPlayerTransformer extends TransformerBase {
             if (fn.name.equals(playerInventoryFieldName) && fn.desc.equals("L"+inventoryClassName + ";")) {
                 System.out.println("M&B - Marking field inventory as final in EntityPlayer");
                 fn.access = ACC_PUBLIC | ACC_FINAL;
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     @Override
-	void processMethods(List<MethodNode> methods) {
+	boolean processMethods(List<MethodNode> methods) {
+        int found = 0;
     	for (MethodNode mn : methods) {
             if (mn.name.equals("<init>")) {
                 System.out.println("\tPatching constructor in EntityPlayer");
@@ -100,16 +102,19 @@ public class EntityPlayerTransformer extends TransformerBase {
                         }
                     }
                 }
+                found++;
             } else if (mn.name.equals(onItemFinishMethodName) &&
                     mn.desc.equals(onItemFinishMethodDesc)) {
 
                 sendPatchLog("onItemUseFinish");
                 replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
+                found++;
             } else if (mn.name.equals(setCurrentItemArmourMethodName) &&
                     mn.desc.equals(setCurrentItemArmourMethodDesc)) {
 
                 sendPatchLog("setCurrentItemOrArmor");
                 replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
+                found++;
             } else if(mn.name.equals(playerInitMethodName) &&
                     mn.desc.equals(playerInitMethodDesc)) {
 
@@ -133,6 +138,7 @@ public class EntityPlayerTransformer extends TransformerBase {
                 }
 
                 mn.instructions = newList;
+                found++;
             }
         }
 
@@ -147,6 +153,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         methods.add(methods.size(), generateSetBlockingWithShield());
         methods.add(methods.size(), generateGetter(entityPlayerClassName, "getSpecialActionTimer", "specialActionTimer", "I"));
         methods.add(methods.size(), generateSetter(entityPlayerClassName, "setSpecialActionTimer", "specialActionTimer", "I"));
+        return found == 4;
     }
 
     private MethodNode generateIsBlockingWithShield() {

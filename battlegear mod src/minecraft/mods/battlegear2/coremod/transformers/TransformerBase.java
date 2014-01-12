@@ -36,15 +36,14 @@ public abstract class TransformerBase implements IClassTransformer{
             cr.accept(cn, 0);
 
             setupMappings();
-            processFields(cn.fields);
-            processMethods(cn.methods);
+            boolean success = processFields(cn.fields) && processMethods(cn.methods);
             addInterface(cn.interfaces);
             
 			ClassWriter cw = new ClassWriter(0);
             cn.accept(cw);
 
-            System.out.println("M&B - Patching Class "+ unobfClass +" done");
-            if (BattlegearLoadingPlugin.debug) {
+            System.out.println("M&B - Patching Class "+ unobfClass + (success?" done":" FAILED!"));
+            if (!success && BattlegearLoadingPlugin.debug) {
                 writeClassFile(cw, unobfClass+" ("+name+")");
             }
 			return cw.toByteArray();
@@ -55,9 +54,9 @@ public abstract class TransformerBase implements IClassTransformer{
 
 	void addInterface(List<String> interfaces) {}
 
-	abstract void processMethods(List<MethodNode> methods);
+	abstract boolean processMethods(List<MethodNode> methods);
 
-	abstract void processFields(List<FieldNode> fields);
+	abstract boolean processFields(List<FieldNode> fields);
 
 	abstract void setupMappings();
 	

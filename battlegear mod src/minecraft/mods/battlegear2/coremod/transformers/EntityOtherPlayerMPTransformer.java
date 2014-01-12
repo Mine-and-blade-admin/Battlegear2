@@ -32,71 +32,6 @@ public class EntityOtherPlayerMPTransformer extends TransformerBase {
     private String setCurrentItemMethodDesc;
     private String isItemInUseFieldName;
     private String limbSwingFieldName;
-    
-    @Deprecated
-    private void processOnUpdateMethod(MethodNode mn) {
-    	sendPatchLog("onUpdate");
-        InsnList newList = new InsnList();
-
-        Iterator<AbstractInsnNode> it = mn.instructions.iterator();
-
-        boolean done = false;
-        while(it.hasNext() && !done){
-            AbstractInsnNode node = it.next();
-            if (!done && node instanceof FieldInsnNode &&
-                    node.getOpcode() == GETFIELD &&
-                    ((FieldInsnNode) node).owner.equals(entityOtherPlayerMPClassName) &&
-                    ((FieldInsnNode) node).name.equals(isItemInUseFieldName)){
-            	
-            	newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, playerInventoryFieldName, "L"+inventoryPlayerClassName+";"));
-            	newList.add(new VarInsnNode(ALOAD, 0));
-            	newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, playerInventoryFieldName, "L"+inventoryPlayerClassName+";"));
-            	newList.add(new FieldInsnNode(GETFIELD, inventoryPlayerClassName, currentItemFieldName, "I"));
-            	newList.add(new MethodInsnNode(INVOKEVIRTUAL, inventoryPlayerClassName, getStackInSlotMethodName, getStackInSlotMethodDesc));
-                newList.add(new VarInsnNode(ASTORE, 6));
-                newList.add(new VarInsnNode(ALOAD, 0));
-                newList.add(node);
-                int A_Load_Count = 0;
-                
-                while (it.hasNext() && !done) {
-                	node = it.next();
-                	if(node instanceof VarInsnNode && 
-                			node.getOpcode() == ALOAD){
-                		A_Load_Count ++;
-                		if(A_Load_Count == 2){
-                    		boolean found_AALoad = false;
-                    		while(it.hasNext() && !found_AALoad){
-                    			node = it.next();
-                    			found_AALoad = node.getOpcode() == AALOAD;
-                    		}
-                    		newList.add(new VarInsnNode(ALOAD, 6));
-                    	}else if (A_Load_Count == 3){
-                    		newList.add(node);
-                    		int AALoad_count = 0;
-                    		while(it.hasNext() && AALoad_count < 2){
-                    			node = it.next();
-                    			if(node.getOpcode() == AALOAD){
-                    				AALoad_count++;
-                    			}
-                    		}
-                    		newList.add(new VarInsnNode(ALOAD, 6));
-                    		done=true;
-                    	}else{
-                    		newList.add(node);
-                    	}
-                	}else{
-                		newList.add(node);
-                	}
-				}
-            }else{
-            	newList.add(node);
-            }
-        }
-        while(it.hasNext()){
-        	newList.add(it.next());
-        }
-        mn.instructions = newList;
-    }
 
     private void processOnUpdateMethod2(MethodNode mn) {
 
@@ -198,23 +133,27 @@ public class EntityOtherPlayerMPTransformer extends TransformerBase {
     }
 
 	@Override
-	void processMethods(List<MethodNode> methods) {
+	boolean processMethods(List<MethodNode> methods) {
+        int found = 0;
 		for (MethodNode mn : methods) {
             if (mn.name.equals(setCurrentItemMethodName) &&
                     mn.desc.equals(setCurrentItemMethodDesc)) {
                 processSetCurrentItemMethod(mn);
+                found++;
             }
 
             if (mn.name.equals(onUpdateMethodName) &&
                     mn.desc.equals(onUpdateMethodDesc)) {
                 processOnUpdateMethod2(mn);
+                found++;
             }
         }
+        return found==2;
 	}
 
 	@Override
-	void processFields(List<FieldNode> fields) {
-		
+	boolean processFields(List<FieldNode> fields) {
+		return true;
 	}
 
 	@Override

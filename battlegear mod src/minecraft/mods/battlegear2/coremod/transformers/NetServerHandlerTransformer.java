@@ -38,16 +38,20 @@ public class NetServerHandlerTransformer extends TransformerBase {
     private String itemStackCopyStackMethodDesc;
 
     @Override
-	void processMethods(List<MethodNode> methods) {
+	boolean processMethods(List<MethodNode> methods) {
+        int found = 0;
         for (MethodNode mn : methods) {
             if (mn.name.equals(handleBlockSwitchMethodName) &&
                     mn.desc.equals(handleBlockSwitchMethodDesc)) {
                 processSwitchBlockMethod(mn);
+                found++;
             } else if (mn.name.equals(handlePlaceMethodName) &&
                     mn.desc.equals(handlePlaceMethodDesc)) {
                 processPlaceMethod(mn);
+                found++;
             }
         }
+        return found == 2;
     }
 
     private void processPlaceMethod(MethodNode mn) {
@@ -156,8 +160,8 @@ public class NetServerHandlerTransformer extends TransformerBase {
     }
 
 	@Override
-	void processFields(List<FieldNode> fields) {
-		
+	boolean processFields(List<FieldNode> fields) {
+		return true;
 	}
 
 	@Override

@@ -32,8 +32,9 @@ public class ModelBipedTransformer extends TransformerMethodProcess {
 	}
     
     @Override
-    void processFields(List<FieldNode> fields){
+    boolean processFields(List<FieldNode> fields){
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "onGroundOffhand", "F", null, null));
+        return true;
     }
     
     @Override
