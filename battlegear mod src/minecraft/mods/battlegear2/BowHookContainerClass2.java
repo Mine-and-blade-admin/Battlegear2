@@ -14,10 +14,12 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
 public class BowHookContainerClass2 {
     @ForgeSubscribe(receiveCanceled=true)
@@ -135,7 +137,8 @@ public class BowHookContainerClass2 {
                         int selectedSlot = quiver.getSelectedSlot(stack);
                         ItemStack arrowStack = quiver.getStackInSlot(stack, selectedSlot);
                         arrowStack.stackSize --;
-                        if(arrowStack.stackSize == 0){
+                        if(arrowStack.stackSize <= 0){
+                            MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(event.entityPlayer, arrowStack));
                             arrowStack = null;
                         }
                         quiver.setStackInSlot(stack, selectedSlot, arrowStack);

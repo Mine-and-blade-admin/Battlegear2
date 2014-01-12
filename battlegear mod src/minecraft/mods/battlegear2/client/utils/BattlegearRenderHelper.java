@@ -386,9 +386,9 @@ public class BattlegearRenderHelper {
 
     public static void renderItemIn3rdPerson(EntityPlayer par1EntityPlayer, ModelBiped modelBipedMain, float frame) {
 
-        ItemStack var21 = par1EntityPlayer.inventory.getStackInSlot(par1EntityPlayer.inventory.currentItem + 3);
+        ItemStack var21 = ((InventoryPlayerBattle) par1EntityPlayer.inventory).getCurrentOffhandWeapon();
 
-        if (var21 != null && par1EntityPlayer instanceof IBattlePlayer && ((IBattlePlayer) par1EntityPlayer).isBattlemode()) {
+        if (var21 != null) {
 
             float var7;
             float var8;

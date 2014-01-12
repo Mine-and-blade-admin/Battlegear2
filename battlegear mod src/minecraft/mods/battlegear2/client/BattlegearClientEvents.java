@@ -2,7 +2,9 @@ package mods.battlegear2.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
@@ -25,6 +27,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
+import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeSubscribe;
 
 import org.lwjgl.opengl.GL11;
@@ -53,7 +56,7 @@ public class BattlegearClientEvents {
 		}
 	}
 	
-	@ForgeSubscribe
+	@ForgeSubscribe(priority = EventPriority.HIGHEST)
 	public void preRenderBars(RenderItemBarEvent.PreRender event){
 		if(event instanceof RenderItemBarEvent.PreDual){
 			event.xOffset = BattlegearConfig.quiverBarOffset;
@@ -221,7 +224,7 @@ public class BattlegearClientEvents {
 			}
 
 		} catch (Exception e) {
-			System.err.println("Failed to register one or more sounds.");
+			Battlegear.logger.log(Level.WARNING, "Failed to register one or more sounds.");
 		}
 	}
 
