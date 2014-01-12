@@ -18,7 +18,6 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.EnumHelper;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -26,15 +25,8 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
-import net.minecraftforge.common.MinecraftForge;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
-
 
 @Mod(modid="battlegear2")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,

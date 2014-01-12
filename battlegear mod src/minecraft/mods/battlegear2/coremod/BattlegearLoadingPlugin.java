@@ -23,7 +23,6 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
     public static final String EntityAIControlledTransformer = "mods.battlegear2.coremod.transformers.EntityAIControlledByPlayerTransformer";
     public static final String EntityOtherPlayerMPTransformer = "mods.battlegear2.coremod.transformers.EntityOtherPlayerMPTransformer";
     public static final String AccessTransformer = "mods.battlegear2.coremod.transformers.BattlegearAccessTransformer";
-    //public static final String EntityArrowTransformer = "mods.battlegear2.coremod.transformers.EntityArrowTransformer";
     public static final String EntityTrackerTransformer = "mods.battlegear2.coremod.transformers.EntityTrackerTransformer";
     //Setting this to true will enable the output of all edited classes as .class files
     public static boolean debug = false;
@@ -44,7 +43,6 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 		        EntityAIControlledTransformer,
 		        EntityOtherPlayerMPTransformer,
                 AccessTransformer,
-		        //EntityArrowTransformer,
 		        EntityTrackerTransformer
    			};
 
@@ -61,7 +59,6 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String getSetupClass() {
-        System.out.println("Setting up translations");
         return "mods.battlegear2.coremod.BattlegearTranslator";
     }
 

@@ -134,7 +134,6 @@ public class BattlegearTranslator implements IFMLCallHook {
 
         String key = splitTranslatedName[splitTranslatedName.length - 2] + "." + splitTranslatedName[splitTranslatedName.length - 1];
 
-
         fieldNameMap.put(key, splitObName[splitObName.length - 1]);
     }
 
@@ -145,8 +144,6 @@ public class BattlegearTranslator implements IFMLCallHook {
 
         classNameMap.put(splitClassPath[splitClassPath.length - 1], splitLine[1]);
     }
-
-
 
     @Override
     public void injectData(Map<String, Object> data) {

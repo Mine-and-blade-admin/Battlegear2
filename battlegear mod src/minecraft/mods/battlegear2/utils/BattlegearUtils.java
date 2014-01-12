@@ -360,7 +360,7 @@ public class BattlegearUtils {
 
                         if (ientitymultipart != null && ientitymultipart instanceof EntityLivingBase)
                         {
-                            object = (EntityLivingBase)ientitymultipart;
+                            object = ientitymultipart;
                         }
                     }
 

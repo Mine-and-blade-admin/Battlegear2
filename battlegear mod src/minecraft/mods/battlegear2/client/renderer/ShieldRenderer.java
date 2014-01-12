@@ -156,7 +156,6 @@ public class ShieldRenderer implements IItemRenderer{
 	    //Bounds checking (rendering this many is quite silly, any more would look VERY silly)
             if(arrowCount > 64)
                 arrowCount = 64;
-            //System.out.println(arrowCount);
             for(int i = 0; i < arrowCount; i++){
                 BattlegearRenderHelper.renderArrow(type == ItemRenderType.ENTITY,
                         ItemShield.arrowX[i],ItemShield.arrowY[i], ItemShield.arrowDepth[i],
