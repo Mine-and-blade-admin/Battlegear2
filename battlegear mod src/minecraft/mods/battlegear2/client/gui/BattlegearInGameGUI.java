@@ -105,8 +105,8 @@ public class BattlegearInGameGUI extends Gui {
             }
         	RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution, mouseX, mouseY);
 
-            if(mc.thePlayer instanceof IBattlePlayer && ((IBattlePlayer) mc.thePlayer).isBattlemode()){
-                   ItemStack offhand =  mc.thePlayer.inventory.getStackInSlot(mc.thePlayer.inventory.currentItem + 3);
+            if(mc.thePlayer.inventory instanceof InventoryPlayerBattle){
+                   ItemStack offhand = ((InventoryPlayerBattle) mc.thePlayer.inventory).getCurrentOffhandWeapon();
                    if(offhand!= null && offhand.getItem() instanceof IShield){
                 	   RenderItemBarEvent.PreRender shieldEvent = new RenderItemBarEvent.PreRender(renderEvent, offhand);
                 	   if(!MinecraftForge.EVENT_BUS.post(shieldEvent))

@@ -277,7 +277,7 @@ public class BattlegearConfig {
 		                            Character.valueOf('G'), ItemMBArrow.component[i],
 		                            Character.valueOf('A'), Item.arrow
 		                    );
-		            if(i!=2){
+		            if(i!=2 && i!=3){//We can't have those components being duplicated by an "Infinity" bow
 		            	GameRegistry.addShapelessRecipe(new ItemStack(ItemMBArrow.component[i]), new ItemStack(MbArrows, 1, i));
 		            }
 		        }

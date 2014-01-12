@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.MethodNode;
 public class PlayerControllerMPTransformer extends TransformerMethodProcess {
 
     public PlayerControllerMPTransformer() {
-		super("net.minecraft.client.multiplayer.PlayerControllerMP", "func_78769_a", new String[]{"sendUseItem", "(Lnet/minecraft/entity/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"});
+		super("net.minecraft.client.multiplayer.PlayerControllerMP", "func_78769_a", new String[]{"sendUseItem", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"});
 	}
 
 	private String entityPlayerClassName;
@@ -16,7 +16,7 @@ public class PlayerControllerMPTransformer extends TransformerMethodProcess {
     @Override
 	void processMethod(MethodNode method) {
         sendPatchLog("sendUseItem");
-        replaceInventoryArrayAccess(method, entityPlayerClassName, playerInventoryFieldName, 9, 13);
+        replaceInventoryArrayAccess(method, entityPlayerClassName, playerInventoryFieldName, 11, 13);
     }
 
 	@Override

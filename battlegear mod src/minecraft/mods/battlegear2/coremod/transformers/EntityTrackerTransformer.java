@@ -11,7 +11,7 @@ import org.objectweb.asm.tree.*;
 public class EntityTrackerTransformer extends TransformerMethodProcess {
 
     public EntityTrackerTransformer() {
-		super("net.minecraft.entity.EntityTrackerEntry", "func_73117_b", new String[]{"tryStartWachingThis", "(Lnet/minecraft/entity/EntityPlayerMP;)V"});
+		super("net.minecraft.entity.EntityTrackerEntry", "func_73117_b", new String[]{"tryStartWachingThis", "(Lnet/minecraft/entity/player/EntityPlayerMP;)V"});
 	}
 
     private String entityPlayerClassName;
