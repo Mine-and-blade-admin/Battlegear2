@@ -28,7 +28,6 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
     private float ySize_lo;
 
     public BattleEquipGUI(EntityPlayer entityPlayer, boolean isRemote) {
-        //super(new ContainerPlayer(entityPlayer.inventory, !isRemote, entityPlayer));
         super(new ContainerBattle(entityPlayer.inventory, !isRemote, entityPlayer));
         this.allowUserInput = true;
 

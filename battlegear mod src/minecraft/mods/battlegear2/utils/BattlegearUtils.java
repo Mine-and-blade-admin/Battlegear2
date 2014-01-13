@@ -256,11 +256,13 @@ public class BattlegearUtils {
         player.inventory.currentItem += InventoryPlayerBattle.WEAPON_SETS;
         if (MinecraftForge.EVENT_BUS.post(new AttackEntityEvent(player, par1Entity)))
         {
+            player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
             return;
         }
         ItemStack stack = player.getCurrentEquippedItem();
         if (stack != null && stack.getItem().onLeftClickEntity(stack, player, par1Entity))
         {
+            player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
             return;
         }
         if (par1Entity.canAttackWithItem())
@@ -269,8 +271,6 @@ public class BattlegearUtils {
             {
                 float f = 1;
                 if(stack != null){
-
-                    //I will be the 1st to admit that this code may not be correct. It is really the best I can do with the Searge names
                     Collection map = stack.getAttributeModifiers().get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
 
                     for(Object ob : map){

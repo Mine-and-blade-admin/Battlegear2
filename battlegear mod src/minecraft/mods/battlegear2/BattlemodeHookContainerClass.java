@@ -158,7 +158,7 @@ public class BattlemodeHookContainerClass {
     public void onOffhandAttack(OffhandAttackEvent event){
         if(event.offHand!=null){
             if(event.offHand.getItem() instanceof IOffhandDual){
-                ((IOffhandDual) event.offHand.getItem()).offhandAttackEntity(event, event.mainHand, event.offHand);
+                event.swingOffhand =((IOffhandDual) event.offHand.getItem()).offhandAttackEntity(event, event.mainHand, event.offHand);
             }else if(event.offHand.getItem() instanceof IShield){
                 event.swingOffhand = false;
                 event.shouldAttack = false;
