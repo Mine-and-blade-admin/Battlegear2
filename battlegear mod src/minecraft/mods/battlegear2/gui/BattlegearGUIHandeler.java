@@ -20,8 +20,8 @@ public class BattlegearGUIHandeler implements IGuiHandler {
         switch (ID) {
             case equipID:
                 return new ContainerBattle(player.inventory, !world.isRemote, player);
-           // case sigilEditor:
-           //     return new ContainerHeraldry(player.inventory, !world.isRemote, player);*/
+           case sigilEditor:
+                return Battlegear.debug?new ContainerHeraldry(player.inventory, !world.isRemote, player):null;
             default:
                 return null;
         }
@@ -35,7 +35,7 @@ public class BattlegearGUIHandeler implements IGuiHandler {
             case equipID:
                 return new BattleEquipGUI(player, world.isRemote);
            case sigilEditor:
-                return Battlegear.debug?new BattlegearSigilGUI():null;
+                return Battlegear.debug?new BattlegearSigilGUI(player, world.isRemote):null;
             case downloader:
                 return new GuiChangelogDownload();
             default:

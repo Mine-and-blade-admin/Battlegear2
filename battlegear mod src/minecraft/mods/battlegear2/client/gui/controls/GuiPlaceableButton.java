@@ -12,7 +12,7 @@ public abstract class GuiPlaceableButton extends GuiButton {
 
 	public void place(int count, int guiLeft, int guiTop) {
 		this.xPosition = guiLeft;
-		this.yPosition = guiTop + count * HEIGHT - 24;
+		this.yPosition = guiTop + count * HEIGHT;
 	}
 
 	@Override

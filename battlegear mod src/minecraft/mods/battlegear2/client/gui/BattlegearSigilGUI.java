@@ -1,16 +1,18 @@
 package mods.battlegear2.client.gui;
 
-
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
+import mods.battlegear2.gui.ContainerHeraldry;
+import mods.battlegear2.packet.BattlegearGUIPacket;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import org.lwjgl.opengl.GL11;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.gui.controls.GUICrestElementList;
-import mods.battlegear2.client.gui.controls.GUIScrollList;
 import mods.battlegear2.client.gui.controls.GuiColourPicker;
 import mods.battlegear2.client.gui.controls.GuiColourToggleButton;
 import mods.battlegear2.client.gui.controls.GuiPatternScrollList;
@@ -18,20 +20,17 @@ import mods.battlegear2.client.gui.controls.GuiToggleButton;
 import mods.battlegear2.client.gui.controls.IControlListener;
 import mods.battlegear2.client.heraldry.PatternStore;
 import mods.battlegear2.client.renderer.HeraldryCrestItemRenderer;
-import mods.battlegear2.client.renderer.HeraldryItemRenderer;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
-import mods.mud.gui.GuiSlotModList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
-public class BattlegearSigilGUI extends GuiScreen{
+public class BattlegearSigilGUI extends GuiContainer {
 
 
     private static final int ADD = 0;
@@ -61,6 +60,9 @@ public class BattlegearSigilGUI extends GuiScreen{
     private final DynamicTexture currentCrest = new DynamicTexture(RES, RES);
     private boolean crestDirty = true;
     
+    public BattlegearSigilGUI(EntityPlayer entityPlayer, boolean isRemote){
+        super(new ContainerHeraldry(entityPlayer.inventory, !isRemote, entityPlayer));
+    }
 
     public void initGui()
     {
@@ -120,7 +122,7 @@ public class BattlegearSigilGUI extends GuiScreen{
         buttonList.add(colourPickerPattern);
         
         scrollListPattern = new GuiPatternScrollList(this, 125, 45, height-32, (width+160)/2);
-        BattlegearClientEvents.onOpenGui(buttonList, (width-300)/2, (height-180)/2);
+        BattlegearClientEvents.onOpenGui(buttonList, guiLeft-100, 5);
     }
 
     public FontRenderer getFontRenderer() {
@@ -174,8 +176,13 @@ public class BattlegearSigilGUI extends GuiScreen{
 
     }
 
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
 
-	private void drawButtonControlPanel() {
+    }
+
+
+    private void drawButtonControlPanel() {
     	drawRect((width+150)/2, 0, (width+400)/2, height, 0x44000000);
 	}
 
@@ -297,7 +304,7 @@ public class BattlegearSigilGUI extends GuiScreen{
 
 	public static void open(EntityPlayer player){
 		//send packet to open container on server
-        //PacketDispatcher.sendPacketToServer(BattlegearGUIPacket.generatePacket(BattlegearGUIHandeler.sigilEditor));
+        PacketDispatcher.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.sigilEditor).generatePacket());
         player.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.sigilEditor, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
 	}
 

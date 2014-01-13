@@ -1,6 +1,5 @@
 package mods.battlegear2.gui;
 
-
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -11,18 +10,10 @@ import net.minecraft.inventory.*;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
-
-public class ContainerBattle extends Container {
-
-    /**
-     * Determines if inventory manipulation should be handled.
-     */
-    public boolean isLocalWorld = false;
-    public final EntityPlayer thePlayer;
+public class ContainerBattle extends ContainerLocalPlayer {
 
     public ContainerBattle(InventoryPlayer inventoryPlayer, boolean local, EntityPlayer player) {
-        this.thePlayer = player;
-        this.isLocalWorld = local;
+        super(local, player);
         //Armour slots,range [0-3]
         for (int i = 0; i < 4; i++) {
             this.addSlotToContainer(new SlotArmor(new ContainerPlayer(inventoryPlayer, local, player), inventoryPlayer, inventoryPlayer.getSizeInventory() - 1 - i, 98, 8 + i * 18, i));
@@ -61,11 +52,6 @@ public class ContainerBattle extends Container {
         //this.addSlotToContainer(cloakSlot);
 
     }
-
-    public boolean canInteractWith(EntityPlayer par1EntityPlayer) {
-        return true;
-    }
-
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
