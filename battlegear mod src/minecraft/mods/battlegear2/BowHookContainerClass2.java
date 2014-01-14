@@ -79,7 +79,7 @@ public class BowHookContainerClass2 {
     @ForgeSubscribe(receiveCanceled=true)
     public void onBowFiring(ArrowLooseEvent event) {
         //Check if bow is charged enough
-        int j = new Integer(event.charge);
+        int j = event.charge;
         float f = (float)j / 20.0F;
         f = (f * f + f * 2.0F) / 3.0F;
         if ((double)f < 0.1D)
@@ -95,32 +95,22 @@ public class BowHookContainerClass2 {
             IArrowContainer2 quiver = (IArrowContainer2) stack.getItem();
             World world = event.entityPlayer.worldObj;
             EntityArrow entityarrow = quiver.getArrowType(stack, world, event.entityPlayer, f*2.0F);
-            if(entityarrow!=null)
-            {
+            if(entityarrow!=null){
                 if (f == 1.0F)
                     entityarrow.setIsCritical(true);
-                QuiverArrowEvent arrowEvent = new QuiverArrowEvent(event);
+                QuiverArrowEvent arrowEvent = new QuiverArrowEvent(event, stack, entityarrow);
                 quiver.onPreArrowFired(arrowEvent);
-                if(!arrowEvent.isCanceled())
-                {
-                    if(arrowEvent.addEnchantments)
-                    {
+                if(!MinecraftForge.EVENT_BUS.post(arrowEvent)){
+                    if(arrowEvent.addEnchantments){
                         int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, event.bow);
-
-                        if (k > 0)
-                        {
+                        if (k > 0){
                             entityarrow.setDamage(entityarrow.getDamage() + (double)k * 0.5D + 0.5D);
                         }
-
                         int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, event.bow);
-
-                        if (l > 0)
-                        {
+                        if (l > 0){
                             entityarrow.setKnockbackStrength(l);
                         }
-
-                        if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, event.bow) > 0)
-                        {
+                        if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, event.bow) > 0){
                             entityarrow.setFire(100);
                         }
                     }
@@ -143,15 +133,12 @@ public class BowHookContainerClass2 {
                         }
                         quiver.setStackInSlot(stack, selectedSlot, arrowStack);
                     }
-
-
                     //Canceling the event, since we successfully fired our own arrow
                     event.setCanceled(true);
                 }
             }
         }
     }
-
 
     //Start hooks for arrows
     @ForgeSubscribe
