@@ -15,7 +15,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeSubscribe;
@@ -76,21 +75,6 @@ public class BowHookContainerClass2 {
             event.entityPlayer.setItemInUse(event.result, event.result.getItem().getMaxItemUseDuration(event.result)-EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId,event.result)*20000);
             event.setCanceled(true);
 	    }
-    }
-
-    /**
-     * Convenience feature for "AnonymousProductions" dude
-     * We have yet to decide when to perform this
-     * @param bow
-     * @param loadedArrow
-     */
-    public static void writeBowNBT(ItemStack bow, ItemStack loadedArrow) {
-        NBTTagCompound tags = new NBTTagCompound();
-        loadedArrow.writeToNBT(tags);
-        if(!bow.hasTagCompound()){
-            bow.stackTagCompound = new NBTTagCompound();
-        }
-        bow.stackTagCompound.setCompoundTag("Battlegear2-LoadedArrow", tags);
     }
 
     /**

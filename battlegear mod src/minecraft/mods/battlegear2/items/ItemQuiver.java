@@ -136,6 +136,21 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
 
     @Override
     public void onPreArrowFired(QuiverArrowEvent arrowEvent) {
+        writeBowNBT(arrowEvent.getBow(), getStackInSlot(arrowEvent.quiver, getSelectedSlot(arrowEvent.quiver)));
+    }
+
+    /**
+     * Convenience feature for "AnonymousProductions" dude
+     * @param bow
+     * @param loadedArrow
+     */
+    public static void writeBowNBT(ItemStack bow, ItemStack loadedArrow) {
+        NBTTagCompound tags = new NBTTagCompound();
+        loadedArrow.writeToNBT(tags);
+        if(!bow.hasTagCompound()){
+            bow.stackTagCompound = new NBTTagCompound();
+        }
+        bow.stackTagCompound.setCompoundTag("Battlegear2-LoadedArrow", tags);
     }
 
     @Override
