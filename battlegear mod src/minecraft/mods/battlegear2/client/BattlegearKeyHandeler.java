@@ -3,9 +3,9 @@ package mods.battlegear2.client;
 import java.util.EnumSet;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
@@ -55,7 +55,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
                 if(tickEnd && player instanceof IBattlePlayer){
 	                if (kb.keyCode == special.keyCode && ((IBattlePlayer) player).getSpecialActionTimer() == 0){
 	                    ItemStack main = player.getCurrentEquippedItem();
-	                    ItemStack quiver = BowHookContainerClass2.getArrowContainer(main, player);
+	                    ItemStack quiver = QuiverArrowRegistry.getArrowContainer(main, player);
 	
 	                    if(quiver != null){
 	                        Packet p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player.username).generatePacket();

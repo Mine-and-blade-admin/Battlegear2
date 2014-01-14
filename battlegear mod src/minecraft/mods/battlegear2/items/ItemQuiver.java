@@ -5,6 +5,8 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowEvent;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -16,6 +18,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
 import java.util.List;
 
@@ -104,9 +108,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
             return null;
         else {
             Class clazz = QuiverArrowRegistry.getArrowClass(selected);
-
             if(clazz != null){
-
                 try {
                     return (EntityArrow)clazz.getConstructor(World.class, EntityLivingBase.class, Float.TYPE)
                             .newInstance(player.worldObj, player, charge);
@@ -114,15 +116,22 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
                     e.printStackTrace();
                 }
             }
-
             return null;
         }
-
     }
 
     @Override
     public void onArrowFired(World world, EntityPlayer player, ItemStack stack, ItemStack bow, EntityArrow arrow) {
-
+        if(!player.capabilities.isCreativeMode && EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, bow) == 0){
+            int selectedSlot = getSelectedSlot(stack);
+            ItemStack arrowStack = getStackInSlot(stack, selectedSlot);
+            arrowStack.stackSize --;
+            if(arrowStack.stackSize <= 0){
+                MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, arrowStack));
+                arrowStack = null;
+            }
+            setStackInSlot(stack, selectedSlot, arrowStack);
+        }
     }
 
     @Override

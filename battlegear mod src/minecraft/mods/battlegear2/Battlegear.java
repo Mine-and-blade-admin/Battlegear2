@@ -5,6 +5,7 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.coremod.BattlegearTranslator;
@@ -112,34 +113,45 @@ public class Battlegear {
     
     @EventHandler
     public void onMessage(IMCEvent event){
-    	ItemStack stack = null;
     	for(IMCMessage message:event.getMessages()){
-    		if(message != null && message.isItemStackMessage()){
-    			stack = message.getItemStackValue();
-    			if(stack!=null){
-		    		if(message.key.equals("Dual")){
-		    			WeaponRegistry.addDualWeapon(stack);
-		    			continue;
-		    		}else if(message.key.equals("MainHand")){
-		    			WeaponRegistry.addTwoHanded(stack);
-		    			continue;
-		    		}else if(message.key.equals("OffHand")){
-		    			WeaponRegistry.addOffhandWeapon(stack);
-		    			continue;
-		    		}else if(message.key.startsWith("Arrow:")){
-		    			Class<?> clazz = null;
-						try {
-							clazz = Class.forName(message.key.split(":")[1]);//Complete key should look like Arrow:package.CustomArrow
-						} catch (ClassNotFoundException ignored) {
-						}
-		    			if(clazz!=null && EntityArrow.class.isAssignableFrom(clazz)){//The arrow entity should use EntityArrow, at least as a superclass
-		    				QuiverArrowRegistry.addArrowToRegistry(stack, (Class<? extends EntityArrow>) clazz);
-		    				continue;
-		    			}
-		    		}
-    			}
-    			logger.warning("Mod "+message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");	    		
-    		}
+    		if(message != null){
+                if(message.isItemStackMessage()){
+                    ItemStack stack = message.getItemStackValue();
+                    if(stack!=null){
+                        if(message.key.equals("Dual")){
+                            WeaponRegistry.addDualWeapon(stack);
+                            continue;
+                        }else if(message.key.equals("MainHand")){
+                            WeaponRegistry.addTwoHanded(stack);
+                            continue;
+                        }else if(message.key.equals("OffHand")){
+                            WeaponRegistry.addOffhandWeapon(stack);
+                            continue;
+                        }else if(message.key.startsWith("Arrow:")){
+                            Class<?> clazz = null;
+                            try {
+                                clazz = Class.forName(message.key.split(":")[1]);//Complete key should look like Arrow:class-path
+                            } catch (ClassNotFoundException ignored) {
+                            }
+                            if(clazz!=null && EntityArrow.class.isAssignableFrom(clazz)){//The arrow entity should use EntityArrow, at least as a superclass
+                                QuiverArrowRegistry.addArrowToRegistry(stack, (Class<? extends EntityArrow>) clazz);
+                                continue;
+                            }
+                        }
+                    }
+                    logger.warning("Mod "+message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");
+                }else if(message.key.equals("QuiverSelection") && message.isStringMessage()){
+                    Class<?> clazz;
+                    try {
+                        clazz = Class.forName(message.getStringValue());//Message should describe the full class path
+                        if(clazz!=null && IQuiverSelection.class.isAssignableFrom(clazz)){//The given class should implement our interface
+                            QuiverArrowRegistry.addQuiverSelection((IQuiverSelection)clazz.newInstance());
+                        }
+                    } catch (Exception logged) {
+                        logger.warning("Mod "+message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");
+                    }
+                }
+            }
     	}
     }
 }

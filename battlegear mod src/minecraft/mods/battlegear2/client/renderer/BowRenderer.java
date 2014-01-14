@@ -1,6 +1,5 @@
 package mods.battlegear2.client.renderer;
 
-import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.MobHookContainerClass;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
@@ -20,7 +19,6 @@ import net.minecraft.util.*;
 import org.lwjgl.opengl.GL11;
 
 public class BowRenderer implements IItemRenderer {
-
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
@@ -59,7 +57,7 @@ public class BowRenderer implements IItemRenderer {
                 drawAmount = timer >= 18?2:timer > 13?1:0;
                 drawArrows = true;
             }
-            ItemStack quiver = BowHookContainerClass2.getArrowContainer(item, (EntityPlayer) entityLivingBase);
+            ItemStack quiver = QuiverArrowRegistry.getArrowContainer(item, (EntityPlayer) entityLivingBase);
             if(quiver != null){
                 arrowStack = ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, ((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver));
             }

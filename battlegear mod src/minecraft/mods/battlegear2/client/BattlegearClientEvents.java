@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.logging.Level;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.api.RenderItemBarEvent;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
 import mods.battlegear2.client.gui.controls.GuiPlaceableButton;
@@ -75,8 +75,8 @@ public class BattlegearClientEvents {
 
 		ItemStack mainhand = event.entityPlayer.getHeldItem();
 		if (mainhand != null) {
-			ItemStack quiverStack = BowHookContainerClass2.getArrowContainer(
-					mainhand, event.entityPlayer);
+			ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(
+                    mainhand, event.entityPlayer);
 			if (quiverStack != null
 					&& quiverStack.getItem() instanceof ItemQuiver) {
 

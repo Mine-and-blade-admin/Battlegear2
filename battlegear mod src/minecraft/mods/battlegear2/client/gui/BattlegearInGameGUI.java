@@ -1,12 +1,12 @@
 package mods.battlegear2.client.gui;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -117,7 +117,7 @@ public class BattlegearInGameGUI extends Gui {
 
             ItemStack mainhand = mc.thePlayer.getCurrentEquippedItem();
             if(mainhand != null){
-                ItemStack quiver = BowHookContainerClass2.getArrowContainer(mainhand, mc.thePlayer);
+                ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, mc.thePlayer);
                 if(quiver != null){
                 	RenderItemBarEvent.PreRender quiverEvent = new RenderItemBarEvent.PreDual(renderEvent, mainhand, quiver);
                 	if(MinecraftForge.EVENT_BUS.post(quiverEvent))

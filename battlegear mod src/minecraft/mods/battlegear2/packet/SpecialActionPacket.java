@@ -5,9 +5,9 @@ import java.io.DataOutput;
 import java.io.EOFException;
 import java.io.IOException;
 
-import mods.battlegear2.BowHookContainerClass2;
 import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.inventory.InventoryPlayerBattle;
@@ -45,7 +45,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
 	            ItemStack mainhand = this.player.getCurrentEquippedItem();
 	            ItemStack offhand = ((InventoryPlayerBattle)this.player.inventory).getCurrentOffhandWeapon();
 	
-	            ItemStack quiver = BowHookContainerClass2.getArrowContainer(mainhand, player);
+	            ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, player);
 	
 	            if(quiver != null){
 	                ((IArrowContainer2)quiver.getItem()).setSelectedSlot(quiver,
