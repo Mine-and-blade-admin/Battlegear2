@@ -78,7 +78,7 @@ public interface IArrowContainer2 {
      * Called before the arrow is fired from this container
      * @param arrowEvent Used to decide bow damage, bow sound and arrow enchantment
      */
-    public void onPreArrowFired(QuiverArrowEvent arrowEvent);
+    public void onPreArrowFired(QuiverArrowEvent.Firing arrowEvent);
 
     /**
      * Called when the container is put on a crafting bench with other items

@@ -99,50 +99,42 @@ public class BowHookContainerClass2 {
     @ForgeSubscribe(receiveCanceled=true)
     public void onBowFiring(ArrowLooseEvent event) {
         //Check if bow is charged enough
-        int j = event.charge;
-        float f = (float)j / 20.0F;
-        f = (f * f + f * 2.0F) / 3.0F;
-        if ((double)f < 0.1D)
-        {
-            return;
-        }
-        if (f > 1.0F)
-        {
-            f = 1.0F;
-        }
-        ItemStack stack = QuiverArrowRegistry.getArrowContainer(event.bow, event.entityPlayer);
-        if(stack != null){
-            IArrowContainer2 quiver = (IArrowContainer2) stack.getItem();
-            World world = event.entityPlayer.worldObj;
-            EntityArrow entityarrow = quiver.getArrowType(stack, world, event.entityPlayer, f*2.0F);
-            if(entityarrow!=null){
-                if (f == 1.0F)
-                    entityarrow.setIsCritical(true);
-                QuiverArrowEvent arrowEvent = new QuiverArrowEvent(event, stack, entityarrow);
-                quiver.onPreArrowFired(arrowEvent);
-                if(!MinecraftForge.EVENT_BUS.post(arrowEvent)){
-                    if(arrowEvent.addEnchantments){
-                        int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, event.bow);
-                        if (k > 0){
-                            entityarrow.setDamage(entityarrow.getDamage() + (double)k * 0.5D + 0.5D);
+        float f = new QuiverArrowEvent.ChargeCalculations(event).getCharge();
+        if(f>0){
+            ItemStack stack = QuiverArrowRegistry.getArrowContainer(event.bow, event.entityPlayer);
+            if(stack != null){
+                IArrowContainer2 quiver = (IArrowContainer2) stack.getItem();
+                World world = event.entityPlayer.worldObj;
+                EntityArrow entityarrow = quiver.getArrowType(stack, world, event.entityPlayer, f*2.0F);
+                if(entityarrow!=null){
+                    QuiverArrowEvent.Firing arrowEvent = new QuiverArrowEvent.Firing(event, stack, entityarrow);
+                    quiver.onPreArrowFired(arrowEvent);
+                    if(!MinecraftForge.EVENT_BUS.post(arrowEvent)){
+                        if (arrowEvent.isCritical || f == 1.0F)
+                            entityarrow.setIsCritical(true);
+                        if(arrowEvent.addEnchantments){
+                            int k = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, event.bow);
+                            if (k > 0){
+                                entityarrow.setDamage(entityarrow.getDamage() + (double)k * 0.5D + 0.5D);
+                            }
+                            int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, event.bow);
+                            if (l > 0){
+                                entityarrow.setKnockbackStrength(l);
+                            }
+                            if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, event.bow) > 0){
+                                entityarrow.setFire(100);
+                            }
                         }
-                        int l = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, event.bow);
-                        if (l > 0){
-                            entityarrow.setKnockbackStrength(l);
-                        }
-                        if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, event.bow) > 0){
-                            entityarrow.setFire(100);
-                        }
+                        if(arrowEvent.bowDamage>0)
+                            event.bow.damageItem(arrowEvent.bowDamage, event.entityPlayer);
+                        if(arrowEvent.bowSoundVolume>0)
+                            world.playSoundAtEntity(event.entityPlayer, "random.bow", arrowEvent.bowSoundVolume, 1.0F / (new Random().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                        if (!world.isRemote)
+                            world.spawnEntityInWorld(entityarrow);
+                        quiver.onArrowFired(world, event.entityPlayer, stack, event.bow, entityarrow);
+                        //Canceling the event, since we successfully fired our own arrow
+                        event.setCanceled(true);
                     }
-                    if(arrowEvent.bowDamage>0)
-                    	event.bow.damageItem(arrowEvent.bowDamage, event.entityPlayer);
-                    if(arrowEvent.bowSoundVolume>0)
-                        world.playSoundAtEntity(event.entityPlayer, "random.bow", arrowEvent.bowSoundVolume, 1.0F / (new Random().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-                    if (!world.isRemote)
-                        world.spawnEntityInWorld(entityarrow);
-                    quiver.onArrowFired(world, event.entityPlayer, stack, event.bow, entityarrow);
-                    //Canceling the event, since we successfully fired our own arrow
-                    event.setCanceled(true);
                 }
             }
         }
