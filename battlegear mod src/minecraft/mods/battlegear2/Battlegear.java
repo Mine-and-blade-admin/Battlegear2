@@ -5,6 +5,7 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.weapons.WeaponRegistry;
@@ -140,12 +141,16 @@ public class Battlegear {
                         }
                     }
                     logger.warning("Mod "+message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");
-                }else if(message.key.equals("QuiverSelection") && message.isStringMessage()){
+                }else if(message.isStringMessage()){
                     Class<?> clazz;
                     try {
                         clazz = Class.forName(message.getStringValue());//Message should describe the full class path
-                        if(clazz!=null && IQuiverSelection.class.isAssignableFrom(clazz)){//The given class should implement our interface
-                            QuiverArrowRegistry.addQuiverSelection((IQuiverSelection)clazz.newInstance());
+                        if(clazz!=null){//The given class should implement the interface according to the key
+                            if(message.key.equals("QuiverSelection") && IQuiverSelection.class.isAssignableFrom(clazz)){
+                                QuiverArrowRegistry.addQuiverSelection((IQuiverSelection)clazz.newInstance());
+                            }else if(message.key.equals("FireHandler") && IArrowFireHandler.class.isAssignableFrom(clazz)){
+                                QuiverArrowRegistry.addArrowFireHandler((IArrowFireHandler)clazz.newInstance());
+                            }
                         }
                     } catch (Exception logged) {
                         logger.warning("Mod "+message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");

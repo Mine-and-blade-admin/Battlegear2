@@ -2,6 +2,7 @@ package mods.battlegear2.items;
 
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.QuiverArrowEvent;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -21,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
@@ -106,18 +108,8 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
         ItemStack selected = getStackInSlot(stack, getSelectedSlot(stack));
         if(selected == null)
             return null;
-        else {
-            Class clazz = QuiverArrowRegistry.getArrowClass(selected);
-            if(clazz != null){
-                try {
-                    return (EntityArrow)clazz.getConstructor(World.class, EntityLivingBase.class, Float.TYPE)
-                            .newInstance(player.worldObj, player, charge);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
+        else
+            return QuiverArrowRegistry.getArrowType(selected, world, player, charge);
     }
 
     @Override
@@ -135,7 +127,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     }
 
     @Override
-    public void onPreArrowFired(QuiverArrowEvent arrowEvent) {
+    public void onPreArrowFired(QuiverArrowEvent.Firing arrowEvent) {
         writeBowNBT(arrowEvent.getBow(), getStackInSlot(arrowEvent.quiver, getSelectedSlot(arrowEvent.quiver)));
     }
 
