@@ -18,9 +18,14 @@ public class PatternStore {
     public static final int IMAGES_Y = 4;
     public static List<int[][][][]> patterns = new ArrayList<int[][][][]>();
 
-    public static int buildPatternAndStore(ResourceLocation small_image){
+    /**
+     * Deconstruct an image and store its data for later use
+     * @param image
+     * @return the index used to get the data back
+     */
+    public static int buildPatternAndStore(ResourceLocation image){
         try{
-            if(patterns.add(buildPatternFrom(small_image))){
+            if(patterns.add(buildPatternFrom(image))){
                 return patterns.size()-1;
             }else{
                 return -1;
@@ -30,16 +35,29 @@ public class PatternStore {
         }
     }
 
-    public static int[][][][] buildPatternFrom(ResourceLocation small_image) throws IOException {
-        return buildPatternFrom(rm.getResource(small_image).getInputStream());
+    /**
+     * See {@link #buildPatternFrom(java.awt.image.BufferedImage)}
+     * @throws IOException if the image can't be read
+     */
+    public static int[][][][] buildPatternFrom(ResourceLocation image) throws IOException {
+        return buildPatternFrom(rm.getResource(image).getInputStream());
     }
 
+    /**
+     * See {@link #buildPatternFrom(java.awt.image.BufferedImage)}
+     * @throws IOException if the image can't be read
+     */
     public static int[][][][] buildPatternFrom(InputStream resourceStream) throws IOException {
         return buildPatternFrom(ImageIO.read(resourceStream));
     }
 
+    /**
+     * Analyse the given image by cutting it into subimages
+     * @param image
+     * @return the subimages rgb values into arrays
+     */
     public static int[][][][] buildPatternFrom(BufferedImage image){
-        int[][][][] small_rgbs = new int[IMAGES_X * IMAGES_Y][3][(image.getWidth() / IMAGES_X)][(image.getHeight() / IMAGES_Y)];
+        int[][][][] rgbs = new int[IMAGES_X * IMAGES_Y][3][(image.getWidth() / IMAGES_X)][(image.getHeight() / IMAGES_Y)];
 
         int imageRes = image.getWidth() / IMAGES_X;
         for(int x = 0; x < image.getWidth(); x++){
@@ -53,17 +71,21 @@ public class PatternStore {
                 int total = red+green+blue;
 
                 if(total == 0){
-                    small_rgbs[imageNo][0][x%imageRes][y%imageRes] = 255;
-                    small_rgbs[imageNo][1][x%imageRes][y%imageRes] = 0;
-                    small_rgbs[imageNo][2][x%imageRes][y%imageRes] = 0;
+                    rgbs[imageNo][0][x%imageRes][y%imageRes] = 255;
+                    rgbs[imageNo][1][x%imageRes][y%imageRes] = 0;
+                    rgbs[imageNo][2][x%imageRes][y%imageRes] = 0;
                 }else{
-                    small_rgbs[imageNo][0][x%imageRes][y%imageRes] = (255 * red) / total;
-                    small_rgbs[imageNo][1][x%imageRes][y%imageRes] = (255 * green) / total;
-                    small_rgbs[imageNo][2][x%imageRes][y%imageRes] = (255 * blue) / total;
+                    rgbs[imageNo][0][x%imageRes][y%imageRes] = (255 * red) / total;
+                    rgbs[imageNo][1][x%imageRes][y%imageRes] = (255 * green) / total;
+                    rgbs[imageNo][2][x%imageRes][y%imageRes] = (255 * blue) / total;
                 }
             }
         }
-        return small_rgbs;
+        return rgbs;
+    }
+
+    public static int getBlendedSmallPixel(int index, byte imageNo, int x, int y, int col1, int col2, int col3){
+        return getBlendedSmallPixel(patterns.get(index)[imageNo][0][x][y], patterns.get(index)[imageNo][1][x][y], patterns.get(index)[imageNo][2][x][y], col1, col2, col3);
     }
 
     public static int getBlendedSmallPixel(int[][][][] rgbs, byte imageNo, int x, int y, int col1, int col2, int col3){

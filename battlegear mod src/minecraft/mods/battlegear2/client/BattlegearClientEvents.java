@@ -11,7 +11,7 @@ import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
 import mods.battlegear2.client.gui.controls.GuiPlaceableButton;
 import mods.battlegear2.client.gui.controls.GuiSigilButton;
-import mods.battlegear2.client.heraldry.PatternStore;
+import mods.battlegear2.api.heraldry.PatternStore;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemQuiver;
@@ -41,6 +41,8 @@ public class BattlegearClientEvents {
 			"battlegear2", "textures/armours/quiver/QuiverDetails.png");
 	private final ResourceLocation quiverBase = new ResourceLocation(
 			"battlegear2", "textures/armours/quiver/QuiverBase.png");
+    public static final ResourceLocation patterns = new ResourceLocation("battlegear2", "textures/heraldry/Patterns-small.png");
+    public static int storageIndex;
 	public static List<GuiPlaceableButton> tabsList = new ArrayList<GuiPlaceableButton>();
 	static {
 		tabsList.add(new GuiBGInventoryButton(0, 10, 10));
@@ -208,10 +210,11 @@ public class BattlegearClientEvents {
 			ClientProxy.bowIcons[2] = event.map
 					.registerIcon("battlegear2:bow_pulling_2");
 
-			PatternStore.initialise(Minecraft.getMinecraft()
-					.getResourceManager());
-			// CrestImages.initialise(Minecraft.getMinecraft().func_110442_L());
-
+            storageIndex = PatternStore.buildPatternAndStore(patterns);
+            // CrestImages.initialise(Minecraft.getMinecraft().func_110442_L());
+            /*for (HeraldryPattern pattern : HeraldryPattern.patterns) {
+                pattern.registerIcon(event.map);
+            }*/
 		}
 	}
 

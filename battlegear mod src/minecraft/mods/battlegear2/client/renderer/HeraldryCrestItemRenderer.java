@@ -2,7 +2,8 @@ package mods.battlegear2.client.renderer;
 
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
-import mods.battlegear2.client.heraldry.HeraldryTextureSmall;
+import mods.battlegear2.api.heraldry.HeraldryTextureSmall;
+import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.items.HeraldryCrest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;

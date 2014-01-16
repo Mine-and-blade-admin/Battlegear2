@@ -1,29 +1,20 @@
 package mods.battlegear2.client.gui.controls;
 
-import cpw.mods.fml.client.GuiScrollingList;
 import mods.battlegear2.api.heraldry.Crest;
 import mods.battlegear2.api.heraldry.HeraldryData;
+import mods.battlegear2.api.heraldry.RefreshableTexture;
 import mods.battlegear2.client.gui.BattlegearSigilGUI;
-import mods.battlegear2.client.heraldry.PatternStore;
-import mods.battlegear2.client.heraldry.TextureBackground;
-import mods.mud.UpdateEntry;
-import mods.mud.gui.GuiChangelogDownload;
+import mods.battlegear2.api.heraldry.PatternStore;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiSlot;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
-import net.minecraft.util.StringTranslate;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class GUICrestElementList extends GUIScrollList {
@@ -32,7 +23,7 @@ public class GUICrestElementList extends GUIScrollList {
     private BattlegearSigilGUI parent;
     private List<Crest> entries;
 
-    private DynamicTexture[] dynamicTextures = new DynamicTexture[HeraldryData.MAX_CRESTS+1];
+    private RefreshableTexture[] dynamicTextures = new RefreshableTexture[HeraldryData.MAX_CRESTS+1];
     private boolean[] dirtyTextures = new boolean[HeraldryData.MAX_CRESTS+1];
 
     public GUICrestElementList(BattlegearSigilGUI parent, int listWidth, int x)
@@ -43,7 +34,7 @@ public class GUICrestElementList extends GUIScrollList {
         this.entries = new ArrayList<Crest>();
 
         for(int i = 0; i < dynamicTextures.length; i++){
-            dynamicTextures[i] = new DynamicTexture(32,32);
+            dynamicTextures[i] = new RefreshableTexture(32,32);
             dirtyTextures[i] = true;
         }
     }
@@ -86,23 +77,7 @@ public class GUICrestElementList extends GUIScrollList {
     {
         if(dirtyTextures[listIndex]){
             if(listIndex == 0){
-                HeraldryData heraldryData = parent.getCurrentData();
-                BufferedImage image = new BufferedImage(PatternStore.small_rgbs[heraldryData.getPattern()][0].length, PatternStore.small_rgbs[heraldryData.getPattern()][0][0].length,BufferedImage.TYPE_4BYTE_ABGR);
-                for(int x = 0; x < image.getWidth(); x++){
-                    for(int y = 0; y < image.getHeight(); y++){
-                        image.setRGB(x, y, PatternStore.getBlendedSmallPixel(heraldryData.getPattern(), x, y, heraldryData.getColour(0), heraldryData.getColour(1), heraldryData.getColour(2)));
-                    }
-                }
-                if(image.getHeight() != 32 || image.getWidth() != 32){
-                    image = (BufferedImage)image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-                }
-                int[] pixels = dynamicTextures[0].getTextureData();
-
-                for(int x = 0; x < image.getWidth(); x++){
-                    for(int y = 0; y < image.getHeight(); y++){
-                        pixels[x+y*image.getWidth()] = image.getRGB(x,y);
-                    }
-                }
+                dynamicTextures[0].refreshWith(parent.getCurrentData(), true);
                 dirtyTextures[listIndex] = false;
             }else{
 

@@ -1,7 +1,5 @@
 package mods.battlegear2.api.heraldry;
 
-import mods.battlegear2.api.heraldry.HeraldryData;
-import mods.battlegear2.api.heraldry.PatternStore;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.ResourceManager;
@@ -11,16 +9,14 @@ import java.awt.image.BufferedImage;
 public class HeraldryTextureSmall extends AbstractTexture {
 
     private HeraldryData heraldryData;
-    private int index;
 
-    public HeraldryTextureSmall(HeraldryData crest, int patternStorageIndex) {
+    public HeraldryTextureSmall(HeraldryData crest) {
         this.heraldryData = crest;
-        this.index = patternStorageIndex;
     }
 
     @Override
     public void loadTexture(ResourceManager resourcemanager) {
-        int [][][][] patt = PatternStore.patterns.get(index);
+        int [][][][] patt = PatternStore.patterns.get(heraldryData.getPatternIndex());
         BufferedImage image = new BufferedImage(patt[heraldryData.getPattern()][0].length, patt[heraldryData.getPattern()][0][0].length,BufferedImage.TYPE_4BYTE_ABGR);
 
         for(int x = 0; x < image.getWidth(); x++){

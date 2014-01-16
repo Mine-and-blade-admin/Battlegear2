@@ -1,9 +1,7 @@
 package mods.battlegear2.client.gui;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-
 import cpw.mods.fml.common.network.PacketDispatcher;
+import mods.battlegear2.api.heraldry.RefreshableTexture;
 import mods.battlegear2.gui.ContainerHeraldry;
 import mods.battlegear2.packet.BattlegearGUIPacket;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -18,14 +16,12 @@ import mods.battlegear2.client.gui.controls.GuiColourToggleButton;
 import mods.battlegear2.client.gui.controls.GuiPatternScrollList;
 import mods.battlegear2.client.gui.controls.GuiToggleButton;
 import mods.battlegear2.client.gui.controls.IControlListener;
-import mods.battlegear2.client.heraldry.PatternStore;
 import mods.battlegear2.client.renderer.HeraldryCrestItemRenderer;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -57,7 +53,7 @@ public class BattlegearSigilGUI extends GuiContainer {
     private GuiColourPicker colourPickerPattern;
     private GuiPatternScrollList scrollListPattern;
 
-    private final DynamicTexture currentCrest = new DynamicTexture(RES, RES);
+    private final RefreshableTexture currentCrest = new RefreshableTexture(RES, RES);
     private boolean crestDirty = true;
     
     public BattlegearSigilGUI(EntityPlayer entityPlayer, boolean isRemote){
@@ -242,29 +238,9 @@ public class BattlegearSigilGUI extends GuiContainer {
 		
         
         drawTexturedModalRect((width-400)/2, 50, 128, 128, 0, 0, 1, 1);
-        
-       
-        
-        
-        if(crestDirty){
-        
-        	HeraldryData heraldryData = currentData;
-            BufferedImage image = new BufferedImage(PatternStore.small_rgbs[heraldryData.getPattern()][0].length, PatternStore.small_rgbs[heraldryData.getPattern()][0][0].length,BufferedImage.TYPE_4BYTE_ABGR);
-            for(int x = 0; x < image.getWidth(); x++){
-                for(int y = 0; y < image.getHeight(); y++){
-                    image.setRGB(x, y, PatternStore.getBlendedSmallPixel(heraldryData.getPattern(), x, y, heraldryData.getColour(0), heraldryData.getColour(1), heraldryData.getColour(2)));
-                }
-            }
-            if(image.getHeight() != 32 || image.getWidth() != 32){
-                image = (BufferedImage)image.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
-            }
-            int[] pixels = currentCrest.getTextureData();
 
-            for(int x = 0; x < image.getWidth(); x++){
-                for(int y = 0; y < image.getHeight(); y++){
-                    pixels[x+y*image.getWidth()] = image.getRGB(x,y);
-                }
-            }
+        if(crestDirty){
+            currentCrest.refreshWith(currentData, true);
         	crestDirty = false;
         }
         
@@ -305,7 +281,7 @@ public class BattlegearSigilGUI extends GuiContainer {
 	public static void open(EntityPlayer player){
 		//send packet to open container on server
         PacketDispatcher.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.sigilEditor).generatePacket());
-        player.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.sigilEditor, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
+        player.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.sigilEditor, player.worldObj, 0, 0, 0);
 	}
 
 

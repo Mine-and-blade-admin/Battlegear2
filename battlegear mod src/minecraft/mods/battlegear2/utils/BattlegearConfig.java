@@ -294,7 +294,7 @@ public class BattlegearConfig {
 			for(int y = 0; y < 16; y++){
 				ItemStack bannerStack = new ItemStack(bannerItem);
 				((IHeraldyItem)bannerStack.getItem()).setHeraldryCode(bannerStack,
-						SigilHelper.packSigil(HeraldyPattern.HORIZONTAL_BLOCK, (byte) 0, (byte) 0,
+						SigilHelper.packSigil(HeraldryPattern.HORIZONTAL_BLOCK, (byte) 0, (byte) 0,
                                 new Color(ItemDye.dyeColors[15 - x]), new Color(ItemDye.dyeColors[15 - y]),
                                 HeraldryIcon.Blank, HeraldryPositions.SINGLE, Color.WHITE, Color.WHITE)
 						);

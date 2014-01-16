@@ -1,5 +1,7 @@
 package mods.battlegear2.heraldry;
 
+import mods.battlegear2.api.heraldry.HeraldryPattern;
+
 import java.awt.Color;
 
 public class SigilHelper {
@@ -10,7 +12,7 @@ public class SigilHelper {
 	public static final int COLOUR_SIGIL_SECONDARY = 3;
 	
 	private static final byte[] defaultSigil = packSigil(
-			HeraldyPattern.VERICAL_BLOCK, (byte)3, (byte)0, new Color(0xFFFFFFFF), new Color(0xFFFFFFFF),
+			HeraldryPattern.VERTICAL_BLOCK, (byte)3, (byte)0, new Color(0xFFFFFFFF), new Color(0xFFFFFFFF),
 			HeraldryIcon.Blank, HeraldryPositions.SINGLE, new Color(0xFF000000), new Color(0xFF000000));
 	
 	public static byte[] getDefault(){
@@ -63,7 +65,7 @@ public class SigilHelper {
 	
 	
 	
-	public static byte[] packSigil(HeraldyPattern pattern, byte helm, byte banner, Color colour1, Color colour2,
+	public static byte[] packSigil(HeraldryPattern pattern, byte helm, byte banner, Color colour1, Color colour2,
 			HeraldryIcon sigil, HeraldryPositions sigilPos, Color sigilColour1, Color sigilColour2){
 		
 		byte[] code = new byte[length];
@@ -96,8 +98,8 @@ public class SigilHelper {
 	}
 	
 	
-	public static HeraldyPattern getPattern(byte[] code){
-		return HeraldyPattern.values()[code[0] >> 4 & 0xF];
+	public static HeraldryPattern getPattern(byte[] code){
+		return HeraldryPattern.patterns.get(code[0] >> 4 & 0xF);
 	}
 	
 	//TODO: Still have to test this
@@ -208,8 +210,8 @@ public class SigilHelper {
 		}
 	}
 	
-	public static byte[] updatePattern(byte[] code, HeraldyPattern newPatern){
-		code[0] = (byte)(newPatern.ordinal() << 4 & 0xF0 | code[0] & 0x0F);
+	public static byte[] updatePattern(byte[] code, HeraldryPattern newPatern){
+		code[0] = (byte)(HeraldryPattern.patterns.indexOf(newPatern) << 4 & 0xF0 | code[0] & 0x0F);
 		return code;
 	}
 	
@@ -316,7 +318,7 @@ public class SigilHelper {
 		Color c4 = new Color(colourTranslationMap[extractBitInt(code, 24, 28)]);
 		byte sigilPos = (byte) extractBitInt(code, 29, 31);
 		
-		return packSigil(HeraldyPattern.values()[pattern], (byte)1, (byte)0, 
+		return packSigil(HeraldryPattern.patterns.get(pattern), (byte)1, (byte)0,
 				c1, c2, HeraldryIcon.values()[sigil], HeraldryPositions.values()[sigilPos], c3, c4);
 	}
 	

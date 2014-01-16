@@ -1,30 +1,5 @@
 package mods.battlegear2.items;
 
-import java.util.List;
-
-import mods.battlegear2.Battlegear;
-import mods.battlegear2.api.heraldry.IHeraldryItem;
-import mods.battlegear2.api.heraldry.IHeraldyArmour;
-import mods.battlegear2.client.heraldry.HeraldryArmourModel;
-import mods.battlegear2.heraldry.HeraldyPattern;
-import mods.battlegear2.heraldry.SigilHelper;
-import mods.battlegear2.inventory.InventoryPlayerBattle;
-import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
-import net.minecraft.util.StatCollector;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 @Deprecated
 public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, IArmorTextureProvider*/{
 /*
@@ -215,7 +190,7 @@ public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, I
 	}
 
 	@Override
-	public String getPatternArmourPath(HeraldyPattern pattern, int armourSlot) {
+	public String getPatternArmourPath(HeraldryPattern pattern, int armourSlot) {
 		return Battlegear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-"+pattern.ordinal()+".png";
 	}
 	*/
