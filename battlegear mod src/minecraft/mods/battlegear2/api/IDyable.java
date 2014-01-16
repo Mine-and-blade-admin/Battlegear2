@@ -2,7 +2,6 @@ package mods.battlegear2.api;
 
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
 //This is a tempory fix until we get the heradry system up and running
 public interface IDyable {

@@ -6,6 +6,7 @@ import net.minecraft.util.Icon;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class HeraldryPattern {
 
     public static List<HeraldryPattern> patterns = new ArrayList<HeraldryPattern>();

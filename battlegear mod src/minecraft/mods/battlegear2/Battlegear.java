@@ -120,13 +120,17 @@ public class Battlegear {
                     ItemStack stack = message.getItemStackValue();
                     if(stack!=null){
                         if(message.key.equals("Dual")){
-                            WeaponRegistry.addDualWeapon(stack);
+                            if(!BattlegearUtils.checkForRightClickFunction(stack.getItem(), stack)){
+                                WeaponRegistry.addDualWeapon(stack);
+                            }
                             continue;
                         }else if(message.key.equals("MainHand")){
                             WeaponRegistry.addTwoHanded(stack);
                             continue;
                         }else if(message.key.equals("OffHand")){
-                            WeaponRegistry.addOffhandWeapon(stack);
+                            if(!BattlegearUtils.checkForRightClickFunction(stack.getItem(), stack)){
+                                WeaponRegistry.addOffhandWeapon(stack);
+                            }
                             continue;
                         }else if(message.key.startsWith("Arrow:")){
                             Class<?> clazz = null;

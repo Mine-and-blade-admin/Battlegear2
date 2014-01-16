@@ -1,9 +1,6 @@
 package mods.battlegear2.api.weapons;
 
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.PotionEffect;
 
 public interface ISpecialEffect {
 	/**

@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.util.Arrays;
 
+@SuppressWarnings("unused")
 public class HeraldryDataBackup {
 
 
@@ -76,10 +77,8 @@ public class HeraldryDataBackup {
 
         DataOutputStream output = null;
 
-        ByteArrayOutputStream bos = null;
-
         try{
-            bos = new ByteArrayOutputStream();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
             output = new DataOutputStream(bos);
 
             output.writeByte(pattern);

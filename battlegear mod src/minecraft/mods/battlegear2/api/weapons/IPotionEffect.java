@@ -1,6 +1,5 @@
 package mods.battlegear2.api.weapons;
 
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.PotionEffect;
 

@@ -1,9 +1,6 @@
 package mods.battlegear2.api.heraldry;
 
-import mods.battlegear2.utils.BattlegearUtils;
-
 import java.io.*;
-import java.util.Arrays;
 
 public class Crest {
 
@@ -56,10 +53,8 @@ public class Crest {
         }else{
             DataOutputStream output = null;
 
-            ByteArrayOutputStream bos = null;
-
             try{
-                bos = new ByteArrayOutputStream();
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 output = new DataOutputStream(bos);
 
                 output.writeInt(crestColours[0]);
