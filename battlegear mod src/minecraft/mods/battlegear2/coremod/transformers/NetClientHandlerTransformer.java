@@ -49,7 +49,7 @@ public class NetClientHandlerTransformer extends TransformerBase {
 
                     if(nextNode instanceof JumpInsnNode && nextNode.getOpcode() == IFLT){
                         LabelNode label = ((JumpInsnNode) nextNode).label;
-                        newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/inventory/InventoryPlayerBattle", "isValidSwitch", "(I)Z"));
+                        newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "isValidSwitch", "(I)Z"));
                         newList.add(new JumpInsnNode(IFEQ, label));//"if equal" branch
 
                         nextNode = insn.next();

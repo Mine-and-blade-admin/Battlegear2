@@ -12,7 +12,7 @@ import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
 import mods.battlegear2.client.renderer.*;
-import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;

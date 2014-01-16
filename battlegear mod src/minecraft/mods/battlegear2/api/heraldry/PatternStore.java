@@ -1,5 +1,6 @@
-package mods.battlegear2.client.heraldry;
+package mods.battlegear2.api.heraldry;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ResourceManager;
 import net.minecraft.util.ResourceLocation;
 
@@ -7,72 +8,87 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PatternStore {
 
-    public static final ResourceLocation small_image = new ResourceLocation("battlegear2", "textures/heraldry/Patterns-small.png");
-
-
+    public static final ResourceManager rm = Minecraft.getMinecraft().getResourceManager();
     public static final int IMAGES_X = 8;
     public static final int IMAGES_Y = 4;
+    public static List<int[][][][]> patterns = new ArrayList<int[][][][]>();
 
-    public static int[][][][] small_rgbs;
-
-    public static void initialise(ResourceManager rm){
+    public static int buildPatternAndStore(ResourceLocation small_image){
         try{
-            InputStream inputstream = rm.getResource(small_image).getInputStream();
-            BufferedImage image = ImageIO.read(inputstream);
-
-            small_rgbs = new int[IMAGES_X * IMAGES_Y][3][(image.getWidth() / IMAGES_X)][(image.getHeight() / IMAGES_Y)];
-
-            int imageRes = image.getWidth() / IMAGES_X;
-            for(int x = 0; x < image.getWidth(); x++){
-                for(int y = 0; y < image.getHeight(); y++){
-                    int imageNo = (x / imageRes) + IMAGES_X * (y / imageRes);
-                    int rgb = image.getRGB(x,y);
-                    int red = (rgb >> 16) & 0x000000FF;
-                    int green = (rgb >> 8) & 0x000000FF;
-                    int blue = (rgb) & 0x000000FF;
-
-                    int total = red+green+blue;
-
-                    if(total == 0){
-                        small_rgbs[imageNo][0][x%imageRes][y%imageRes] = 255;
-                        small_rgbs[imageNo][1][x%imageRes][y%imageRes] = 0;
-                        small_rgbs[imageNo][2][x%imageRes][y%imageRes] = 0;
-                    }else{
-                        small_rgbs[imageNo][0][x%imageRes][y%imageRes] = (255 * red) / total;
-                        small_rgbs[imageNo][1][x%imageRes][y%imageRes] = (255 * green) / total;
-                        small_rgbs[imageNo][2][x%imageRes][y%imageRes] = (255 * blue) / total;
-                    }
-                }
-                
-                
+            if(patterns.add(buildPatternFrom(small_image))){
+                return patterns.size()-1;
+            }else{
+                return -1;
             }
-        }catch (IOException e){
-            e.printStackTrace();
+        }catch (IOException io){
+            return -1;
         }
     }
 
-    public static int getBlendedSmallPixel(byte imageNo, int x, int y, int col1, int col2, int col3){
+    public static int[][][][] buildPatternFrom(ResourceLocation small_image) throws IOException {
+        return buildPatternFrom(rm.getResource(small_image).getInputStream());
+    }
 
-        int red = ((((col1 >> 16) & 0xFF) * small_rgbs[imageNo][0][x][y]) / 255) +
-                ((((col2 >> 16) & 0xFF) * small_rgbs[imageNo][1][x][y]) / 255) +
-                ((((col3 >> 16) & 0xFF) * small_rgbs[imageNo][2][x][y])/ 255);
+    public static int[][][][] buildPatternFrom(InputStream resourceStream) throws IOException {
+        return buildPatternFrom(ImageIO.read(resourceStream));
+    }
 
-        int green = (((col1 >> 8) & 0xFF) * small_rgbs[imageNo][0][x][y] / 255) +
-                (((col2 >> 8) & 0xFF) * small_rgbs[imageNo][1][x][y] / 255) +
-                (((col3 >> 8) & 0xFF) * small_rgbs[imageNo][2][x][y] / 255);
+    public static int[][][][] buildPatternFrom(BufferedImage image){
+        int[][][][] small_rgbs = new int[IMAGES_X * IMAGES_Y][3][(image.getWidth() / IMAGES_X)][(image.getHeight() / IMAGES_Y)];
 
-        int blue = (((col1) & 0xFF) * small_rgbs[imageNo][0][x][y] / 255) +
-                (((col2) & 0xFF) * small_rgbs[imageNo][1][x][y] / 255) +
-                (((col3) & 0xFF) * small_rgbs[imageNo][2][x][y] / 255);
+        int imageRes = image.getWidth() / IMAGES_X;
+        for(int x = 0; x < image.getWidth(); x++){
+            for(int y = 0; y < image.getHeight(); y++){
+                int imageNo = (x / imageRes) + IMAGES_X * (y / imageRes);
+                int rgb = image.getRGB(x,y);
+                int red = (rgb >> 16) & 0x000000FF;
+                int green = (rgb >> 8) & 0x000000FF;
+                int blue = (rgb) & 0x000000FF;
+
+                int total = red+green+blue;
+
+                if(total == 0){
+                    small_rgbs[imageNo][0][x%imageRes][y%imageRes] = 255;
+                    small_rgbs[imageNo][1][x%imageRes][y%imageRes] = 0;
+                    small_rgbs[imageNo][2][x%imageRes][y%imageRes] = 0;
+                }else{
+                    small_rgbs[imageNo][0][x%imageRes][y%imageRes] = (255 * red) / total;
+                    small_rgbs[imageNo][1][x%imageRes][y%imageRes] = (255 * green) / total;
+                    small_rgbs[imageNo][2][x%imageRes][y%imageRes] = (255 * blue) / total;
+                }
+            }
+        }
+        return small_rgbs;
+    }
+
+    public static int getBlendedSmallPixel(int[][][][] rgbs, byte imageNo, int x, int y, int col1, int col2, int col3){
+        return getBlendedSmallPixel(rgbs[imageNo][0][x][y], rgbs[imageNo][1][x][y], rgbs[imageNo][2][x][y], col1, col2, col3);
+    }
+
+    public static int getBlendedSmallPixel(int a, int b, int c, int col1, int col2, int col3){
+        int red = ((((col1 >> 16) & 0xFF) * a) / 255) +
+                ((((col2 >> 16) & 0xFF) * b) / 255) +
+                ((((col3 >> 16) & 0xFF) * c)/ 255);
+
+        int green = (((col1 >> 8) & 0xFF) * a / 255) +
+                (((col2 >> 8) & 0xFF) * b / 255) +
+                (((col3 >> 8) & 0xFF) * c / 255);
+
+        int blue = (((col1) & 0xFF) * a / 255) +
+                (((col2) & 0xFF) * b / 255) +
+                (((col3) & 0xFF) * c / 255);
 
         return 0xFF000000 |
                 ((red << 16) & 0x00FF0000) |
                 ((green << 8) & 0x0000FF00) |
                 ((blue) & 0x000000FF);
     }
+
 
 
 

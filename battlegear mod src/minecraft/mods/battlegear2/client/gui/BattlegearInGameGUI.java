@@ -9,7 +9,7 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
-import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;

@@ -10,7 +10,7 @@ import mods.battlegear2.api.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.coremod.BattlegearTranslator;
-import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentThorns;
 import net.minecraft.entity.Entity;

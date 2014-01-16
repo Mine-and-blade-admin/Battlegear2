@@ -9,7 +9,7 @@ import mods.battlegear2.api.RenderPlayerEventChild.*;
 import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.client.BattlegearKeyHandeler;
-import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemSpear;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.BattlegearUtils;

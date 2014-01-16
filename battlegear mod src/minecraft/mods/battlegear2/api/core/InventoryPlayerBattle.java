@@ -1,4 +1,4 @@
-package mods.battlegear2.inventory;
+package mods.battlegear2.api.core;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,6 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * User: nerd-boy
  * Date: 15/07/13
  * Time: 3:08 PM
+ * Replacement for the player inventory
  */
 public class InventoryPlayerBattle extends InventoryPlayer {
 

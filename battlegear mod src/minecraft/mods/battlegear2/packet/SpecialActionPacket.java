@@ -10,7 +10,7 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.enchantments.BaseEnchantment;
-import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.utils.BattlegearUtils;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;

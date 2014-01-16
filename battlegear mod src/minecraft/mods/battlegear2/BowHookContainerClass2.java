@@ -7,7 +7,7 @@ import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowEvent;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.enchantments.BaseEnchantment;
-import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.items.arrows.AbstractMBArrow;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;

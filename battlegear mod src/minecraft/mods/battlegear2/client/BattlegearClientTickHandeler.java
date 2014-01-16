@@ -5,7 +5,7 @@ import java.util.EnumSet;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.IShield;
-import mods.battlegear2.inventory.InventoryPlayerBattle;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearShieldBlockPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.packet.OffhandPlaceBlockPacket;

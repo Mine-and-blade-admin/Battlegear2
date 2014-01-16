@@ -93,12 +93,12 @@ public class EntityPlayerTransformer extends TransformerBase {
                     AbstractInsnNode insn = it.next();
                     if (insn instanceof TypeInsnNode) {
                         if (((TypeInsnNode) insn).desc.equals(inventoryClassName)) {
-                            ((TypeInsnNode) insn).desc = "mods/battlegear2/inventory/InventoryPlayerBattle";
+                            ((TypeInsnNode) insn).desc = "mods/battlegear2/api/core/InventoryPlayerBattle";
                         }
 
                     } else if (insn instanceof MethodInsnNode) {
                         if (((MethodInsnNode) insn).owner.equals(inventoryClassName)) {
-                            ((MethodInsnNode) insn).owner = "mods/battlegear2/inventory/InventoryPlayerBattle";
+                            ((MethodInsnNode) insn).owner = "mods/battlegear2/api/core/InventoryPlayerBattle";
                         }
                     }
                 }
@@ -166,15 +166,15 @@ public class EntityPlayerTransformer extends TransformerBase {
         //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand  != null)
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/inventory/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/inventory/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
+        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
         mn.instructions.add(new JumpInsnNode(IFNULL, L1));
 
         //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand().getItem() instanceof IShield)
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/inventory/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/inventory/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
+        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
         mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, itemStackClassName, itemStackGetItemMethodName, itemStackGetItemMethodDesc));
         mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/IShield"));
         mn.instructions.add(new JumpInsnNode(IFEQ, L1));
@@ -218,15 +218,15 @@ public class EntityPlayerTransformer extends TransformerBase {
         //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand  != null)
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/inventory/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/inventory/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
+        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
         mn.instructions.add(new JumpInsnNode(IFNULL, L1));
 
         //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand().getItem() instanceof IShield)
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/inventory/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/inventory/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
+        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
         mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, itemStackClassName, itemStackGetItemMethodName, itemStackGetItemMethodDesc));
         mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/IShield"));
         mn.instructions.add(new JumpInsnNode(IFEQ, L1));
@@ -268,7 +268,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L" + inventoryClassName + ";"));
         mn.instructions.add(new FieldInsnNode(GETFIELD, inventoryClassName, inventoryCurrentItremField, "I"));
-        mn.instructions.add(new FieldInsnNode(GETSTATIC, "mods/battlegear2/inventory/InventoryPlayerBattle", "WEAPON_SETS", "I"));
+        mn.instructions.add(new FieldInsnNode(GETSTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "WEAPON_SETS", "I"));
         mn.instructions.add(new InsnNode(IADD));
         mn.instructions.add(new FieldInsnNode(PUTFIELD, inventoryClassName, inventoryCurrentItremField, "I"));
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
@@ -279,7 +279,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L" + inventoryClassName + ";"));
         mn.instructions.add(new FieldInsnNode(GETFIELD, inventoryClassName, inventoryCurrentItremField, "I"));
-        mn.instructions.add(new FieldInsnNode(GETSTATIC, "mods/battlegear2/inventory/InventoryPlayerBattle", "WEAPON_SETS", "I"));
+        mn.instructions.add(new FieldInsnNode(GETSTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "WEAPON_SETS", "I"));
         mn.instructions.add(new InsnNode(ISUB));
         mn.instructions.add(new FieldInsnNode(PUTFIELD, inventoryClassName, inventoryCurrentItremField, "I"));
         mn.instructions.add(new InsnNode(RETURN));
@@ -504,8 +504,8 @@ public class EntityPlayerTransformer extends TransformerBase {
         MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, "isBattlemode", "()Z", null, null);
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L" + inventoryClassName + ";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/inventory/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/inventory/InventoryPlayerBattle", "isBattlemode", "()Z"));
+        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
+        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "isBattlemode", "()Z"));
         mn.instructions.add(new InsnNode(IRETURN));
 
         mn.maxStack = 1;

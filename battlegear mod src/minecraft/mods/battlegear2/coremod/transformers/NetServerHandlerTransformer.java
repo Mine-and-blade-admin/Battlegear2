@@ -135,7 +135,7 @@ public class NetServerHandlerTransformer extends TransformerBase {
                     ((FieldInsnNode) nextInsn).owner.equals(packet16BlockItemSwitchClassName) &&
                     ((FieldInsnNode) nextInsn).name.equals(packet16BlockItemSwitchId)) {
 
-                newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/inventory/InventoryPlayerBattle", "isValidSwitch", "(I)Z"));
+                newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "isValidSwitch", "(I)Z"));
 
                 nextInsn = it.next();
                 while (it.hasNext() &&
