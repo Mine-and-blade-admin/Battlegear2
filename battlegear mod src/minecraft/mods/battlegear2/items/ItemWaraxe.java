@@ -1,22 +1,9 @@
 package mods.battlegear2.items;
 
-import java.util.List;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
 import mods.battlegear2.api.weapons.IPenetrateWeapon;
 import net.minecraft.block.Block;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 
 //Should we make this also use the heraldry? It actually doesn't look as good as the sword (and makes the sword a little more special)

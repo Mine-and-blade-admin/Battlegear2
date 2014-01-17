@@ -1,11 +1,6 @@
 package mods.battlegear2.api.heraldry;
 
-import mods.battlegear2.utils.BattlegearUtils;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.*;
 import java.util.Arrays;
 
 @SuppressWarnings("unused")
@@ -61,7 +56,13 @@ public class HeraldryDataBackup {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            BattlegearUtils.closeStream(input);
+            try{
+                if(input != null){
+                    input.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -95,7 +96,13 @@ public class HeraldryDataBackup {
         } catch (Exception e){
             e.printStackTrace();
         } finally {
-            BattlegearUtils.closeStream(output);
+            try{
+                if(output != null){
+                    output.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         return null;

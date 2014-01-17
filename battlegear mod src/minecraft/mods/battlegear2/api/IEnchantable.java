@@ -1,6 +1,6 @@
 package mods.battlegear2.api;
 
-import mods.battlegear2.enchantments.BaseEnchantment;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 
 public interface IEnchantable {
@@ -11,5 +11,5 @@ public interface IEnchantable {
 	 * @param stack
 	 * @return
 	 */
-	public boolean isEnchantable(BaseEnchantment baseEnchantment, ItemStack stack);
+	public boolean isEnchantable(Enchantment baseEnchantment, ItemStack stack);
 }

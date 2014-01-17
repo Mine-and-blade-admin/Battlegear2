@@ -12,6 +12,7 @@ import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumShield;
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -234,7 +235,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     }
 
 	@Override
-	public boolean isEnchantable(BaseEnchantment baseEnchantment, ItemStack stack) {
+	public boolean isEnchantable(Enchantment baseEnchantment, ItemStack stack) {
 		return true;
 	}
 	
