@@ -1,3 +1,13 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.4.7 ==
+* Fixed daggers out-of-slot bug
+* Fixed creative pick block
+* Fixed blocks wrongly consumed in offhand
+* Added more support for TinkersConstruct tabs
+* Internal changes for the API
+** Incompatibilities may appear
+**Known Issues**  
+* Inventory issues with MCPC+, this mod is NOT recommended to use on MCPC+ servers
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.4.6 ==
 * Fixed piercing arrow
 * Organized config file, added more comments

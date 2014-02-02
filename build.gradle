@@ -51,7 +51,7 @@ processResources {
         // replace stuff in mcmod.info, nothing else
         include 'mcmod.info'
         // replace version and mcversion
-        expand 'version':config.modversion, 'mcversion':config.mcversion
+        expand 'name':config.modname, 'version':config.modversion, 'mcversion':config.mcversion
     }
     // copy everything else
     from(projectDir) {
