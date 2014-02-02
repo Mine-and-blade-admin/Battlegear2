@@ -1,7 +1,6 @@
 package mods.battlegear2.api;
 
 import cpw.mods.fml.relauncher.Side;
-import mods.battlegear2.api.weapons.OffhandAttackEvent;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -21,7 +20,7 @@ public interface IOffhandDual {
      * @param offhandItem  the ItemStack currently being held in the left hand
      * @return true if the off hand swing animation should be performed
      */
-    public boolean offhandAttackEntity(OffhandAttackEvent event, ItemStack mainhandItem, ItemStack offhandItem);
+    public boolean offhandAttackEntity(PlayerEventChild.OffhandAttackEvent event, ItemStack mainhandItem, ItemStack offhandItem);
 
     /**
      * Perform any function when the item is held in the offhand and the user right clicks "Air".

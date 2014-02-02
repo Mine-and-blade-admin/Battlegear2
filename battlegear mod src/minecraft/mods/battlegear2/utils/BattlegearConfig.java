@@ -1,5 +1,6 @@
 package mods.battlegear2.utils;
 
+import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.items.*;
 import mods.battlegear2.recipies.DyeRecipie;
@@ -143,7 +144,8 @@ public class BattlegearConfig {
         shieldBarOffset = config.get(category, "Shield bar relative vertical position", 0, "Change to move this bar in your gui").getInt();
         arrowForceRendered = config.get(category, "Render arrow with bow uncharged", true).getBoolean(true);
         forceBackSheath=config.get(category, "Force Back Sheath", false).getBoolean(false);
-        
+
+        ShieldType[] types = {ShieldType.WOOD, ShieldType.HIDE, ShieldType.IRON, ShieldType.DIAMOND, ShieldType.GOLD};
         for(int i = 0; i < 5; i++){
         	EnumToolMaterial material = EnumToolMaterial.values()[i];
         	if(Arrays.binarySearch(disabledItems, itemNames[4]) < 0){
@@ -167,14 +169,25 @@ public class BattlegearConfig {
 	    				material, itemNames[6]);
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[7]) < 0){
-	            shield[i] = new ItemShield(
-	                    config.getItem(itemNames[7]+shieldTypes[i], firstDefaultItemIndex+itemOffests[7]+i).getInt(),
-	                    EnumShield.values()[i]);
+                shield[i] = new ItemShield(
+                        config.getItem(itemNames[7]+shieldTypes[i], firstDefaultItemIndex+itemOffests[7]+i).getInt(),
+                        types[i]);
         	}
-
         }
         if (config.hasChanged()){        
         	config.save();     	
+        }
+        try{
+            for(Field f: BattlegearConfig.class.getFields()){
+                if(Item.class.isAssignableFrom(f.getType())){
+                    Item it = (Item)f.get(null);
+                    if(it!=null){
+                        GameRegistry.registerItem(it, it.getUnlocalizedName());
+                    }
+                }
+            }
+        }catch(Exception e){
+
         }
 	}
 
@@ -311,18 +324,6 @@ public class BattlegearConfig {
 		GameRegistry.addRecipe(new ItemStack(bannerItem), 
 				" W "," W ", " S ",Character.valueOf('W'),Block.cloth, Character.valueOf('S'), Item.stick);
 		*/
-        try{
-            for(Field f: BattlegearConfig.class.getFields()){
-                if(Item.class.isAssignableFrom(f.getType())){
-                    Item it = (Item)f.get(null);
-                    if(it!=null){
-                        GameRegistry.registerItem(it, it.getUnlocalizedName());
-                    }
-                }
-            }
-        }catch(Exception e){
-
-        }
 
 	}
 

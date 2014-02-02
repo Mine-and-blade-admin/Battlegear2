@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import mods.battlegear2.api.IArrowCatcher;
+import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

@@ -4,7 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutput;
 import java.io.IOException;
 
-import mods.battlegear2.utils.BattlegearUtils;
+import mods.battlegear2.api.core.BattlegearUtils;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet;
@@ -40,7 +41,7 @@ public class BattlegearAnimationPacket extends AbstractMBPacket {
 		            if (player.worldObj instanceof WorldServer) {
 		                ((WorldServer) player.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entity, this.generatePacket());
 		            }
-		            animation.processAnimation(entity);
+		            animation.processAnimation((IBattlePlayer)entity);
 				}
 	        }
         } catch (IOException e) {

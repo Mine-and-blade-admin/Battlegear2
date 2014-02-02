@@ -1,17 +1,17 @@
 package mods.battlegear2;
 
-import mods.battlegear2.api.IArrowCatcher;
+import mods.battlegear2.api.shield.IArrowCatcher;
+import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.IOffhandDual;
-import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
-import mods.battlegear2.api.weapons.OffhandAttackEvent;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
-import mods.battlegear2.utils.BattlegearUtils;
+import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -59,7 +59,7 @@ public class BattlemodeHookContainerClass {
             }
         }
 
-        if(event.entityPlayer instanceof IBattlePlayer && ((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
+        if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
         }
 
@@ -67,7 +67,6 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void playerInterect(PlayerInteractEvent event) {
-        if (event.entityPlayer instanceof IBattlePlayer)
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
             event.entityPlayer.isSwingInProgress = false;
@@ -126,36 +125,35 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void playerIntereactEntity(EntityInteractEvent event) {
-        if (event.entityPlayer instanceof IBattlePlayer)
-            if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
-                event.setCanceled(true);
-                event.setResult(Result.DENY);
-                event.entityPlayer.isSwingInProgress = false;
-            } else if (((IBattlePlayer) event.entityPlayer).isBattlemode()) {
-                ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
-                ItemStack offhandItem = ((InventoryPlayerBattle)event.entityPlayer.inventory).getCurrentOffhandWeapon();
-                if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem, offhandItem)){
-                    OffhandAttackEvent offAttackEvent = new OffhandAttackEvent(event, mainHandItem, offhandItem);
-                    MinecraftForge.EVENT_BUS.post(offAttackEvent);
-                    if (offAttackEvent.swingOffhand) {
-                        ((IBattlePlayer) event.entityPlayer).swingOffItem();
-                        Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
-                    }
-                    if (offAttackEvent.shouldAttack) {
-                        //event.entityPlayer.attackTargetEntityWithCurrentOffItem(event.target);
-                        BattlegearUtils.attackTargetEntityWithCurrentOffItem(event.entityPlayer, event.target);
-                    }
-                    if (offAttackEvent.cancelParent) {
-                        event.setCanceled(true);
-                        event.setResult(Result.DENY);
-                    }
+        if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
+            event.setCanceled(true);
+            event.setResult(Result.DENY);
+            event.entityPlayer.isSwingInProgress = false;
+        } else if (((IBattlePlayer) event.entityPlayer).isBattlemode()) {
+            ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
+            ItemStack offhandItem = ((InventoryPlayerBattle)event.entityPlayer.inventory).getCurrentOffhandWeapon();
+            if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem, offhandItem)){
+                PlayerEventChild.OffhandAttackEvent offAttackEvent = new PlayerEventChild.OffhandAttackEvent(event, mainHandItem, offhandItem);
+                MinecraftForge.EVENT_BUS.post(offAttackEvent);
+                if (offAttackEvent.swingOffhand) {
+                    ((IBattlePlayer) event.entityPlayer).swingOffItem();
+                    Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
                 }
-
+                if (offAttackEvent.shouldAttack) {
+                    //event.entityPlayer.attackTargetEntityWithCurrentOffItem(event.target);
+                    BattlegearUtils.attackTargetEntityWithCurrentOffItem(event.entityPlayer, event.target);
+                }
+                if (offAttackEvent.cancelParent) {
+                    event.setCanceled(true);
+                    event.setResult(Result.DENY);
+                }
             }
+
+        }
     }
 
     @ForgeSubscribe(priority = EventPriority.HIGHEST)
-    public void onOffhandAttack(OffhandAttackEvent event){
+    public void onOffhandAttack(PlayerEventChild.OffhandAttackEvent event){
         if(event.offHand!=null){
             if(event.offHand.getItem() instanceof IOffhandDual){
                 event.swingOffhand =((IOffhandDual) event.offHand.getItem()).offhandAttackEntity(event, event.mainHand, event.offHand);

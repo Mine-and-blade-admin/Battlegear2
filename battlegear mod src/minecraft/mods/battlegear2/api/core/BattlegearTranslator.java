@@ -1,4 +1,4 @@
-package mods.battlegear2.coremod;
+package mods.battlegear2.api.core;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 
 public class BattlegearTranslator implements IFMLCallHook {
+    //Setting this to true will enable the output of all edited classes as .class files
+    public static boolean debug = false;
+    public static boolean obfuscatedEnv;
 
     private String deobFile;
     private String mcLocation;
@@ -27,11 +30,11 @@ public class BattlegearTranslator implements IFMLCallHook {
     private static HashMap<String, String> methodDescMap = new HashMap<String, String>();
 
     public static String getMapedFieldName(String className, String fieldName, String devName) {
-        return BattlegearLoadingPlugin.obfuscatedEnv?fieldNameMap.get(className + "." + fieldName):devName;
+        return obfuscatedEnv?fieldNameMap.get(className + "." + fieldName):devName;
     }
 
     public static String getMapedClassName(String className) {
-    	if(BattlegearLoadingPlugin.obfuscatedEnv)
+    	if(obfuscatedEnv)
     		return classNameMap.get(className.substring(className.lastIndexOf(".")+1));
     	else{
     		StringBuilder clas = new StringBuilder("net/minecraft/");
@@ -41,11 +44,11 @@ public class BattlegearTranslator implements IFMLCallHook {
     }
 
     public static String getMapedMethodName(String className, String methodName, String devName) {
-        return BattlegearLoadingPlugin.obfuscatedEnv?methodNameMap.get(className + "." + methodName):devName;
+        return obfuscatedEnv?methodNameMap.get(className + "." + methodName):devName;
     }
 
     public static String getMapedMethodDesc(String className, String methodName, String devDesc) {
-        return BattlegearLoadingPlugin.obfuscatedEnv?methodDescMap.get(className + "." + methodName):devDesc;
+        return obfuscatedEnv?methodDescMap.get(className + "." + methodName):devDesc;
     }
 
     public static void setup(String deobFileName){
@@ -95,7 +98,7 @@ public class BattlegearTranslator implements IFMLCallHook {
 
     		while(line != null){
     			if(line.toLowerCase().contains("asm debug mode")){
-    				BattlegearLoadingPlugin.debug = line.toLowerCase().contains("true");
+    				debug = line.toLowerCase().contains("true");
                     break;
     			}
     			line = br.readLine();

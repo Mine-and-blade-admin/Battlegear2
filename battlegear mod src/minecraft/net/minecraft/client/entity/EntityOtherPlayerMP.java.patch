@@ -5,7 +5,7 @@
  import cpw.mods.fml.relauncher.Side;
  import cpw.mods.fml.relauncher.SideOnly;
 +import mods.battlegear2.client.utils.BattlegearClientUtils;
-+import mods.battlegear2.utils.BattlegearUtils;
++import mods.battlegear2.api.core.BattlegearUtils;
  import net.minecraft.client.Minecraft;
  import net.minecraft.item.Item;
  import net.minecraft.item.ItemStack;

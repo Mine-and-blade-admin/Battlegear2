@@ -5,7 +5,7 @@
  import java.util.List;
  import javax.imageio.ImageIO;
 +
-+import mods.battlegear2.utils.BattlegearUtils;
++import mods.battlegear2.api.core.BattlegearUtils;
  import net.minecraft.block.Block;
  import net.minecraft.client.audio.SoundManager;
  import net.minecraft.client.entity.EntityClientPlayerMP;

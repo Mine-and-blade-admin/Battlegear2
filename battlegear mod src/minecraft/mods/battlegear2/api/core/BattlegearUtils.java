@@ -1,4 +1,4 @@
-package mods.battlegear2.utils;
+package mods.battlegear2.api.core;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -6,11 +6,9 @@ import java.util.Collection;
 
 import mods.battlegear2.api.IAllowItem;
 import mods.battlegear2.api.IOffhandDual;
-import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.api.weapons.WeaponRegistry;
-import mods.battlegear2.coremod.BattlegearTranslator;
-import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentThorns;
 import net.minecraft.entity.Entity;
@@ -37,6 +35,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.EventBus;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -44,11 +43,14 @@ import com.google.common.io.ByteArrayDataOutput;
 
 public class BattlegearUtils {
 
+    /**
+     * Event bus to which {@link mods.battlegear2.api.RenderPlayerEventChild} events are post to
+     */
+    public static final EventBus RENDER_BUS = new EventBus();
+
+
     private static String[] itemBlackListMethodNames;
-
     private static Class[][] itemBlackListMethodParams;
-
-
     static {
 
         if (World.class.getName().equals("net.minecraft.world.World")) {
@@ -85,7 +87,7 @@ public class BattlegearUtils {
     }
 
     public static boolean isPlayerInBattlemode(EntityPlayer player) {
-        return player.inventory instanceof InventoryPlayerBattle && ((InventoryPlayerBattle) player.inventory).isBattlemode();
+        return ((InventoryPlayerBattle) player.inventory).isBattlemode();
     }
 
     public static void setPlayerCurrentItem(EntityPlayer player, ItemStack stack, int offset) {
@@ -216,7 +218,6 @@ public class BattlegearUtils {
         }
     }
 
-
     public static void writeItemStack(ByteArrayDataOutput par1DataOutputStream, ItemStack par0ItemStack) throws IOException {
 
         if (par0ItemStack == null) {
@@ -249,7 +250,6 @@ public class BattlegearUtils {
     public static InventoryPlayer replaceInventory(EntityPlayer entityPlayer) {
         return new InventoryPlayerBattle(entityPlayer);
     }
-
 
     public static void attackTargetEntityWithCurrentOffItem(EntityPlayer player, Entity par1Entity)
     {
@@ -395,8 +395,6 @@ public class BattlegearUtils {
 
         player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
     }
-
-
 
     public static void closeStream(Closeable c){
         try{

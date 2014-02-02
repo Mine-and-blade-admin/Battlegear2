@@ -1,6 +1,6 @@
 package mods.battlegear2.items;
 
-import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.weapons.ISpecialEffect;
 import net.minecraft.client.renderer.texture.IconRegister;

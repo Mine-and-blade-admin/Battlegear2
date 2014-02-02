@@ -3,14 +3,14 @@ package mods.battlegear2.items;
 import java.util.List;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import mods.battlegear2.api.IArrowCatcher;
+import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
 import mods.battlegear2.api.ISheathed;
-import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.shield.IShield;
+import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
-import mods.battlegear2.utils.EnumShield;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -25,7 +25,7 @@ import net.minecraft.util.StatCollector;
 
 public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed, IArrowCatcher{
 
-    public EnumShield enumShield;
+    public ShieldType enumShield;
 
     private Icon backIcon;
     private Icon trimIcon;
@@ -52,7 +52,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     }
 
-    public ItemShield(int id, EnumShield enumShield) {
+    public ItemShield(int id, ShieldType enumShield) {
         super(id);
         this.setCreativeTab(BattlegearConfig.customTab);
 

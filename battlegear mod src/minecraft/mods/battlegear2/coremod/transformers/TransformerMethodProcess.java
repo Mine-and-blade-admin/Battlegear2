@@ -2,8 +2,7 @@ package mods.battlegear2.coremod.transformers;
 
 import java.util.List;
 
-import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import mods.battlegear2.coremod.BattlegearTranslator;
+import mods.battlegear2.api.core.BattlegearTranslator;
 
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;

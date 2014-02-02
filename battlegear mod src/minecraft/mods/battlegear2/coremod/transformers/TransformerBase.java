@@ -13,7 +13,7 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
 
 import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import mods.battlegear2.coremod.BattlegearTranslator;
+import mods.battlegear2.api.core.BattlegearTranslator;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public abstract class TransformerBase implements IClassTransformer{
@@ -43,7 +43,7 @@ public abstract class TransformerBase implements IClassTransformer{
             cn.accept(cw);
 
             System.out.println("M&B - Patching Class "+ unobfClass + (success?" done":" FAILED!"));
-            if (!success && BattlegearLoadingPlugin.debug) {
+            if (!success && BattlegearTranslator.debug) {
                 writeClassFile(cw, unobfClass+" ("+name+")");
             }
 			return cw.toByteArray();
@@ -108,7 +108,7 @@ public abstract class TransformerBase implements IClassTransformer{
 
                 //Add New
                 newList.add(new MethodInsnNode(INVOKESTATIC,
-                        "mods/battlegear2/utils/BattlegearUtils",
+                        "mods/battlegear2/api/core/BattlegearUtils",
                         "setPlayerCurrentItem",
                         "(L" + BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer") +
                                 ";L" + BattlegearTranslator.getMapedClassName("item.ItemStack") + ";)V"));

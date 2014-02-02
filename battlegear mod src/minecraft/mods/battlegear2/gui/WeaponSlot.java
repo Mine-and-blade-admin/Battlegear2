@@ -2,7 +2,7 @@ package mods.battlegear2.gui;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.quiver.IArrowContainer2;
-import mods.battlegear2.utils.BattlegearUtils;
+import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemBow;

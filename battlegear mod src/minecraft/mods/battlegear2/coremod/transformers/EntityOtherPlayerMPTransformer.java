@@ -5,7 +5,7 @@ import static org.objectweb.asm.Opcodes.*;
 import java.util.Iterator;
 import java.util.List;
 
-import mods.battlegear2.coremod.BattlegearTranslator;
+import mods.battlegear2.api.core.BattlegearTranslator;
 
 import org.objectweb.asm.tree.*;
 

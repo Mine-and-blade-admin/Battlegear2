@@ -34,8 +34,8 @@ import org.lwjgl.opengl.GL11;
 
 public class BattlegearClientEvents {
 
-	private BattlegearInGameGUI inGameGUI = new BattlegearInGameGUI();
-	private QuiverModel quiverModel = new QuiverModel();
+	private final BattlegearInGameGUI inGameGUI = new BattlegearInGameGUI();
+	private final QuiverModel quiverModel = new QuiverModel();
 
 	private final ResourceLocation quiverDetails = new ResourceLocation(
 			"battlegear2", "textures/armours/quiver/QuiverDetails.png");

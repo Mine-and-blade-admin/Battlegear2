@@ -5,8 +5,8 @@
  import java.util.Map.Entry;
  
 +import mods.battlegear2.api.IShield;
-+import mods.battlegear2.inventory.InventoryPlayerBattle;
-+import mods.battlegear2.utils.BattlegearUtils;
++import mods.battlegear2.api.core.InventoryPlayerBattle;
++import mods.battlegear2.api.core.BattlegearUtils;
  import net.minecraft.block.Block;
  import net.minecraft.block.BlockBed;
  import net.minecraft.block.material.Material;

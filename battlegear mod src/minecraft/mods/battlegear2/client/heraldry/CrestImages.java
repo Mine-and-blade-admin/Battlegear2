@@ -1,14 +1,12 @@
 package mods.battlegear2.client.heraldry;
 
-import mods.battlegear2.utils.BattlegearUtils;
+import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.client.resources.ResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 
 public class CrestImages implements Comparable<CrestImages>{

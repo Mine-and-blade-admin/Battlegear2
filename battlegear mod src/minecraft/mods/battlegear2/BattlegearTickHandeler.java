@@ -4,7 +4,7 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 import mods.battlegear2.api.core.IBattlePlayer;
-import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
@@ -23,94 +23,81 @@ public class BattlegearTickHandeler implements ITickHandler {
 
     //public HashMap<String, Integer> currentItemCache = new HashMap<String, Integer>();
 
-
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
-        // TODO Auto-generated method stub
+        EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
 
-    }
-
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-
-        if (type.contains(TickType.PLAYER)) {
-
-            EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
-
-            if (entityPlayer.worldObj instanceof WorldServer) {
+        if (entityPlayer.worldObj instanceof WorldServer) {
                 /*if(!currentItemCache.containsKey(entityPlayer.username)||entityPlayer.inventory.currentItem!=currentItemCache.get(entityPlayer.username))
                 {
                 	entityPlayer.inventory.onInventoryChanged();
                 	currentItemCache.put(entityPlayer.username, entityPlayer.inventory.currentItem);
                 }*/
-                
-                if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 
-                    ((WorldServer)entityPlayer.worldObj)
-                            .getEntityTracker().sendPacketToAllAssociatedPlayers(
-                            entityPlayer,
-                            new BattlegearSyncItemPacket(entityPlayer).generatePacket()
-                    );
+            if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 
-                    ((IBattlePlayer)entityPlayer).setSpecialActionTimer(0);
+                ((WorldServer)entityPlayer.worldObj)
+                        .getEntityTracker().sendPacketToAllAssociatedPlayers(
+                        entityPlayer,
+                        new BattlegearSyncItemPacket(entityPlayer).generatePacket()
+                );
 
-                    ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
+                ((IBattlePlayer)entityPlayer).setSpecialActionTimer(0);
 
-                }
-                //Force update every 3 seconds
-                //TODO: This is a temp fix
-                else if(entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
-                    ((WorldServer)entityPlayer.worldObj)
-                            .getEntityTracker().sendPacketToAllAssociatedPlayers(
-                            entityPlayer,
-                            new BattlegearSyncItemPacket(entityPlayer).generatePacket()
-                    );
-                }
-                
+                ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
+
+            }
+            //Force update every 3 seconds
+            //TODO: This is a temp fix
+            else if(entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
+                ((WorldServer)entityPlayer.worldObj)
+                        .getEntityTracker().sendPacketToAllAssociatedPlayers(
+                        entityPlayer,
+                        new BattlegearSyncItemPacket(entityPlayer).generatePacket()
+                );
             }
 
-        	
-            //If we JUST swung an Item
-            if (entityPlayer.swingProgressInt == 1) {
-                ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
-                if (mainhand != null && mainhand.getItem() instanceof IExtendedReachWeapon) {
-                    float extendedReach = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
-                    if(extendedReach > 0){
-                        MovingObjectPosition mouseOver = Battlegear.proxy.getMouseOver(0, extendedReach + 4);
-                        if (mouseOver != null && mouseOver.typeOfHit == EnumMovingObjectType.ENTITY) {
-                            Entity target = mouseOver.entityHit;
-                            if (target instanceof EntityLiving && target != entityPlayer) {
-                                if (target.hurtResistantTime != ((EntityLiving) target).maxHurtResistantTime) {
-                                    FMLClientHandler.instance().getClient().playerController.attackEntity(entityPlayer, target);
-                                }
+        }
+    }
+
+    @Override
+    public void tickEnd(EnumSet<TickType> type, Object... tickData) {
+
+        EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
+
+        //If we JUST swung an Item
+        if (entityPlayer.swingProgressInt == 1) {
+            ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
+            if (mainhand != null && mainhand.getItem() instanceof IExtendedReachWeapon) {
+                float extendedReach = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
+                if(extendedReach > 0){
+                    MovingObjectPosition mouseOver = Battlegear.proxy.getMouseOver(0, extendedReach + 4);
+                    if (mouseOver != null && mouseOver.typeOfHit == EnumMovingObjectType.ENTITY) {
+                        Entity target = mouseOver.entityHit;
+                        if (target instanceof EntityLiving && target != entityPlayer) {
+                            if (target.hurtResistantTime != ((EntityLiving) target).maxHurtResistantTime) {
+                                FMLClientHandler.instance().getClient().playerController.attackEntity(entityPlayer, target);
                             }
                         }
                     }
                 }
             }
-
-
-            if(entityPlayer instanceof IBattlePlayer){
-                int timer = ((IBattlePlayer)entityPlayer).getSpecialActionTimer();
-                if(timer > 0){
-                    ((IBattlePlayer)entityPlayer).setSpecialActionTimer(timer-1);
-
-                    int targetTime = 0;
-
-                    ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
-                    if(offhand != null && offhand.getItem() instanceof IShield){
-                        targetTime = ((IShield) offhand.getItem()).getBashTimer(offhand) / 2;
-                    }else if (offhand != null && offhand.getItem() instanceof IArrowContainer2){
-                        targetTime = 0;
-                    }
-                    if(((IBattlePlayer)entityPlayer).getSpecialActionTimer() == targetTime){
-                        Battlegear.proxy.doSpecialAction(entityPlayer);
-                    }
-                }
-            }
-
         }
 
+        int timer = ((IBattlePlayer)entityPlayer).getSpecialActionTimer();
+        if(timer > 0){
+            ((IBattlePlayer)entityPlayer).setSpecialActionTimer(timer-1);
+            int targetTime = 0;
+            ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
+            if(offhand != null && offhand.getItem() instanceof IShield){
+                targetTime = ((IShield) offhand.getItem()).getBashTimer(offhand) / 2;
+            }else if (offhand != null && offhand.getItem() instanceof IArrowContainer2){
+                targetTime = 0;
+            }
+            if(((IBattlePlayer)entityPlayer).getSpecialActionTimer() == targetTime){
+                Battlegear.proxy.doSpecialAction(entityPlayer);
+            }
+        }
     }
 
     @Override

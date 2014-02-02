@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
-import mods.battlegear2.utils.BattlegearUtils;
+import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -52,9 +52,7 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
 	                this.player.inventory.setInventorySlotContents(InventoryPlayerBattle.OFFSET + i, stack);
 	                //}
 	            }
-                if(this.player instanceof IBattlePlayer){
-                    ((IBattlePlayer) this.player).setSpecialActionTimer(0);
-                }
+                ((IBattlePlayer) this.player).setSpecialActionTimer(0);
 	            if(!player.worldObj.isRemote){//Using data sent only by client
 	            	this.player.setItemInUse(Packet.readItemStack(inputStream), inputStream.readInt());
 	            }

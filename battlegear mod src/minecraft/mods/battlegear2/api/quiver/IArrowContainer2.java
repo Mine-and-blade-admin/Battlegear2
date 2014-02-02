@@ -1,5 +1,6 @@
 package mods.battlegear2.api.quiver;
 
+import mods.battlegear2.api.PlayerEventChild;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
@@ -78,7 +79,7 @@ public interface IArrowContainer2 {
      * Called before the arrow is fired from this container
      * @param arrowEvent Used to decide bow damage, bow sound and arrow enchantment
      */
-    public void onPreArrowFired(QuiverArrowEvent.Firing arrowEvent);
+    public void onPreArrowFired(PlayerEventChild.QuiverArrowEvent.Firing arrowEvent);
 
     /**
      * Called when the container is put on a crafting bench with other items

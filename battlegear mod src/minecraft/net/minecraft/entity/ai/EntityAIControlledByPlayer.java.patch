@@ -3,7 +3,7 @@
 @@ -1,5 +1,6 @@
  package net.minecraft.entity.ai;
  
-+import mods.battlegear2.utils.BattlegearUtils;
++import mods.battlegear2.api.core.BattlegearUtils;
  import net.minecraft.block.Block;
  import net.minecraft.block.BlockHalfSlab;
  import net.minecraft.entity.EntityCreature;

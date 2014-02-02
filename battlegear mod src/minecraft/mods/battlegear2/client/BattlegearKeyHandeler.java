@@ -4,7 +4,7 @@ import java.util.EnumSet;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.core.IBattlePlayer;
-import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
@@ -52,7 +52,7 @@ public class BattlegearKeyHandeler extends KeyBindingRegistry.KeyHandler {
             if (mc != null && mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
 
                 EntityClientPlayerMP player = mc.thePlayer;
-                if(tickEnd && player instanceof IBattlePlayer){
+                if(tickEnd){
 	                if (kb.keyCode == special.keyCode && ((IBattlePlayer) player).getSpecialActionTimer() == 0){
 	                    ItemStack main = player.getCurrentEquippedItem();
 	                    ItemStack quiver = QuiverArrowRegistry.getArrowContainer(main, player);

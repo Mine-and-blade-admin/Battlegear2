@@ -2,9 +2,9 @@ package mods.battlegear2;
 
 import java.util.Random;
 
+import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.IQuiverSelection;
-import mods.battlegear2.api.quiver.QuiverArrowEvent;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
@@ -99,7 +99,7 @@ public class BowHookContainerClass2 {
     @ForgeSubscribe(receiveCanceled=true)
     public void onBowFiring(ArrowLooseEvent event) {
         //Check if bow is charged enough
-        float f = new QuiverArrowEvent.ChargeCalculations(event).getCharge();
+        float f = new PlayerEventChild.QuiverArrowEvent.ChargeCalculations(event).getCharge();
         if(f>0){
             ItemStack stack = QuiverArrowRegistry.getArrowContainer(event.bow, event.entityPlayer);
             if(stack != null){
@@ -107,7 +107,7 @@ public class BowHookContainerClass2 {
                 World world = event.entityPlayer.worldObj;
                 EntityArrow entityarrow = quiver.getArrowType(stack, world, event.entityPlayer, f*2.0F);
                 if(entityarrow!=null){
-                    QuiverArrowEvent.Firing arrowEvent = new QuiverArrowEvent.Firing(event, stack, entityarrow);
+                    PlayerEventChild.QuiverArrowEvent.Firing arrowEvent = new PlayerEventChild.QuiverArrowEvent.Firing(event, stack, entityarrow);
                     quiver.onPreArrowFired(arrowEvent);
                     if(!MinecraftForge.EVENT_BUS.post(arrowEvent)){
                         if (arrowEvent.isCritical || f == 1.0F)

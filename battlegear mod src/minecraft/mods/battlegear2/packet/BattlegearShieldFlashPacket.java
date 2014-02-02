@@ -5,7 +5,7 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.utils.BattlegearUtils;
+import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet;
 

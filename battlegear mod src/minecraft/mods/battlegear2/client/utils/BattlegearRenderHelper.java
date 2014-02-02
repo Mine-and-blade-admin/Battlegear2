@@ -4,7 +4,7 @@ import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.ISheathed;
-import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.RenderPlayerEventChild.*;
 import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.api.quiver.IArrowContainer2;
@@ -12,7 +12,7 @@ import mods.battlegear2.client.BattlegearKeyHandeler;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemSpear;
 import mods.battlegear2.utils.BattlegearConfig;
-import mods.battlegear2.utils.BattlegearUtils;
+import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -30,7 +30,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.common.MinecraftForge;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -125,9 +124,9 @@ public class BattlegearRenderHelper {
 	        		GL11.glRotatef(25, 0, 0, 1);
 	        		GL11.glRotatef(325-35*MathHelper.sin(swingProgress*3.14159F), 0, 1, 0);
 
-	        		if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender())))
+	        		if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender())))
 	        			itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
-	        		MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()));
+                    BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()));
 	        		GL11.glPopMatrix();
 
 
@@ -226,7 +225,7 @@ public class BattlegearRenderHelper {
                     if (offhandRender.getItemToRender().getItem().shouldRotateAroundWhenRendering()) {
                         GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
                     }
-                    if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()))){
+                    if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()))){
 	
                     	if (offhandRender.getItemToRender().getItem().requiresMultipleRenderPasses()) {
 	                        itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
@@ -242,7 +241,7 @@ public class BattlegearRenderHelper {
 	                        itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
 	                    }
                     }
-                    MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()));
+                    BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()));
 	        		
                     GL11.glPopMatrix();
                 }
@@ -278,9 +277,9 @@ public class BattlegearRenderHelper {
                 GL11.glTranslatef(5.6F, 0.0F, 0.0F);
                 var13 = 1.0F;
                 GL11.glScalef(var13, var13, var13);
-                if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.Offhand, null))) 	        		              	
+                if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.Offhand, null)))
                 	var26.renderFirstPersonArm(mc.thePlayer);
-                MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.Offhand, null));
+                BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.Offhand, null));
 	        		
                 GL11.glPopMatrix();
             }
@@ -398,9 +397,9 @@ public class BattlegearRenderHelper {
             RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
             
             GL11.glPushMatrix();
-            if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.Offhand, null))) 	        		              	           
+            if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.Offhand, null)))
             	modelBipedMain.bipedLeftArm.postRender(0.0625F);
-            MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.Offhand, null));
+            BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.Offhand, null));
         	
             GL11.glTranslatef(0.0625F, 0.4375F, 0.0625F);
 
@@ -426,7 +425,7 @@ public class BattlegearRenderHelper {
                 GL11.glRotatef(-100.0F+90, 1.0F, 0.0F, 0.0F);
                 GL11.glRotatef(45.0F-90, 0.0F, 1.0F, 0.0F);
                 GL11.glRotatef(25, 0.0F, 0.0F, 1.0F);
-                if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){ 	        		              	                          
+                if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){
 	                if (var21.getItem().requiresMultipleRenderPasses()) {
 	                    for (int var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
 	                        int var26 = var21.getItem().getColorFromItemStack(var21, var27);
@@ -493,7 +492,7 @@ public class BattlegearRenderHelper {
                 float var10;
                 int var27;
                 float var28;
-                if(!MinecraftForge.EVENT_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){ 	        		              	                          
+                if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){
     	            
 	                if (var21.getItem().requiresMultipleRenderPasses()) {
 	                    for (var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
@@ -514,7 +513,7 @@ public class BattlegearRenderHelper {
 	                }
                 }
             }
-            MinecraftForge.EVENT_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.ItemOffhand, var21));
+            BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.ItemOffhand, var21));
             GL11.glPopMatrix();
         } else {
             if(!((IBattlePlayer) par1EntityPlayer).isBattlemode())
@@ -590,7 +589,7 @@ public class BattlegearRenderHelper {
                 GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
             }
 
-            if(!MinecraftForge.EVENT_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, true, mainhandSheathed))){ 	        		              	                          
+            if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, true, mainhandSheathed))){
     	        
 	            if (mainhandSheathed.getItem().requiresMultipleRenderPasses()) {
 	                for (int var27 = 0; var27 < mainhandSheathed.getItem().getRenderPasses(mainhandSheathed.getItemDamage()); ++var27) {
@@ -610,8 +609,8 @@ public class BattlegearRenderHelper {
 	                RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, 0);
 	            }
             }
-            
-            MinecraftForge.EVENT_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, true, mainhandSheathed));
+
+            BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, true, mainhandSheathed));
             
             GL11.glPopMatrix();
 
@@ -655,7 +654,7 @@ public class BattlegearRenderHelper {
                 GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
 
             }
-            if(!MinecraftForge.EVENT_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, false, offhandSheathed))){ 	        		              	                          
+            if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, false, offhandSheathed))){
         	    
 	            if (offhandSheathed.getItem().requiresMultipleRenderPasses()) {
 	                for (int var27 = 0; var27 < offhandSheathed.getItem().getRenderPasses(offhandSheathed.getItemDamage()); ++var27) {
@@ -675,8 +674,8 @@ public class BattlegearRenderHelper {
 	                RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, 0);
 	            }
             }
-            
-            MinecraftForge.EVENT_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, false, offhandSheathed));
+
+            BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, false, offhandSheathed));
             
             GL11.glPopMatrix();
         }

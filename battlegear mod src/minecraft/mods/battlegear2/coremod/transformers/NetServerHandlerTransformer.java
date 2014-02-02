@@ -5,7 +5,7 @@ import static org.objectweb.asm.Opcodes.*;
 import java.util.Iterator;
 import java.util.List;
 
-import mods.battlegear2.coremod.BattlegearTranslator;
+import mods.battlegear2.api.core.BattlegearTranslator;
 
 import org.objectweb.asm.tree.*;
 
@@ -76,7 +76,7 @@ public class NetServerHandlerTransformer extends TransformerBase {
 
                     newList.add(nextNode);
                     newList.add(new MethodInsnNode(INVOKESTATIC,
-                            "mods/battlegear2/utils/BattlegearUtils",
+                            "mods/battlegear2/api/core/BattlegearUtils",
                             "setPlayerCurrentItem",
                             "(L" + entityPlayerClassName +
                                     ";L" + itemStackClassName + ";)V"));
@@ -96,7 +96,7 @@ public class NetServerHandlerTransformer extends TransformerBase {
                     newList.add(new MethodInsnNode(INVOKEVIRTUAL, inventoryPlayerClassName, inventoryGetCurrentMethodName, inventoryGetCurrentMethodDesc));
                     newList.add(new MethodInsnNode(INVOKESTATIC, itemStackClassName, itemStackCopyStackMethodName, itemStackCopyStackMethodDesc));
                     newList.add(new MethodInsnNode(INVOKESTATIC,
-                            "mods/battlegear2/utils/BattlegearUtils",
+                            "mods/battlegear2/api/core/BattlegearUtils",
                             "setPlayerCurrentItem", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
                     
                     if(!FMLCommonHandler.instance().getModName().contains("mcpc")){//MCPC already adds a fix for this

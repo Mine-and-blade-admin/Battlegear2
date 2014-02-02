@@ -3,12 +3,10 @@ package mods.battlegear2.client.renderer;
 import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemShield;
-import mods.battlegear2.utils.EnumShield;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
@@ -45,14 +43,13 @@ public class ShieldRenderer implements IItemRenderer{
             GL11.glPushMatrix();
 
             Tessellator tessellator = Tessellator.instance;
-            Icon icon = shield.getTrimIcon();
 
             int col = shield.getColor(item);
             float red = (float)(col >> 16 & 255) / 255.0F;
             float green = (float)(col >> 8 & 255) / 255.0F;
             float blue = (float)(col & 255) / 255.0F;
 
-            icon = shield.getIconIndex(item);
+            Icon icon = shield.getIconIndex(item);
 
             switch (type){
                 case ENTITY:
@@ -66,7 +63,7 @@ public class ShieldRenderer implements IItemRenderer{
                             icon.getMaxV(),
                             icon.getIconWidth(),
                             icon.getIconHeight(), 16F / 256F);
-                    if(shield.enumShield != EnumShield.WOOD){
+                    if(!shield.enumShield.getName().equals("wood")){
                         GL11.glColor3f(1,1,1);
                     }
 
@@ -106,7 +103,7 @@ public class ShieldRenderer implements IItemRenderer{
                             icon.getIconWidth(),
                             icon.getIconHeight(), 16F/256F);
 
-                    if(shield.enumShield != EnumShield.WOOD){
+                    if(!shield.enumShield.getName().equals("wood")){
                         GL11.glColor3f(1,1,1);
                     }
 

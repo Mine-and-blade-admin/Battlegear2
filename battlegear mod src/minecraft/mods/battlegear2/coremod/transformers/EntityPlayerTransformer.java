@@ -1,7 +1,7 @@
 package mods.battlegear2.coremod.transformers;
 
 import mods.battlegear2.api.core.IBattlePlayer;
-import mods.battlegear2.coremod.BattlegearTranslator;
+import mods.battlegear2.api.core.BattlegearTranslator;
 
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
@@ -176,7 +176,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
         mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
         mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, itemStackClassName, itemStackGetItemMethodName, itemStackGetItemMethodDesc));
-        mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/IShield"));
+        mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/shield/IShield"));
         mn.instructions.add(new JumpInsnNode(IFEQ, L1));
 
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
@@ -228,7 +228,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
         mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
         mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, itemStackClassName, itemStackGetItemMethodName, itemStackGetItemMethodDesc));
-        mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/IShield"));
+        mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/shield/IShield"));
         mn.instructions.add(new JumpInsnNode(IFEQ, L1));
 
         mn.instructions.add(new VarInsnNode(ALOAD, 0));

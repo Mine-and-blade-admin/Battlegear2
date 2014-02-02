@@ -6,6 +6,7 @@ import java.util.Map;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.Name;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
+import mods.battlegear2.api.core.BattlegearTranslator;
 
 @TransformerExclusions({"mods.battlegear2.coremod"})
 @Name("Mine and Blade: Battlegear2")
@@ -24,11 +25,8 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
     public static final String EntityOtherPlayerMPTransformer = "mods.battlegear2.coremod.transformers.EntityOtherPlayerMPTransformer";
     public static final String AccessTransformer = "mods.battlegear2.coremod.transformers.BattlegearAccessTransformer";
     public static final String EntityTrackerTransformer = "mods.battlegear2.coremod.transformers.EntityTrackerTransformer";
-    //Setting this to true will enable the output of all edited classes as .class files
-    public static boolean debug = false;
     public static File debugOutputLocation;
-    public static boolean obfuscatedEnv;
-    
+
     public static final String[] transformers = 
     		new String[]{
 		        EntityPlayerTransformer,
@@ -59,13 +57,13 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String getSetupClass() {
-        return "mods.battlegear2.coremod.BattlegearTranslator";
+        return "mods.battlegear2.api.core.BattlegearTranslator";
     }
 
     @Override
     public void injectData(Map<String, Object> data) {
     	debugOutputLocation = new File(data.get("mcLocation").toString(), "bg edited classes");
-        obfuscatedEnv = Boolean.class.cast(data.get("runtimeDeobfuscationEnabled"));
+        BattlegearTranslator.obfuscatedEnv = Boolean.class.cast(data.get("runtimeDeobfuscationEnabled"));
     }
 
 }

@@ -1,4 +1,4 @@
-package mods.battlegear2.api;
+package mods.battlegear2.api.shield;
 
 import net.minecraft.item.ItemStack;
 /**
