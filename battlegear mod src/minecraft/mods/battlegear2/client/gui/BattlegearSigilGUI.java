@@ -281,7 +281,6 @@ public class BattlegearSigilGUI extends GuiContainer {
 	public static void open(EntityPlayer player){
 		//send packet to open container on server
         PacketDispatcher.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.sigilEditor).generatePacket());
-        player.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.sigilEditor, player.worldObj, 0, 0, 0);
 	}
 
 

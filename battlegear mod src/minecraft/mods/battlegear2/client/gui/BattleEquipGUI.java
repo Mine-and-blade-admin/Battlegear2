@@ -1,6 +1,7 @@
 package mods.battlegear2.client.gui;
 
-import mods.battlegear2.Battlegear;
+import mods.battlegear2.client.BattlegearClientEvents;
+import mods.battlegear2.client.ClientProxy;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.gui.ContainerBattle;
 import mods.battlegear2.packet.BattlegearGUIPacket;
@@ -16,6 +17,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 public class BattleEquipGUI extends InventoryEffectRenderer {
 
     public static final ResourceLocation resource = new ResourceLocation("battlegear2", "textures/gui/Equip GUI.png");
+    public static Class equipTab;
     
     /**
      * x size of the inventory window in pixels. Defined as float, passed as int
@@ -35,9 +37,29 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
         //entityPlayer.addStat(AchievementList.openInventory, 1);
     }
 
+    @Override
+    public void initGui ()
+    {
+        super.initGui();
+        BattlegearClientEvents.onOpenGui(this.buttonList, guiLeft-30, guiTop);
+        if(ClientProxy.tconstructEnabled){
+            this.buttonList.clear();
+            try{
+                if(equipTab==null){
+                    equipTab = Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab");
+                }
+                ClientProxy.updateTab.invoke(null, guiLeft, guiTop, equipTab);
+                ClientProxy.addTabs.invoke(null, this.buttonList);
+            }catch(Exception e){
+                ClientProxy.tconstructEnabled = false;
+            }
+        }
+    }
+
     /**
      * Draws the screen and all the components in it.
      */
+    @Override
     public void drawScreen(int par1, int par2, float par3){
         super.drawScreen(par1, par2, par3);
         this.xSize_lo = (float) par1;
@@ -47,6 +69,7 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
     /**
      * Draw the background layer for the GuiContainer (everything behind the items)
      */
+    @Override
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(resource);
@@ -60,7 +83,5 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
     public static void open(EntityPlayer player){
     	//send packet to open container on server
         PacketDispatcher.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.equipID).generatePacket());
-        //Also open on client
-        player.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.equipID, player.worldObj, (int) player.posX, (int) player.posY, (int) player.posZ);
     }
 }

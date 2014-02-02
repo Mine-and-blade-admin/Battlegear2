@@ -1,21 +1,21 @@
 package mods.battlegear2.client.gui;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.core.IBattlePlayer;
-import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.client.ClientProxy;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.InventoryEffectRenderer;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
@@ -36,7 +36,7 @@ public class BattlegearInGameGUI extends Gui {
     public static final RenderItem itemRenderer = new RenderItem();
     protected static final ResourceLocation resourceLocation = new ResourceLocation("textures/gui/widgets.png");
     protected static final ResourceLocation resourceLocationShield = new ResourceLocation("battlegear2", "textures/gui/Shield Bar.png");
-    private Class<?extends InventoryEffectRenderer> previousGui;
+    private Class<?> previousGui;
 
     public BattlegearInGameGUI() {
         super();
@@ -53,14 +53,16 @@ public class BattlegearInGameGUI extends Gui {
             if (!this.mc.playerController.enableEverythingIsScrewedUpMode()) {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
-                if(!CommonProxy.tconstructEnabled || mc.thePlayer.capabilities.isCreativeMode){
+                if(!ClientProxy.tconstructEnabled || mc.thePlayer.capabilities.isCreativeMode){
 	                if(previousGui!=null && mc.currentScreen==null) {
 	                	previousGui=null;
-	                }
-	                if(mc.currentScreen instanceof InventoryEffectRenderer && mc.currentScreen.getClass()!=previousGui){
-                		BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList, ((GuiContainer) mc.currentScreen).guiLeft-30, ((GuiContainer)mc.currentScreen).guiTop);
-						previousGui = (Class<? extends InventoryEffectRenderer>) mc.currentScreen.getClass();
-	                }
+	                }else if (mc.currentScreen!=null){
+                        Class<?> currentGui = mc.currentScreen.getClass();
+                        if(currentGui!=previousGui && (currentGui.equals(GuiContainerCreative.class) || currentGui.equals(GuiInventory.class))){
+                            BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList, ((GuiContainer) mc.currentScreen).guiLeft-30, ((GuiContainer)mc.currentScreen).guiTop);
+                            previousGui = currentGui;
+                        }
+                    }
                 }
                 this.mc.renderEngine.bindTexture(resourceLocation);
                 InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
@@ -77,7 +79,7 @@ public class BattlegearInGameGUI extends Gui {
                 drawTexturedModalRect(width / 2 - 91 - 15 - 31 - 15, height - 22, 151, 0, 31, 22);
 
 
-                if (mc.thePlayer instanceof IBattlePlayer && ((IBattlePlayer) mc.thePlayer).isBattlemode()) {
+                if (((IBattlePlayer) mc.thePlayer).isBattlemode()) {
 
                     this.drawTexturedModalRect(width / 2 - 169 + (inventoryplayer.currentItem - InventoryPlayerBattle.OFFSET) * 20 - 15,
                             height - 22 - 1, 0, 22, 24, 22);
@@ -105,14 +107,12 @@ public class BattlegearInGameGUI extends Gui {
             }
         	RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution, mouseX, mouseY);
 
-            if(mc.thePlayer.inventory instanceof InventoryPlayerBattle){
-                   ItemStack offhand = ((InventoryPlayerBattle) mc.thePlayer.inventory).getCurrentOffhandWeapon();
-                   if(offhand!= null && offhand.getItem() instanceof IShield){
-                	   RenderItemBarEvent.PreRender shieldEvent = new RenderItemBarEvent.PreRender(renderEvent, offhand);
-                	   if(!MinecraftForge.EVENT_BUS.post(shieldEvent))
-                		   renderBlockBar(shieldEvent.xOffset+width, shieldEvent.yOffset+height);
-                       MinecraftForge.EVENT_BUS.post(new RenderItemBarEvent.PostRender(renderEvent, offhand));
-                   }
+            ItemStack offhand = ((InventoryPlayerBattle) mc.thePlayer.inventory).getCurrentOffhandWeapon();
+            if(offhand!= null && offhand.getItem() instanceof IShield){
+                RenderItemBarEvent.PreRender shieldEvent = new RenderItemBarEvent.PreRender(renderEvent, offhand);
+                if(!MinecraftForge.EVENT_BUS.post(shieldEvent))
+                    renderBlockBar(shieldEvent.xOffset+width, shieldEvent.yOffset+height);
+                MinecraftForge.EVENT_BUS.post(new RenderItemBarEvent.PostRender(renderEvent, offhand));
             }
 
             ItemStack mainhand = mc.thePlayer.getCurrentEquippedItem();
@@ -120,9 +120,8 @@ public class BattlegearInGameGUI extends Gui {
                 ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, mc.thePlayer);
                 if(quiver != null){
                 	RenderItemBarEvent.PreRender quiverEvent = new RenderItemBarEvent.PreDual(renderEvent, mainhand, quiver);
-                	if(MinecraftForge.EVENT_BUS.post(quiverEvent))
-                		return;
-                	renderQuiverBar(quiver, frame, quiverEvent.xOffset+width, quiverEvent.yOffset);
+                	if(!MinecraftForge.EVENT_BUS.post(quiverEvent))
+                	    renderQuiverBar(quiver, frame, quiverEvent.xOffset+width, quiverEvent.yOffset);
                     MinecraftForge.EVENT_BUS.post(new RenderItemBarEvent.PostDual(renderEvent, mainhand, quiver));
                 }
             }
@@ -133,7 +132,6 @@ public class BattlegearInGameGUI extends Gui {
     	GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
         this.mc.renderEngine.bindTexture(resourceLocation);
-        InventoryPlayerBattle inventoryplayer = (InventoryPlayerBattle) this.mc.thePlayer.inventory;
         this.zLevel = -90.0F;
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
@@ -171,14 +169,13 @@ public class BattlegearInGameGUI extends Gui {
         int x = width / 2 - 91;
         int y = height - 35;
 
-        EntityPlayerSP player = Minecraft.getMinecraft().thePlayer;
-        if(player.capabilities.isCreativeMode){
-            if(player.isRidingHorse()){
+        if(mc.thePlayer.capabilities.isCreativeMode){
+            if(mc.thePlayer.isRidingHorse()){
                 y-=5;
             }
         }else{
             y-= 16;
-            if(ForgeHooks.getTotalArmorValue(player) > 0 || player.isRidingHorse() || player.getAir() < 300){
+            if(ForgeHooks.getTotalArmorValue(mc.thePlayer) > 0 || mc.thePlayer.isRidingHorse() || mc.thePlayer.getAir() < 300){
                 y-=10;
             }
         }

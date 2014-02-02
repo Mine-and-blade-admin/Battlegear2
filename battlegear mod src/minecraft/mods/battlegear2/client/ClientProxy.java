@@ -1,6 +1,5 @@
 package mods.battlegear2.client;
 
-
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +7,7 @@ import java.util.List;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
-import mods.battlegear2.api.IShield;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
 import mods.battlegear2.client.renderer.*;
@@ -38,6 +37,8 @@ import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
 
+    public static boolean tconstructEnabled = false;
+    public static Method updateTab, addTabs;
     public static Icon[] backgroundIcon;
     public static Icon[] bowIcons;
 
@@ -241,6 +242,8 @@ public class ClientProxy extends CommonProxy {
             Class tabRegistry = Class.forName("tconstruct.client.tabs.TabRegistry");
             Class abstractTab = Class.forName("tconstruct.client.tabs.AbstractTab");
             Method registerTab = tabRegistry.getMethod("registerTab", abstractTab);
+            updateTab = tabRegistry.getMethod("updateTabValues", int.class, int.class, Class.class);
+            addTabs = tabRegistry.getMethod("addTabsToList", List.class);
             registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab").newInstance());
             if(Battlegear.debug){
                 registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.SigilTab").newInstance());

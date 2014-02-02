@@ -13,7 +13,6 @@ import cpw.mods.fml.relauncher.Side;
 
 public class CommonProxy {
 
-    public static boolean tconstructEnabled = false;
     public void registerKeyHandelers() {}
 
     public void registerTickHandelers(){

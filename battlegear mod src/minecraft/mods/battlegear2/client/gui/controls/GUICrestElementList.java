@@ -78,10 +78,10 @@ public class GUICrestElementList extends GUIScrollList {
         if(dirtyTextures[listIndex]){
             if(listIndex == 0){
                 dynamicTextures[0].refreshWith(parent.getCurrentData(), true);
-                dirtyTextures[listIndex] = false;
             }else{
 
             }
+            dirtyTextures[listIndex] = false;
         }
 
         GL11.glColor3f(1F, 1F, 1F);
