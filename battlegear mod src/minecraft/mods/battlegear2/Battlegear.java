@@ -5,11 +5,12 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.weapons.WeaponRegistry;
-import mods.battlegear2.coremod.BattlegearTranslator;
+import mods.battlegear2.api.core.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.packet.*;
@@ -42,7 +43,8 @@ import java.util.logging.Logger;
                 BattlegearShieldFlashPacket.packetName,
                 SpecialActionPacket.packetName,
                 LoginPacket.packetName,
-                OffhandPlaceBlockPacket.packetName
+                OffhandPlaceBlockPacket.packetName,
+                PickBlockPacket.packetName
         },
         packetHandler = BattlegearPacketHandeler.class)
 public class Battlegear {

@@ -18,16 +18,17 @@ public class BattlegearPacketHandeler implements IPacketHandler {
 
     public BattlegearPacketHandeler() {
 
+        map.put(BattlegearSyncItemPacket.packetName, new BattlegearSyncItemPacket());
         map.put(BattlegearAnimationPacket.packetName, new BattlegearAnimationPacket());
         map.put(BattlegearBannerPacket.packetName, new BattlegearBannerPacket());
         map.put(BattlegearChangeHeraldryPacket.packetName, new BattlegearChangeHeraldryPacket());
         map.put(BattlegearGUIPacket.packetName, new BattlegearGUIPacket());
-        map.put(BattlegearSyncItemPacket.packetName, new BattlegearSyncItemPacket());
         map.put(BattlegearShieldBlockPacket.packetName, new BattlegearShieldBlockPacket());
         map.put(BattlegearShieldFlashPacket.packetName, new BattlegearShieldFlashPacket());
         map.put(SpecialActionPacket.packetName, new SpecialActionPacket());
         map.put(LoginPacket.packetName, new LoginPacket());
         map.put(OffhandPlaceBlockPacket.packetName, new OffhandPlaceBlockPacket());
+        map.put(PickBlockPacket.packetName, new PickBlockPacket());
     }
 
     @Override
