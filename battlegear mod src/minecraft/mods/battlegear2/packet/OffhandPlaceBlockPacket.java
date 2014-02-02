@@ -87,7 +87,7 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
         }
         MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
         WorldServer worldserver = mcServer.worldServerForDimension(player.dimension);
-        boolean flag = false;
+        boolean flag = true;
         int i = xPosition;
         int j = yPosition;
         int k = zPosition;
@@ -103,10 +103,10 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
             if (event.useItem != Event.Result.DENY){
                 ((EntityPlayerMP)player).theItemInWorldManager.tryUseItem(player, worldserver, itemStack);
             }
+            flag = false;
         }
         else if (yPosition >= mcServer.getBuildLimit() - 1 && (direction == 1 || yPosition >= mcServer.getBuildLimit())){
             PacketDispatcher.sendPacketToPlayer(new Packet3Chat(ChatMessageComponent.createFromTranslationWithSubstitutions("build.tooHigh", mcServer.getBuildLimit()).setColor(EnumChatFormatting.RED)), (Player) player);
-            flag = true;
         }
         else{
             double dist = ((EntityPlayerMP)player).theItemInWorldManager.getBlockReachDistance() + 1;
@@ -115,9 +115,7 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
             {
                 ((EntityPlayerMP)player).theItemInWorldManager.activateBlockOrUseItem(player, worldserver, itemStack, i, j, k, l, xOffset, yOffset, zOffset);
             }
-            flag = true;
         }
-
         if (flag){
             PacketDispatcher.sendPacketToPlayer(new Packet53BlockChange(i, j, k, worldserver), (Player) player);
             if (l == 0){
@@ -141,7 +139,7 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
             PacketDispatcher.sendPacketToPlayer(new Packet53BlockChange(i, j, k, worldserver), (Player) player);
         }
 
-        if (itemStack != null && itemStack.stackSize == 0){
+        if (itemStack != null && itemStack.stackSize <= 0){
             player.inventory.setInventorySlotContents(player.inventory.currentItem+ 3, null);
             itemStack = null;
         }
