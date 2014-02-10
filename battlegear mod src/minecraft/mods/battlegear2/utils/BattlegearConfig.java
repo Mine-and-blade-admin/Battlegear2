@@ -22,7 +22,7 @@ import java.util.Arrays;
 
 public class BattlegearConfig {
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
-	public static boolean forceBackSheath = false, arrowForceRendered = true;
+	public static boolean forceBackSheath = false, arrowForceRendered = true, enableSkeletonQuiver = true;
 	public static boolean enableGUIKeys = false, enableGuiButtons = true;
 	public static final String[] itemNames = new String[] {"heraldric","chain","quiver", "dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow"};
 	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
@@ -144,6 +144,7 @@ public class BattlegearConfig {
         shieldBarOffset = config.get(category, "Shield bar relative vertical position", 0, "Change to move this bar in your gui").getInt();
         arrowForceRendered = config.get(category, "Render arrow with bow uncharged", true).getBoolean(true);
         forceBackSheath=config.get(category, "Force Back Sheath", false).getBoolean(false);
+        enableSkeletonQuiver=config.get(category, "Render quiver on skeleton back", true).getBoolean(true);
 
         ShieldType[] types = {ShieldType.WOOD, ShieldType.HIDE, ShieldType.IRON, ShieldType.DIAMOND, ShieldType.GOLD};
         for(int i = 0; i < 5; i++){

@@ -114,7 +114,7 @@ public class BattlegearClientEvents {
 	@ForgeSubscribe
 	public void renderLiving(RenderLivingEvent.Post event) {
 
-		if (event.entity instanceof EntitySkeleton
+		if (BattlegearConfig.enableSkeletonQuiver && event.entity instanceof EntitySkeleton
 				&& event.renderer instanceof RenderSkeleton) {
 			//ObfuscationReflectionHelper.getPrivateValue(RenderBiped.class, (RenderBiped) event.renderer, 0);
 
