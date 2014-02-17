@@ -10,7 +10,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
-
+/**
+ * An arrow which teleports living entities or blocks on contact
+ * @author GotoLink
+ *
+ */
 public class EntityEnderArrow extends AbstractMBArrow{
 
 	public EntityEnderArrow(World par1World) {

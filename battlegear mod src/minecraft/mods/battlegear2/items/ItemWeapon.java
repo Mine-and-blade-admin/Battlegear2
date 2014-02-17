@@ -95,12 +95,10 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
                                     new Object[] {decimal_format.format(reach),
                                             StatCollector.translateToLocal("attribute.weapon.extendedReach")}));
                 }else{
-
                     par3List.add(EnumChatFormatting.RED+
                             StatCollector.translateToLocalFormatted("attribute.modifier.take."+ 0,
                                     new Object[] {decimal_format.format(-1 * reach),
                                             StatCollector.translateToLocal("attribute.weapon.extendedReach")}));
-
                 }
             }
 
@@ -108,12 +106,12 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
                 int hitMod = ((IHitTimeModifier)this).getHitTime(par1ItemStack, null);
                 if(hitMod > 0){
                     par3List.add(EnumChatFormatting.RED+
-                            StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 1,
+                            StatCollector.translateToLocalFormatted("attribute.modifier.take."+ 1,
                                     new Object[] {decimal_format.format((float)hitMod / 10F * 100),
                                             StatCollector.translateToLocal("attribute.weapon.attackSpeed")}));
                 }else{
                     par3List.add(EnumChatFormatting.DARK_GREEN+
-                            StatCollector.translateToLocalFormatted("attribute.modifier.take."+ 1,
+                            StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 1,
                                     new Object[] {decimal_format.format(-(float)hitMod / 10F * 100),
                                             StatCollector.translateToLocal("attribute.weapon.attackSpeed")}));
                 }

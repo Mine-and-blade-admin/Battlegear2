@@ -5,7 +5,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-
+/**
+ * An arrow which sets living entities or blocks on flame
+ * @author GotoLink
+ *
+ */
 public class EntityFlameArrow extends AbstractMBArrow{
 
     public EntityFlameArrow(World par1World) {

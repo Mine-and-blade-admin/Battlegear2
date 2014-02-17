@@ -4,7 +4,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-
+/**
+ * An arrow which causes explosions
+ * @author GotoLink
+ *
+ */
 public class EntityExplossiveArrow extends AbstractMBArrow{
 
 	public EntityExplossiveArrow(World par1World) {

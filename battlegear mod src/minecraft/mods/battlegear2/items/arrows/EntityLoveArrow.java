@@ -9,7 +9,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-
+/**
+ * An arrow which deals weird effects on living entities
+ * @author GotoLink
+ *
+ */
 public class EntityLoveArrow extends AbstractMBArrow{
 
 	public EntityLoveArrow(World world) {
@@ -26,28 +30,31 @@ public class EntityLoveArrow extends AbstractMBArrow{
 
 	@Override
 	public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
-		if(entityHit instanceof EntityAgeable){
-			EntityAgeable child = ((EntityAgeable) entityHit).createChild((EntityAgeable) entityHit);
-            if (child != null && !this.worldObj.isRemote){
-            	child.setGrowingAge(-24000);
-            	child.setLocationAndAngles(this.posX, this.posY, this.posZ, 0.0F, 0.0F);
-                this.worldObj.spawnEntityInWorld(child);
+        if(entityHit!=shootingEntity){
+            if(entityHit instanceof EntityAgeable){
+                EntityAgeable child = ((EntityAgeable) entityHit).createChild((EntityAgeable) entityHit);
+                if (child != null && !this.worldObj.isRemote){
+                    child.setGrowingAge(-24000);
+                    child.setLocationAndAngles(this.posX, this.posY, this.posZ, 0.0F, 0.0F);
+                    this.worldObj.spawnEntityInWorld(child);
+                }
+                ((EntityAgeable) entityHit).setGrowingAge(-24000);
+                setDead();
+                return true;
+            }else if(entityHit instanceof EntityCreature){
+                ((EntityCreature) entityHit).setTarget(null);
+                if(((EntityCreature) entityHit).getHeldItem()==null){
+                    entityHit.setCurrentItemOrArmor(0, new ItemStack(ItemMBArrow.component[5]));
+                }
+                setDead();
+                return true;
+            }else if(entityHit instanceof EntityPlayer){
+                ((EntityPlayer) entityHit).dropPlayerItem(((EntityPlayer) entityHit).getCurrentEquippedItem());
+                ((EntityPlayer) entityHit).inventory.setInventorySlotContents(((EntityPlayer) entityHit).inventory.currentItem, new ItemStack(ItemMBArrow.component[5]));
+                setDead();
+                return true;
             }
-			((EntityAgeable)entityHit).setGrowingAge(-24000);
-			setDead();
-			return true;
-		}else if(entityHit instanceof EntityCreature){
-			((EntityCreature)entityHit).setTarget(null);
-			if(((EntityCreature) entityHit).getHeldItem()==null){
-				entityHit.setCurrentItemOrArmor(0, new ItemStack(ItemMBArrow.component[5]));
-			}
-			setDead();
-			return true;
-		}else if(entityHit instanceof EntityPlayer){
-			((EntityPlayer) entityHit).dropPlayerItem(((EntityPlayer) entityHit).getCurrentEquippedItem());
-			setDead();
-			return true;
-		}
+        }
 		return false;
 	}
 

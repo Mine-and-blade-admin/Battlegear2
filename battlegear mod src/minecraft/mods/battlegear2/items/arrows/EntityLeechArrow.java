@@ -9,7 +9,11 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
-
+/**
+ * An arrow which sucks living entities life force to give it to the shooter
+ * @author GotoLink
+ *
+ */
 public class EntityLeechArrow extends AbstractMBArrow{
 
     public EntityLeechArrow(World par1World){

@@ -2,12 +2,7 @@ package mods.battlegear2;
 
 import java.util.Map;
 
-import mods.battlegear2.api.*;
-import mods.battlegear2.api.weapons.IBackStabbable;
-import mods.battlegear2.api.weapons.IHitTimeModifier;
-import mods.battlegear2.api.weapons.IPenetrateWeapon;
-import mods.battlegear2.api.weapons.IPotionEffect;
-import mods.battlegear2.api.weapons.ISpecialEffect;
+import mods.battlegear2.api.weapons.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -54,7 +49,7 @@ public class WeaponHookContainerClass {
                     !(event.source instanceof EntityDamageSourceIndirect) &&
                     !event.source.damageType.equals("battlegearExtra"))
             {
-                Entity attacker = ((EntityDamageSource)event.source).getEntity();
+                Entity attacker = event.source.getEntity();
                 if(attacker instanceof EntityLivingBase)
                 {
                     EntityLivingBase entityHitting = (EntityLivingBase)attacker;
