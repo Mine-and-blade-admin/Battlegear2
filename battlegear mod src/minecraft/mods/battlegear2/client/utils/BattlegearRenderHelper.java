@@ -635,10 +635,11 @@ public class BattlegearRenderHelper {
                 target.bipedBody.postRender(0.0625F);
                 if(offhandSheathed.getItem() instanceof IShield){
                     GL11.glScalef(-0.6F, -0.6F, 0.6F);
+                    GL11.glTranslatef(0, -1, 0);
                 }else{
                     GL11.glScalef(-0.6F, 0.6F, 0.6F);
                 }
-                GL11.glTranslatef(-8F / 16F, -1, 6F / 16F);
+                GL11.glTranslatef(-8F / 16F, 0, 6F / 16F);
                 GL11.glRotatef(-5F, 0.0F, 0.0F, 1.0F);
                 GL11.glRotatef(40.0F+90, 0.0F, 1.0F, 0.0F);
                 GL11.glTranslatef(0, 0, 4F/16F - backCount*2F/16F);
