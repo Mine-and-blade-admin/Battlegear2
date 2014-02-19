@@ -49,20 +49,20 @@ public class BattlemodeHookContainerClass {
 
     @ForgeSubscribe
     public void attackEntity(AttackEntityEvent event){
-        ItemStack mainhand = event.entityPlayer.getCurrentEquippedItem();
-        if(mainhand != null && mainhand.getItem() instanceof IExtendedReachWeapon){
-            float reachMod = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
-            if(reachMod < 0){
-                if(reachMod + 4 < event.entityPlayer.getDistanceToEntity(event.target)){
-                    event.setCanceled(true);
-                }
-            }
-        }
-
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
+            return;
         }
 
+        ItemStack mainhand = event.entityPlayer.getCurrentEquippedItem();
+        float reachMod = 0;
+        if(mainhand == null)
+            reachMod = 0;//Reduce bare hands range too ?
+        else if(mainhand.getItem() instanceof IExtendedReachWeapon)
+            reachMod = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
+        if(reachMod < 0 && reachMod + 4 < event.entityPlayer.getDistanceToEntity(event.target)){
+            event.setCanceled(true);
+        }
     }
 
     @ForgeSubscribe
