@@ -9,9 +9,13 @@ import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public class PlayerEventChild extends PlayerEvent{
+public abstract class PlayerEventChild extends PlayerEvent{
 
+    /**
+     * The event that this event is a child of
+     */
 	public final PlayerEvent parent;
 
 	public PlayerEventChild(PlayerEvent parent) {
@@ -35,10 +39,42 @@ public class PlayerEventChild extends PlayerEvent{
         parent.setResult(value);
     }
 
+    /**
+     * Called when a player right clicks in battlemode
+     * The parent event can be either {@link PlayerInteractEvent} or {@link EntityInteractEvent} if the OffhandAttackEvent allowed swinging
+     * Both ItemStack can be null
+     * If cancelled, no offhand swinging will be performed
+     */
+    @Cancelable
+    public static class OffhandSwingEvent extends PlayerEventChild {
+        public final ItemStack mainHand;
+        public final ItemStack offHand;
+        public OffhandSwingEvent(PlayerEvent parent, ItemStack mainHand, ItemStack offHand){
+            super(parent);
+            this.mainHand = mainHand;
+            this.offHand = offHand;
+        }
+    }
+
+    /**
+     * Called when a player right clicks an entity in battlemode
+     * Both ItemStack can be null
+     * Cancelling will prevent any further processing and prevails over the boolean fields
+     */
+    @Cancelable
     public static class OffhandAttackEvent extends PlayerEventChild {
 
+        /**
+         * If we should call the OffhandSwingEvent and perform swinging
+         */
         public boolean swingOffhand = true;
+        /**
+         * If we should perform an attack on the entity with the offhand item
+         */
         public boolean shouldAttack = true;
+        /**
+         * If we should cancel the base entity interaction event
+         */
         public boolean cancelParent = true;
         public final EntityInteractEvent event;
         public final ItemStack mainHand;
@@ -127,6 +163,11 @@ public class PlayerEventChild extends PlayerEvent{
 
         }
 
+        /**
+         * The DEFAULT result for this event is the vanilla charge calculated value
+         * Use setNewCharge to override the value with the one provided
+         * Change the event result to DENY to prevent further processing
+         */
         @HasResult
         public static class ChargeCalculations extends QuiverArrowEvent {
             protected float charge;
