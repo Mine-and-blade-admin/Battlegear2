@@ -9,22 +9,22 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
-import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event.Result;
 import net.minecraftforge.event.EventPriority;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -169,7 +169,8 @@ public class BattlemodeHookContainerClass {
             if(((IBattlePlayer) player).getSpecialActionTimer() > 0){
                 event.setCanceled(true);
             } else if(((IBattlePlayer) player).isBlockingWithShield()){
-                ItemStack shield = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+                final ItemStack shield = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+                final float dmg = event.ammount;
                 if(((IShield)shield.getItem()).canBlock(shield, event.source)){
                     boolean shouldBlock = true;
                     Entity opponent = event.source.getEntity();
@@ -200,28 +201,28 @@ public class BattlemodeHookContainerClass {
                     if(shouldBlock){
                         event.setCanceled(true);
 
-                        PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 32, player.dimension,
-                                new BattlegearShieldFlashPacket(player, event.ammount).generatePacket());
-                    	player.worldObj.playSoundAtEntity(player, "battlegear2:shield", 1, 1);
+                        ((IShield)shield.getItem()).blockAnimation(player, dmg);
                     	
-                        if(event.source.isProjectile() && event.source.getEntity() instanceof EntityArrow){
-                            event.source.getEntity().setDead();
+                        if(event.source.isProjectile() && event.source.getEntity() instanceof IProjectile){
                             if(shield.getItem() instanceof IArrowCatcher){
-                                ((IArrowCatcher)shield.getItem()).setArrowCount(shield, ((IArrowCatcher) shield.getItem()).getArrowCount(shield)+1);
-                                ((InventoryPlayerBattle)player.inventory).hasChanged = true;
-                                player.setArrowCountInEntity(player.getArrowCountInEntity()-1);
+                                if(((IArrowCatcher)shield.getItem()).catchArrow(shield, player, (IProjectile)event.source.getEntity())){
+                                    ((InventoryPlayerBattle)player.inventory).hasChanged = true;
+                                }
                             }
                         }
 
                         if(!player.capabilities.isCreativeMode){
-                            shield.damageItem((int)event.ammount, player);
-                            if(shield.getItemDamage() <= 0){
-                                MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, shield));
-                                player.inventory.setInventorySlotContents(player.inventory.currentItem + 3, null);
-                                //TODO Render item break
+                            float red = ((IShield)shield.getItem()).getDamageReduction(shield, event.source);
+                            if(red<dmg){
+                                shield.damageItem(Math.round(dmg-red), player);
+                                if(shield.getItemDamage() <= 0){
+                                    ForgeEventFactory.onPlayerDestroyItem(player, shield);
+                                    player.inventory.setInventorySlotContents(player.inventory.currentItem + 3, null);
+                                    //TODO Render item break
+                                }
+                                ((InventoryPlayerBattle)player.inventory).hasChanged = true;
                             }
                         }
-                        ((InventoryPlayerBattle)player.inventory).hasChanged = true;
                     }
                 }
             }

@@ -2,19 +2,24 @@ package mods.battlegear2.items;
 
 import java.util.List;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
 import mods.battlegear2.api.ISheathed;
+import mods.battlegear2.api.shield.IArrowDisplay;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.enchantments.BaseEnchantment;
+import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,7 +28,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.StatCollector;
 
-public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed, IArrowCatcher{
+public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed, IArrowCatcher, IArrowDisplay{
 
     public ShieldType enumShield;
 
@@ -61,8 +66,6 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         this.setUnlocalizedName("battlegear2:shield."+enumShield.getName());
         this.setTextureName("battlegear2:shield/shield."+enumShield.getName());
 
-        this.getShareTag();
-
         this.setMaxDamage(enumShield.getMaxDamage());
         this.setMaxStackSize(1);
         this.setHasSubtypes(false);
@@ -72,12 +75,21 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     @Override
     public void registerIcons(IconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
-
         backIcon = par1IconRegister.registerIcon("battlegear2:shield/shield."+enumShield.getName()+".back");
         trimIcon = par1IconRegister.registerIcon("battlegear2:shield/shield."+enumShield.getName()+".trim");
-
     }
-    
+
+    @Override
+    public boolean catchArrow(ItemStack shield, EntityPlayer player, IProjectile arrow){
+        if(arrow instanceof EntityArrow){
+            setArrowCount(shield, getArrowCount(shield)+1);
+            player.setArrowCountInEntity(player.getArrowCountInEntity() - 1);
+            ((EntityArrow)arrow).setDead();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public int getArrowCount(ItemStack stack){
         if(stack.hasTagCompound() && stack.getTagCompound().hasKey("arrows")){
@@ -85,7 +97,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         }else
             return 0;
     }
-    
+
     @Override
     public void setArrowCount(ItemStack stack, int count){
 
@@ -124,6 +136,18 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     @Override
     public boolean canBlock(ItemStack shield, DamageSource source) {
         return !source.isUnblockable();
+    }
+
+    @Override
+    public void blockAnimation(EntityPlayer player, float dmg){
+        PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 32, player.dimension,
+                new BattlegearShieldFlashPacket(player, dmg).generatePacket());
+        player.worldObj.playSoundAtEntity(player, "battlegear2:shield", 1, 1);
+    }
+
+    @Override
+    public float getDamageReduction(ItemStack shield, DamageSource source){
+        return 0;
     }
 
     @Override

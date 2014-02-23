@@ -308,7 +308,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
                 }
                 if (offhand.stackSize <= 0){
                     player.inventory.setInventorySlotContents(player.inventory.currentItem+ 3, null);
-                    MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, offhand));
+                    ForgeEventFactory.onPlayerDestroyItem(player, offhand);
                 }
                 PacketDispatcher.sendPacketToServer(new BattlegearSyncItemPacket(player).generatePacket());
                 return true;

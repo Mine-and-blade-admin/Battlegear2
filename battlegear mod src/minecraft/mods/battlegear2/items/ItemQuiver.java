@@ -17,8 +17,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.Icon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.List;
 
@@ -116,7 +115,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
             ItemStack arrowStack = getStackInSlot(stack, selectedSlot);
             arrowStack.stackSize --;
             if(arrowStack.stackSize <= 0){
-                MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(player, arrowStack));
+                ForgeEventFactory.onPlayerDestroyItem(player, arrowStack);
                 arrowStack = null;
             }
             setStackInSlot(stack, selectedSlot, arrowStack);

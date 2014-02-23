@@ -1,5 +1,6 @@
 package mods.battlegear2.api.shield;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
@@ -51,12 +52,26 @@ public interface IShield {
      */
     public float getBlockAngle(ItemStack shield);
 
-
     /**
-     * Returns the time a shield bash should take to be preformed. A shield bash will disallow actions
-     * for the number of ticks given and will knockback an oponent at time/2
+     * Returns the time a shield bash should take to be performed. A shield bash will disallow actions
+     * for the number of ticks given and will knockback an opponent at time/2
      *
      * @return The amount of ticks the shield bash animation will play
      */
     public int getBashTimer(ItemStack shield);
+
+    /**
+     * Perform the blocking animation
+     * @param player
+     * @param amount
+     */
+    public void blockAnimation(EntityPlayer player, float amount);
+
+    /**
+     *
+     * @param shield The {@link #ItemStack} representing the shield
+     * @param source The {@link #DamageSource} representing the current damage
+     * @return The amount of damage from the source that won't be dealt to the shield
+     */
+    public float getDamageReduction(ItemStack shield, DamageSource source);
 }

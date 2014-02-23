@@ -3,7 +3,7 @@ package mods.battlegear2.api;
 
 import net.minecraft.item.ItemStack;
 
-//This is a tempory fix until we get the heradry system up and running
+//This is a tempory fix until we get the heraldry system up and running
 public interface IDyable {
 
     /**
