@@ -2,7 +2,7 @@ Mine and Blade : Battlegear - 2
 ===============================
 	
 Minecraft version: 1.6.4  
-Forge Version: 1.6.4-9.11.1.916  
+Forge Version: 1.6.4-9.11.1.964  
 
 Source is updated for Minecraft 1.6.4
 

@@ -79,10 +79,18 @@ jar.doLast { task ->
     ant.checksum file: task.archivePath
 }
 
-task jarAPI(dependsOn:'processResources', type:Jar)
-jarAPI{
+task jarAPISrc(dependsOn:'processResources', type:Jar)
+jarAPISrc{
     destinationDir = file "battlegear api/"
-    baseName = config.mcversion+"-Battlegear-API"
+    baseName = config.mcversion+"-Battlegear-Src"
     from 'build/sources/java'
-    include 'mods/battlegear2/api/**'
+    include 'mods/battlegear2/**'
+}
+
+task jarAPIBin(dependsOn:'build', type:Jar)
+jarAPIBin{
+    destinationDir = file "battlegear api/"
+    baseName = config.mcversion+"-Battlegear-Bin"
+    from 'build/classes/main'
+    include 'mods/battlegear2/**'
 }
