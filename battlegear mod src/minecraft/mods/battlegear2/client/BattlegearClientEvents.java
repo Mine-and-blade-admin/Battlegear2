@@ -49,21 +49,19 @@ public class BattlegearClientEvents {
 		tabsList.add(new GuiSigilButton(1, 20, 20));
 	}
 
-	public static final float[][] arrowPos = new float[][] {};
+    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    public void preRenderBars(RenderItemBarEvent.PreRender event){
+        if(event instanceof RenderItemBarEvent.PreDual){
+            event.xOffset = BattlegearConfig.quiverBarOffset;
+        }else{
+            event.yOffset = - BattlegearConfig.shieldBarOffset;
+        }
+    }
 
 	@ForgeSubscribe
 	public void postRenderOverlay(RenderGameOverlayEvent.Post event) {
 		if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
 			inGameGUI.renderGameOverlay(event.partialTicks, event.mouseX, event.mouseY);
-		}
-	}
-	
-	@ForgeSubscribe(priority = EventPriority.HIGHEST)
-	public void preRenderBars(RenderItemBarEvent.PreRender event){
-		if(event instanceof RenderItemBarEvent.PreDual){
-			event.xOffset = BattlegearConfig.quiverBarOffset;
-		}else{
-			event.yOffset = - BattlegearConfig.shieldBarOffset;
 		}
 	}
 

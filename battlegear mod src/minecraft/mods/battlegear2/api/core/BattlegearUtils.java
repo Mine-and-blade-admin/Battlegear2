@@ -251,6 +251,11 @@ public class BattlegearUtils {
         return new InventoryPlayerBattle(entityPlayer);
     }
 
+    /**
+     * Basically, a copy of {@link EntityPlayer#attackTargetEntityWithCurrentItem}, adapted for the offhand
+     * @param player the attacker
+     * @param par1Entity the attacked
+     */
     public static void attackTargetEntityWithCurrentOffItem(EntityPlayer player, Entity par1Entity)
     {
         player.inventory.currentItem += InventoryPlayerBattle.WEAPON_SETS;

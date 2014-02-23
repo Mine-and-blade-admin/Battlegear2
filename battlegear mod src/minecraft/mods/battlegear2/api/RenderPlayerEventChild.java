@@ -4,7 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.Cancelable;
 
-public class RenderPlayerEventChild extends RenderPlayerEvent{
+public abstract class RenderPlayerEventChild extends RenderPlayerEvent{
 	public static enum PlayerElementType{
 		Offhand,
 		ItemOffhand,
