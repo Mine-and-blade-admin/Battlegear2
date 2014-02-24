@@ -116,24 +116,26 @@ public class Battlegear {
     
     @EventHandler
     public void onMessage(IMCEvent event){
+        boolean success;
     	for(IMCMessage message:event.getMessages()){
     		if(message != null){
+                success = false;
                 if(message.isItemStackMessage()){
                     ItemStack stack = message.getItemStackValue();
                     if(stack!=null){
                         if(message.key.equals("Dual")){
                             if(!BattlegearUtils.checkForRightClickFunction(stack.getItem(), stack)){
                                 WeaponRegistry.addDualWeapon(stack);
+                                success = true;
                             }
-                            continue;
                         }else if(message.key.equals("MainHand")){
                             WeaponRegistry.addTwoHanded(stack);
-                            continue;
+                            success = true;
                         }else if(message.key.equals("OffHand")){
                             if(!BattlegearUtils.checkForRightClickFunction(stack.getItem(), stack)){
                                 WeaponRegistry.addOffhandWeapon(stack);
+                                success = true;
                             }
-                            continue;
                         }else if(message.key.startsWith("Arrow:")){
                             Class<?> clazz = null;
                             try {
@@ -142,11 +144,10 @@ public class Battlegear {
                             }
                             if(clazz!=null && EntityArrow.class.isAssignableFrom(clazz)){//The arrow entity should use EntityArrow, at least as a superclass
                                 QuiverArrowRegistry.addArrowToRegistry(stack, (Class<? extends EntityArrow>) clazz);
-                                continue;
+                                success = true;
                             }
                         }
                     }
-                    logger.warning("Mod "+message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");
                 }else if(message.isStringMessage()){
                     Class<?> clazz;
                     try {
@@ -154,13 +155,19 @@ public class Battlegear {
                         if(clazz!=null){//The given class should implement the interface according to the key
                             if(message.key.equals("QuiverSelection") && IQuiverSelection.class.isAssignableFrom(clazz)){
                                 QuiverArrowRegistry.addQuiverSelection((IQuiverSelection)clazz.newInstance());
+                                success = true;
                             }else if(message.key.equals("FireHandler") && IArrowFireHandler.class.isAssignableFrom(clazz)){
                                 QuiverArrowRegistry.addArrowFireHandler((IArrowFireHandler)clazz.newInstance());
+                                success = true;
                             }
                         }
                     } catch (Exception logged) {
-                        logger.warning("Mod "+message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");
                     }
+                }
+                if(success){
+                    logger.finest("Mine&Blade:Battlegear2 successfully managed message from "+ message.getSender());
+                }else{
+                    logger.warning(message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");
                 }
             }
     	}
