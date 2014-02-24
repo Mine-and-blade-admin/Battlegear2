@@ -93,4 +93,9 @@ jarAPIBin{
     baseName = config.mcversion+"-Battlegear-Bin"
     from 'build/classes/main'
     include 'mods/battlegear2/**'
+    // Add Coremod Manifest
+    manifest {
+        attributes 'FMLCorePlugin': config.loadingPlugin
+        attributes 'FMLCorePluginContainsFMLMod': config.containsMod
+    }
 }
