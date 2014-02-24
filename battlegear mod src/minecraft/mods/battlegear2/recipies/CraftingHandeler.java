@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.shield.IArrowDisplay;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -16,13 +16,13 @@ public class CraftingHandeler implements ICraftingHandler{
     @Override
     public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) {
 
-        if(item.getItem() instanceof IArrowCatcher){
+        if(item.getItem() instanceof IArrowDisplay){
             ItemStack shield = null;
             boolean isOnlyShield = true;
             for(int i = 0; i < craftMatrix.getSizeInventory(); i++){
                 ItemStack stack = craftMatrix.getStackInSlot(i);
                 if(stack != null){
-                    if(stack.getItem() instanceof IArrowCatcher){
+                    if(stack.getItem() instanceof IArrowDisplay){
                         if(shield == null){
                             shield = stack;
                         }else{
@@ -36,7 +36,7 @@ public class CraftingHandeler implements ICraftingHandler{
 
             if(isOnlyShield && shield != null){
 
-                int arrowCount = ((IArrowCatcher) shield.getItem()).getArrowCount(shield);
+                int arrowCount = ((IArrowDisplay) shield.getItem()).getArrowCount(shield);
 
                 while(arrowCount > 0){
 

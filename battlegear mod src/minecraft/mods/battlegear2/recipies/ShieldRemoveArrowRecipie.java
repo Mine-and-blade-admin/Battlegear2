@@ -1,6 +1,6 @@
 package mods.battlegear2.recipies;
 
-import mods.battlegear2.api.shield.IArrowCatcher;
+import mods.battlegear2.api.shield.IArrowDisplay;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -16,7 +16,7 @@ public class ShieldRemoveArrowRecipie implements IRecipe{
         for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
             ItemStack stack = inventorycrafting.getStackInSlot(i);
             if(stack != null){
-                if(stack.getItem() instanceof IArrowCatcher){
+                if(stack.getItem() instanceof IArrowDisplay){
                     if(foundStack)
                         return false;
                     else
@@ -34,10 +34,10 @@ public class ShieldRemoveArrowRecipie implements IRecipe{
         for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
             ItemStack stack = inventorycrafting.getStackInSlot(i);
             if(stack != null){
-                if(stack.getItem() instanceof IArrowCatcher){
+                if(stack.getItem() instanceof IArrowDisplay){
                     ItemStack shieldCopy =  stack.copy();
 
-                    ((IArrowCatcher)shieldCopy.getItem()).setArrowCount(shieldCopy, 0);
+                    ((IArrowDisplay)shieldCopy.getItem()).setArrowCount(shieldCopy, 0);
 
                     return shieldCopy;
                 }
