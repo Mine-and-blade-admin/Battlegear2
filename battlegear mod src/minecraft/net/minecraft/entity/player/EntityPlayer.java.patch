@@ -112,14 +112,7 @@
 +
 +	// -----MB-AddMethod-----
 +	public void attackTargetEntityWithCurrentOffItem(Entity target) {
-+
-+        inventory.currentItem = inventory.currentItem
-+				+ InventoryPlayerBattle.WEAPON_SETS;
-+
-+		attackTargetEntityWithCurrentItem(target);
-+
-+		inventory.currentItem = inventory.currentItem
-+				- InventoryPlayerBattle.WEAPON_SETS;
++        BattlegearUtils.attackTargetEntityWithCurrentOffItem(this, target);
 +	}
 +	
 +	// -----MB-AddMethod-----

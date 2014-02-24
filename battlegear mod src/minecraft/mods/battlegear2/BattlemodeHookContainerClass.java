@@ -135,7 +135,7 @@ public class BattlemodeHookContainerClass {
                         sendOffSwingEvent(event, mainHandItem, offhandItem);
                     }
                     if (offAttackEvent.shouldAttack) {
-                        BattlegearUtils.attackTargetEntityWithCurrentOffItem(event.entityPlayer, event.target);
+                        ((IBattlePlayer) event.entityPlayer).attackTargetEntityWithCurrentOffItem(event.target);
                     }
                     if (offAttackEvent.cancelParent) {
                         event.setCanceled(true);

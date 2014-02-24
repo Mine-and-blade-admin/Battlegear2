@@ -28,7 +28,6 @@ public class EntityPlayerTransformer extends TransformerBase {
 
 
     private String playerInventoryFieldName;
-    private String inventoryCurrentItremField;
     private String potionDigSpeedField;
     private String potionDigSlowField;
     private String playerDataWatcherField;
@@ -38,8 +37,6 @@ public class EntityPlayerTransformer extends TransformerBase {
     private String onItemFinishMethodDesc;
     private String setCurrentItemArmourMethodName;
     private String setCurrentItemArmourMethodDesc;
-    private String attackTargetMethodName;
-    private String attackTargetMethodDesc;
     private String playerPotionActiveMethodName;
     private String playerPotionActiveMethodDesc;
     private String playerGetActivePotionMethodName;
@@ -261,27 +258,13 @@ public class EntityPlayerTransformer extends TransformerBase {
     }
 
     private MethodNode generateAttackOffhandMethod() {
+
         MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, "attackTargetEntityWithCurrentOffItem", "(L" + entityClassName + ";)V", null, null);
 
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L" + inventoryClassName + ";"));
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L" + inventoryClassName + ";"));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, inventoryClassName, inventoryCurrentItremField, "I"));
-        mn.instructions.add(new FieldInsnNode(GETSTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "WEAPON_SETS", "I"));
-        mn.instructions.add(new InsnNode(IADD));
-        mn.instructions.add(new FieldInsnNode(PUTFIELD, inventoryClassName, inventoryCurrentItremField, "I"));
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new VarInsnNode(ALOAD, 1));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, attackTargetMethodName, attackTargetMethodDesc));
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L" + inventoryClassName + ";"));
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L" + inventoryClassName + ";"));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, inventoryClassName, inventoryCurrentItremField, "I"));
-        mn.instructions.add(new FieldInsnNode(GETSTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "WEAPON_SETS", "I"));
-        mn.instructions.add(new InsnNode(ISUB));
-        mn.instructions.add(new FieldInsnNode(PUTFIELD, inventoryClassName, inventoryCurrentItremField, "I"));
+        mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils",
+                "attackTargetEntityWithCurrentOffItem", "(L" + entityPlayerClassName + ";L" + entityClassName + ";)V"));
         mn.instructions.add(new InsnNode(RETURN));
 
         mn.maxStack = 3;
@@ -527,8 +510,6 @@ public class EntityPlayerTransformer extends TransformerBase {
 
         playerInventoryFieldName =
                 BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
-        inventoryCurrentItremField =
-                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70461_c", "currentItem");
         potionDigSpeedField =
                 BattlegearTranslator.getMapedFieldName("Potion", "field_76422_e", "digSpeed");
         potionDigSlowField =
@@ -545,10 +526,6 @@ public class EntityPlayerTransformer extends TransformerBase {
                 BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70062_b", "setCurrentItemOrArmor");
         setCurrentItemArmourMethodDesc =
                 BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70062_b", "(IL"+itemStackClassName+";)V");
-        attackTargetMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71059_n", "attackTargetEntityWithCurrentItem");
-        attackTargetMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_71059_n", "(Lnet/minecraft/entity/Entity;)V");
         playerPotionActiveMethodName =
                 BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70644_a", "isPotionActive");
         playerPotionActiveMethodDesc =

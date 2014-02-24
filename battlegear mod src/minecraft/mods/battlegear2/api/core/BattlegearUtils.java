@@ -253,6 +253,7 @@ public class BattlegearUtils {
 
     /**
      * Basically, a copy of {@link EntityPlayer#attackTargetEntityWithCurrentItem}, adapted for the offhand
+     * Used as a hook by {@link IBattlePlayer}
      * @param player the attacker
      * @param par1Entity the attacked
      */
