@@ -91,8 +91,14 @@ task jarAPIBin(dependsOn:'build', type:Jar)
 jarAPIBin{
     destinationDir = file "battlegear api/"
     baseName = config.mcversion+"-Battlegear-Bin"
+    // Add classes
     from 'build/classes/main'
     include 'mods/battlegear2/**'
+	
+    // Add Resources
+    from 'build/resources/main'
+    include 'assets/**', '*.cfg', '*.png', '*.info', '*.mcmeta', 'LICENCE'
+
     // Add Coremod Manifest
     manifest {
         attributes 'FMLCorePlugin': config.loadingPlugin
