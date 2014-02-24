@@ -1,6 +1,7 @@
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.4.8 ==
 * Added option for quiver rendering on skeletons
 * Added descriptions for arrows
+* Reduced hitting range for bare hands
 * Fixed sheathed sword rendering on back
 * Other internal changes for the API
 
