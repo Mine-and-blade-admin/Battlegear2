@@ -30,71 +30,60 @@ public class WeaponHookContainerClass {
 
     	if(event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).capabilities.isCreativeMode)
     	{
-    		return;
-    		//Fix vanilla bug with baby zombies being able to lead mobs to attack player 
+    		return;//Fix vanilla bug with baby zombies being able to lead mobs to attack player
     		//in creative mode thus calling the event
     	}
-        /*boolean isBlockWithShield = false;
-        if(event.entity instanceof EntityPlayer){
-            isBlockWithShield = ((EntityPlayer) event.entity).isBlockingWithShield();
-        }
-        if(isBlockWithShield){
-            event.setCanceled(true);
-        }else*/{
-            EntityLivingBase entityHit = event.entityLiving;
-            //Record the hurt times
-            int hurtTimeTemp = entityHit.hurtTime;
-            int hurtResistanceTimeTemp = entityHit.hurtResistantTime;
-            if(event.source instanceof EntityDamageSource &&
-                    !(event.source instanceof EntityDamageSourceIndirect) &&
-                    !event.source.damageType.equals("battlegearExtra"))
+        EntityLivingBase entityHit = event.entityLiving;
+        //Record the hurt times
+        int hurtTimeTemp = entityHit.hurtTime;
+        int hurtResistanceTimeTemp = entityHit.hurtResistantTime;
+        if(event.source instanceof EntityDamageSource && !event.source.damageType.equals(Battlegear.CUSTOM_DAMAGE_SOURCE) &&
+                !(event.source instanceof EntityDamageSourceIndirect) )
+        {
+            Entity attacker = event.source.getEntity();
+            if(attacker instanceof EntityLivingBase)
             {
-                Entity attacker = event.source.getEntity();
-                if(attacker instanceof EntityLivingBase)
+                EntityLivingBase entityHitting = (EntityLivingBase)attacker;
+                ItemStack stack = entityHitting.getHeldItem();
+                if(stack!=null)
                 {
-                    EntityLivingBase entityHitting = (EntityLivingBase)attacker;
-                    ItemStack stack = entityHitting.getHeldItem();
-                    if(stack!=null)
+                    boolean hit=false;
+                    if(stack.getItem() instanceof IPenetrateWeapon)
                     {
-                        boolean hit=false;
-                        if(stack.getItem() instanceof IPenetrateWeapon)
-                        {
-                            //Attack using the "generic" damage type (ignores armour)
-                            entityHit.attackEntityFrom(DamageSource.generic, ((IPenetrateWeapon)stack.getItem()).getPenetratingPower(stack));
-                            hit=true;
+                        //Attack using the "generic" damage type (ignores armour)
+                        entityHit.attackEntityFrom(DamageSource.generic, ((IPenetrateWeapon)stack.getItem()).getPenetratingPower(stack));
+                        hit=true;
+                    }
+                    if(stack.getItem() instanceof IBackStabbable)
+                    {
+                        boolean tempHit = performBackStab(stack.getItem(), entityHit, entityHitting);
+                        if(!hit)
+                            hit = tempHit;
+                    }
+                    if(stack.getItem() instanceof ISpecialEffect)
+                    {
+                        boolean tempHit = ((ISpecialEffect)stack.getItem()).performEffects(entityHit,entityHitting);
+                        if(!hit)
+                            hit = tempHit;
+                    }
+                    if(stack.getItem() instanceof IPotionEffect)
+                    {
+                        performEffects(((IPotionEffect)stack.getItem()).getEffectsOnHit(entityHit, entityHitting), entityHit);
+                    }
+                    if(stack.getItem() instanceof IHitTimeModifier)
+                    {
+                        //If the hurt resistance time is under the modified hurt resistance time, set it to the modified hurt resistance time
+                        if(entityHit.hurtResistantTime < (float)(entityHit.maxHurtResistantTime) * (0.5) + ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit)){
+                            entityHit.hurtResistantTime += ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit);
+                        }else{ //if not cancel the attack
+                            event.setCanceled(true);
                         }
-                        if(stack.getItem() instanceof IBackStabbable)
-                        {
-                            boolean tempHit = performBackStab(stack.getItem(), entityHit, entityHitting);
-                            if(!hit)
-                                hit = tempHit;
-                        }
-                        if(stack.getItem() instanceof ISpecialEffect)
-                        {
-                            boolean tempHit = ((ISpecialEffect)stack.getItem()).performEffects(entityHit,entityHitting);
-                            if(!hit)
-                                hit = tempHit;
-                        }
-                        if(stack.getItem() instanceof IPotionEffect)
-                        {
-                            performEffects(((IPotionEffect)stack.getItem()).getEffectsOnHit(entityHit, entityHitting), entityHit);
-                        }
-                        if(stack.getItem() instanceof IHitTimeModifier)
-                        {
-                            //If the hurt resistance time is under the modified hurt resistance time, set it to the modified hurt resistance time
-                            if(entityHit.hurtResistantTime < (float)(entityHit.maxHurtResistantTime) * (0.5) + ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit)){
-                                entityHit.hurtResistantTime += ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit);
-                            }else{ //if not cancel the attack
-                                event.setCanceled(true);
-                            }
-
-                        }
-                        else if(hit)
-                        {
-                            //Re-apply the saved values
-                            entityHit.hurtTime = hurtTimeTemp;
-                            entityHit.hurtResistantTime = hurtResistanceTimeTemp;
-                        }
+                    }
+                    else if(hit)
+                    {
+                        //Re-apply the saved values
+                        entityHit.hurtTime = hurtTimeTemp;
+                        entityHit.hurtResistantTime = hurtResistanceTimeTemp;
                     }
                 }
             }

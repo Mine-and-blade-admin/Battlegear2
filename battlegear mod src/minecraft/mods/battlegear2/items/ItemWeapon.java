@@ -82,8 +82,8 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
             if(this instanceof IPenetrateWeapon){
                 par3List.add(EnumChatFormatting.DARK_GREEN+
                         StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 0,
-                                new Object[] {decimal_format.format(((IPenetrateWeapon)this).getPenetratingPower(par1ItemStack)),
-                                        StatCollector.translateToLocal("attribute.weapon.penetrateArmor")}));
+                                decimal_format.format(((IPenetrateWeapon)this).getPenetratingPower(par1ItemStack)),
+                                        StatCollector.translateToLocal("attribute.weapon.penetrateArmor")));
             }
 
             if(this instanceof IExtendedReachWeapon){
@@ -92,13 +92,13 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
                 if(reach > 0){
                     par3List.add(EnumChatFormatting.DARK_GREEN+
                             StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 0,
-                                    new Object[] {decimal_format.format(reach),
-                                            StatCollector.translateToLocal("attribute.weapon.extendedReach")}));
+                                    decimal_format.format(reach),
+                                            StatCollector.translateToLocal("attribute.weapon.extendedReach")));
                 }else{
                     par3List.add(EnumChatFormatting.RED+
                             StatCollector.translateToLocalFormatted("attribute.modifier.take."+ 0,
-                                    new Object[] {decimal_format.format(-1 * reach),
-                                            StatCollector.translateToLocal("attribute.weapon.extendedReach")}));
+                                    decimal_format.format(-1 * reach),
+                                            StatCollector.translateToLocal("attribute.weapon.extendedReach")));
                 }
             }
 
@@ -107,13 +107,13 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
                 if(hitMod > 0){
                     par3List.add(EnumChatFormatting.RED+
                             StatCollector.translateToLocalFormatted("attribute.modifier.take."+ 1,
-                                    new Object[] {decimal_format.format((float)hitMod / 10F * 100),
-                                            StatCollector.translateToLocal("attribute.weapon.attackSpeed")}));
+                                    decimal_format.format((float)hitMod / 10F * 100),
+                                            StatCollector.translateToLocal("attribute.weapon.attackSpeed")));
                 }else{
                     par3List.add(EnumChatFormatting.DARK_GREEN+
                             StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 1,
-                                    new Object[] {decimal_format.format(-(float)hitMod / 10F * 100),
-                                            StatCollector.translateToLocal("attribute.weapon.attackSpeed")}));
+                                    decimal_format.format(-(float)hitMod / 10F * 100),
+                                            StatCollector.translateToLocal("attribute.weapon.attackSpeed")));
                 }
             }
 

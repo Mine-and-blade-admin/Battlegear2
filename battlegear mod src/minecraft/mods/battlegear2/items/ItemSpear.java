@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.weapons.ISpecialEffect;
@@ -55,15 +56,14 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 
         par3List.add(EnumChatFormatting.DARK_GREEN+
                 StatCollector.translateToLocalFormatted("attribute.modifier.plus."+ 0,
-                        new Object[] {decimal_format.format(mounted_extra_damage),
-                                StatCollector.translateToLocal("attribute.weapon.mountedBonus")}));
+                        decimal_format.format(mounted_extra_damage), StatCollector.translateToLocal("attribute.weapon.mountedBonus")));
     }
 
     @Override
     public boolean performEffects(EntityLivingBase entityHit, EntityLivingBase entityHitting) {
         if(entityHitting.isRiding() || entityHitting.isSprinting())
         {
-            entityHit.attackEntityFrom(new EntityDamageSource("battlegearExtra", entityHitting), mounted_extra_damage/2);
+            entityHit.attackEntityFrom(new EntityDamageSource(Battlegear.CUSTOM_DAMAGE_SOURCE, entityHitting), mounted_extra_damage/2);
             return true;
         }else{
             return false;

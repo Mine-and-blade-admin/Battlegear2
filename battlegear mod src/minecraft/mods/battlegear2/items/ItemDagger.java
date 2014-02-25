@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.weapons.IBackStabbable;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.weapons.IHitTimeModifier;
@@ -31,7 +32,7 @@ public class ItemDagger extends OneHandedWeapon implements IBackStabbable,IHitTi
 	@Override//Here we simply cause more damage (hit will touch twice, one here and the other called vanilla)
 	public boolean onBackStab(EntityLivingBase entityHit, EntityLivingBase entityHitting)
 	{
-        entityHit.attackEntityFrom(new EntityDamageSource("battlegearExtra", entityHitting), this.baseDamage/2);
+        entityHit.attackEntityFrom(new EntityDamageSource(Battlegear.CUSTOM_DAMAGE_SOURCE, entityHitting), this.baseDamage/2);
         return true;
 	}
 

@@ -57,7 +57,7 @@ public class Battlegear {
     public static CommonProxy proxy;
 
     public static String imageFolder = "assets/battlegear2/textures/";
-
+    public static final String CUSTOM_DAMAGE_SOURCE = "battlegearExtra";
     public static EnumArmorMaterial knightArmourMaterial;
 
     public static boolean battlegearEnabled = true;
