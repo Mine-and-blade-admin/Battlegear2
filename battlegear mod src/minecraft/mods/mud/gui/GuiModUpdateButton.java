@@ -4,11 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
@@ -21,7 +18,7 @@ public class GuiModUpdateButton extends GuiButton{
     ItemStack icon = new ItemStack(Block.tilledField);
     List<String> text = null;
     private GuiScreen parent;
-    public GuiModUpdateButton(int id, int x, int y, int width, int height, GuiScreen parent) {
+    public GuiModUpdateButton(int id, int x, int y, GuiScreen parent) {
         super(id, x, y, 100, 20, "");
         this.parent = parent;
     }
@@ -29,7 +26,6 @@ public class GuiModUpdateButton extends GuiButton{
     @Override
     public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
         super.drawButton(par1Minecraft, par2, par3);
-
 
         if(text == null){
             text = par1Minecraft.fontRenderer.listFormattedStringToWidth(StatCollector.translateToLocal("mud.name"), 80);

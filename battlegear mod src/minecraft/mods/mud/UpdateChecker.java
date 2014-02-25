@@ -74,24 +74,18 @@ public class UpdateChecker implements Runnable{
 
                     }
 
-
                 }
             }
 
-            if(releases.isEmpty()){
-
-            }else{
+            if(!releases.isEmpty()){
                 return releases.last();
             }
-
 
         }catch (Exception e){
             e.printStackTrace();
         }
 
         return null;
-
-
 
     }
 

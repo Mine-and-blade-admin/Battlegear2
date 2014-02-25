@@ -5,8 +5,8 @@ import java.util.List;
 import mods.mud.gui.GuiChangelogDownload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.entity.player.EntityPlayer;
 
 public class MudCommands extends CommandBase{
 
@@ -16,19 +16,18 @@ public class MudCommands extends CommandBase{
     }
     
     @Override
-    public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr)
-    {
+    public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
         return getListOfStringsMatchingLastWord(par2ArrayOfStr, getCommandName());
     }
     
     @Override
-    public int getRequiredPermissionLevel() {
-        return 0;
+    public boolean canCommandSenderUseCommand(ICommandSender par1ICommandSender){
+        return true;
     }
 
     @Override
     public String getCommandUsage(ICommandSender icommandsender) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Override
@@ -36,9 +35,8 @@ public class MudCommands extends CommandBase{
         Minecraft.getMinecraft().displayGuiScreen(new GuiChangelogDownload(Minecraft.getMinecraft().currentScreen));
     }
 
-	@Override
-	public int compareTo(Object arg0) {
-		
-		return 0;
-	}
+    @Override
+    public int compareTo(Object o) {
+        return this.compareTo((ICommand)o);
+    }
 }

@@ -1,15 +1,12 @@
 package mods.mud;
 
 import cpw.mods.fml.client.GuiModList;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.TickType;
 import mods.mud.gui.GuiModUpdateButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.server.integrated.IntegratedServer;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -62,7 +59,7 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
                     hasMumButton = hasMumButton || o instanceof GuiModUpdateButton;
                 }
                 if(!hasMumButton){
-                    buttonList.add(new GuiModUpdateButton(99, x, y,125, 20, Minecraft.getMinecraft().currentScreen));
+                    buttonList.add(new GuiModUpdateButton(99, x, y, Minecraft.getMinecraft().currentScreen));
                 }
                 lastScreen = Minecraft.getMinecraft().currentScreen;
             }

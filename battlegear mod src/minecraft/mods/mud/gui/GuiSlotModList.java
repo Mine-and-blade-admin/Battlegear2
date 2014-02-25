@@ -25,8 +25,8 @@ public class GuiSlotModList extends GuiScrollingList
     }
 
     @Override
-    protected int getSize(){
-
+    protected int getSize()
+    {
         return entries.size();
     }
 
