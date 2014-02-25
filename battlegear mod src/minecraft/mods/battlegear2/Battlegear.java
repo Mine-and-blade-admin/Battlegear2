@@ -16,7 +16,6 @@ import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.packet.*;
 import mods.battlegear2.recipies.CraftingHandeler;
 import mods.battlegear2.utils.*;
-import mods.mud.ModUpdateDetector;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.EnumArmorMaterial;
 import net.minecraft.item.Item;
@@ -28,6 +27,7 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
+
 import java.net.URL;
 import java.util.logging.Logger;
 
@@ -75,7 +75,7 @@ public class Battlegear {
 
         if((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient()){
             try {
-                ModUpdateDetector.registerMod(
+                Class.forName("mods.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, URL.class, URL.class).invoke(null,
                         FMLCommonHandler.instance().findContainerFor(this),
                         new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml"),
                         new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/changelog.md")
