@@ -84,7 +84,7 @@ jarAPISrc{
     destinationDir = file "battlegear api/"
     baseName = config.mcversion+"-Battlegear-Src"
     from 'build/sources/java'
-    include 'mods/battlegear2/**'
+    include 'mods/**'
 }
 
 task jarAPIBin(dependsOn:'build', type:Jar)
@@ -93,7 +93,7 @@ jarAPIBin{
     baseName = config.mcversion+"-Battlegear-Bin"
     // Add classes
     from 'build/classes/main'
-    include 'mods/battlegear2/**'
+    include 'mods/**'
 	
     // Add Resources
     from 'build/resources/main'
