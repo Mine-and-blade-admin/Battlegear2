@@ -34,9 +34,7 @@ import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class BattlegearClientTickHandeler implements ITickHandler {
@@ -173,10 +171,10 @@ public class BattlegearClientTickHandeler implements ITickHandler {
      */
     private static ItemStack getItemFromPointedAt(MovingObjectPosition objectMouseOver, World theWorld) {
         if(objectMouseOver!=null){
-            int k,j,i=0;
+            int j,i=0;
             if (objectMouseOver.typeOfHit == EnumMovingObjectType.TILE)
             {
-                k = objectMouseOver.blockX;
+                int k = objectMouseOver.blockX;
                 int l = objectMouseOver.blockY;
                 int i1 = objectMouseOver.blockZ;
                 Block block = Block.blocksList[theWorld.getBlockId(k, l, i1)];

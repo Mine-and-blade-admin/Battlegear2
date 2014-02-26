@@ -124,7 +124,7 @@ jarMUDBin{
 	
     // Add Resources
     from 'build/resources/main'
-    include 'assets/mud/**', '*.cfg', 'LICENCE'
+    include 'assets/mud/**', 'LICENCE'
 }
 
 task jarAPI(dependsOn:['jarMUDBin','jarBGBin','jarMUDSrc','jarBGBin'])

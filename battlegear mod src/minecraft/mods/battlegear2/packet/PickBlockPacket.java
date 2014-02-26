@@ -42,7 +42,7 @@ public class PickBlockPacket extends AbstractMBPacket{
                 slot = inputStream.readInt();
                 this.player.inventory.currentItem = slot;
                 stack = Packet.readItemStack(inputStream);
-                if(!ItemStack.areItemStacksEqual(stack, this.player.getCurrentEquippedItem())){
+                if(!stack.isItemEqual(this.player.getCurrentEquippedItem())){
                     BattlegearUtils.setPlayerCurrentItem(this.player, stack);
                 }
             }

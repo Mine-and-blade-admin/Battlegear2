@@ -2,6 +2,7 @@ package mods.mud;
 
 import cpw.mods.fml.client.GuiModList;
 import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.TickType;
 import mods.mud.gui.GuiModUpdateButton;
 import net.minecraft.client.Minecraft;
@@ -46,24 +47,31 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
                     //Minecraft.getMinecraft().currentScreen != lastScreen &&
                     Minecraft.getMinecraft().currentScreen instanceof GuiIngameMenu ||
                     Minecraft.getMinecraft().currentScreen instanceof GuiModList){
-                int x = Minecraft.getMinecraft().currentScreen.width / 2 + 105;
-                int y =  Minecraft.getMinecraft().currentScreen.height / 4 + 24 -16;
-                if(Minecraft.getMinecraft().currentScreen instanceof GuiModList){
-                    x = Minecraft.getMinecraft().currentScreen.width - 110;
+                lastScreen = Minecraft.getMinecraft().currentScreen;
+                int x = lastScreen.width / 2 + 105;
+                int y = lastScreen.height / 4 + 24 -16;
+                if(lastScreen instanceof GuiModList){
+                    x = lastScreen.width - 110;
                     y = 10;
                 }
 
-                List buttonList = Minecraft.getMinecraft().currentScreen.buttonList;
+                List buttonList = getButtonList(lastScreen);
                 boolean hasMumButton = false;
                 for(Object o : buttonList){
-                    hasMumButton = hasMumButton || o instanceof GuiModUpdateButton;
+                    if(o instanceof GuiModUpdateButton){
+                        hasMumButton = true;
+                        break;
+                    }
                 }
                 if(!hasMumButton){
-                    buttonList.add(new GuiModUpdateButton(99, x, y, Minecraft.getMinecraft().currentScreen));
+                    buttonList.add(new GuiModUpdateButton(99, x, y, lastScreen));
                 }
-                lastScreen = Minecraft.getMinecraft().currentScreen;
             }
         }
+    }
+
+    private List getButtonList(GuiScreen currentScreen) {
+        return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, currentScreen, "buttonList", "field_73887_h");
     }
 
     @Override
