@@ -3,6 +3,7 @@ package mods.battlegear2.api.weapons;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 /**
  * Registry for stacks which will be allowed in battle inventory,
@@ -67,7 +68,7 @@ public class WeaponRegistry {
 		@Override
 		public int hashCode() {
 			final int prime = 31;
-			int result = prime + (stack == null ? 0 : stack.itemID ^ stack.stackSize + (stack.hasTagCompound() ? prime*prime ^ stack.getTagCompound().hashCode():0));
+			int result = prime + (stack == null ? 0 : Item.getIdFromItem(stack.getItem()) ^ stack.stackSize + (stack.hasTagCompound() ? prime*prime ^ stack.getTagCompound().hashCode():0));
 			return result;
 		}
 

@@ -3,7 +3,6 @@ package mods.battlegear2.items;
 import mods.battlegear2.api.weapons.IPotionEffect;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
@@ -23,8 +22,8 @@ public class ItemMace extends OneHandedWeapon implements IPotionEffect{
         percentFormat.setMaximumFractionDigits(0);
     }
 
-	public ItemMace(int par1, EnumToolMaterial material, String name, float stunChance) {
-		super(par1,material,name);
+	public ItemMace(ToolMaterial material, String name, float stunChance) {
+		super(material,name);
 		//set the base damage to that of lower than usual (balance)
 		this.baseDamage -= 1;
         effects= new HashMap<PotionEffect,Float>();

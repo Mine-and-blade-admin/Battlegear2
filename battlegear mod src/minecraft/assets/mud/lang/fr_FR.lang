@@ -1,10 +1,8 @@
 mud.name=Detecteur de version de mods
 message.checking=Recherche de nouvelles versions de mods.
 message.check.done=Recherche terminee
-message.you.have=Vous avez
-message.outdated=mises a jour de mod en attente
-message.type=Utiliser la commande
-message.to.view=pour voir les mises a jour disponibles
+message.you.have.outdated=Vous avez %s mises a jour de mod en attente
+message.type.to.view=Utiliser la commande pour voir les mises a jour disponibles
 message.up.to.date=Tous vos mods sont a jour
 
 button.download.latest=Telecharger la plus recente version

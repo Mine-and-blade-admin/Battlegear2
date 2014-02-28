@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
@@ -52,7 +52,7 @@ public class QuiverItremRenderer implements IItemRenderer{
             hasArrows = quiver.getStackInSlot(item, i) != null;
         }
 
-        Icon icon =  item.getIconIndex();
+        IIcon icon =  item.getIconIndex();
         Tessellator tessellator = Tessellator.instance;
         GL11.glPushMatrix();
         switch (type){

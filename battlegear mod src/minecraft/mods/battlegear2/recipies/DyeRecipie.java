@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import mods.battlegear2.api.IDyable;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
@@ -40,9 +40,9 @@ public class DyeRecipie implements IRecipe
                 }
                 else
                 {
-                    if(stack.itemID == Item.bucketWater.itemID &&!waterFound){
+                    if(stack.getItem() == Items.water_bucket &&!waterFound){
                         waterFound = true;
-                    }else if (stack.itemID != Item.dyePowder.itemID)
+                    }else if (stack.getItem() != Items.dye)
                     {
                         return false;
                     }else{
@@ -105,14 +105,14 @@ public class DyeRecipie implements IRecipe
                 }
                 else
                 {
-                    if(stack.getItem().itemID == Item.bucketWater.itemID){
+                    if(stack.getItem() == Items.water_bucket){
                         removeColour = true;
-                    }else if (stack.itemID != Item.dyePowder.itemID)
+                    }else if (stack.getItem() != Items.dye)
                     {
                         return null;
                     }
 
-                    float[] afloat = EntitySheep.fleeceColorTable[BlockColored.getBlockFromDye(stack.getItemDamage())];
+                    float[] afloat = EntitySheep.fleeceColorTable[BlockColored.func_150032_b(stack.getItemDamage())];
                     int j1 = (int)(afloat[0] * 255.0F);
                     int k1 = (int)(afloat[1] * 255.0F);
                     i1 = (int)(afloat[2] * 255.0F);

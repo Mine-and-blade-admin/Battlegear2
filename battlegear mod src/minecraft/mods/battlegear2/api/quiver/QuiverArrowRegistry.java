@@ -5,6 +5,7 @@ import java.util.*;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -25,7 +26,7 @@ public class QuiverArrowRegistry {
      * @param itemMetadata the item damage value, as metadata
      * @param entityArrow the class from which the arrow entity will be constructed
      */
-    public static void addArrowToRegistry(int itemId, int itemMetadata, Class<? extends EntityArrow> entityArrow){
+    public static void addArrowToRegistry(Item itemId, int itemMetadata, Class<? extends EntityArrow> entityArrow){
         ItemStack stack = new ItemStack(itemId, 1, itemMetadata);
         addArrowToRegistry(stack, entityArrow);
     }
@@ -121,7 +122,7 @@ public class QuiverArrowRegistry {
     public static ItemStack getItem(Class<? extends EntityArrow> clazz){
     	ItemStack temp = classToItems.get(clazz);
         if(temp == null){
-			return new ItemStack(Item.arrow);
+			return new ItemStack(Items.arrow);
 		}else{
 			return temp.copy();
 		}
@@ -146,11 +147,11 @@ public class QuiverArrowRegistry {
                 return 0;
             }else{
 
-                int idDiff = stack.itemID - stack2.itemID;
+                int idDiff = stack.getItemDamage() - stack2.getItemDamage();
                 if(idDiff != 0){
                     return idDiff;
                 }else{
-                	idDiff = stack.getItemDamage() - stack2.getItemDamage();
+                	idDiff = Item.getIdFromItem(stack.getItem())-Item.getIdFromItem(stack2.getItem());
                 	if(idDiff != 0){
                         return idDiff;
                     }else{

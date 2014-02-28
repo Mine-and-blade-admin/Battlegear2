@@ -1,10 +1,8 @@
 mud.name=Mod Update Detector
 message.checking=Pr\u00fcfe auf neue Versionen von Mods.
 message.check.done=\u00dcberpr\u00fcfung beendet
-message.you.have=Du hast
-message.outdated=veraltete Mods
-message.type=Nutze den Befehl
-message.to.view=um die veralteten Mods anzuschauen
+message.you.have.outdated=Du hast %s veraltete Mods
+message.type.to.view=Nutze den Befehl um die veralteten Mods anzuschauen
 message.up.to.date=Alle Mods sind auf dem neuesten Stand
 
 button.download.latest=Lade neueste Version

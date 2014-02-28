@@ -3,10 +3,8 @@
 mud.name=模组更新检查
 message.checking=检查模组的更新版本
 message.check.done=检查完毕
-message.you.have=你有
-message.outdated=过期模组
-message.type=使用指令
-message.to.view=浏览过期模组
+message.you.have.outdated=你有 %s 过期模组
+message.type.to.view=使用指令浏览过期模组
 message.up.to.date=所有模组已经更新完毕
 
 button.download.latest=下载最新版本

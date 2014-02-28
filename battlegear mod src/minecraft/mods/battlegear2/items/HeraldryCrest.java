@@ -5,24 +5,23 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.util.Icon;
+import net.minecraft.network.Packet;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 
 import java.util.List;
 
 public class HeraldryCrest extends ItemMap implements IHeraldryItem{
-    public HeraldryCrest(int par1) {
-        super(par1);
+    public HeraldryCrest() {
+        super();
         this.setCreativeTab(BattlegearConfig.customTab);
         this.setMaxStackSize(1);
         setUnlocalizedName("battlegear2:heraldric");
@@ -30,7 +29,7 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void registerIcons(IconRegister par1IconRegister) {
+    public void registerIcons(IIconRegister par1IconRegister) {
         this.itemIcon = par1IconRegister.registerIcon("battlegear2:bg-icon");
     }
 
@@ -44,12 +43,12 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     }
 
     @Override
-    public Icon getBaseIcon(ItemStack stack) {
+    public IIcon getBaseIcon(ItemStack stack) {
         return null;
     }
 
     @Override
-    public Icon getTrimIcon(ItemStack stack) {
+    public IIcon getTrimIcon(ItemStack stack) {
         return null;
     }
 
@@ -60,17 +59,17 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
 
 
     @Override
-    public boolean hasContainerItem(){
+    public boolean hasContainerItem(ItemStack stack){
         return true;
     }
 
     @Override
-    public ItemStack getContainerItemStack(ItemStack itemStack) {
+    public ItemStack getContainerItem(ItemStack itemStack) {
         return itemStack;
     }
 
     @Override
-    public Icon getPostRenderIcon(ItemStack stack) {
+    public IIcon getPostRenderIcon(ItemStack stack) {
         return null;
     }
 

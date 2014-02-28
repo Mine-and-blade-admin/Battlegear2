@@ -1,7 +1,7 @@
 package mods.battlegear2.api.heraldry;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.ResourceManager;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PatternStore {
 
-    public static final ResourceManager rm = Minecraft.getMinecraft().getResourceManager();
+    public static final IResourceManager rm = Minecraft.getMinecraft().getResourceManager();
     public static final int IMAGES_X = 8;
     public static final int IMAGES_Y = 4;
     public static List<int[][][][]> patterns = new ArrayList<int[][][][]>();

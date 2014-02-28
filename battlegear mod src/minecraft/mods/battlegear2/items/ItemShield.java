@@ -2,8 +2,8 @@ package mods.battlegear2.items;
 
 import java.util.List;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
@@ -14,7 +14,7 @@ import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.IProjectile;
@@ -25,15 +25,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 
 public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed, IArrowCatcher, IArrowDisplay{
 
     public ShieldType enumShield;
 
-    private Icon backIcon;
-    private Icon trimIcon;
+    private IIcon backIcon;
+    private IIcon trimIcon;
 
     public static final float[] arrowX = new float[64];
     public static final float[] arrowY = new float[64];
@@ -57,8 +57,8 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     }
 
-    public ItemShield(int id, ShieldType enumShield) {
-        super(id);
+    public ItemShield(ShieldType enumShield) {
+        super();
         this.setCreativeTab(BattlegearConfig.customTab);
 
         this.enumShield = enumShield;
@@ -73,7 +73,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     }
 
     @Override
-    public void registerIcons(IconRegister par1IconRegister) {
+    public void registerIcons(IIconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
         backIcon = par1IconRegister.registerIcon("battlegear2:shield/shield."+enumShield.getName()+".back");
         trimIcon = par1IconRegister.registerIcon("battlegear2:shield/shield."+enumShield.getName()+".trim");
@@ -113,11 +113,11 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         stack.getTagCompound().setShort("arrows", (short)count);
     }
 
-    public Icon getBackIcon() {
+    public IIcon getBackIcon() {
         return backIcon;
     }
 
-    public Icon getTrimIcon() {
+    public IIcon getTrimIcon() {
         return trimIcon;
     }
 
@@ -140,7 +140,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     @Override
     public void blockAnimation(EntityPlayer player, float dmg){
-        PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 32, player.dimension,
+        Battlegear.packetHandler.sendPacketAround(player, 32,
                 new BattlegearShieldFlashPacket(player, dmg).generatePacket());
         player.worldObj.playSoundAtEntity(player, "battlegear2:shield", 1, 1);
     }
@@ -252,7 +252,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
         if (!nbttagcompound.hasKey("display"))
         {
-            nbttagcompound.setCompoundTag("display", nbttagcompound1);
+            nbttagcompound.setTag("display", nbttagcompound1);
         }
 
         nbttagcompound1.setInteger("color", par2);

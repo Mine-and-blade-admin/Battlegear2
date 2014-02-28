@@ -4,10 +4,9 @@ import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.weapons.ISpecialEffect;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -18,10 +17,10 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 
     //Will make it one more than a sword
     int mounted_extra_damage = 3;
-    public Icon bigIcon;
+    public IIcon bigIcon;
 
-    public ItemSpear(int par1, EnumToolMaterial material, String name) {
-		super(par1,material,name);
+    public ItemSpear(ToolMaterial material, String name) {
+		super(material,name);
 		//set the base damage to that of lower than usual (balance)
 		this.baseDamage -= 2;
 	}
@@ -43,7 +42,7 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
     }
 
     @Override
-    public void registerIcons(IconRegister par1IconRegister) {
+    public void registerIcons(IIconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
 
         bigIcon = par1IconRegister.registerIcon(this.getIconString()+".big");

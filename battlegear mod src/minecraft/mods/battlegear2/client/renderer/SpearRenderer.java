@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
@@ -53,10 +53,9 @@ public class SpearRenderer implements IItemRenderer {
 
         if (type == ItemRenderType.EQUIPPED) {
 
-
             GL11.glTranslatef(-0.5F, -0.5F, 0);
             GL11.glScalef(2,2,1);
-            Icon icon = ((ItemSpear)item.getItem()).bigIcon;
+            IIcon icon = ((ItemSpear)item.getItem()).bigIcon;
 
             ItemRenderer.renderItemIn2D(tessellator,
                     icon.getMaxU(),
@@ -77,7 +76,7 @@ public class SpearRenderer implements IItemRenderer {
             itemRenderer.renderIcon(0, 0, item.getIconIndex(), 16, 16);
 
         }else if (type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
-            Icon icon = item.getIconIndex();
+            IIcon icon = item.getIconIndex();
 
             ItemRenderer.renderItemIn2D(tessellator,
             		icon.getMaxU(),

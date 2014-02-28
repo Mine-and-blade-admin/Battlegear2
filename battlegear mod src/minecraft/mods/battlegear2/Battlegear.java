@@ -4,7 +4,7 @@ import cpw.mods.fml.common.*;
 import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.network.FMLEventChannel;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.IQuiverSelection;
@@ -13,57 +13,40 @@ import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.api.core.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.items.ItemMBArrow;
-import mods.battlegear2.packet.*;
+import mods.battlegear2.packet.BattlegearPacketHandeler;
 import mods.battlegear2.recipies.CraftingHandeler;
 import mods.battlegear2.utils.*;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.item.EnumArmorMaterial;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.EnumHelper;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.util.EnumHelper;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
 import java.net.URL;
-import java.util.logging.Logger;
 
 @Mod(modid="battlegear2")
-@NetworkMod(clientSideRequired = true, serverSideRequired = false,
-        channels = {
-                BattlegearAnimationPacket.packetName,
-                BattlegearSyncItemPacket.packetName,
-                BattlegearBannerPacket.packetName,
-                BattlegearChangeHeraldryPacket.packetName,
-                BattlegearGUIPacket.packetName,
-                BattlegearShieldBlockPacket.packetName,
-                BattlegearShieldFlashPacket.packetName,
-                SpecialActionPacket.packetName,
-                LoginPacket.packetName,
-                OffhandPlaceBlockPacket.packetName,
-                PickBlockPacket.packetName
-        },
-        packetHandler = BattlegearPacketHandeler.class)
 public class Battlegear {
 
     @Instance("battlegear2")
     public static Battlegear INSTANCE;
 
-    @SidedProxy(clientSide = "mods.battlegear2.client.ClientProxy",
-            serverSide = "mods.battlegear2.CommonProxy")
+    @SidedProxy(clientSide = "mods.battlegear2.client.ClientProxy", serverSide = "mods.battlegear2.CommonProxy")
     public static CommonProxy proxy;
 
     public static String imageFolder = "assets/battlegear2/textures/";
     public static final String CUSTOM_DAMAGE_SOURCE = "battlegearExtra";
-    public static EnumArmorMaterial knightArmourMaterial;
+    public static ItemArmor.ArmorMaterial knightArmourMaterial;
 
     public static boolean battlegearEnabled = true;
     public static boolean debug = false;
 
-	public static Logger logger;
+	public static org.apache.logging.log4j.Logger logger;
+    public static BattlegearPacketHandeler packetHandler;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
@@ -90,24 +73,29 @@ public class Battlegear {
     @EventHandler
     public void init(FMLInitializationEvent event) {
         BattlegearConfig.registerRecipes();
-	    GameRegistry.registerCraftingHandler(new CraftingHandeler());
-        QuiverArrowRegistry.addArrowToRegistry(Item.arrow.itemID, 0, EntityArrow.class);
+	    FMLCommonHandler.instance().bus().register(new CraftingHandeler());
+        QuiverArrowRegistry.addArrowToRegistry(Items.arrow, 0, EntityArrow.class);
         if(BattlegearConfig.MbArrows!=null){
 	        for(int i = 0; i<ItemMBArrow.arrows.length; i++){
-	        	QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, i, ItemMBArrow.arrows[i]);
+	        	QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows, i, ItemMBArrow.arrows[i]);
 	        }
+        }
+        packetHandler = new BattlegearPacketHandeler();
+        FMLEventChannel eventChannel;
+        for(String channel:packetHandler.map.keySet()){
+            eventChannel = NetworkRegistry.INSTANCE.newEventDrivenChannel(channel);
+            eventChannel.register(packetHandler);
+            packetHandler.channels.put(channel, eventChannel);
         }
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        BattlegearUtils.scanAndProcessItems();
         proxy.registerKeyHandelers();
         proxy.registerTickHandelers();
         proxy.registerItemRenderers();
 
-        NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
-        GameRegistry.registerPlayerTracker(new BgPlayerTracker());
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new BattlegearGUIHandeler());
 
         if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
             proxy.tryUseTConstruct();
@@ -165,9 +153,9 @@ public class Battlegear {
                     }
                 }
                 if(success){
-                    logger.finest("Mine&Blade:Battlegear2 successfully managed message from "+ message.getSender());
+                    logger.trace("Mine&Blade:Battlegear2 successfully managed message from "+ message.getSender());
                 }else{
-                    logger.warning(message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");
+                    logger.warn(message.getSender()+" tried to communicate with Mine&Blade:Battlegear2, but message was not supported!");
                 }
             }
     	}

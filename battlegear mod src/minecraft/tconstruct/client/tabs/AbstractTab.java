@@ -24,7 +24,7 @@ public abstract class AbstractTab extends GuiButton
     @Override
     public void drawButton (Minecraft mc, int mouseX, int mouseY)
     {
-        if (this.drawButton)
+        if (this.visible)
         {
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 
@@ -52,7 +52,7 @@ public abstract class AbstractTab extends GuiButton
     @Override
     public boolean mousePressed (Minecraft mc, int mouseX, int mouseY)
     {
-        boolean inWindow = this.enabled && this.drawButton && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+        boolean inWindow = this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
 
         if (inWindow)
         {

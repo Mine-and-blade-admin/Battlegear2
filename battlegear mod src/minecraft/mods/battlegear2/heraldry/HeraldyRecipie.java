@@ -2,6 +2,7 @@ package mods.battlegear2.heraldry;
 
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.utils.BattlegearConfig;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -25,13 +26,13 @@ public class HeraldyRecipie implements IRecipe{
 		for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
 			ItemStack stack = inventorycrafting.getStackInSlot(i);
 			if(stack != null){
-				if(stack.getItem().itemID == BattlegearConfig.heradricItem.itemID ||
-						stack.getItem().itemID == Item.bucketWater.itemID){
+				if(stack.getItem() == BattlegearConfig.heradricItem ||
+						stack.getItem() == Items.water_bucket){
 					if(iconFound)
 						return false;
 					else
 						iconFound = true;
-				}else if (stack.getItem().itemID == heraldricWeapon.itemID){
+				}else if (stack.getItem() == heraldricWeapon){
 					if(itemFound)
 						return false;
 					else
@@ -53,11 +54,11 @@ public class HeraldyRecipie implements IRecipe{
 			ItemStack stack = inventorycrafting.getStackInSlot(i);
 			
 			if(stack != null){
-				if(stack.getItem().itemID == BattlegearConfig.heradricItem.itemID){
+				if(stack.getItem() == BattlegearConfig.heradricItem){
 					icon = stack;
-				}else if (stack.getItem().itemID == heraldricWeapon.itemID){
+				}else if (stack.getItem() == heraldricWeapon){
 					item = stack;
-				}else if (stack.getItem().itemID == Item.bucketWater.itemID){
+				}else if (stack.getItem() == Items.water_bucket){
 					icon = stack;
 				}
 			}
@@ -68,7 +69,7 @@ public class HeraldyRecipie implements IRecipe{
 		
 		if(heraldricWeapon instanceof IHeraldryItem){
 			byte[] code = SigilHelper.getDefault();
-			if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
+			if(icon.getItem() == BattlegearConfig.heradricItem){
 				code = ((IHeraldryItem)icon.getItem()).getHeraldry(icon);
 			}
 			((IHeraldryItem) heraldricWeapon).setHeraldry(item, code);
@@ -78,7 +79,7 @@ public class HeraldyRecipie implements IRecipe{
 			if(compound == null){
 				compound = new NBTTagCompound();
 			}
-			if(icon.getItem().itemID == BattlegearConfig.heradricItem.itemID){
+			if(icon.getItem() == BattlegearConfig.heradricItem){
 				byte[] code = ((IHeraldryItem)icon.getItem()).getHeraldry(icon);
 				compound.setByteArray("hc2", code);
 				item.setTagCompound(compound);

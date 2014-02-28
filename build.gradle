@@ -9,10 +9,14 @@ buildscript {
             url = "http://files.minecraftforge.net/maven"
         }
 
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
 
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.1-SNAPSHOT'
     }
 }
 
@@ -29,6 +33,7 @@ configFile.withReader {
 //Set things from the properties file
 version = config.modversion
 minecraft {
+    assetDir = "eclipse/assets"
     version = config.mcversion + "-" + config.forgeversion
     replace '${version}', project.version
 }

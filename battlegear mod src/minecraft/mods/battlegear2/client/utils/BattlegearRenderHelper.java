@@ -24,6 +24,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.*;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
@@ -36,7 +38,7 @@ import org.lwjgl.opengl.GL12;
 
 public class BattlegearRenderHelper {
 
-    private static final ItemStack dummyStack = new ItemStack(Block.lavaMoving);
+    private static final ItemStack dummyStack = new ItemStack(Blocks.flowing_lava);
 
     public static EntityLivingBase dummyEntity;
 
@@ -86,7 +88,7 @@ public class BattlegearRenderHelper {
             float var20;
 
             if (offhandRender.getItemToRender() != null) {
-                var18 = Item.itemsList[offhandRender.getItemToRender().itemID].getColorFromItemStack(offhandRender.getItemToRender(), 0);
+                var18 = offhandRender.getItemToRender().getItem().getColorFromItemStack(offhandRender.getItemToRender(), 0);
                 var20 = (float) (var18 >> 16 & 255) / 255.0F;
                 var21 = (float) (var18 >> 8 & 255) / 255.0F;
                 var10 = (float) (var18 & 255) / 255.0F;
@@ -230,7 +232,7 @@ public class BattlegearRenderHelper {
                     	if (offhandRender.getItemToRender().getItem().requiresMultipleRenderPasses()) {
 	                        itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
 	                        for (int x = 1; x < offhandRender.getItemToRender().getItem().getRenderPasses(offhandRender.getItemToRender().getItemDamage()); x++) {
-	                            int var25 = Item.itemsList[offhandRender.getItemToRender().itemID].getColorFromItemStack(offhandRender.getItemToRender(), x);
+	                            int var25 = offhandRender.getItemToRender().getItem().getColorFromItemStack(offhandRender.getItemToRender(), x);
 	                            var13 = (float) (var25 >> 16 & 255) / 255.0F;
 	                            var14 = (float) (var25 >> 8 & 255) / 255.0F;
 	                            var15 = (float) (var25 & 255) / 255.0F;
@@ -305,7 +307,7 @@ public class BattlegearRenderHelper {
         if (var2 != null &&
                 offhandRender.getItemToRender() != null &&
                 var2 != offhandRender.getItemToRender() &&
-                var2.itemID == offhandRender.getItemToRender().itemID &&
+                var2.getItem() == offhandRender.getItemToRender().getItem() &&
                 var2.getItemDamage() == offhandRender.getItemToRender().getItemDamage()) {
             offhandRender.setItemToRender(var2);
             var3 = true;
@@ -404,7 +406,7 @@ public class BattlegearRenderHelper {
             GL11.glTranslatef(0.0625F, 0.4375F, 0.0625F);
 
             if (par1EntityPlayer.fishEntity != null) {
-                var21 = new ItemStack(Item.stick);
+                var21 = new ItemStack(Items.stick);
             }
 
             EnumAction var23 = null;
@@ -447,7 +449,7 @@ public class BattlegearRenderHelper {
                 
             }else if(!(var21.getItem() instanceof IArrowContainer2)){
 
-                if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.blocksList[var21.itemID].getRenderType()))) {
+                if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.getBlockFromItem(var21.getItem()).getRenderType()))) {
                     var7 = 0.5F;
                     GL11.glTranslatef(0.0F, 0.1875F, -0.3125F);
                     var7 *= 0.75F;
@@ -461,10 +463,10 @@ public class BattlegearRenderHelper {
                     GL11.glScalef(var7, -var7, var7);
                     GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
                     GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
-                } else if (Item.itemsList[var21.itemID].isFull3D()) {
+                } else if (var21.getItem().isFull3D()) {
                     var7 = 0.625F;
 
-                    if (Item.itemsList[var21.itemID].shouldRotateAroundWhenRendering()) {
+                    if (var21.getItem().shouldRotateAroundWhenRendering()) {
                         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
                         GL11.glTranslatef(0.0F, -0.125F, 0.0F);
                     }
@@ -531,12 +533,12 @@ public class BattlegearRenderHelper {
 
         boolean hasChestArmour = false;
         boolean hasLegArmour = false;
-        ItemStack chest =  par1EntityPlayer.getCurrentItemOrArmor(2);
+        ItemStack chest =  par1EntityPlayer.getEquipmentInSlot(2);
         if(chest != null){
             chestModel = chest.getItem().getArmorModel(par1EntityPlayer, chest, 1);
             hasChestArmour = true;
         }
-        ItemStack legs =  par1EntityPlayer.getCurrentItemOrArmor(3);
+        ItemStack legs =  par1EntityPlayer.getEquipmentInSlot(3);
         if(legs != null){
             legsModel = legs.getItem().getArmorModel(par1EntityPlayer, legs, 2);
             hasLegArmour = true;

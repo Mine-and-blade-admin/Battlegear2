@@ -2,6 +2,7 @@ package mods.battlegear2;
 
 import java.util.Random;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.IQuiverSelection;
@@ -13,11 +14,10 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
@@ -56,11 +56,11 @@ public class BowHookContainerClass2 {
         }
     }
 
-    @ForgeSubscribe(receiveCanceled=true)
+    @SubscribeEvent(receiveCanceled=true)
     public void onBowUse(ArrowNockEvent event){
     	boolean canDrawBow = false;
         if(event.entityPlayer.capabilities.isCreativeMode
-                || event.entityPlayer.inventory.hasItem(Item.arrow.itemID)){
+                || event.entityPlayer.inventory.hasItem(Items.arrow)){
         	canDrawBow = true;
         }
         if(!canDrawBow){
@@ -96,7 +96,7 @@ public class BowHookContainerClass2 {
     	return false;
     }
 
-    @ForgeSubscribe(receiveCanceled=true)
+    @SubscribeEvent(receiveCanceled=true)
     public void onBowFiring(ArrowLooseEvent event) {
         //Check if bow is charged enough
         float f = new PlayerEventChild.QuiverArrowEvent.ChargeCalculations(event).getCharge();
@@ -141,7 +141,7 @@ public class BowHookContainerClass2 {
     }
 
     //Start hooks for arrows
-    @ForgeSubscribe
+    @SubscribeEvent
     public void onEntityHitByArrow(LivingAttackEvent event){
         if(event.source.isProjectile() && event.source.getSourceOfDamage() instanceof AbstractMBArrow){
             boolean isCanceled = ((AbstractMBArrow) event.source.getSourceOfDamage()).onHitEntity(event.entity, event.source, event.ammount);

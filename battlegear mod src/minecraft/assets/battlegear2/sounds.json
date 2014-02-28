@@ -1,0 +1,6 @@
+{
+"battlegear:shield":{"category": "player",
+    "sounds": [
+      "shield0", "shield1"
+, "shield2", "shield3", "shield4", "shield15, "shield6", "shield7", "shield8", "shield9"    ]}
+}

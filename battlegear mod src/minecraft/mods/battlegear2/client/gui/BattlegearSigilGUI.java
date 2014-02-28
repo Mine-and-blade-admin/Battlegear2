@@ -1,6 +1,5 @@
 package mods.battlegear2.client.gui;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
 import mods.battlegear2.api.heraldry.RefreshableTexture;
 import mods.battlegear2.gui.ContainerHeraldry;
 import mods.battlegear2.packet.BattlegearGUIPacket;
@@ -27,7 +26,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 public class BattlegearSigilGUI extends GuiContainer {
-
 
     private static final int ADD = 0;
     private static final int REMOVE = 1;
@@ -87,19 +85,19 @@ public class BattlegearSigilGUI extends GuiContainer {
         
         patternToggleButtons[0] = new GuiToggleButton(PAT_BUTTONS[0], (width+160)/2, 15, 65, 20, StatCollector.translateToLocal("gui.sigil.pattern"));
     	patternToggleButtons[0].enabled = selectedIndex == 0;
-    	patternToggleButtons[0].drawButton = selectedIndex == 0;
+    	patternToggleButtons[0].visible = selectedIndex == 0;
     	buttonList.add(patternToggleButtons[0]);
    
         for(int i = 1; i < patternToggleButtons.length; i++){
         	patternToggleButtons[i] = new GuiColourToggleButton(PAT_BUTTONS[i], (width+160)/2+66 + 16*(i-1), 18, currentData.getColour(i-1));
         	patternToggleButtons[i].enabled = selectedIndex == 0;
-        	patternToggleButtons[i].drawButton = selectedIndex == 0;
+        	patternToggleButtons[i].visible = selectedIndex == 0;
         	buttonList.add(patternToggleButtons[i]);
         }
         patternToggleButtons[prevIndexSelected].setSelected(true);
         colourPickerPattern = new GuiColourPicker(COL_SELECT_PAT, (width+200)/2, 45, 0xFF000000, GuiColourPicker.COLOUR_DISPLAY|GuiColourPicker.DEFAULT_COLOURS);
         
-        colourPickerPattern.drawButton = colourPickerPattern.enabled = selectedIndex == 0 && !patternToggleButtons[0].getSelected();
+        colourPickerPattern.visible = colourPickerPattern.enabled = selectedIndex == 0 && !patternToggleButtons[0].getSelected();
         colourPickerPattern.addListener(new IControlListener() {
 			@Override
 			public void actionPreformed(GuiButton button) {
@@ -122,7 +120,7 @@ public class BattlegearSigilGUI extends GuiContainer {
     }
 
     public FontRenderer getFontRenderer() {
-        return fontRenderer;
+        return fontRendererObj;
     }
     
     private void enableButtons(){
@@ -130,10 +128,10 @@ public class BattlegearSigilGUI extends GuiContainer {
     	
     	for(int i = 0; i < patternToggleButtons.length; i++){
         	patternToggleButtons[i].enabled = selectedIndex==0;
-        	patternToggleButtons[i].drawButton = selectedIndex==0;
+        	patternToggleButtons[i].visible = selectedIndex==0;
         }
         
-        colourPickerPattern.enabled = colourPickerPattern.drawButton = 
+        colourPickerPattern.enabled = colourPickerPattern.visible = 
         		selectedIndex ==0 & !patternToggleButtons[0].getSelected();
     	
         addButton.enabled = elementList.getSize() < HeraldryData.MAX_CRESTS+1;
@@ -207,7 +205,7 @@ public class BattlegearSigilGUI extends GuiContainer {
             	for(int i = 0; i < patternToggleButtons.length; i++){
             		patternToggleButtons[i].setSelected((button.id == patternToggleButtons[i].id));
             	}
-            	colourPickerPattern.drawButton = button.id != PATTERN;
+            	colourPickerPattern.visible = button.id != PATTERN;
             	colourPickerPattern.enabled = button.id != PATTERN;
             	if(button.id!=PATTERN)
             		colourPickerPattern.selectColour(((GuiColourToggleButton)button).getColour());
@@ -280,7 +278,7 @@ public class BattlegearSigilGUI extends GuiContainer {
 
 	public static void open(EntityPlayer player){
 		//send packet to open container on server
-        PacketDispatcher.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.sigilEditor).generatePacket());
+        Battlegear.packetHandler.sendPacketToServer(new BattlegearGUIPacket(BattlegearGUIHandeler.sigilEditor).generatePacket());
 	}
 
 

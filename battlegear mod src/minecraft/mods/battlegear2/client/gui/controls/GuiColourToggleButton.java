@@ -23,13 +23,13 @@ public class GuiColourToggleButton extends GuiToggleButton{
 	@Override
 	public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
 		
-		if (this.drawButton)
+		if (this.visible)
         {
             FontRenderer fontrenderer = par1Minecraft.fontRenderer;
             par1Minecraft.getTextureManager().bindTexture(GuiToggleButton.resourceLocation);
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.field_82253_i = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
-            int k = this.getHoverState(this.field_82253_i);
+            this.field_146123_n = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
+            int k = this.getHoverState(this.field_146123_n);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 200, k*15, this.width, this.height);
             
             GL11.glColor4f(
@@ -50,7 +50,7 @@ public class GuiColourToggleButton extends GuiToggleButton{
             {
                 l = -6250336;
             }
-            else if (this.field_82253_i)
+            else if (this.field_146123_n)
             {
                 l = 16777120;
             }

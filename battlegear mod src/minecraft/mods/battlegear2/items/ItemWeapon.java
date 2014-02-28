@@ -11,7 +11,6 @@ import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumToolMaterial;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
@@ -35,17 +34,17 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
     protected static final RangedAttribute extendedReach = new RangedAttribute("weapon.extendedReach", 2.0D, 0.0D, Double.MAX_VALUE);
 
 
-    protected final EnumToolMaterial material;
+    protected final ToolMaterial material;
 	protected String name;
 	protected float baseDamage;
 	
-	public ItemWeapon(int par1, EnumToolMaterial material, String named) {
-		super(par1, material);
+	public ItemWeapon(ToolMaterial material, String named) {
+		super(material);
 		//May be unsafe, but will allow others to add weapons using custom materials (also more efficent)
 		this.material = material;
         this.setCreativeTab(BattlegearConfig.customTab);
 		
-		if(material == EnumToolMaterial.EMERALD){
+		if(material == ToolMaterial.EMERALD){
 			this.name = named+".diamond";
 		}else{
 			this.name= named+"."+material.name().toLowerCase();
@@ -59,7 +58,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 	}
 	
 	
-	public EnumToolMaterial getMaterial() {
+	public ToolMaterial getMaterial() {
 		return this.material;
 	}
 	

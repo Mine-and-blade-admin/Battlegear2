@@ -12,13 +12,11 @@ import org.objectweb.asm.tree.*;
 public class NetClientHandlerTransformer extends TransformerBase {
 
     public NetClientHandlerTransformer() {
-		super("net.minecraft.client.multiplayer.NetClientHandler");
+		super("net.minecraft.client.network.NetHandlerPlayClient");
 	}
 
 	private String entityOtherPlayerMPClassName;
     private String playerInventoryFieldName;
-
-    private String packet20NamedEntitySpawnClassName;
 
     private String netClientHandlerHandleNamedEntitySpawnMethodName;
     private String netClientHandlerHandleNamedEntitySpawnMethodDesc;
@@ -32,13 +30,13 @@ public class NetClientHandlerTransformer extends TransformerBase {
         for (MethodNode method : methods) {
             if (method.name.equals(netClientHandlerHandleNamedEntitySpawnMethodName) &&
                     method.desc.equals(netClientHandlerHandleNamedEntitySpawnMethodDesc)) {
-                sendPatchLog("handleNamedEntitySpawn");
+                sendPatchLog("handleSpawnPlayer");
 
                 replaceInventoryArrayAccess(method, entityOtherPlayerMPClassName, playerInventoryFieldName, 9, 13);
                 found++;
             }else if (method.name.equals(netClientHandlerHandleBlockItemSwitchMethodName) &&
                     method.desc.equals(netClientHandlerHandleBlockItemSwitchMethodDesc)) {
-                sendPatchLog("handleBlockItemSwitch");
+                sendPatchLog("handleHeldItemChange");
 
                 ListIterator<AbstractInsnNode> insn = method.instructions.iterator();
                 InsnList newList = new InsnList();
@@ -79,18 +77,17 @@ public class NetClientHandlerTransformer extends TransformerBase {
 	void setupMappings() {
 
         entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("client.entity.EntityOtherPlayerMP");
-        packet20NamedEntitySpawnClassName = BattlegearTranslator.getMapedClassName("network.packet.Packet20NamedEntitySpawn");
         playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
 
         netClientHandlerHandleNamedEntitySpawnMethodName =
-                BattlegearTranslator.getMapedMethodName("NetClientHandler", "func_72518_a", "handleNamedEntitySpawn");
+                BattlegearTranslator.getMapedMethodName("NetHandlerPlayClient", "func_147237_a", "handleSpawnPlayer");
         netClientHandlerHandleNamedEntitySpawnMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("NetClientHandler", "func_72518_a", "(L"+packet20NamedEntitySpawnClassName+";)V");
+                BattlegearTranslator.getMapedMethodDesc("NetHandlerPlayClient", "func_147237_a", "(Lnet/minecraft/network/play/server/S0CPacketSpawnPlayer;)V");
 
         netClientHandlerHandleBlockItemSwitchMethodName =
-                BattlegearTranslator.getMapedMethodName("NetClientHandler", "func_72502_a", "handleBlockItemSwitch");
+                BattlegearTranslator.getMapedMethodName("NetHandlerPlayClient", "func_147257_a", "handleHeldItemChange");
         netClientHandlerHandleBlockItemSwitchMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("NetClientHandler", "func_72502_a", "(Lnet/minecraft/network/packet/Packet16BlockItemSwitch;)V");
+                BattlegearTranslator.getMapedMethodDesc("NetHandlerPlayClient", "func_147257_a", "(Lnet/minecraft/network/play/server/S09PacketHeldItemChange;)V");
 	}
 
 }

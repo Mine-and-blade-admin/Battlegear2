@@ -1,15 +1,9 @@
 package mods.battlegear2.packet;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-import mods.battlegear2.api.core.BattlegearUtils;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet250CustomPayload;
 
 /**
  * User: nerd-boy
@@ -18,25 +12,13 @@ import net.minecraft.network.packet.Packet250CustomPayload;
  */
 public abstract class AbstractMBPacket {
 
-	public final Packet generatePacket() {
-
-        DataOutputStream outputStream = null;
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            outputStream = new DataOutputStream(bos);
-
-            write(outputStream);
-
-            return new Packet250CustomPayload(getChannel(), bos.toByteArray());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            BattlegearUtils.closeStream(outputStream);
-        }
-        return null;
+	public final FMLProxyPacket generatePacket() {
+        ByteBuf buf = Unpooled.buffer();
+        write(buf);
+        return new FMLProxyPacket(buf, getChannel());
     }
 	
 	public abstract String getChannel();
-	public abstract void write(DataOutput out) throws IOException;
-	public abstract void process(DataInputStream in, EntityPlayer player);
+	public abstract void write(ByteBuf out);
+	public abstract void process(ByteBuf in, EntityPlayer player);
 }

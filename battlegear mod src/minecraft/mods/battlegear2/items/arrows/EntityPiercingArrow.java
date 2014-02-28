@@ -51,16 +51,13 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 
 	@Override
 	public void onHitGround(int x, int y, int z) {
-		if(worldObj.getBlockMaterial(x, y, z) == Material.glass){
-			Block block = Block.blocksList[worldObj.getBlockId(x, y, z)];
-			if(block != null){
-				worldObj.playAuxSFX(2001, x, y, z, block.blockID + (worldObj.getBlockMetadata(x, y, z) << 12));
-				worldObj.setBlockToAir(x, y, z);
-			}
+        Block block = worldObj.getBlock(x, y, z);
+		if(block.getMaterial() == Material.glass){
+            worldObj.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (worldObj.getBlockMetadata(x, y, z) << 12));
+            worldObj.setBlockToAir(x, y, z);
 		}else if (!worldObj.isRemote){
-			int id = worldObj.getBlockId(x, y, z);
-			if(Block.blocksList[id] instanceof IShearable){
-				IShearable target = (IShearable)Block.blocksList[id];
+			if(block instanceof IShearable){
+				IShearable target = (IShearable)block;
 				if (target.isShearable(null, worldObj, x, y, z)){
 					ArrayList<ItemStack> drops = target.onSheared(null, worldObj, x, y, z, 1);
 					Random rand = new Random();

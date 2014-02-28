@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
 
 public class ShieldRenderer implements IItemRenderer{
@@ -49,7 +49,7 @@ public class ShieldRenderer implements IItemRenderer{
             float green = (float)(col >> 8 & 255) / 255.0F;
             float blue = (float)(col & 255) / 255.0F;
 
-            Icon icon = shield.getIconIndex(item);
+            IIcon icon = shield.getIconIndex(item);
 
             switch (type){
                 case ENTITY:

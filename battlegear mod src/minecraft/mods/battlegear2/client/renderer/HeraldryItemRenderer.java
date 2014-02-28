@@ -3,11 +3,10 @@ package mods.battlegear2.client.renderer;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.HeraldryTextureSmall;
-import mods.battlegear2.client.BattlegearClientEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.TextureObject;
+import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import static org.lwjgl.opengl.GL11.*;
@@ -49,7 +48,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
 
     private void doInventoryRendering(ItemStack item, byte[] heraldryData, IHeraldryItem heraldryItem) {
 
-        Icon icon =  heraldryItem.getBaseIcon(item);
+        IIcon icon =  heraldryItem.getBaseIcon(item);
 
         itemRenderer.zLevel += 100;
         if(heraldryItem.shouldDoPass(IHeraldryItem.HeraldyRenderPassess.Pattern) && icon != null){
@@ -59,7 +58,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
             itemRenderer.renderIcon(0, 0, icon, 16, 16);
 
             ResourceLocation crestLocation = new ResourceLocation("Small:"+HeraldryData.byteArrayToHex(heraldryData));
-            TextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
+            ITextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
             if(texture == null){
                 texture = new HeraldryTextureSmall(new HeraldryData(heraldryData));
                 Minecraft.getMinecraft().renderEngine.loadTexture(crestLocation, texture);

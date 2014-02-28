@@ -3,7 +3,7 @@ package mods.battlegear2.items.arrows;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -45,7 +45,7 @@ public class EntityLeechArrow extends AbstractMBArrow{
     @Override
     public void onHitGround(int x, int y, int z) {
         if (!worldObj.isRemote){
-            worldObj.spawnEntityInWorld(new EntityPotion(worldObj, x, y, z, new ItemStack(Item.potion, 1, 16392)));//Splash weakness
+            worldObj.spawnEntityInWorld(new EntityPotion(worldObj, x, y, z, new ItemStack(Items.potionitem, 1, 16392)));//Splash weakness
         }
         this.setDead();
     }

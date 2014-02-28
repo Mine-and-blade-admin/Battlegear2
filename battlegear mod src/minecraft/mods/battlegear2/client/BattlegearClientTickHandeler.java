@@ -2,6 +2,8 @@ package mods.battlegear2.client;
 
 import java.util.EnumSet;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.shield.IShield;
@@ -16,29 +18,17 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.GameSettings;
-import net.minecraft.entity.EntityLeashKnot;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.item.EntityBoat;
-import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.entity.item.EntityMinecart;
-import net.minecraft.entity.item.EntityPainting;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public class BattlegearClientTickHandeler implements ITickHandler {
-
+public class BattlegearClientTickHandeler {
 
     public static float blockBar = 1;
     public static boolean wasBlocking = false;
@@ -49,117 +39,119 @@ public class BattlegearClientTickHandeler implements ITickHandler {
 
     public static float partialTick;
 
+    public void onPlayerTick(TickEvent.PlayerTickEvent event){
+        if(event.phase == TickEvent.Phase.START){
+            tickStart(event.player);
+        }else{
+            tickEnd(event.player);
+        }
+    }
 
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData) {
+    public void tickStart(EntityPlayer player) {
+        if(!Battlegear.battlegearEnabled && ! player.worldObj.isRemote){
+            Battlegear.battlegearEnabled = true;
+        }
 
-        if(type.contains(TickType.PLAYER)){
-            EntityClientPlayerMP player = Minecraft.getMinecraft().thePlayer;
-
-            if(!Battlegear.battlegearEnabled && ! player.worldObj.isRemote){
-                Battlegear.battlegearEnabled = true;
-            }
-
-            if(((IBattlePlayer)player).isBattlemode()){
-                ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
-                if(offhand != null){
-                    if(offhand.getItem() instanceof IShield){
-                        if(flashTimer == 30){
-                            player.motionY = player.motionY/2;
-                        }
-                        if(flashTimer > 0){
-                            flashTimer --;
-                        }
-                        if(GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem) && !player.isSwingInProgress){
-                            blockBar -= ((IShield) offhand.getItem()).getDecayRate(offhand);
-                            if(blockBar > 0){
-                                if(!wasBlocking){
-                                    PacketDispatcher.sendPacketToServer(new BattlegearShieldBlockPacket(true, player.username).generatePacket());
-                                }
-                                wasBlocking = true;
-                            }else{
-                                if(wasBlocking){
-                                    //Send packet
-                                    PacketDispatcher.sendPacketToServer(new BattlegearShieldBlockPacket(false, player.username).generatePacket());
-                                }
-                                wasBlocking = false;
-                                blockBar = 0;
+        if(((IBattlePlayer)player).isBattlemode()){
+            ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
+            if(offhand != null){
+                if(offhand.getItem() instanceof IShield){
+                    if(flashTimer == 30){
+                        player.motionY = player.motionY/2;
+                    }
+                    if(flashTimer > 0){
+                        flashTimer --;
+                    }
+                    if(GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem) && !player.isSwingInProgress){
+                        blockBar -= ((IShield) offhand.getItem()).getDecayRate(offhand);
+                        if(blockBar > 0){
+                            if(!wasBlocking){
+                                Battlegear.packetHandler.sendPacketToServer(new BattlegearShieldBlockPacket(true, player).generatePacket());
                             }
+                            wasBlocking = true;
                         }else{
                             if(wasBlocking){
-                                //send packet
-                                PacketDispatcher.sendPacketToServer(new BattlegearShieldBlockPacket(false, player.username).generatePacket());
+                                //Send packet
+                                Battlegear.packetHandler.sendPacketToServer(new BattlegearShieldBlockPacket(false, player).generatePacket());
                             }
                             wasBlocking = false;
-                            blockBar += ((IShield) offhand.getItem()).getRecoveryRate(offhand);
-                            if(blockBar > 1){
-                                blockBar = 1;
-                            }
+                            blockBar = 0;
                         }
-                    }else if(offhand.getItem() instanceof ItemBlock){
-                        if(GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem) && !player.isSwingInProgress){
-                            MovingObjectPosition mouseOver = Minecraft.getMinecraft().objectMouseOver;
-
-                            if (mouseOver == null)
-                            {
-                            }
-                            else if (mouseOver.typeOfHit == EnumMovingObjectType.ENTITY)
-                            {
-                                Minecraft.getMinecraft().playerController.func_78768_b(player, mouseOver.entityHit);
-                            }
-                            else if (mouseOver.typeOfHit == EnumMovingObjectType.TILE)
-                            {
-                                int j = mouseOver.blockX;
-                                int k = mouseOver.blockY;
-                                int l = mouseOver.blockZ;
-                                int i1 = mouseOver.sideHit;
-
-                                boolean result = !ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, j, k, l, i1).isCanceled();
-                                if (result && onPlayerPlaceBlock(Minecraft.getMinecraft().playerController, player, player.worldObj, offhand, j, k, l, i1, mouseOver.hitVec))
-                                {
-                                    ((IBattlePlayer)player).swingOffItem();
-                                }
-
-                                if (offhand != null && offhand.stackSize == 0){
-                                    player.inventory.setInventorySlotContents(player.inventory.currentItem+ 3, null);
-                                }
-                            }
+                    }else{
+                        if(wasBlocking){
+                            //send packet
+                            Battlegear.packetHandler.sendPacketToServer(new BattlegearShieldBlockPacket(false, player).generatePacket());
+                        }
+                        wasBlocking = false;
+                        blockBar += ((IShield) offhand.getItem()).getRecoveryRate(offhand);
+                        if(blockBar > 1){
+                            blockBar = 1;
                         }
                     }
-                }
-            }else{
-                if(player.capabilities.isCreativeMode && Minecraft.getMinecraft().gameSettings.keyBindPickBlock.pressed){
-                    ItemStack stack = getItemFromPointedAt(Minecraft.getMinecraft().objectMouseOver, player.worldObj);
-                    if(stack!=null){
-                        int k = -1;
-                        ItemStack temp;
-                        for(int slot=0; slot<player.inventory.getSizeInventory();slot++){
-                            temp = player.inventory.getStackInSlot(slot);
-                            if(temp!=null && stack.isItemEqual(temp)){
-                                k = slot;
-                                break;
-                            }
-                        }
-                        if(k<0||k>=9){
-                            k = player.inventory.getFirstEmptyStack();
-                        }
-                        if (k >= 0 && k < 9)
+                }else if(offhand.getItem() instanceof ItemBlock){
+                    if(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress){
+                        MovingObjectPosition mouseOver = Minecraft.getMinecraft().objectMouseOver;
+
+                        if (mouseOver == null)
                         {
-                            player.inventory.currentItem = k;
-                            PacketDispatcher.sendPacketToServer(new PickBlockPacket(player.username, stack, k).generatePacket());
+                        }
+                        else if (mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY)
+                        {
+                            Minecraft.getMinecraft().playerController.interactWithEntitySendPacket(player, mouseOver.entityHit);
+                        }
+                        else if (mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+                        {
+                            int j = mouseOver.blockX;
+                            int k = mouseOver.blockY;
+                            int l = mouseOver.blockZ;
+                            int i1 = mouseOver.sideHit;
+
+                            boolean result = !ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, j, k, l, i1).isCanceled();
+                            if (result && onPlayerPlaceBlock(Minecraft.getMinecraft().playerController, player, player.worldObj, offhand, j, k, l, i1, mouseOver.hitVec))
+                            {
+                                ((IBattlePlayer)player).swingOffItem();
+                            }
+
+                            if (offhand != null && offhand.stackSize == 0){
+                                player.inventory.setInventorySlotContents(player.inventory.currentItem+ 3, null);
+                            }
                         }
                     }
                 }
             }
+        }else{
+            if(player.capabilities.isCreativeMode && Minecraft.getMinecraft().gameSettings.keyBindPickBlock.getIsKeyPressed()){
+                ItemStack stack = getItemFromPointedAt(Minecraft.getMinecraft().objectMouseOver, player.worldObj);
+                if(stack!=null){
+                    int k = -1;
+                    ItemStack temp;
+                    for(int slot=0; slot<player.inventory.getSizeInventory();slot++){
+                        temp = player.inventory.getStackInSlot(slot);
+                        if(temp!=null && stack.isItemEqual(temp)){
+                            k = slot;
+                            break;
+                        }
+                    }
+                    if(k<0||k>=9){
+                        k = player.inventory.getFirstEmptyStack();
+                    }
+                    if (k >= 0 && k < 9)
+                    {
+                        player.inventory.currentItem = k;
+                        Battlegear.packetHandler.sendPacketToServer(new PickBlockPacket(player, stack, k).generatePacket());
+                    }
+                }
+            }
+        }
+    }
 
-        }else if (type.contains(TickType.RENDER)){
-
-            partialTick = (Float)tickData[0];
-
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event){
+        if(event.phase== TickEvent.Phase.START){
+            partialTick = event.renderTickTime;
             if(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu){
                 Battlegear.battlegearEnabled = false;
             }
-
         }
     }
 
@@ -169,101 +161,33 @@ public class BattlegearClientTickHandeler implements ITickHandler {
      * @param theWorld
      * @return the stack expected for the creative pick button
      */
-    private static ItemStack getItemFromPointedAt(MovingObjectPosition objectMouseOver, World theWorld) {
-        if(objectMouseOver!=null){
-            int j,i=0;
-            if (objectMouseOver.typeOfHit == EnumMovingObjectType.TILE)
+    private static ItemStack getItemFromPointedAt(MovingObjectPosition target, World world) {
+        if(target!=null){
+            if (target.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
             {
-                int k = objectMouseOver.blockX;
-                int l = objectMouseOver.blockY;
-                int i1 = objectMouseOver.blockZ;
-                Block block = Block.blocksList[theWorld.getBlockId(k, l, i1)];
-                if (block == null)
+                int x = target.blockX;
+                int y = target.blockY;
+                int z = target.blockZ;
+                Block block = world.getBlock(x, y, z);
+                if (block.isAir(world, x, y, z))
                 {
                     return null;
                 }
-                j = block.idPicked(theWorld, k, l, i1);
-                if (j == 0)
-                {
-                    return null;
-                }
-                int j1 = j < 256 && !Block.blocksList[block.blockID].isFlowerPot() ? j : block.blockID;
-                i = Block.blocksList[j1].getDamageValue(theWorld, k, l, i1);
-                return new ItemStack(j1, 1, i);
+                return block.getPickBlock(target, world, x, y, z);
             }
             else
             {
-                if (objectMouseOver.typeOfHit != EnumMovingObjectType.ENTITY || objectMouseOver.entityHit == null)
+                if (target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY || target.entityHit == null)
                 {
                     return null;
                 }
-
-                if (objectMouseOver.entityHit instanceof EntityPainting)
-                {
-                    j = Item.painting.itemID;
-                }
-                else if (objectMouseOver.entityHit instanceof EntityLeashKnot)
-                {
-                    j = Item.leash.itemID;
-                }
-                else if (objectMouseOver.entityHit instanceof EntityItemFrame)
-                {
-                    EntityItemFrame entityitemframe = (EntityItemFrame)objectMouseOver.entityHit;
-
-                    if (entityitemframe.getDisplayedItem() == null)
-                    {
-                        j = Item.itemFrame.itemID;
-                    }
-                    else
-                    {
-                        j = entityitemframe.getDisplayedItem().itemID;
-                        i = entityitemframe.getDisplayedItem().getItemDamage();
-                    }
-                }
-                else if (objectMouseOver.entityHit instanceof EntityMinecart)
-                {
-                    EntityMinecart entityminecart = (EntityMinecart)objectMouseOver.entityHit;
-
-                    if (entityminecart.getMinecartType() == 2)
-                    {
-                        j = Item.minecartPowered.itemID;
-                    }
-                    else if (entityminecart.getMinecartType() == 1)
-                    {
-                        j = Item.minecartCrate.itemID;
-                    }
-                    else if (entityminecart.getMinecartType() == 3)
-                    {
-                        j = Item.minecartTnt.itemID;
-                    }
-                    else if (entityminecart.getMinecartType() == 5)
-                    {
-                        j = Item.minecartHopper.itemID;
-                    }
-                    else
-                    {
-                        j = Item.minecartEmpty.itemID;
-                    }
-                }
-                else if (objectMouseOver.entityHit instanceof EntityBoat)
-                {
-                    j = Item.boat.itemID;
-                }
-                else
-                {
-                    j = Item.monsterPlacer.itemID;
-                    i = EntityList.getEntityID(objectMouseOver.entityHit);
-                    if (i <= 0 || !EntityList.entityEggs.containsKey(Integer.valueOf(i))){
-                        return null;
-                    }
-                }
-                return new ItemStack(j, 1, i);
+                return target.entityHit.getPickedResult(target);
             }
         }
         return null;
     }
 
-    private static boolean onPlayerPlaceBlock(PlayerControllerMP controller, EntityClientPlayerMP player, World worldObj, ItemStack offhand, int i, int j, int k, int l, Vec3 hitVec) {
+    private static boolean onPlayerPlaceBlock(PlayerControllerMP controller, EntityPlayer player, World worldObj, ItemStack offhand, int i, int j, int k, int l, Vec3 hitVec) {
         float f = (float)hitVec.xCoord - (float)i;
         float f1 = (float)hitVec.yCoord - (float)j;
         float f2 = (float)hitVec.zCoord - (float)k;
@@ -272,15 +196,15 @@ public class BattlegearClientTickHandeler implements ITickHandler {
         if (offhand.getItem().onItemUseFirst(offhand, player, worldObj, i, j, k, l, f, f1, f2)){
             return true;
         }
-        if (!player.isSneaking() || offhand.getItem().shouldPassSneakingClickToBlock(worldObj, i, j, k)){
-            i1 = worldObj.getBlockId(i, j, k);
-            if (i1 > 0 && Block.blocksList[i1].onBlockActivated(worldObj, i, j, k, player, l, f, f1, f2)){
+        if (!player.isSneaking() || offhand.getItem().doesSneakBypassUse(worldObj, i, j, k, player)){
+            Block b = worldObj.getBlock(i, j, k);
+            if (!b.isAir(worldObj, i, j, k) && b.onBlockActivated(worldObj, i, j, k, player, l, f, f1, f2)){
                 flag = true;
             }
         }
         if (!flag){
             ItemBlock itemblock = (ItemBlock)offhand.getItem();
-            if (!itemblock.canPlaceItemBlockOnSide(worldObj, i, j, k, l, player, offhand)){
+            if (!itemblock.func_150936_a(worldObj, i, j, k, l, player, offhand)){
                 return false;
             }
         }
@@ -291,7 +215,7 @@ public class BattlegearClientTickHandeler implements ITickHandler {
             return false;
         }
         else{
-            PacketDispatcher.sendPacketToServer(new OffhandPlaceBlockPacket(i, j, k, l, offhand, f, f1, f2).generatePacket());
+            Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(i, j, k, l, offhand, f, f1, f2).generatePacket());
             if (controller.isInCreativeMode()){
                 i1 = offhand.getItemDamage();
                 int j1 = offhand.stackSize;
@@ -308,33 +232,19 @@ public class BattlegearClientTickHandeler implements ITickHandler {
                     player.inventory.setInventorySlotContents(player.inventory.currentItem+ 3, null);
                     ForgeEventFactory.onPlayerDestroyItem(player, offhand);
                 }
-                PacketDispatcher.sendPacketToServer(new BattlegearSyncItemPacket(player).generatePacket());
+                Battlegear.packetHandler.sendPacketToServer(new BattlegearSyncItemPacket(player).generatePacket());
                 return true;
             }
         }
     }
 
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        if(type.contains(TickType.PLAYER)){
-            EntityPlayer player = Minecraft.getMinecraft().thePlayer;
-            ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
-            if(offhand != null && offhand.getItem() instanceof IShield){
-                if(GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem) && !player.isSwingInProgress && blockBar > 0){
-                    player.motionX = player.motionX/5;
-                    player.motionZ = player.motionZ/5;
-                }
+    public void tickEnd(EntityPlayer player) {
+        ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
+        if(offhand != null && offhand.getItem() instanceof IShield){
+            if(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress && blockBar > 0){
+                player.motionX = player.motionX/5;
+                player.motionZ = player.motionZ/5;
             }
         }
-    }
-
-    @Override
-    public EnumSet<TickType> ticks() {
-        return EnumSet.of(TickType.PLAYER, TickType.RENDER);
-    }
-
-    @Override
-    public String getLabel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

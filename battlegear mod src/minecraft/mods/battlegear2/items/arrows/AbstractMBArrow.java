@@ -34,7 +34,7 @@ public abstract class AbstractMBArrow extends EntityArrow {
         super.onUpdate();
 
         if(ticksInGround == 1){
-            onHitGround(xTile, yTile, zTile);
+            onHitGround(field_145791_d, field_145792_e, field_145789_f);
         }
     }
 
@@ -42,7 +42,7 @@ public abstract class AbstractMBArrow extends EntityArrow {
         AbstractMBArrow mbArrow = null;
         if(arrow != null && skeleton != null && skeleton.getAttackTarget() != null && type<ItemMBArrow.arrows.length){
             try {
-				mbArrow = ItemMBArrow.arrows[type].getConstructor(World.class, EntityLivingBase.class, EntityLivingBase.class, float.class, float.class).newInstance(arrow.worldObj, skeleton, skeleton.getAttackTarget(), 1.6F, (float)(14 - skeleton.worldObj.difficultySetting * 4));
+				mbArrow = ItemMBArrow.arrows[type].getConstructor(World.class, EntityLivingBase.class, EntityLivingBase.class, float.class, float.class).newInstance(arrow.worldObj, skeleton, skeleton.getAttackTarget(), 1.6F, (float)(14 - skeleton.worldObj.difficultySetting.getDifficultyId() * 4));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}          		

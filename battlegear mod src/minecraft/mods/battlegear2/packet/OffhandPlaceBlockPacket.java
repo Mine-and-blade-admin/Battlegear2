@@ -1,25 +1,20 @@
 package mods.battlegear2.packet;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet3Chat;
-import net.minecraft.network.packet.Packet53BlockChange;
+import net.minecraft.network.play.server.S02PacketChat;
+import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.event.Event;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
 
 public class OffhandPlaceBlockPacket extends AbstractMBPacket{
     public static final String packetName = "MB2|Place";
@@ -60,29 +55,29 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
     }
 
     @Override
-    public void write(DataOutput out) throws IOException {
+    public void write(ByteBuf out) {
         out.writeInt(this.xPosition);
-        out.write(this.yPosition);
+        out.writeByte(this.yPosition);
         out.writeInt(this.zPosition);
-        out.write(this.direction);
-        Packet.writeItemStack(this.itemStack, out);
-        out.write((int)(this.xOffset * 16.0F));
-        out.write((int)(this.yOffset * 16.0F));
-        out.write((int)(this.zOffset * 16.0F));
+        out.writeByte(this.direction);
+        ByteBufUtils.writeItemStack(out, this.itemStack);
+        out.writeByte((int)(this.xOffset * 16.0F));
+        out.writeByte((int)(this.yOffset * 16.0F));
+        out.writeByte((int)(this.zOffset * 16.0F));
     }
 
     @Override
-    public void process(DataInputStream in, EntityPlayer player) {
+    public void process(ByteBuf in, EntityPlayer player) {
         try{
             this.xPosition = in.readInt();
-            this.yPosition = in.readUnsignedByte();
+            this.yPosition = in.readByte();
             this.zPosition = in.readInt();
-            this.direction = in.readUnsignedByte();
-            this.itemStack = Packet.readItemStack(in);
-            this.xOffset = (float)in.readUnsignedByte() / 16.0F;
-            this.yOffset = (float)in.readUnsignedByte() / 16.0F;
-            this.zOffset = (float)in.readUnsignedByte() / 16.0F;
-        }catch(IOException io){
+            this.direction = in.readByte();
+            this.itemStack = ByteBufUtils.readItemStack(in);
+            this.xOffset = (float)in.readByte() / 16.0F;
+            this.yOffset = (float)in.readByte() / 16.0F;
+            this.zOffset = (float)in.readByte() / 16.0F;
+        }catch(Exception io){
             return;
         }
         MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
@@ -106,7 +101,9 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
             flag = false;
         }
         else if (yPosition >= mcServer.getBuildLimit() - 1 && (direction == 1 || yPosition >= mcServer.getBuildLimit())){
-            PacketDispatcher.sendPacketToPlayer(new Packet3Chat(ChatMessageComponent.createFromTranslationWithSubstitutions("build.tooHigh", mcServer.getBuildLimit()).setColor(EnumChatFormatting.RED)), (Player) player);
+            ChatComponentTranslation chat = new ChatComponentTranslation("build.tooHigh", mcServer.getBuildLimit());
+            chat.getChatStyle().setColor(EnumChatFormatting.RED);
+            ((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S02PacketChat(chat));
         }
         else{
             double dist = ((EntityPlayerMP)player).theItemInWorldManager.getBlockReachDistance() + 1;
@@ -117,7 +114,7 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
             }
         }
         if (flag){
-            PacketDispatcher.sendPacketToPlayer(new Packet53BlockChange(i, j, k, worldserver), (Player) player);
+            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(i, j, k, worldserver));
             if (l == 0){
                 --j;
             }
@@ -136,7 +133,7 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
             if (l == 5){
                 ++i;
             }
-            PacketDispatcher.sendPacketToPlayer(new Packet53BlockChange(i, j, k, worldserver), (Player) player);
+            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(i, j, k, worldserver));
         }
 
         if (itemStack != null && itemStack.stackSize <= 0){

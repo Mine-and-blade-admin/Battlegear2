@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -49,7 +50,9 @@ public class EntityLoveArrow extends AbstractMBArrow{
                 setDead();
                 return true;
             }else if(entityHit instanceof EntityPlayer){
-                ((EntityPlayer) entityHit).dropPlayerItem(((EntityPlayer) entityHit).getCurrentEquippedItem());
+                EntityItem entityitem = ((EntityPlayer) entityHit).dropPlayerItemWithRandomChoice(((EntityPlayer) entityHit).getCurrentEquippedItem(), false);
+                entityitem.delayBeforeCanPickup = 0;
+                entityitem.func_145797_a(entityHit.getCommandSenderName());
                 ((EntityPlayer) entityHit).inventory.setInventorySlotContents(((EntityPlayer) entityHit).inventory.currentItem, new ItemStack(ItemMBArrow.component[5]));
                 setDead();
                 return true;

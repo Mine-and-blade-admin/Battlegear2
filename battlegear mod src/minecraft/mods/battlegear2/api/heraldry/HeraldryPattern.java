@@ -1,7 +1,7 @@
 package mods.battlegear2.api.heraldry;
 
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public class HeraldryPattern {
     public static final HeraldryPattern CROSS= new HeraldryPattern("battlegear2","pattern-14");
     public static final HeraldryPattern DIAG_CROSS= new HeraldryPattern("battlegear2","pattern-15");
 
-	private Icon icon;
+	private IIcon icon;
 	public final String name;
     public final String mod;
 	
@@ -41,7 +41,7 @@ public class HeraldryPattern {
 		return "assets/"+mod+"/textures/items/heraldry/patterns/"+name+".png";
 	}
 
-	public Icon getIcon() {
+	public IIcon getIcon() {
 		return icon;
 	}
 

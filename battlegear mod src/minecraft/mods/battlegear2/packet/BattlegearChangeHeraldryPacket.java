@@ -1,12 +1,10 @@
 package mods.battlegear2.packet;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
 
 public class BattlegearChangeHeraldryPacket extends AbstractMBPacket{
     public static final String packetName = "MB2|Heraldry";
@@ -26,23 +24,21 @@ public class BattlegearChangeHeraldryPacket extends AbstractMBPacket{
     }
 
     @Override
-    public void write(DataOutput out) throws IOException {
-        out.writeUTF(playerName);
+    public void write(ByteBuf out) {
+        ByteBufUtils.writeUTF8String(out, playerName);
         out.writeInt(data.length);
-        out.write(data);
+        out.writeBytes(data);
     }
 
     @Override
-    public void process(DataInputStream in, EntityPlayer player) {
+    public void process(ByteBuf in, EntityPlayer player) {
         try{
-            playerName = in.readUTF();
+            playerName = ByteBufUtils.readUTF8String(in);
             data = new byte[in.readInt()];
-            int size = in.read(data);
-            if(size!=data.length){
-                return;
-            }
+            in.readBytes(data);
         }catch (Exception e){
             e.printStackTrace();
+            return;
         }
         if(playerName != null){
             EntityPlayer target = player.worldObj.getPlayerEntityByName(playerName);

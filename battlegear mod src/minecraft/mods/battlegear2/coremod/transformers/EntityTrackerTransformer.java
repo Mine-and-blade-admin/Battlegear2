@@ -64,12 +64,12 @@ public class EntityTrackerTransformer extends TransformerMethodProcess {
 		super.setupMappings();
 		 entityPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer");
          entityPlayerMPClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayerMP");
-         netServerHandlerClasName =BattlegearTranslator.getMapedClassName("network.NetServerHandler");
-         packetClassName = BattlegearTranslator.getMapedClassName("network.packet.Packet");
+         netServerHandlerClasName =BattlegearTranslator.getMapedClassName("network.NetHandlerPlayServer");
+         packetClassName = BattlegearTranslator.getMapedClassName("network.Packet");
 
          playerMPplayerNetServerHandlerField = BattlegearTranslator.getMapedFieldName("EntityPlayerMP", "field_71135_a", "playerNetServerHandler");
 
-         sendPacketToPlayerMethodName = BattlegearTranslator.getMapedMethodName("NetServerHandler", "func_72567_b", "sendPacketToPlayer");
-         sendPacketToPlayerMethodDesc = BattlegearTranslator.getMapedMethodDesc("NetServerHandler", "func_72567_b", "(L"+packetClassName+";)V");
+         sendPacketToPlayerMethodName = BattlegearTranslator.getMapedMethodName("NetHandlerPlayServer", "func_147359_a", "sendPacket");
+         sendPacketToPlayerMethodDesc = BattlegearTranslator.getMapedMethodDesc("NetHandlerPlayServer", "func_147359_a", "(L"+packetClassName+";)V");
 	}
 }

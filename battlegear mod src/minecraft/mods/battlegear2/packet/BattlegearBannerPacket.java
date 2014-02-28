@@ -1,14 +1,12 @@
 package mods.battlegear2.packet;
 
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,18 +30,18 @@ public class BattlegearBannerPacket extends AbstractMBPacket{
     }
 
     @Override
-    public void write(DataOutput out) throws IOException {
+    public void write(ByteBuf out) {
         out.writeInt(posX);
         out.writeInt(posY);
         out.writeInt(posZ);
         out.writeByte(((byte) parts.size()));
         for(ItemStack f:parts){
-            Packet.writeItemStack(f, out);
+            ByteBufUtils.writeItemStack(out, f);
         }
     }
 
     @Override
-    public void process(DataInputStream in, EntityPlayer player) {
+    public void process(ByteBuf in, EntityPlayer player) {
         int size = 0;
         try{
             posX = in.readInt();
@@ -51,12 +49,12 @@ public class BattlegearBannerPacket extends AbstractMBPacket{
             posZ = in.readInt();
             size = in.readByte();
             for(int i = 0; i < size; i++){
-                parts.add(Packet.readItemStack(in));
+                parts.add(ByteBufUtils.readItemStack(in));
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        TileEntity te = player.worldObj.getBlockTileEntity(posX,posY,posZ);
+        TileEntity te = player.worldObj.getTileEntity(posX, posY, posZ);
         if(te != null && te instanceof IFlagHolder){
             ((IFlagHolder) te).clearFlags();
             for(ItemStack flag:parts){

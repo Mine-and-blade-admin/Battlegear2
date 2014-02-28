@@ -1,7 +1,6 @@
 package mods.battlegear2.client.utils;
 
 import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 public class BattlegearClientUtils {
@@ -10,7 +9,7 @@ public class BattlegearClientUtils {
         ItemStack mainhand = player.getCurrentEquippedItem();
         if (!isItemInUse && player.isEating() && mainhand != null){
             //ItemStack itemstack = player.inventory.mainInventory[player.inventory.currentItem];
-            player.setItemInUse(mainhand, Item.itemsList[mainhand.itemID].getMaxItemUseDuration(mainhand));
+            player.setItemInUse(mainhand, mainhand.getMaxItemUseDuration());
             return true;
         }
         else if (isItemInUse && !player.isEating()){

@@ -4,9 +4,10 @@ import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
@@ -14,7 +15,7 @@ import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -22,11 +23,11 @@ import net.minecraftforge.event.ForgeEventFactory;
 import java.util.List;
 
 public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
-    public Icon quiverDetails;
-    public Icon quiverArrows;
+    public IIcon quiverDetails;
+    public IIcon quiverArrows;
 
-    public ItemQuiver(int id) {
-        super(id);
+    public ItemQuiver() {
+        super();
         this.setMaxStackSize(1);
     }
 
@@ -42,14 +43,16 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
     	for(int i = 0; i<getSlotCount(stack);i++){
-    		player.dropPlayerItem(getStackInSlot(stack, i));
+            EntityItem entityitem = player.dropPlayerItemWithRandomChoice(getStackInSlot(stack, i), false);
+            entityitem.delayBeforeCanPickup = 0;
+            entityitem.func_145797_a(player.getCommandSenderName());
     		setStackInSlot(stack, i, null);
     	}
         return stack;
     }
 
     @Override
-    public void registerIcons(IconRegister par1IconRegister) {
+    public void registerIcons(IIconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
         quiverDetails = par1IconRegister.registerIcon("battlegear2:quiver/quiver-details");
         quiverArrows = par1IconRegister.registerIcon("battlegear2:quiver/quiver-arrows");
@@ -90,7 +93,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
             NBTTagCompound newSlotCompound = new NBTTagCompound();
 
             stack.writeToNBT(newSlotCompound);
-            compound.setCompoundTag("Slot"+slot, newSlotCompound);
+            compound.setTag("Slot"+slot, newSlotCompound);
         }
     }
 
@@ -138,7 +141,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
         if(!bow.hasTagCompound()){
             bow.stackTagCompound = new NBTTagCompound();
         }
-        bow.stackTagCompound.setCompoundTag("Battlegear2-LoadedArrow", tags);
+        bow.stackTagCompound.setTag("Battlegear2-LoadedArrow", tags);
     }
 
     @Override
@@ -159,7 +162,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
                     setStackInSlot(container, i, newStack);
                     left_over = 0;
                 }else{
-                    if(newStack.itemID == slotStack.itemID && newStack.getItemDamage() == slotStack.getItemDamage()){
+                    if(newStack.getItem() == slotStack.getItem() && newStack.getItemDamage() == slotStack.getItemDamage()){
                         int newSize = Math.min(64, slotStack.stackSize + left_over);
                         left_over = left_over - (newSize - slotStack.stackSize);
                         slotStack.stackSize = newSize;
@@ -249,22 +252,17 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     @Override
     public void setColor(ItemStack par1ItemStack, int par2)
     {
-
             NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
-
             if (nbttagcompound == null)
             {
                 nbttagcompound = new NBTTagCompound();
                 par1ItemStack.setTagCompound(nbttagcompound);
             }
-
             NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
-
             if (!nbttagcompound.hasKey("display"))
             {
-                nbttagcompound.setCompoundTag("display", nbttagcompound1);
+                nbttagcompound.setTag("display", nbttagcompound1);
             }
-
             nbttagcompound1.setInteger("color", par2);
     }
 }

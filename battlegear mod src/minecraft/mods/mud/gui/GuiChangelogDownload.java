@@ -6,8 +6,8 @@ import mods.mud.ModUpdateDetector;
 import mods.mud.UpdateChecker;
 import mods.mud.UpdateEntry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
@@ -84,7 +84,7 @@ public class GuiChangelogDownload extends GuiScreen
 
 
         for(int i= 0; i < bullets.length; i++){
-            bulletWidth[i] = fontRenderer.getStringWidth(bullets[i]+" ");
+            bulletWidth[i] = fontRendererObj.getStringWidth(bullets[i]+" ");
         }
 
         download = new GuiButton(4, 15, height-35, 125, 20, StatCollector.translateToLocal("button.download.latest"));
@@ -93,7 +93,7 @@ public class GuiChangelogDownload extends GuiScreen
         ok = new GuiButton(6, (width - 200)/2 + 5, (height - 150)/2+115, 190, 20, StatCollector.translateToLocal("button.ok"));
         urlButton = new GuiButton(7, (width - 125)/2, height-35, 125, 20, StatCollector.translateToLocal("button.url"));
         urlButton.enabled = false;
-        ok.drawButton = isDownloading;
+        ok.visible = isDownloading;
         ok.enabled = downloadComplete || downloadFailed;
 
 
@@ -137,7 +137,7 @@ public class GuiChangelogDownload extends GuiScreen
                             ));
                             t.start();
                             isDownloading = true;
-                            ok.drawButton = true;
+                            ok.visible = true;
                             close1.enabled = false;
                             download.enabled = false;
                             urlButton.enabled = false;
@@ -150,7 +150,7 @@ public class GuiChangelogDownload extends GuiScreen
                         isDownloading = false;
                         downloadComplete = false;
                         downloadFailed = false;
-                        ok.drawButton = false;
+                        ok.visible = false;
                         close1.enabled = true;
                         urlButton.enabled=true;
                         return;
@@ -209,14 +209,14 @@ public class GuiChangelogDownload extends GuiScreen
         }
 
         if(isDownloading){
-            ok.drawButton = true;
+            ok.visible = true;
             int x = (width - 200)/2;
             int y = (height - 150)/2;
 
             drawRect(x-1,y-1,x+201, y+151, 0xFFFFFFFF);
             drawRect(x,y,x+200, y+150, 0xFF000000);
 
-            drawCenteredString(fontRenderer, StatCollector.translateToLocal("gui.downloading"), width/2, y + 15, 0xFFFFFF00);
+            drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.downloading"), width/2, y + 15, 0xFFFFFF00);
 
             drawRect(x + 24, y + 39, x+176, y+56, 0xFFFFFFFF);
             drawRect(x + 25, y + 40, (x+25 + 150), y+55, 0xFF000000);
@@ -227,15 +227,15 @@ public class GuiChangelogDownload extends GuiScreen
             drawHorizontalLine(x + 25, (int)(x+25 + 150*downloadPercent)-1, y + 54, 0xFF808080);
 
             if(downloadComplete){
-                drawCenteredString(fontRenderer, StatCollector.translateToLocal("gui.download.complete"), width/2, y + 70, 0xFF44FF44);
+                drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.download.complete"), width/2, y + 70, 0xFF44FF44);
             }
 
             if(downloadFailed){
-                drawCenteredString(fontRenderer, StatCollector.translateToLocal("gui.download.failed"), width/2, y + 70, 0xFFFF0000);
+                drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.download.failed"), width/2, y + 70, 0xFFFF0000);
             }
 
             if(message != null){
-                drawCenteredString(fontRenderer, message, width/2, y + 85, 0xFFFFFFFF);
+                drawCenteredString(fontRendererObj, message, width/2, y + 85, 0xFFFFFFFF);
             }
 
             ok.drawButton(mc, p_571_1_, p_571_2_);
@@ -256,13 +256,13 @@ public class GuiChangelogDownload extends GuiScreen
 
             float scale = 1F;
             GL11.glScalef(1/scale, 1/scale, 1/scale);
-            this.drawString(fontRenderer, main.replaceAll("=", "").trim(), (int)((startX)*scale), (int)(start*scale), 0xFFFFFF00);
+            this.drawString(fontRendererObj, main.replaceAll("=", "").trim(), (int)((startX)*scale), (int)(start*scale), 0xFFFFFF00);
             GL11.glScalef(scale, scale, scale);
 
             if(line.lastIndexOf("==")+2 <= line.length()){
                 String sub = line.substring(line.lastIndexOf("==")+2, line.length()).trim();
                 GL11.glScalef(1/scale, 1/scale, 1/scale);
-                this.drawString(fontRenderer, sub.replaceAll("=", "").trim(), (int)((startX+fontRenderer.getStringWidth(main+"   "))*scale), (int)(start*scale), 0xFF2222FF);
+                this.drawString(fontRendererObj, sub.replaceAll("=", "").trim(), (int)((startX+fontRendererObj.getStringWidth(main+"   "))*scale), (int)(start*scale), 0xFF2222FF);
                 GL11.glScalef(scale, scale, scale);
             }
 
@@ -270,7 +270,7 @@ public class GuiChangelogDownload extends GuiScreen
         }else if(line.trim().startsWith("**") && line.trim().endsWith("**")){
             float scale = 1.1F;
             GL11.glScalef(1/scale, 1/scale, 1/scale);
-            this.drawString(fontRenderer, line.replaceAll("\\*\\*", "").trim(), (int)((startX)*scale), (int)(start*scale), 0xFFFFFFFF);
+            this.drawString(fontRendererObj, line.replaceAll("\\*\\*", "").trim(), (int)((startX)*scale), (int)(start*scale), 0xFFFFFFFF);
             GL11.glScalef(scale, scale, scale);
             return (int)(1F/scale * 10)+start;
         }else{
@@ -288,7 +288,7 @@ public class GuiChangelogDownload extends GuiScreen
                 bullet = 3;
             }
 
-            List<String> lineList = fontRenderer.listFormattedStringToWidth(line, width - 10 - startX);
+            List<String> lineList = fontRendererObj.listFormattedStringToWidth(line, width - 10 - startX);
             Iterator<String> it = lineList.iterator();
             for(int i = 0; it.hasNext(); i++){
                 String subline = it.next().trim();
@@ -298,7 +298,7 @@ public class GuiChangelogDownload extends GuiScreen
                 }else if (bullet > -1){
                     startX+=bulletWidth[bullet];
                 }
-                this.drawString(fontRenderer, subline, (int) ((startX) * scale), (int) (start * scale), 0xFFFFFFFF);
+                this.drawString(fontRendererObj, subline, (int) ((startX) * scale), (int) (start * scale), 0xFFFFFFFF);
                 start += (int)(1F/scale * 10);
             }
 
@@ -313,7 +313,7 @@ public class GuiChangelogDownload extends GuiScreen
     }
 
     FontRenderer getFontRenderer() {
-        return fontRenderer;
+        return fontRendererObj;
     }
 
     /**

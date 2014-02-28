@@ -1,8 +1,8 @@
 package mods.battlegear2.api;
 
+import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.event.Cancelable;
 
 public abstract class RenderPlayerEventChild extends RenderPlayerEvent{
 	public static enum PlayerElementType{

@@ -3,8 +3,10 @@ package mods.battlegear2.items.arrows;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
@@ -37,7 +39,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                 double x = entityplayermp.posX;
                 double y = entityplayermp.posY;
                 double z = entityplayermp.posZ;
-            	if (!entityplayermp.playerNetServerHandler.connectionClosed && entityplayermp.worldObj == this.worldObj){
+            	if (entityplayermp.playerNetServerHandler.func_147362_b().isChannelOpen() && entityplayermp.worldObj == this.worldObj){
                     EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, entityHit.posX+0.5F, entityHit.posY, entityHit.posZ+0.5F, 9.0F);
                     if (!MinecraftForge.EVENT_BUS.post(event)){
                         if (shootingEntity.isRiding()){
@@ -68,26 +70,28 @@ public class EntityEnderArrow extends AbstractMBArrow{
     @Override
     public void onHitGround(int x, int y, int z) {
         if(shootingEntity instanceof EntityPlayer && shootingEntity.isSneaking()){
-            int id = worldObj.getBlockId(x, y, z);
-            if(id!=Block.bedrock.blockID){
+            Block id = worldObj.getBlock(x, y, z);
+            if(id != Blocks.bedrock){
                 int meta = worldObj.getBlockMetadata(x, y, z);
                 worldObj.setBlockToAir(x, y, z);
                 ItemStack item = new ItemStack(id, 1, meta);
                 if(!((EntityPlayer) shootingEntity).inventory.addItemStackToInventory(item)){
-                    ((EntityPlayer) shootingEntity).dropPlayerItem(item);
+                    EntityItem entityitem = ((EntityPlayer) shootingEntity).dropPlayerItemWithRandomChoice(item, false);
+                    entityitem.delayBeforeCanPickup = 0;
+                    entityitem.func_145797_a(((EntityPlayer) shootingEntity).getCommandSenderName());
                 }
             }
         }else if(shootingEntity != null){
             while(y < 255 && !(worldObj.isAirBlock(x,y,z) && worldObj.isAirBlock(x,y+1,z))){
                 y++;
-                if(worldObj.getBlockId(x, y, z)==Block.bedrock.blockID){
+                if(worldObj.getBlock(x, y, z)==Blocks.bedrock){
                     break;
                 }
             }
             if(!worldObj.isAirBlock(x,y,z)){
                 while(y > 0 && !(worldObj.isAirBlock(x,y,z) && worldObj.isAirBlock(x,y-1,z))){
                     y--;
-                    if(worldObj.getBlockId(x, y, z)==Block.bedrock.blockID){
+                    if(worldObj.getBlock(x, y, z)==Blocks.bedrock){
                         break;
                     }
                 }
@@ -101,7 +105,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                         this.worldObj.spawnParticle("portal", x+0.5F, y + this.rand.nextDouble() * 2.0D, z+0.5F, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
                     }
                     EntityPlayerMP entityplayermp = (EntityPlayerMP)this.shootingEntity;
-                    if (!entityplayermp.playerNetServerHandler.connectionClosed && entityplayermp.worldObj == this.worldObj){
+                    if (entityplayermp.playerNetServerHandler.func_147362_b().isChannelOpen() && entityplayermp.worldObj == this.worldObj){
                         EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x+0.5F, y, z+0.5F, 9.0F);
                         if (!MinecraftForge.EVENT_BUS.post(event)) {
                             if (shootingEntity.isRiding()){

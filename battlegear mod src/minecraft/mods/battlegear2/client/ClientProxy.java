@@ -2,10 +2,13 @@ package mods.battlegear2.client;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.common.registry.GameData;
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
@@ -21,49 +24,43 @@ import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet15Place;
+import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
 import net.minecraft.util.*;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.KeyBindingRegistry;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy {
 
     public static boolean tconstructEnabled = false;
     public static Method updateTab, addTabs;
-    public static Icon[] backgroundIcon;
-    public static Icon[] bowIcons;
+    public static IIcon[] backgroundIcon;
+    public static IIcon[] bowIcons;
 
     @Override
     public void registerKeyHandelers() {
-        KeyBindingRegistry.registerKeyBinding(new BattlegearKeyHandeler());
+        FMLCommonHandler.instance().bus().register(new BattlegearKeyHandeler());
         if(BattlegearConfig.enableGUIKeys){
-        	KeyBindingRegistry.registerKeyBinding(new BattlegearGuiKeyHandler());
+            FMLCommonHandler.instance().bus().register(new BattlegearGuiKeyHandler());
         }
     }
 
     @Override
     public void registerTickHandelers() {
         super.registerTickHandelers();
-        
         MinecraftForge.EVENT_BUS.register(new BattlegearClientEvents());
-        TickRegistry.registerTickHandler(new BattlegearTickHandeler(), Side.CLIENT);
-        TickRegistry.registerTickHandler(new BattlegearClientTickHandeler(), Side.CLIENT);
+        FMLCommonHandler.instance().bus().register(new BattlegearClientTickHandeler());
     }
 
     @Override
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {
         if (entityPlayer instanceof EntityClientPlayerMP) {
             ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
-                    new BattlegearAnimationPacket(animation, entityPlayer.username).generatePacket());
+                    new BattlegearAnimationPacket(animation, entityPlayer).generatePacket());
         }
     }
 
@@ -71,7 +68,7 @@ public class ClientProxy extends CommonProxy {
     public void sendPlaceBlockPacket(EntityPlayer entityPlayer, int x, int y, int z, int face, Vec3 par8Vec3) {
         if (entityPlayer instanceof EntityClientPlayerMP) {
             ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
-                    new Packet15Place(x, y, z, face,
+                    new C08PacketPlayerBlockPlacement(x, y, z, face,
                             ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon(),
                             (float)par8Vec3.xCoord - (float)x,
                             (float)par8Vec3.yCoord - (float)y,
@@ -82,7 +79,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void startFlash(EntityPlayer player, float damage) {
-    	if(player.username.equals(Minecraft.getMinecraft().thePlayer.username)){
+    	if(player.getCommandSenderName().equals(Minecraft.getMinecraft().thePlayer.getCommandSenderName())){
             BattlegearClientTickHandeler.flashTimer = 30;
             ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 
@@ -97,7 +94,7 @@ public class ClientProxy extends CommonProxy {
 	        SpearRenderer spearRenderer =  new SpearRenderer();
 	        for(Item spear: BattlegearConfig.spear){
 	        	if(spear!=null)
-	        		MinecraftForgeClient.registerItemRenderer(spear.itemID, spearRenderer);
+	        		MinecraftForgeClient.registerItemRenderer(spear, spearRenderer);
 	        }
     	}
 
@@ -105,29 +102,29 @@ public class ClientProxy extends CommonProxy {
         	ShieldRenderer shieldRenderer = new ShieldRenderer();
 	        for(Item shield : BattlegearConfig.shield){
 	        	if(shield!=null)
-	        		MinecraftForgeClient.registerItemRenderer(shield.itemID, shieldRenderer);
+	        		MinecraftForgeClient.registerItemRenderer(shield, shieldRenderer);
 	        }
         }
 
         if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "bow")  < 0)
-        	MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
+        	MinecraftForgeClient.registerItemRenderer(Items.bow, new BowRenderer());
         if(BattlegearConfig.quiver!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver")  < 0)
-        	MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
+        	MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver, new QuiverItremRenderer());
 
         if(Battlegear.debug){
-            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem.itemID, new HeraldryCrestItemRenderer());
-            
-            for(int i = 0; i < Item.itemsList.length; i++){
-            	if(Item.itemsList[i] instanceof IHeraldryItem &&
-            			((IHeraldryItem)Item.itemsList[i]).useDefaultRenderer()){
-            		MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer());
+            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem, new HeraldryCrestItemRenderer());
+            Item it = null;
+            for(Iterator itr = GameData.itemRegistry.iterator(); itr.hasNext(); it = (Item) itr.next()){
+            	if(it instanceof IHeraldryItem &&
+            			((IHeraldryItem)it).useDefaultRenderer()){
+            		MinecraftForgeClient.registerItemRenderer(it, new HeraldryItemRenderer());
             	}
             }
         }
     }
 
     @Override
-    public Icon getSlotIcon(int index){
+    public IIcon getSlotIcon(int index){
         if(backgroundIcon != null){
             return backgroundIcon[index];
         }else{
@@ -138,7 +135,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void doSpecialAction(EntityPlayer entityPlayer) {
 
-        if(entityPlayer.username.equals(Minecraft.getMinecraft().thePlayer.username)){
+        if(entityPlayer.getCommandSenderName().equals(Minecraft.getMinecraft().thePlayer.getCommandSenderName())){
             ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory) .getCurrentOffhandWeapon();
             ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
 
@@ -148,19 +145,19 @@ public class ClientProxy extends CommonProxy {
                 mop = getMouseOver(1, 4);
             }
 
-            Packet p;
+            FMLProxyPacket p;
             if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase){
                 p = new SpecialActionPacket(entityPlayer, mainhand, offhand, mop.entityHit).generatePacket();
-                PacketDispatcher.sendPacketToServer(p);
+                Battlegear.packetHandler.sendPacketToServer(p);
 
-                if(mop.entityHit instanceof EntityPlayer){
-                    PacketDispatcher.sendPacketToPlayer(p, (Player)mop.entityHit);
+                if(mop.entityHit instanceof EntityPlayerMP){
+                    Battlegear.packetHandler.sendPacketToPlayer(p, (EntityPlayerMP) mop.entityHit);
                 }
 
             }else{
                 p = new SpecialActionPacket(entityPlayer, mainhand, offhand, null).generatePacket();
             }
-            PacketDispatcher.sendPacketToServer(p);
+            Battlegear.packetHandler.sendPacketToServer(p);
         }
 
     }
@@ -176,7 +173,7 @@ public class ClientProxy extends CommonProxy {
         {
             if (mc.theWorld != null)
             {
-                mc.pointedEntityLiving = null;
+                mc.pointedEntity = null;
                 double d0 = (double)maxDist;
                 MovingObjectPosition objectMouseOver = mc.renderViewEntity.rayTrace(d0, tickPart);
                 double d1 = d0;

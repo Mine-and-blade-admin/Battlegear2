@@ -1,5 +1,8 @@
 package mods.battlegear2;
 
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.IBattlePlayer;
@@ -18,34 +21,30 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.Event.Result;
-import net.minecraftforge.event.EventPriority;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.*;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
 
 public class BattlemodeHookContainerClass {
 
-    @ForgeSubscribe(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onEntityJoin(EntityJoinWorldEvent event){
-        if(event.entity instanceof EntityPlayer){
-            PacketDispatcher.sendPacketToPlayer(
-                    new BattlegearSyncItemPacket((EntityPlayer)event.entity).generatePacket(),
-                    (Player)event.entity);
+        if(event.entity instanceof EntityPlayerMP){
+            Battlegear.packetHandler.sendPacketToPlayer(
+                    new BattlegearSyncItemPacket((EntityPlayer) event.entity).generatePacket(),
+                    (EntityPlayerMP) event.entity);
 
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void attackEntity(AttackEntityEvent event){
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
@@ -65,7 +64,7 @@ public class BattlemodeHookContainerClass {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void playerInterect(PlayerInteractEvent event) {
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
@@ -98,18 +97,18 @@ public class BattlemodeHookContainerClass {
         }
     }
 
-    @ForgeSubscribe(priority=EventPriority.HIGHEST)
+    @SubscribeEvent(priority=EventPriority.HIGHEST)
     public void onOffhandSwing(PlayerEventChild.OffhandSwingEvent event){
         if(event.offHand != null && event.parent.getClass().equals(PlayerInteractEvent.class)){
             if (event.offHand.getItem() instanceof IShield){
-                ((PlayerInteractEvent)event.parent).useItem = Result.DENY;
+                ((PlayerInteractEvent)event.parent).useItem = Event.Result.DENY;
                 event.setCanceled(true);
             }else if(event.offHand.getItem() instanceof IOffhandDual){
                 boolean shouldSwing = true;
                 if(((PlayerInteractEvent)event.parent).action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
                     shouldSwing = ((IOffhandDual) event.offHand.getItem()).offhandClickAir((PlayerInteractEvent)event.parent, event.mainHand, event.offHand);
                 else if(((PlayerInteractEvent)event.parent).action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
-                    ((PlayerInteractEvent)event.parent).useItem = Result.DENY;
+                    ((PlayerInteractEvent)event.parent).useItem = Event.Result.DENY;
                     shouldSwing = ((IOffhandDual) event.offHand.getItem()).offhandClickBlock((PlayerInteractEvent)event.parent, event.mainHand, event.offHand);
                 }
                 if(!shouldSwing){
@@ -119,11 +118,11 @@ public class BattlemodeHookContainerClass {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void playerIntereactEntity(EntityInteractEvent event) {
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
-            event.setResult(Result.DENY);
+            event.setResult(Event.Result.DENY);
             event.entityPlayer.isSwingInProgress = false;
         } else if (((IBattlePlayer) event.entityPlayer).isBattlemode()) {
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
@@ -139,7 +138,7 @@ public class BattlemodeHookContainerClass {
                     }
                     if (offAttackEvent.cancelParent) {
                         event.setCanceled(true);
-                        event.setResult(Result.DENY);
+                        event.setResult(Event.Result.DENY);
                     }
                 }
             }
@@ -147,7 +146,7 @@ public class BattlemodeHookContainerClass {
         }
     }
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onOffhandAttack(PlayerEventChild.OffhandAttackEvent event){
         if(event.offHand!=null){
             if(event.offHand.getItem() instanceof IOffhandDual){
@@ -161,7 +160,7 @@ public class BattlemodeHookContainerClass {
         }
     }
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void shieldHook(LivingHurtEvent event){
 
         if(event.entity instanceof IBattlePlayer){
@@ -202,7 +201,7 @@ public class BattlemodeHookContainerClass {
                         event.setCanceled(true);
 
                         ((IShield)shield.getItem()).blockAnimation(player, dmg);
-                    	
+
                         if(event.source.isProjectile() && event.source.getEntity() instanceof IProjectile){
                             if(shield.getItem() instanceof IArrowCatcher){
                                 if(((IArrowCatcher)shield.getItem()).catchArrow(shield, player, (IProjectile)event.source.getEntity())){
@@ -228,11 +227,11 @@ public class BattlemodeHookContainerClass {
             }
         }
     }
-    
-    @ForgeSubscribe
+
+    @SubscribeEvent
     public void onDrop(LivingDropsEvent event){
     	if(event.source.getEntity() instanceof EntityLivingBase){
-    		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getCurrentItemOrArmor(0);
+    		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getEquipmentInSlot(0);
     		if(stack!=null && stack.getItem() instanceof ItemBow){
     			int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot.effectId, stack);
     			if(lvl>0){

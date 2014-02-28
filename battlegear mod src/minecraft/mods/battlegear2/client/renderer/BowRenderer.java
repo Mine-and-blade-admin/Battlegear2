@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraft.util.*;
@@ -44,9 +44,9 @@ public class BowRenderer implements IItemRenderer {
 
     private void renderEquippedBow(ItemStack item, EntityLivingBase entityLivingBase, boolean firstPerson) {
 
-        Icon icon = item.getIconIndex();
+        IIcon icon = item.getIconIndex();
 
-        ItemStack arrowStack = new ItemStack(Item.arrow);
+        ItemStack arrowStack = new ItemStack(Items.arrow);
         int drawAmount = -2;
         boolean drawArrows = false;
         if(entityLivingBase instanceof EntityPlayer){
@@ -66,7 +66,7 @@ public class BowRenderer implements IItemRenderer {
                 if(arrowStack != null && QuiverArrowRegistry.isKnownArrow(arrowStack)){
                     icon = ClientProxy.bowIcons[drawAmount];
                 }else{
-                    icon = Item.bow.getItemIconForUseDuration(drawAmount);
+                    icon = Items.bow.getItemIconForUseDuration(drawAmount);
                 }
             }
         }else if (entityLivingBase instanceof EntitySkeleton){

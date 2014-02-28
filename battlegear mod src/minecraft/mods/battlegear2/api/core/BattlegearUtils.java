@@ -2,20 +2,18 @@ package mods.battlegear2.api.core;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Collection;
 
+import cpw.mods.fml.common.eventhandler.EventBus;
 import mods.battlegear2.api.IAllowItem;
 import mods.battlegear2.api.IOffhandDual;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentThorns;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -35,7 +33,6 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.EventBus;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -71,12 +68,6 @@ public class BattlegearUtils {
         };
     }
 
-
-    private static boolean[] weapons;
-    private static boolean[] mainHandDualWeapons;
-    private static boolean[] offhandDualWeapons;
-
-
     public static boolean isBlockingWithShield(EntityPlayer player){
         //TODO: Use this ?
     	if(!player.isSneaking()){
@@ -101,15 +92,43 @@ public class BattlegearUtils {
     public static boolean isWeapon(ItemStack main) {
         if (main.getItem() instanceof IBattlegearWeapon)
             return true;
-        else
-            return weapons[main.itemID] || WeaponRegistry.isWeapon(main);
+        else if(WeaponRegistry.isWeapon(main))
+            return true;
+        else{
+            boolean valid = main.getMaxStackSize()==1 && main.getMaxDamage()>0 && !main.getHasSubtypes();
+            if(valid){
+                valid = main.getItem() instanceof ItemSword ||
+                        main.getItem() instanceof ItemBow ||
+                        main.getItem() instanceof ItemTool;
+            }
+            return valid;
+        }
     }
 
     public static boolean isMainHand(ItemStack main, ItemStack off) {
     	if(main.getItem() instanceof IAllowItem)
             return ((IAllowItem) main.getItem()).allowOffhand(main, off);
-        else
-            return mainHandDualWeapons[main.itemID] || WeaponRegistry.isMainHand(main);
+        else if(WeaponRegistry.isMainHand(main))
+            return true;
+        else{
+            if(isWeapon(main)){
+                //make sure there are no special functions for offhand/mainhand weapons
+                boolean rightClick = checkForRightClickFunction(main.getItem(), main);
+                boolean offhand = !(main.getItem() instanceof ItemTool || main.getItem() instanceof ItemBow) && !rightClick;
+                boolean mainhand = !(main.getItem() instanceof ItemBow) && !rightClick;
+                if(mainhand){
+                    if(offhand)
+                        WeaponRegistry.addDualWeapon(main);
+                    else
+                        WeaponRegistry.addTwoHanded(main);
+                    return true;
+                }
+                if(offhand){
+                    WeaponRegistry.addOffhandWeapon(main);
+                }
+            }
+            return false;
+        }
     }
 
     public static boolean isOffHand(ItemStack off) {
@@ -117,38 +136,26 @@ public class BattlegearUtils {
             return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);
         else if(off.getItem() instanceof IShield || off.getItem() instanceof ItemBlock)
             return true;
-        else
-            return offhandDualWeapons[off.itemID] || WeaponRegistry.isOffHand(off);
-    }
-
-    public static void scanAndProcessItems() {
-        weapons = new boolean[Item.itemsList.length];
-        mainHandDualWeapons = new boolean[Item.itemsList.length];
-        offhandDualWeapons = new boolean[Item.itemsList.length];
-
-        for (int i = 0; i < Item.itemsList.length; i++) {
-            Item item = Item.itemsList[i];
-            weapons[i] = false;
-            mainHandDualWeapons[i] = false;
-            offhandDualWeapons[i] = false;
-            if (item != null) {
-
-                boolean valid = item.getItemStackLimit() == 1 && item.isDamageable();
-                if (valid) {
-                    weapons[i] = item instanceof ItemSword ||
-                            item instanceof ItemBow ||
-                            item instanceof ItemTool;
-
-
-                    if (weapons[i]) {
-                        //make sure there are no special functions for offhand/mainhand weapons
-                        boolean rightClickFunction = checkForRightClickFunction(item, null);
-                        //only weapons can be placed in offhand
-                        offhandDualWeapons[i] = !(item instanceof ItemTool || item instanceof ItemBow) && !rightClickFunction;
-                        mainHandDualWeapons[i] = !(item instanceof ItemBow) && !rightClickFunction;
-                    }
+        else if(WeaponRegistry.isOffHand(off))
+            return true;
+        else{
+            if(isWeapon(off)){
+                //make sure there are no special functions for offhand/mainhand weapons
+                boolean rightClick = checkForRightClickFunction(off.getItem(), off);
+                boolean offhand = !(off.getItem() instanceof ItemTool || off.getItem() instanceof ItemBow) && !rightClick;
+                boolean mainhand = !(off.getItem() instanceof ItemBow) && !rightClick;
+                if(offhand){
+                    if(mainhand)
+                        WeaponRegistry.addDualWeapon(off);
+                    else
+                        WeaponRegistry.addOffhandWeapon(off);
+                    return true;
+                }
+                if(mainhand){
+                    WeaponRegistry.addTwoHanded(off);
                 }
             }
+            return false;
         }
     }
 
@@ -190,12 +197,12 @@ public class BattlegearUtils {
 
     public static ItemStack readItemStack(ByteArrayDataInput par0DataInputStream) throws IOException {
         ItemStack itemstack = null;
-        short short1 = par0DataInputStream.readShort();
+        int short1 = par0DataInputStream.readInt();
 
         if (short1 >= 0) {
             byte b0 = par0DataInputStream.readByte();
             short short2 = par0DataInputStream.readShort();
-            itemstack = new ItemStack(short1, b0, short2);
+            itemstack = new ItemStack(Item.getItemById(short1), b0, short2);
             itemstack.stackTagCompound = readNBTTagCompound(par0DataInputStream);
         }
 
@@ -223,7 +230,7 @@ public class BattlegearUtils {
         if (par0ItemStack == null) {
             par1DataOutputStream.writeShort(-1);
         } else {
-            par1DataOutputStream.writeShort(par0ItemStack.itemID);
+            par1DataOutputStream.writeInt(Item.getIdFromItem(par0ItemStack.getItem()));
             par1DataOutputStream.writeByte(par0ItemStack.stackSize);
             par1DataOutputStream.writeShort(par0ItemStack.getItemDamage());
             NBTTagCompound nbttagcompound = null;
@@ -275,26 +282,13 @@ public class BattlegearUtils {
         {
             if (!par1Entity.hitByEntity(player))
             {
-                float f = 1;
-                if(stack != null){
-                    Collection map = stack.getAttributeModifiers().get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
-
-                    for(Object ob : map){
-                        if(ob instanceof AttributeModifier){
-                            AttributeModifier am = (AttributeModifier)ob;
-                            if(am.getName().equals("Weapon modifier")){
-                                f += am.getAmount();
-                            }
-                        }
-                    }
-
-                }
+                float f = (float)player.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
                 int i = 0;
                 float f1 = 0.0F;
 
                 if (par1Entity instanceof EntityLivingBase)
                 {
-                    f1 = EnchantmentHelper.getEnchantmentModifierLiving(player, (EntityLivingBase) par1Entity);
+                    f1 = EnchantmentHelper.getEnchantmentModifierLiving(player, (EntityLivingBase)par1Entity);
                     i += EnchantmentHelper.getKnockbackModifier(player, (EntityLivingBase)par1Entity);
                 }
 
@@ -328,7 +322,7 @@ public class BattlegearUtils {
                     {
                         if (i > 0)
                         {
-                            par1Entity.addVelocity((double)(-MathHelper.sin(player.rotationYaw * (float) Math.PI / 180.0F) * (float)i * 0.5F), 0.1D, (double)(MathHelper.cos(player.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F));
+                            par1Entity.addVelocity((double)(-MathHelper.sin(player.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F), 0.1D, (double)(MathHelper.cos(player.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F));
                             player.motionX *= 0.6D;
                             player.motionZ *= 0.6D;
                             player.setSprinting(false);
@@ -353,48 +347,49 @@ public class BattlegearUtils {
 
                         if (par1Entity instanceof EntityLivingBase)
                         {
-                            EnchantmentThorns.func_92096_a(player, (EntityLivingBase) par1Entity, player.getRNG());
+                            EnchantmentHelper.func_151384_a((EntityLivingBase)par1Entity, player);
                         }
+
+                        EnchantmentHelper.func_151385_b(player, par1Entity);
+                        ItemStack itemstack = player.getCurrentEquippedItem();
+                        Object object = par1Entity;
+
+                        if (par1Entity instanceof EntityDragonPart)
+                        {
+                            IEntityMultiPart ientitymultipart = ((EntityDragonPart)par1Entity).entityDragonObj;
+
+                            if (ientitymultipart != null && ientitymultipart instanceof EntityLivingBase)
+                            {
+                                object = ientitymultipart;
+                            }
+                        }
+
+                        if (itemstack != null && object instanceof EntityLivingBase)
+                        {
+                            itemstack.hitEntity((EntityLivingBase)object, player);
+
+                            if (itemstack.stackSize <= 0)
+                            {
+                                player.destroyCurrentEquippedItem();
+                            }
+                        }
+
+                        if (par1Entity instanceof EntityLivingBase)
+                        {
+                            player.addStat(StatList.damageDealtStat, Math.round(f * 10.0F));
+
+                            if (j > 0)
+                            {
+                                par1Entity.setFire(j * 4);
+                            }
+                        }
+
+                        player.addExhaustion(0.3F);
                     }
-
-                    ItemStack itemstack =  player.getCurrentEquippedItem();
-                    Object object = par1Entity;
-
-                    if (par1Entity instanceof EntityDragonPart)
+                    else if (flag1)
                     {
-                        IEntityMultiPart ientitymultipart = ((EntityDragonPart)par1Entity).entityDragonObj;
-
-                        if (ientitymultipart != null && ientitymultipart instanceof EntityLivingBase)
-                        {
-                            object = ientitymultipart;
-                        }
+                        par1Entity.extinguish();
                     }
-
-                    if (itemstack != null && object instanceof EntityLivingBase)
-                    {
-                        itemstack.hitEntity((EntityLivingBase)object, player);
-
-                        if (itemstack.stackSize <= 0)
-                        {
-                            player.destroyCurrentEquippedItem();
-                        }
-                    }
-
-                    if (par1Entity instanceof EntityLivingBase)
-                    {
-                        player.addStat(StatList.damageDealtStat, Math.round(f * 10.0F));
-
-                        if (j > 0 && flag2)
-                        {
-                            par1Entity.setFire(j * 4);
-                        }
-                        else if (flag1)
-                        {
-                            par1Entity.extinguish();
-                        }
-                    }
-
-                    player.addExhaustion(0.3F);
                 }
             }
         }

@@ -40,7 +40,6 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 		        ItemInWorldTransformer,
 		        EntityAIControlledTransformer,
 		        EntityOtherPlayerMPTransformer,
-                AccessTransformer,
 		        EntityTrackerTransformer
    			};
 
@@ -48,6 +47,9 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
     public String[] getASMTransformerClass() {
         return transformers;
     }
+
+    @Override
+    public String getAccessTransformerClass() { return AccessTransformer; }
 
     @Override
     public String getModContainerClass() {

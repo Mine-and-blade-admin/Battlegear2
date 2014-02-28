@@ -1,10 +1,10 @@
 package mods.mud.gui;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
@@ -15,7 +15,7 @@ public class GuiModUpdateButton extends GuiButton{
 
 
     RenderItem renderItem = new RenderItem();
-    ItemStack icon = new ItemStack(Block.tilledField);
+    ItemStack icon = new ItemStack(Blocks.farmland);
     List<String> text = null;
     private GuiScreen parent;
     public GuiModUpdateButton(int id, int x, int y, GuiScreen parent) {
@@ -37,7 +37,7 @@ public class GuiModUpdateButton extends GuiButton{
 
         if (!this.enabled)
             l = -6250336;
-        else if (this.field_82253_i)
+        else if (this.field_146123_n)
             l = 16777120;
 
         float scale = 1.25F;

@@ -1,23 +1,27 @@
 package mods.battlegear2.packet;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.util.Hashtable;
 import java.util.Map;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.network.FMLEventChannel;
+import cpw.mods.fml.common.network.FMLNetworkEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.Player;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.NetHandlerPlayServer;
 
-public class BattlegearPacketHandeler implements IPacketHandler {
+public class BattlegearPacketHandeler {
 
-    private Map<String, AbstractMBPacket> map = new Hashtable<String, AbstractMBPacket>();
-
+    public Map<String, AbstractMBPacket> map = new Hashtable<String, AbstractMBPacket>();
+    public Map<String, FMLEventChannel> channels = new Hashtable<String, FMLEventChannel>();
 
     public BattlegearPacketHandeler() {
-
         map.put(BattlegearSyncItemPacket.packetName, new BattlegearSyncItemPacket());
         map.put(BattlegearAnimationPacket.packetName, new BattlegearAnimationPacket());
         map.put(BattlegearBannerPacket.packetName, new BattlegearBannerPacket());
@@ -31,11 +35,30 @@ public class BattlegearPacketHandeler implements IPacketHandler {
         map.put(PickBlockPacket.packetName, new PickBlockPacket());
     }
 
-    @Override
-    public void onPacketData(INetworkManager manager,
-                             Packet250CustomPayload packet, Player player) {
-        map.get(packet.channel).process(packet.data!=null?new DataInputStream(new ByteArrayInputStream(packet.data)):null,(EntityPlayer) player);
-
+    @SubscribeEvent
+    public void onServerPacket(FMLNetworkEvent.ServerCustomPacketEvent event) {
+        map.get(event.packet.channel()).process(event.packet.payload(), ((NetHandlerPlayServer)event.handler).playerEntity);
     }
 
+    @SubscribeEvent
+    public void onClientPacket(FMLNetworkEvent.ClientCustomPacketEvent event){
+        map.get(event.packet.channel()).process(event.packet.payload(), getClientPlayer());
+    }
+
+    @SideOnly(Side.CLIENT)
+    private EntityPlayer getClientPlayer(){
+        return Minecraft.getMinecraft().thePlayer;
+    }
+
+    public void sendPacketToPlayer(FMLProxyPacket packet, EntityPlayerMP player){
+        channels.get(packet.channel()).sendTo(packet, player);
+    }
+
+    public void sendPacketToServer(FMLProxyPacket packet){
+        channels.get(packet.channel()).sendToServer(packet);
+    }
+
+    public void sendPacketAround(Entity entity, double range, FMLProxyPacket packet){
+        channels.get(packet.channel()).sendToAllAround(packet, new NetworkRegistry.TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, range));
+    }
 }

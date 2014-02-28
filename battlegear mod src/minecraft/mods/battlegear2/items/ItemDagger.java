@@ -6,22 +6,22 @@ import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.weapons.IHitTimeModifier;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.EnumToolMaterial;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntityDamageSource;
 
 public class ItemDagger extends OneHandedWeapon implements IBackStabbable,IHitTimeModifier,IExtendedReachWeapon{
 
-	public ItemDagger(int par1, EnumToolMaterial material, String name) {
-		super(par1, material, name);
+	public ItemDagger(ToolMaterial material, String name) {
+		super(material, name);
 		//set the base damage to that of lower than usual (balance)
 		this.baseDamage -= 2;
 	}
 	
 	@Override
-	public boolean canHarvestBlock(Block par1Block)//Daggers can harvest tallgrass and wool
+	public boolean func_150897_b(Block par1Block)//Daggers can harvest tallgrass and wool
     {
-        return par1Block.blockID == Block.tallGrass.blockID||par1Block.blockID == Block.cloth.blockID;
+        return par1Block == Blocks.tallgrass||par1Block == Blocks.wool;
     }
 
 	@Override

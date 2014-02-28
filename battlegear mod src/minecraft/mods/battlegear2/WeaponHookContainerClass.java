@@ -2,6 +2,7 @@ package mods.battlegear2;
 
 import java.util.Map;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.weapons.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -12,7 +13,6 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 /**
@@ -25,7 +25,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 public class WeaponHookContainerClass {
 
 	public static final float backstabFuzzy = 0.01F;
-    @ForgeSubscribe
+    @SubscribeEvent
     public void onAttack(LivingAttackEvent event){
 
     	if(event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).capabilities.isCreativeMode)

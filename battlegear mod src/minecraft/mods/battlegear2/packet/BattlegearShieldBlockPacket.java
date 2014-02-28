@@ -1,13 +1,9 @@
 package mods.battlegear2.packet;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
-
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
 import mods.battlegear2.api.core.IBattlePlayer;
-import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet;
 import net.minecraft.world.WorldServer;
 
 public class BattlegearShieldBlockPacket extends AbstractMBPacket {
@@ -15,33 +11,27 @@ public class BattlegearShieldBlockPacket extends AbstractMBPacket {
 	private boolean block;
 	private String username;
 
-	public BattlegearShieldBlockPacket(boolean block, String username) {
+	public BattlegearShieldBlockPacket(boolean block, EntityPlayer user) {
 		this.block = block;
-		this.username = username;
+		this.username = user.getCommandSenderName();
 	}
 
 	public BattlegearShieldBlockPacket() {
 	}
 
 	@Override
-	public void process(DataInputStream in, EntityPlayer player) {
-		try {
-			block = true;
-			block = in.readBoolean();
-			username = Packet.readString(in, 16);
-			if (username != null) {
-				EntityPlayer entity = player.worldObj
-						.getPlayerEntityByName(username);
-                if (player.worldObj instanceof WorldServer) {
-                    ((WorldServer) player.worldObj).getEntityTracker().sendPacketToAllPlayersTrackingEntity(entity,	this.generatePacket());
-                }
-                ((IBattlePlayer) entity).setBlockingWithShield(block);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			BattlegearUtils.closeStream(in);
-		}
+	public void process(ByteBuf in, EntityPlayer player) {
+        block = true;
+        block = in.readBoolean();
+        username = ByteBufUtils.readUTF8String(in);
+        if (username != null) {
+            EntityPlayer entity = player.worldObj
+                    .getPlayerEntityByName(username);
+            if (player.worldObj instanceof WorldServer) {
+                ((WorldServer) player.worldObj).getEntityTracker().func_151247_a(entity, this.generatePacket());
+            }
+            ((IBattlePlayer) entity).setBlockingWithShield(block);
+        }
 	}
 
 	@Override
@@ -50,8 +40,8 @@ public class BattlegearShieldBlockPacket extends AbstractMBPacket {
 	}
 
 	@Override
-	public void write(DataOutput out) throws IOException {
+	public void write(ByteBuf out) {
 		out.writeBoolean(block);
-		Packet.writeString(username, out);
+        ByteBufUtils.writeUTF8String(out, username);
 	}
 }

@@ -1,16 +1,16 @@
 package mods.mud;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
-import cpw.mods.fml.common.registry.TickRegistry;
-import cpw.mods.fml.relauncher.Side;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.ChatMessageComponent;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.ClientCommandHandler;
-import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.config.Configuration;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -59,7 +59,7 @@ public class ModUpdateDetector {
 
         if(enabled){
             ICommandSender sender = getSender();
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText(
+            sender.addChatMessage(new ChatComponentText(
                     EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
                     EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.checking")
             ));
@@ -94,7 +94,7 @@ public class ModUpdateDetector {
         	handled.printStackTrace();
         }
 
-        TickRegistry.registerTickHandler(new ModUpdateDetectorTickHandeler(Timer), Side.CLIENT);
+        FMLCommonHandler.instance().bus().register(new ModUpdateDetectorTickHandeler(Timer));
         ClientCommandHandler.instance.registerCommand(new MudCommands());
     }
 
@@ -109,7 +109,7 @@ public class ModUpdateDetector {
     public static void notifyUpdateDone(){
         ICommandSender sender = getSender();
         if(sender != null){
-            sender.sendChatToPlayer(ChatMessageComponent.createFromText(
+            sender.addChatMessage(new ChatComponentText(
                     EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
                             EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.check.done")
             ));
@@ -126,25 +126,21 @@ public class ModUpdateDetector {
                 failedCount++;
             }
         }
+        ChatComponentTranslation chat;
         if(outOfDateCount > 0){
             if(sender != null){
-                sender.sendChatToPlayer(ChatMessageComponent.createFromText(
-                        String.format("%s%s %s %s",
-                        EnumChatFormatting.RED, StatCollector.translateToLocal("message.you.have"),
-                                outOfDateCount, StatCollector.translateToLocal("message.outdated"))
-                ));
-                sender.sendChatToPlayer(ChatMessageComponent.createFromText(
-                        String.format("%s%s %s %s",
-                                EnumChatFormatting.RED, StatCollector.translateToLocal("message.type"),
-                                "/mud", StatCollector.translateToLocal("message.to.view"))
-                ));
+                chat = new ChatComponentTranslation("message.you.have.outdated", outOfDateCount);
+                chat.getChatStyle().setColor(EnumChatFormatting.RED);
+                sender.addChatMessage(chat);
+                chat = new ChatComponentTranslation("message.type.to.view");
+                chat.getChatStyle().setColor(EnumChatFormatting.RED);
+                sender.addChatMessage(chat);
             }
         }else{
             if(sender != null){
-                sender.sendChatToPlayer(ChatMessageComponent.createFromText(
-                        String.format("%s%s",
-                                EnumChatFormatting.DARK_GREEN, StatCollector.translateToLocal("message.up.to.date"))
-                ));
+                chat = new ChatComponentTranslation("message.up.to.date");
+                chat.getChatStyle().setColor(EnumChatFormatting.DARK_GREEN);
+                sender.addChatMessage(chat);
             }
         }
         hasChecked = true;

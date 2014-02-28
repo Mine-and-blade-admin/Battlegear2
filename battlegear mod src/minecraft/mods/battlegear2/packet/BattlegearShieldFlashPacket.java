@@ -1,13 +1,9 @@
 package mods.battlegear2.packet;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
-
+import cpw.mods.fml.common.network.ByteBufUtils;
+import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet;
 
 public class BattlegearShieldFlashPacket extends AbstractMBPacket{
 
@@ -16,7 +12,7 @@ public class BattlegearShieldFlashPacket extends AbstractMBPacket{
 	private float damage;
 
     public BattlegearShieldFlashPacket(EntityPlayer player, float damage) {
-    	this.username = player.username;
+    	this.username = player.getCommandSenderName();
     	this.damage = damage;
     }
 
@@ -24,18 +20,12 @@ public class BattlegearShieldFlashPacket extends AbstractMBPacket{
 	}
     
     @Override
-    public void process(DataInputStream in,EntityPlayer player) {
-    	try {
-    		username = Packet.readString(in, 30);
-            damage = in.readFloat();
-		    EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(username);
-		    if(targetPlayer!=null)
-		    	Battlegear.proxy.startFlash(targetPlayer, damage);
-    	}catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            BattlegearUtils.closeStream(in);
-        }
+    public void process(ByteBuf in,EntityPlayer player) {
+        username = ByteBufUtils.readUTF8String(in);
+        damage = in.readFloat();
+        EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(username);
+        if(targetPlayer!=null)
+            Battlegear.proxy.startFlash(targetPlayer, damage);
     }
 
 	@Override
@@ -44,8 +34,8 @@ public class BattlegearShieldFlashPacket extends AbstractMBPacket{
 	}
 
 	@Override
-	public void write(DataOutput out) throws IOException {
-        Packet.writeString(username, out);
+	public void write(ByteBuf out) {
+        ByteBufUtils.writeUTF8String(out, username);
         out.writeFloat(damage);
 	}
 }

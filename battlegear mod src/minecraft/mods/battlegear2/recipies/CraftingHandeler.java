@@ -4,16 +4,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.PlayerEvent;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.shield.IArrowDisplay;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.ICraftingHandler;
 
-public class CraftingHandeler implements ICraftingHandler{
-    @Override
+public class CraftingHandeler {
+
+    @SubscribeEvent
+    public void onItemCrafted(PlayerEvent.ItemCraftedEvent event){
+        onCrafting(event.player, event.crafting, event.craftMatrix);
+    }
+
     public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) {
 
         if(item.getItem() instanceof IArrowDisplay){
@@ -42,9 +49,11 @@ public class CraftingHandeler implements ICraftingHandler{
 
                     int nextStackSize = Math.min(arrowCount, 64);
                     arrowCount -= nextStackSize;
-                    ItemStack temp = new ItemStack(Item.arrow, nextStackSize);
+                    ItemStack temp = new ItemStack(Items.arrow, nextStackSize);
                     if(!player.inventory.addItemStackToInventory(temp)){
-                    	player.dropPlayerItem(temp);
+                        EntityItem entityitem = player.dropPlayerItemWithRandomChoice(temp, false);
+                        entityitem.delayBeforeCanPickup = 0;
+                        entityitem.func_145797_a(player.getCommandSenderName());
                     }
 
                 }
@@ -103,7 +112,9 @@ public class CraftingHandeler implements ICraftingHandler{
         		while(itr.hasNext()){
         			ItemStack temp = (ItemStack) itr.next();
         			if(!player.inventory.addItemStackToInventory(temp)){
-        				player.dropPlayerItem(temp);
+                        EntityItem entityitem = player.dropPlayerItemWithRandomChoice(temp, false);
+                        entityitem.delayBeforeCanPickup = 0;
+                        entityitem.func_145797_a(player.getCommandSenderName());
         			}
         		}
         		for(int index=0;index<craftMatrix.getSizeInventory();index++){
@@ -111,10 +122,5 @@ public class CraftingHandeler implements ICraftingHandler{
         		}
             }
         }
-    }
-
-    @Override
-    public void onSmelting(EntityPlayer player, ItemStack item) {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 }

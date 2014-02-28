@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.plaf.basic.BasicScrollPaneUI.VSBChangeListener;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
@@ -60,7 +58,7 @@ public class GuiColourPicker extends GuiButton {
 
         pixels = default_colours.getTextureData();
         for(int i = 0; i < pixels.length; i++){
-            pixels[i] = ItemDye.dyeColors[i] | 0xFF000000;
+            pixels[i] = ItemDye.field_150922_c[i] | 0xFF000000;
         }
     }
 
@@ -168,7 +166,7 @@ public class GuiColourPicker extends GuiButton {
 
         if(isSwitchOn(DEFAULT_COLOURS)){
             if(x >= xPosition && x < 48+xPosition && y >= yPosition && y < 12+yPosition){
-                selectColour(ItemDye.dyeColors[((x - xPosition) / 6) + (((y - yPosition) / 6) * 8)] | 0xFF000000);
+                selectColour(ItemDye.field_150922_c[((x - xPosition) / 6) + (((y - yPosition) / 6) * 8)] | 0xFF000000);
                 return true;
             }
         }
@@ -181,7 +179,7 @@ public class GuiColourPicker extends GuiButton {
     public void drawButton(Minecraft mc, int mouse_x, int mouse_y) {
         //super.drawButton(mc, mouse_x, mouse_y);
 
-    	if(drawButton){
+    	if(visible){
 	        GL11.glColor3f(1,1,1);
 	
 	        GL11.glPushMatrix();
@@ -281,7 +279,7 @@ public class GuiColourPicker extends GuiButton {
         this.selectedHSB = Color.RGBtoHSB((rgb&0x00FF0000) >> 16, (rgb&0x0000FF00) >> 8, (rgb&0x000000FF), new float[3]);
         selected_alpha = ((float)((rgb & 0xFF000000) >>> 24)) / 255F;
 
-        if(enabled && drawButton){
+        if(enabled && visible){
 	        for(IControlListener l:listeners){
 	        	l.actionPreformed(this);
 	        }
@@ -296,7 +294,7 @@ public class GuiColourPicker extends GuiButton {
         this.selected_alpha = alpha;
         this.selectedRGB = (Color.HSBtoRGB(hue, sat, bright) & 0x00FFFFFF) | (((int)(alpha * 255)) << 24);
 
-        if(enabled && drawButton){
+        if(enabled && visible){
 	        for(IControlListener l:listeners){
 	        	l.actionPreformed(this);
 	        }

@@ -1,11 +1,7 @@
 package mods.battlegear2.packet;
 
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.IOException;
-
+import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -28,17 +24,11 @@ public class BattlegearGUIPacket extends AbstractMBPacket {
 	private int equipid;
 	
     @Override
-    public void process(DataInputStream in, EntityPlayer player) {
-    	try {
+    public void process(ByteBuf in, EntityPlayer player) {
 		equipid = -1;
 		equipid = in.readInt();
         if(equipid != -1){
             player.openGui(Battlegear.INSTANCE, equipid, player.worldObj, 0, 0, 0);
-        }
-    	}catch(IOException e){
-    		e.printStackTrace();
-    	} finally {
-            BattlegearUtils.closeStream(in);
         }
     }
 
@@ -48,7 +38,7 @@ public class BattlegearGUIPacket extends AbstractMBPacket {
 	}
 
 	@Override
-	public void write(DataOutput out) throws IOException {
+	public void write(ByteBuf out) {
 		out.writeInt(equipid);
 	}
 }

@@ -1,15 +1,14 @@
 package mods.mud;
 
 import cpw.mods.fml.client.GuiModList;
-import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import mods.mud.gui.GuiModUpdateButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiScreen;
 
-import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -19,7 +18,7 @@ import java.util.List;
  * Time: 4:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ModUpdateDetectorTickHandeler implements ITickHandler {
+public class ModUpdateDetectorTickHandeler {
 
     private final int timer_interval;
     protected static int timer;
@@ -29,10 +28,9 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
     public ModUpdateDetectorTickHandeler(int timer) {
         this.timer_interval = timer;
     }
-
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData) {
-        if(type.contains(TickType.PLAYER)){
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event){
+        if(event.phase == TickEvent.Phase.START){
             if(timer == 0){
                 ModUpdateDetector.runUpdateChecker();
             }
@@ -42,7 +40,12 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
             }else{
                 timer = -1;
             }
-        }else if(type.contains(TickType.RENDER)){
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
+        if(event.phase == TickEvent.Phase.START){
             if(Minecraft.getMinecraft().currentScreen != null &&
                     //Minecraft.getMinecraft().currentScreen != lastScreen &&
                     Minecraft.getMinecraft().currentScreen instanceof GuiIngameMenu ||
@@ -72,20 +75,5 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
 
     private List getButtonList(GuiScreen currentScreen) {
         return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, currentScreen, "buttonList", "field_73887_h");
-    }
-
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public EnumSet<TickType> ticks() {
-        return EnumSet.of(TickType.PLAYER, TickType.RENDER);
-    }
-
-    @Override
-    public String getLabel() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

@@ -1,8 +1,8 @@
 package mods.battlegear2;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
@@ -13,19 +13,23 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
 
-import java.util.EnumSet;
-
-public class BattlegearTickHandeler implements ITickHandler {
+public class BattlegearTickHandeler {
 
     //public HashMap<String, Integer> currentItemCache = new HashMap<String, Integer>();
 
-    @Override
-    public void tickStart(EnumSet<TickType> type, Object... tickData) {
-        EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event){
+        if(event.phase == TickEvent.Phase.START){
+            tickStart(event.player);
+        }else{
+            tickEnd(event.player);
+        }
+    }
+
+    public void tickStart(EntityPlayer entityPlayer) {
 
         if (entityPlayer.worldObj instanceof WorldServer) {
                 /*if(!currentItemCache.containsKey(entityPlayer.username)||entityPlayer.inventory.currentItem!=currentItemCache.get(entityPlayer.username))
@@ -37,7 +41,7 @@ public class BattlegearTickHandeler implements ITickHandler {
             if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 
                 ((WorldServer)entityPlayer.worldObj)
-                        .getEntityTracker().sendPacketToAllAssociatedPlayers(
+                        .getEntityTracker().func_151248_b(
                         entityPlayer,
                         new BattlegearSyncItemPacket(entityPlayer).generatePacket()
                 );
@@ -47,24 +51,19 @@ public class BattlegearTickHandeler implements ITickHandler {
                 ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
 
             }
-            //Force update every 3 seconds
-            //TODO: This is a temp fix
+            /*Force update every 3 seconds
             else if(entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
                 ((WorldServer)entityPlayer.worldObj)
-                        .getEntityTracker().sendPacketToAllAssociatedPlayers(
+                        .getEntityTracker().func_151248_b(
                         entityPlayer,
                         new BattlegearSyncItemPacket(entityPlayer).generatePacket()
                 );
-            }
+            }*/
 
         }
     }
 
-    @Override
-    public void tickEnd(EnumSet<TickType> type, Object... tickData) {
-
-        EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
-
+    public void tickEnd(EntityPlayer entityPlayer) {
         //If we JUST swung an Item
         if (entityPlayer.swingProgressInt == 1) {
             ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
@@ -72,7 +71,7 @@ public class BattlegearTickHandeler implements ITickHandler {
                 float extendedReach = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
                 if(extendedReach > 0){
                     MovingObjectPosition mouseOver = Battlegear.proxy.getMouseOver(0, extendedReach + 4);
-                    if (mouseOver != null && mouseOver.typeOfHit == EnumMovingObjectType.ENTITY) {
+                    if (mouseOver != null && mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
                         Entity target = mouseOver.entityHit;
                         if (target instanceof EntityLiving && target != entityPlayer) {
                             if (target.hurtResistantTime != ((EntityLiving) target).maxHurtResistantTime) {
@@ -99,15 +98,4 @@ public class BattlegearTickHandeler implements ITickHandler {
             }
         }
     }
-
-    @Override
-    public EnumSet<TickType> ticks() {
-        return EnumSet.of(TickType.PLAYER);
-    }
-
-    @Override
-    public String getLabel() {
-        return "battlegear.ticks";
-    }
-
 }

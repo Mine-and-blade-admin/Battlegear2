@@ -3,6 +3,7 @@ package mods.battlegear2.api.core;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -44,9 +45,9 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     /**
      * Returns a slot index in main inventory containing a specific itemID
      */
-    private int getInventorySlotContainItem(int par1) {
+    private int getInventorySlotContainItem(Item par1) {
         for (int j = 0; j < this.extraItems.length; ++j) {
-            if (this.extraItems[j] != null && this.extraItems[j].itemID == par1) {
+            if (this.extraItems[j] != null && this.extraItems[j].getItem() == par1) {
                 return j;
             }
         }
@@ -54,9 +55,9 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     @SideOnly(Side.CLIENT)
-    private int getInventorySlotContainItemAndDamage(int par1, int par2) {
+    private int getInventorySlotContainItemAndDamage(Item par1, int par2) {
         for (int k = 0; k < this.extraItems.length; ++k) {
-            if (this.extraItems[k] != null && this.extraItems[k].itemID == par1 && this.extraItems[k].getItemDamage() == par2) {
+            if (this.extraItems[k] != null && this.extraItems[k].getItem() == par1 && this.extraItems[k].getItemDamage() == par2) {
                 return k;
             }
         }
@@ -70,9 +71,9 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void setCurrentItem(int par1, int par2, boolean par3, boolean par4) {
+    public void func_146030_a(Item par1, int par2, boolean par3, boolean par4) {
         if (!isBattlemode())
-            super.setCurrentItem(par1, par2, par3, par4);
+            super.func_146030_a(par1, par2, par3, par4);
     }
 
     @Override
@@ -102,14 +103,14 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     @Override
-    public int clearInventory(int targetId, int targetDamage) {
+    public int clearInventory(Item targetId, int targetDamage) {
         hasChanged = true;
 
         int stacks = super.clearInventory(targetId, targetDamage);
 
         for (int i = 0; i < extraItems.length; i++) {
             if (extraItems[i] != null &&
-                    (targetId <= -1 || extraItems[i].itemID == targetId) &&
+                    (targetId == null || extraItems[i].getItem() == targetId) &&
                     (targetDamage <= -1 || extraItems[i].getItemDamage() == targetDamage)) {
 
                 stacks += extraItems[i].stackSize;
@@ -139,7 +140,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      * removed one item of specified itemID from inventory (if it is in a stack, the stack size will reduce with 1)
      */
     @Override
-    public boolean consumeInventoryItem(int par1) {
+    public boolean consumeInventoryItem(Item par1) {
         int j = this.getInventorySlotContainItem(par1);
 
         if (j < 0) {
@@ -159,7 +160,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      * Get if a specifiied item id is inside the inventory.
      */
     @Override
-    public boolean hasItem(int par1) {
+    public boolean hasItem(Item par1) {
         if (super.hasItem(par1)) {
             return true;
         } else {
@@ -225,9 +226,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
     public void setInventorySlotContents(int slot, ItemStack itemStack, boolean changed) {
         hasChanged = changed;
-        if (itemStack != null && itemStack.itemID == 0)
-            itemStack = null;
-
         if (slot >= OFFSET) {
             extraItems[slot - OFFSET] = itemStack;
         } else {
@@ -236,14 +234,13 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     @Override
-    public float getStrVsBlock(Block block) {
+    public float func_146023_a(Block block) {
         if (isBattlemode()) {
             ItemStack currentItemStack = getCurrentItem();
-
-            return currentItemStack != null ? currentItemStack.getStrVsBlock(block) : 1.0F;
+            return currentItemStack != null ? currentItemStack.func_150997_a(block) : 1.0F;
 
         } else {
-            return super.getStrVsBlock(block);
+            return super.func_146023_a(block);
         }
     }
 
@@ -271,7 +268,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         extraItems = new ItemStack[EXTRA_INV_SIZE];
 
         for (int i = 0; i < nbtTagList.tagCount(); ++i) {
-            NBTTagCompound nbttagcompound = (NBTTagCompound) nbtTagList.tagAt(i);
+            NBTTagCompound nbttagcompound = nbtTagList.getCompoundTagAt(i);
             int j = nbttagcompound.getByte("Slot") & 255;
 
             if (j >= OFFSET) {
@@ -304,8 +301,8 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     @Override
-    public void onInventoryChanged() {
-        super.onInventoryChanged();
+    public void markDirty() {
+        super.markDirty();
         hasChanged = true;
     }
 

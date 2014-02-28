@@ -1,10 +1,10 @@
 package mods.battlegear2.gui;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemArmor;
@@ -16,7 +16,7 @@ public class ContainerBattle extends ContainerLocalPlayer {
         super(local, player);
         //Armour slots,range [0-3]
         for (int i = 0; i < 4; i++) {
-            this.addSlotToContainer(new SlotArmor(new ContainerPlayer(inventoryPlayer, local, player), inventoryPlayer, inventoryPlayer.getSizeInventory() - 1 - i, 98, 8 + i * 18, i));
+            this.addSlotToContainer(new ArmorSlot(i, inventoryPlayer, inventoryPlayer.getSizeInventory() - 1 - i, 98, 8 + i * 18));
         }
 
         //Normal inventory slots[4-30]
@@ -109,10 +109,11 @@ public class ContainerBattle extends ContainerLocalPlayer {
     @Override
     public void onCraftMatrixChanged(IInventory par1IInventory) {
         super.onCraftMatrixChanged(par1IInventory);
-
-        PacketDispatcher.sendPacketToPlayer(
-                new BattlegearSyncItemPacket(thePlayer).generatePacket(),
-                (Player) thePlayer);
+        if(!isLocalWorld){
+            Battlegear.packetHandler.sendPacketToPlayer(
+                    new BattlegearSyncItemPacket(thePlayer).generatePacket(),
+                    (EntityPlayerMP)thePlayer);
+        }
     }
 
 /*

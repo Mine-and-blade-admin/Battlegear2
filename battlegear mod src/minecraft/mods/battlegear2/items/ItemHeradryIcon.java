@@ -2,21 +2,21 @@ package mods.battlegear2.items;
 
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.heraldry.SigilHelper;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemHeradryIcon extends Item implements IHeraldryItem {
 
-	Icon base;
-	Icon trim;
+	IIcon base;
+	IIcon trim;
 	
-	public ItemHeradryIcon(int par1) {
-		super(par1);
+	public ItemHeradryIcon() {
+		super();
 		//this.setCreativeTab(BattlegearConfig.customTab);
 		this.setMaxStackSize(1);
 		setUnlocalizedName("battlegear2:heraldric");
@@ -24,19 +24,19 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister par1IconRegister) {
+	public void registerIcons(IIconRegister par1IconRegister) {
 		this.itemIcon = par1IconRegister.registerIcon("battlegear2:bg-icon");
 		base = par1IconRegister.registerIcon("battlegear2:heraldry-base");
 		trim = par1IconRegister.registerIcon("battlegear2:heraldry-trim");
 	}
 	
 	@Override
-	public Icon getBaseIcon(ItemStack stack) {
+	public IIcon getBaseIcon(ItemStack stack) {
 		return base;
 	}
 	
 	@Override
-	public Icon getTrimIcon(ItemStack stack) {
+	public IIcon getTrimIcon(ItemStack stack) {
 		return null;
 	}
 
@@ -44,20 +44,19 @@ public class ItemHeradryIcon extends Item implements IHeraldryItem {
 	public boolean getShareTag() {
 		return true;
 	}
-	
-	
+
 	@Override
-	public boolean hasContainerItem(){
+	public boolean hasContainerItem(ItemStack stack){
 		return true;
 	}
 	
 	@Override
-	public ItemStack getContainerItemStack(ItemStack itemStack) {
+	public ItemStack getContainerItem(ItemStack itemStack) {
 		return itemStack;
 	}
 
 	@Override
-	public Icon getPostRenderIcon(ItemStack stack) {
+	public IIcon getPostRenderIcon(ItemStack stack) {
 		return trim;
 	}
 

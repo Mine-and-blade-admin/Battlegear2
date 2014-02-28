@@ -3,37 +3,38 @@ package mods.battlegear2.items;
 import java.util.List;
 
 import mods.battlegear2.items.arrows.*;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 
 public class ItemMBArrow extends Item {
 
-    public Icon[] icons;
+    public IIcon[] icons;
 
     public static final String[] names = {"explosive", "ender", "flame", "piercing", "poison", "mystery", "leech"};
     public static final Class<? extends AbstractMBArrow> arrows[] = new Class[]{EntityExplossiveArrow.class, EntityEnderArrow.class, EntityFlameArrow.class, EntityPiercingArrow.class, EntityPoisonArrow.class, EntityLoveArrow.class, EntityLeechArrow.class};
-    public static final Item[] component = {Item.gunpowder, Item.enderPearl, Item.flint, Item.diamond, Item.netherStar, Item.cookie, Item.ghastTear};
+    public static final Item[] component = {Items.gunpowder, Items.ender_pearl, Items.flint, Items.diamond, Items.nether_star, Items.cookie, Items.ghast_tear};
     
-    public ItemMBArrow(int id) {
-        super(id);
+    public ItemMBArrow() {
+        super();
         this.setHasSubtypes(true);
     }
 
     @Override
-    public void registerIcons(IconRegister par1IconRegister) {
-        icons = new Icon[names.length];
+    public void registerIcons(IIconRegister par1IconRegister) {
+        icons = new IIcon[names.length];
         for(int i = 0; i < names.length; i++){
             icons[i] = par1IconRegister.registerIcon(this.getIconString()+"."+names[i]);
         }
     }
 
     @Override
-    public net.minecraft.util.Icon getIconFromDamage(int par1) {
+    public IIcon getIconFromDamage(int par1) {
         return icons[par1];
     }
 
@@ -43,7 +44,7 @@ public class ItemMBArrow extends Item {
     }
 
     @Override
-    public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List){
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List){
         for (int j = 0; j < names.length; ++j){
             par3List.add(new ItemStack(par1, 1, j));
         }

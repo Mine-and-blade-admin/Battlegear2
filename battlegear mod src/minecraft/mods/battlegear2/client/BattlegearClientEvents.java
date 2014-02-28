@@ -2,9 +2,9 @@ package mods.battlegear2.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
-import mods.battlegear2.Battlegear;
+import cpw.mods.fml.common.eventhandler.EventPriority;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
@@ -22,13 +22,10 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.sound.SoundLoadEvent;
-import net.minecraftforge.event.EventPriority;
-import net.minecraftforge.event.ForgeSubscribe;
 
 import org.lwjgl.opengl.GL11;
 
@@ -49,7 +46,7 @@ public class BattlegearClientEvents {
 		tabsList.add(new GuiSigilButton(1, 20, 20));
 	}
 
-    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void preRenderBars(RenderItemBarEvent.PreRender event){
         if(event instanceof RenderItemBarEvent.PreDual){
             event.xOffset = BattlegearConfig.quiverBarOffset;
@@ -58,14 +55,14 @@ public class BattlegearClientEvents {
         }
     }
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void postRenderOverlay(RenderGameOverlayEvent.Post event) {
 		if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
 			inGameGUI.renderGameOverlay(event.partialTicks, event.mouseX, event.mouseY);
 		}
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void render3rdPersonBattlemode(RenderPlayerEvent.Specials.Post event) {
 
 		ModelBiped biped = (ModelBiped) event.renderer.mainModel;
@@ -109,7 +106,7 @@ public class BattlegearClientEvents {
 		}
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void renderLiving(RenderLivingEvent.Post event) {
 
 		if (BattlegearConfig.enableSkeletonQuiver && event.entity instanceof EntitySkeleton
@@ -191,16 +188,16 @@ public class BattlegearClientEvents {
 		return par1 + par3 * f3;
 	}
 
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void preStitch(TextureStitchEvent.Pre event) {
-		if (event.map.textureType == 1) {
-			ClientProxy.backgroundIcon = new Icon[2];
+		if (event.map.getTextureType() == 1) {
+			ClientProxy.backgroundIcon = new IIcon[2];
 			ClientProxy.backgroundIcon[0] = event.map
 					.registerIcon("battlegear2:slots/mainhand");
 			ClientProxy.backgroundIcon[1] = event.map
 					.registerIcon("battlegear2:slots/offhand");
 
-			ClientProxy.bowIcons = new Icon[3];
+			ClientProxy.bowIcons = new IIcon[3];
 			ClientProxy.bowIcons[0] = event.map
 					.registerIcon("battlegear2:bow_pulling_0");
 			ClientProxy.bowIcons[1] = event.map
@@ -213,19 +210,6 @@ public class BattlegearClientEvents {
             /*for (HeraldryPattern pattern : HeraldryPattern.patterns) {
                 pattern.registerIcon(event.map);
             }*/
-		}
-	}
-
-	@ForgeSubscribe
-	public void onSoundLoad(SoundLoadEvent event) {
-		try {
-			for (int i = 0; i < 10; i++) {
-				event.manager.soundPoolSounds.addSound(String.format(
-						"%s:%s%s.wav", "battlegear2", "shield", i));
-			}
-
-		} catch (Exception e) {
-			Battlegear.logger.log(Level.WARNING, "Failed to register one or more sounds.");
 		}
 	}
 

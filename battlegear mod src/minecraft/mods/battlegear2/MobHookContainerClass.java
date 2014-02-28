@@ -1,5 +1,6 @@
 package mods.battlegear2;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.items.arrows.AbstractMBArrow;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -9,14 +10,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.MathHelper;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 public class MobHookContainerClass {
 
     public static final int Skell_Arrow_Datawatcher = 25;
 
-    @ForgeSubscribe
+    @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event){
         if(event.entity instanceof EntitySkeleton){
 
@@ -56,7 +56,7 @@ public class MobHookContainerClass {
 
                         int i = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, skeleton.getHeldItem());
                         int j = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, skeleton.getHeldItem());
-                        mbArrow.setDamage((double)(pow * 2.0F) + skeleton.getRNG().nextGaussian() * 0.25D + (double)((float)skeleton.worldObj.difficultySetting * 0.11F));
+                        mbArrow.setDamage((double)(pow * 2.0F) + skeleton.getRNG().nextGaussian() * 0.25D + (double)((float)skeleton.worldObj.difficultySetting.getDifficultyId() * 0.11F));
 
                         if (i > 0)
                             mbArrow.setDamage(mbArrow.getDamage() + (double)i * 0.5D + 0.5D);

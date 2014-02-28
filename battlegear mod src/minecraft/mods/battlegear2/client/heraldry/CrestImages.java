@@ -1,7 +1,7 @@
 package mods.battlegear2.client.heraldry;
 
 import mods.battlegear2.api.core.BattlegearUtils;
-import net.minecraft.client.resources.ResourceManager;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
@@ -64,7 +64,7 @@ public class CrestImages implements Comparable<CrestImages>{
        }
     }
 
-    public static void initialise(ResourceManager rm){
+    public static void initialise(IResourceManager rm){
         new CrestImages();
 
         BufferedReader reader = null;

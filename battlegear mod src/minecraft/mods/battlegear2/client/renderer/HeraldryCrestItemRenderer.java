@@ -3,14 +3,13 @@ package mods.battlegear2.client.renderer;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.HeraldryTextureSmall;
-import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.items.HeraldryCrest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.TextureObject;
+import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
@@ -73,7 +72,7 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
         //glDepthFunc(GL11.GL_LEQUAL);
 
         ResourceLocation crestLocation = new ResourceLocation("Small:"+ HeraldryData.byteArrayToHex(heraldryData));
-        TextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
+        ITextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
         if(texture == null){
             texture = new HeraldryTextureSmall(new HeraldryData(heraldryData));
             Minecraft.getMinecraft().renderEngine.loadTexture(crestLocation, texture);
@@ -98,12 +97,12 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
         renderTexturedQuad(0, 0, itemRenderer.zLevel, 16, 16);
 
 
-        Icon icon =  heraldryItem.getBaseIcon(item);
+        IIcon icon =  heraldryItem.getBaseIcon(item);
         itemRenderer.zLevel += 100;
             glPushMatrix();
 
             ResourceLocation crestLocation = new ResourceLocation("Small:"+ HeraldryData.byteArrayToHex(heraldryData));
-            TextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
+            ITextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
             if(texture == null){
                 texture = new HeraldryTextureSmall(new HeraldryData(heraldryData));
                 Minecraft.getMinecraft().renderEngine.loadTexture(crestLocation, texture);
