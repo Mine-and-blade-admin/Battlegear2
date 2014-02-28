@@ -1,0 +1,14 @@
+[
+            {
+            "modid": "battlegear2",
+            "name": "$name",
+            "description": "A WIP, opensource combat mod, focusing on groundbreaking features and balanced combat",
+            "version": "$version",
+            "mcversion": "$mcversion",
+            "logoFile": "bg-logo.png",
+            "url": "http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/",
+            "updateUrl": "",
+            "authors": ["nerd-boy", "GotoLink"],
+            "credits": "By nerd-boy & GotoLink"}
+            ]
+        

@@ -42,7 +42,7 @@ archivesBaseName = config.mcversion + "-" + config.distname
 sourceSets {
     main {
         resources {
-            srcDir 'battlegear mod src/minecraft/' exclude('net/minecraft/**')
+            srcDir 'battlegear mod src/minecraft/' include('assets/**','*.cfg','*.png','*.mcmeta','*.info')
         }
 	    java {
 	        srcDir 'battlegear mod src/minecraft/'
@@ -52,7 +52,7 @@ sourceSets {
 
 processResources {
 
-    from(projectDir) {
+    from(sourceSets.main.resources.srcDirs) {
         // replace stuff in mcmod.info, nothing else
         include 'mcmod.info'
         // replace version and mcversion
@@ -63,7 +63,7 @@ processResources {
         include('LICENCE', 'README.md')
     }
     from(sourceSets.main.resources.srcDirs) {
-        include('*.lang', '*.wav', '*.png', '*.cfg')
+        include('*.lang', '*.wav', '*.png', '*.cfg', '*.mcmeta')
     }
 }
 
