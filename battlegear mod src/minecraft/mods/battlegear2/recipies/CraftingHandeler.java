@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.PlayerEvent;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.shield.IArrowDisplay;
 import net.minecraft.entity.item.EntityItem;
@@ -16,12 +14,7 @@ import net.minecraft.item.ItemStack;
 
 public class CraftingHandeler {
 
-    @SubscribeEvent
-    public void onItemCrafted(PlayerEvent.ItemCraftedEvent event){
-        onCrafting(event.player, event.crafting, event.craftMatrix);
-    }
-
-    public void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) {
+    public static void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) {
 
         if(item.getItem() instanceof IArrowDisplay){
             ItemStack shield = null;

@@ -14,7 +14,6 @@ import mods.battlegear2.api.core.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.packet.BattlegearPacketHandeler;
-import mods.battlegear2.recipies.CraftingHandeler;
 import mods.battlegear2.utils.*;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
@@ -22,23 +21,21 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.EnumHelper;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
 import java.net.URL;
 
-@Mod(modid="battlegear2")
+@Mod(modid="battlegear2", useMetadata = true)
 public class Battlegear {
 
-    @Instance("battlegear2")
+    @Mod.Instance("battlegear2")
     public static Battlegear INSTANCE;
 
-    @SidedProxy(clientSide = "mods.battlegear2.client.ClientProxy", serverSide = "mods.battlegear2.CommonProxy")
+    @SidedProxy(modId="battlegear2", clientSide = "mods.battlegear2.client.ClientProxy", serverSide = "mods.battlegear2.CommonProxy")
     public static CommonProxy proxy;
 
-    public static String imageFolder = "assets/battlegear2/textures/";
+    public static final String imageFolder = "assets/battlegear2/textures/";
     public static final String CUSTOM_DAMAGE_SOURCE = "battlegearExtra";
     public static ItemArmor.ArmorMaterial knightArmourMaterial;
 
@@ -48,7 +45,7 @@ public class Battlegear {
 	public static org.apache.logging.log4j.Logger logger;
     public static BattlegearPacketHandeler packetHandler;
 
-    @EventHandler
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         //Set up the Translator
 
@@ -70,10 +67,9 @@ public class Battlegear {
         logger = event.getModLog();
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         BattlegearConfig.registerRecipes();
-	    FMLCommonHandler.instance().bus().register(new CraftingHandeler());
         QuiverArrowRegistry.addArrowToRegistry(Items.arrow, 0, EntityArrow.class);
         if(BattlegearConfig.MbArrows!=null){
 	        for(int i = 0; i<ItemMBArrow.arrows.length; i++){
@@ -87,22 +83,20 @@ public class Battlegear {
             eventChannel.register(packetHandler);
             packetHandler.channels.put(channel, eventChannel);
         }
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new BattlegearGUIHandeler());
     }
 
-    @EventHandler
+    @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.registerKeyHandelers();
         proxy.registerTickHandelers();
         proxy.registerItemRenderers();
-
-        NetworkRegistry.INSTANCE.registerGuiHandler(this, new BattlegearGUIHandeler());
-
         if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
             proxy.tryUseTConstruct();
         }
     }
     
-    @EventHandler
+    @Mod.EventHandler
     public void onMessage(IMCEvent event){
         boolean success;
     	for(IMCMessage message:event.getMessages()){

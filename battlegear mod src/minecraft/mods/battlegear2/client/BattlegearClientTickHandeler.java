@@ -1,7 +1,5 @@
 package mods.battlegear2.client;
 
-import java.util.EnumSet;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import mods.battlegear2.Battlegear;
@@ -14,7 +12,6 @@ import mods.battlegear2.packet.OffhandPlaceBlockPacket;
 import mods.battlegear2.packet.PickBlockPacket;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.GameSettings;
@@ -39,6 +36,7 @@ public class BattlegearClientTickHandeler {
 
     public static float partialTick;
 
+    @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event){
         if(event.phase == TickEvent.Phase.START){
             tickStart(event.player);

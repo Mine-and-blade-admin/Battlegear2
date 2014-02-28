@@ -4,6 +4,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import mods.battlegear2.packet.LoginPacket;
 import cpw.mods.fml.common.FMLCommonHandler;
+import mods.battlegear2.recipies.CraftingHandeler;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class BgPlayerTracker {
@@ -19,5 +20,10 @@ public class BgPlayerTracker {
     public void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         if(FMLCommonHandler.instance().getEffectiveSide().isClient())
             Battlegear.battlegearEnabled = false;
+    }
+
+    @SubscribeEvent
+    public void onItemCrafted(PlayerEvent.ItemCraftedEvent event){
+        CraftingHandeler.onCrafting(event.player, event.crafting, event.craftMatrix);
     }
 }
