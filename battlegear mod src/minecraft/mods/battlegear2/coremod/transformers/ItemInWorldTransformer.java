@@ -11,7 +11,7 @@ import org.objectweb.asm.tree.*;
 public class ItemInWorldTransformer extends TransformerMethodProcess {
 
     public ItemInWorldTransformer() {
-		super("net.minecraft.item.ItemInWorldManager", "func_73085_a", new String[]{"tryUseItem", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"});
+		super("net.minecraft.server.management.ItemInWorldManager", "func_73085_a", new String[]{"tryUseItem", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"});
 	}
 
 	private String entityPlayerClassName;

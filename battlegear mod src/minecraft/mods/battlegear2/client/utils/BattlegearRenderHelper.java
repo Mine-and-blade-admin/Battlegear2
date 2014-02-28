@@ -76,8 +76,6 @@ public class BattlegearRenderHelper {
             GL11.glRotatef((player.rotationPitch - var6) * 0.1F, 1.0F, 0.0F, 0.0F);
             GL11.glRotatef((player.rotationYaw - var7) * 0.1F, 0.0F, 1.0F, 0.0F);
 
-            var6 = mc.theWorld.getLightBrightness(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY), MathHelper.floor_double(player.posZ));
-            var6 = 1.0F;
             int var18 = mc.theWorld.getLightBrightnessForSkyBlocks(MathHelper.floor_double(player.posX), MathHelper.floor_double(player.posY), MathHelper.floor_double(player.posZ), 0);
             int var8 = var18 % 65536;
             int var9 = var18 / 65536;
@@ -92,9 +90,9 @@ public class BattlegearRenderHelper {
                 var20 = (float) (var18 >> 16 & 255) / 255.0F;
                 var21 = (float) (var18 >> 8 & 255) / 255.0F;
                 var10 = (float) (var18 & 255) / 255.0F;
-                GL11.glColor4f(var6 * var20, var6 * var21, var6 * var10, 1.0F);
+                GL11.glColor4f(var20, var21, var10, 1.0F);
             } else {
-                GL11.glColor4f(var6, var6, var6, 1.0F);
+                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
 
             float var11;

@@ -129,11 +129,10 @@ public class NetServerHandlerTransformer extends TransformerBase {
         while (it.hasNext()) {
             AbstractInsnNode nextInsn = it.next();
             newList.add(nextInsn);
-//TODO: fix that
-            if (nextInsn instanceof FieldInsnNode &&
-                    nextInsn.getOpcode() == GETFIELD &&
-                    ((FieldInsnNode) nextInsn).owner.equals(packet16BlockItemSwitchClassName) &&
-                    ((FieldInsnNode) nextInsn).name.equals(getItemSwitchId)) {
+            if (nextInsn instanceof MethodInsnNode &&
+                    nextInsn.getOpcode() == INVOKEVIRTUAL &&
+                    ((MethodInsnNode) nextInsn).owner.equals(packet16BlockItemSwitchClassName) &&
+                    ((MethodInsnNode) nextInsn).name.equals(getItemSwitchId)) {
 
                 newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "isValidSwitch", "(I)Z"));
 
