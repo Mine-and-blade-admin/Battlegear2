@@ -1,6 +1,9 @@
 package mods.battlegear2.utils;
 
 import mods.battlegear2.api.shield.ShieldType;
+import mods.battlegear2.heraldry.BlockFlagPole;
+import mods.battlegear2.heraldry.ItemBlockFlagPole;
+import mods.battlegear2.heraldry.KnightArmourRecipie;
 import mods.battlegear2.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.items.*;
 import mods.battlegear2.recipies.DyeRecipie;
@@ -22,10 +25,11 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class BattlegearConfig {
+    private static Configuration file;
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
 	public static boolean forceBackSheath = false, arrowForceRendered = true, enableSkeletonQuiver = true;
 	public static boolean enableGUIKeys = false, enableGuiButtons = true;
-	public static final String[] itemNames = new String[] {"heraldric","chain","quiver", "dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow"};
+	public static final String[] itemNames = new String[] {"heraldric","chain","quiver","dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow"};
 	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
     public static final String[] shieldTypes = new String[] {"wood", "hide", "iron", "diamond", "gold"};
 	public static final String[] armourTypes = new String[] {"helmet", "plate", "legs", "boots"};
@@ -34,8 +38,8 @@ public class BattlegearConfig {
 	public static int[] enchantsId = {125, 126, 127, 128, 129, 130, 131};
 	public static ItemWeapon[] dagger=new ItemWeapon[toolTypes.length],warAxe=new ItemWeapon[toolTypes.length],mace=new ItemWeapon[toolTypes.length],spear=new ItemWeapon[toolTypes.length];
     public static ItemShield[] shield=new ItemShield[shieldTypes.length];
-	public static Item chain,quiver,heradricItem, MbArrows;
-	public static Block banner;
+	public static Item chain,quiver,heradricItem,MbArrows;
+	public static BlockFlagPole banner;
 	public static ItemBlock bannerItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[armourTypes.length];
 
@@ -47,6 +51,7 @@ public class BattlegearConfig {
 	public static int quiverBarOffset = 0, shieldBarOffset = 0;
 	
 	public static void getConfig(Configuration config) {
+        file = config;
 		config.load();
 		
 		StringBuffer sb = new StringBuffer();
@@ -65,7 +70,9 @@ public class BattlegearConfig {
         disabledItems = config.get(config.CATEGORY_GENERAL, "Disabled Items", new String[0], sb.toString()).getStringList(); 
         Arrays.sort(disabledItems);
 
-        heradricItem = new HeraldryCrest();
+        heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName("battlegear2:heraldric").setTextureName("battlegear2:bg-icon");
+        banner = (BlockFlagPole)new BlockFlagPole().setCreativeTab(customTab).setBlockName("battlegear2:flagpole");
+        GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, "battlegear2:flagpole");
 
         if(Arrays.binarySearch(disabledItems, itemNames[1]) < 0){
         	chain = new Item();
@@ -150,25 +157,23 @@ public class BattlegearConfig {
         for(int i = 0; i < 5; i++){
         	ToolMaterial material = ToolMaterial.values()[i];
         	if(Arrays.binarySearch(disabledItems, itemNames[4]) < 0){
-	            warAxe[i]=new ItemWaraxe(
-	                    material, itemNames[4], i==4?2:1);
+	            warAxe[i]=new ItemWaraxe(material, itemNames[4], i==4?2:1);
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[3]) < 0){
-	        	dagger[i]=new ItemDagger(
-	        			material, itemNames[3]);
+	        	dagger[i]=new ItemDagger(material, itemNames[3]);
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[5]) < 0){
-	    		mace[i]=new ItemMace(
-	    				material, itemNames[5], 0.05F + 0.05F*i);
+	    		mace[i]=new ItemMace(material, itemNames[5], 0.05F + 0.05F*i);
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[6]) < 0){
-	    		spear[i]=new ItemSpear(
-	    				material, itemNames[6]);
+	    		spear[i]=new ItemSpear(material, itemNames[6]);
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[7]) < 0){
-                shield[i] = new ItemShield(
-                        types[i]);
+                shield[i] = new ItemShield(types[i]);
         	}
+            if(i!=4 && Arrays.binarySearch(disabledItems, itemNames[8]) < 0){
+                knightArmor[i] = new ItemKnightArmour(i);
+            }
         }
         if (config.hasChanged()){        
         	config.save();     	
@@ -293,9 +298,9 @@ public class BattlegearConfig {
 	        }
         }
 
-		
+
 		for(int i = 0; i < 4; i++){
-			//GameRegistry.addRecipe(new KnightArmourRecipie(i));
+			GameRegistry.addRecipe(new KnightArmourRecipie(i));
 		}
 
         /*
@@ -323,4 +328,18 @@ public class BattlegearConfig {
 
 	}
 
+    public static void refreshConfig(){
+        try{
+            Arrays.sort(disabledRenderers);
+            file.get("Rendering", "Disabled Renderers", new String[0]).set(disabledRenderers);
+            file.get("Rendering", "Render arrow with bow uncharged", true).set(arrowForceRendered);
+            file.get("Rendering", "Force Back Sheath", false).set(forceBackSheath);
+            file.get("Rendering", "Render quiver on skeleton back", true).set(enableSkeletonQuiver);
+            file.get(file.CATEGORY_GENERAL, "Enable GUI Keys", false).set(enableGUIKeys);
+            file.get(file.CATEGORY_GENERAL, "Enable GUI Buttons", true).set(enableGuiButtons);
+            file.save();
+        }catch (Exception e){
+
+        }
+    }
 }

@@ -1,8 +1,5 @@
 package mods.battlegear2.client.gui.controls;
 
-import mods.battlegear2.api.heraldry.HeraldryData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.input.Mouse;
@@ -12,7 +9,6 @@ import java.util.List;
 
 public abstract class GUIScrollList {
 
-    private final Minecraft client;
     protected final int listWidth;
     protected final int top;
     protected final int bottom;
@@ -33,9 +29,8 @@ public abstract class GUIScrollList {
     private int field_27261_r;
 	public boolean drawList = true;
 
-    public GUIScrollList(Minecraft client, int width, int top, int bottom, int left, int entryHeight)
+    public GUIScrollList(int width, int top, int bottom, int left, int entryHeight)
     {
-        this.client = client;
         this.listWidth = width;
         this.top = top;
         this.bottom = bottom;
@@ -66,8 +61,7 @@ public abstract class GUIScrollList {
 
     protected abstract boolean isSelected(int index);
 
-    protected int getContentHeight()
-    {
+    protected int getContentHeight(){
         return this.getSize() * this.slotHeight + this.field_27261_r;
     }
 
@@ -77,13 +71,9 @@ public abstract class GUIScrollList {
 
     protected void func_27260_a(int p_27260_1_, int p_27260_2_, Tessellator p_27260_3_) {}
 
-    protected void func_27255_a(int p_27255_1_, int p_27255_2_) {}
-
     protected void func_27257_b(int p_27257_1_, int p_27257_2_) {}
 
-    public int func_27256_c(int p_27256_1_, int p_27256_2_)
-
-    {
+    public int func_27256_c(int p_27256_1_, int p_27256_2_){
         int var3 = this.left + 1;
         int var4 = this.left + this.listWidth - 7;
         int var5 = p_27256_2_ - this.top - this.field_27261_r + (int)this.scrollDistance - 4;
@@ -172,7 +162,6 @@ public abstract class GUIScrollList {
 	                    }
 	                    else if (mouseX >= boxLeft && mouseX <= boxRight && var10 < 0)
 	                    {
-	                        this.func_27255_a(mouseX - boxLeft, mouseY - this.top + (int)this.scrollDistance - 4);
 	                        var7 = false;
 	                    }
 	
@@ -254,9 +243,7 @@ public abstract class GUIScrollList {
 	        GL11.glDisable(GL11.GL_FOG);
 	        Tessellator var18 = Tessellator.instance;
 	
-	
-	
-	
+
 	        var10 = this.top + 4 - (int)this.scrollDistance;
 	
 	        if (this.field_27262_q)
@@ -299,7 +286,6 @@ public abstract class GUIScrollList {
 	        }
 	
 	        GL11.glDisable(GL11.GL_DEPTH_TEST);
-	        byte var20 = 4;
 	        GL11.glEnable(GL11.GL_BLEND);
 	        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	        GL11.glDisable(GL11.GL_ALPHA_TEST);

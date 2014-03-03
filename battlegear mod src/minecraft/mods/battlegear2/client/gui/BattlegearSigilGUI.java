@@ -43,7 +43,7 @@ public class BattlegearSigilGUI extends GuiContainer {
     private GUICrestElementList elementList;
     private int selectedIndex;
 
-    private HeraldryData currentData = HeraldryData.defaultData;
+    private HeraldryData currentData = HeraldryData.getDefault();
 
     private GuiButton addButton;
     private GuiButton removeButton;
@@ -58,6 +58,7 @@ public class BattlegearSigilGUI extends GuiContainer {
         super(new ContainerHeraldry(entityPlayer.inventory, !isRemote, entityPlayer));
     }
 
+    @Override
     public void initGui()
     {
         super.initGui();
@@ -232,9 +233,7 @@ public class BattlegearSigilGUI extends GuiContainer {
 		GL11.glColor4f(1, 1, 1, 1);
 		Minecraft.getMinecraft().renderEngine.bindTexture(HeraldryCrestItemRenderer.map_overlay);
 		
-		Tessellator tess = Tessellator.instance;
-		
-        
+
         drawTexturedModalRect((width-400)/2, 50, 128, 128, 0, 0, 1, 1);
 
         if(crestDirty){

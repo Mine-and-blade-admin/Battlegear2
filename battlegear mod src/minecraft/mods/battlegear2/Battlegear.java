@@ -26,7 +26,7 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
 
 import java.net.URL;
 
-@Mod(modid="battlegear2", useMetadata = true)
+@Mod(modid = "battlegear2", useMetadata = true, guiFactory = "mods.battlegear2.gui.BattlegearGuiFactory")
 public class Battlegear {
 
     @Mod.Instance("battlegear2")
@@ -40,7 +40,7 @@ public class Battlegear {
     public static ItemArmor.ArmorMaterial knightArmourMaterial;
 
     public static boolean battlegearEnabled = true;
-    public static boolean debug = false;
+    public static boolean debug = true;
 
 	public static org.apache.logging.log4j.Logger logger;
     public static BattlegearPacketHandeler packetHandler;
@@ -65,6 +65,9 @@ public class Battlegear {
             }
         }
         logger = event.getModLog();
+        proxy.registerKeyHandelers();
+        proxy.registerTickHandelers();
+        proxy.registerItemRenderers();
     }
 
     @Mod.EventHandler
@@ -88,9 +91,6 @@ public class Battlegear {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        proxy.registerKeyHandelers();
-        proxy.registerTickHandelers();
-        proxy.registerItemRenderers();
         if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
             proxy.tryUseTConstruct();
         }

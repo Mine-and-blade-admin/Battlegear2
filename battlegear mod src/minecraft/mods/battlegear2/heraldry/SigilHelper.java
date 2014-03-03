@@ -1,5 +1,6 @@
 package mods.battlegear2.heraldry;
 
+import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.HeraldryPattern;
 
 import java.awt.Color;
@@ -11,12 +12,8 @@ public class SigilHelper {
 	public static final int COLOUR_SIGIL_PRIMARY = 2;
 	public static final int COLOUR_SIGIL_SECONDARY = 3;
 	
-	private static final byte[] defaultSigil = packSigil(
-			HeraldryPattern.VERTICAL_BLOCK, (byte)3, (byte)0, new Color(0xFFFFFFFF), new Color(0xFFFFFFFF),
-			HeraldryIcon.Blank, HeraldryPositions.SINGLE, new Color(0xFF000000), new Color(0xFF000000));
-	
 	public static byte[] getDefault(){
-		return defaultSigil.clone();
+		return HeraldryData.getDefault().getByteArray();
 	}
 	
 	public static final int length = 8;
@@ -63,28 +60,6 @@ public class SigilHelper {
 	            (rgb & 0x000000f0) >> 4);
 	}
 	
-	
-	
-	public static byte[] packSigil(HeraldryPattern pattern, byte helm, byte banner, Color colour1, Color colour2,
-			HeraldryIcon sigil, HeraldryPositions sigilPos, Color sigilColour1, Color sigilColour2){
-		
-		byte[] code = new byte[length];
-		updatePattern(code, pattern);
-		updateHelm(code, helm);
-		updateBanner(code, banner);
-		updateColour(code, colour1.getRGB(), COLOUR_PRIMARY);
-		updateColour(code, colour2.getRGB(), COLOUR_SECONDARY);
-		
-		
-		updateColour(code, sigilColour1.getRGB(), COLOUR_SIGIL_PRIMARY);
-		updateColour(code, sigilColour2.getRGB(), COLOUR_SIGIL_SECONDARY);
-		
-		
-		
-		return code;
-	}
-	
-	
 	public static int extractBit(long code, int begin, int end){
 		return (int)((code << (63-end)) >>> (63+begin-end));
 	}
@@ -95,11 +70,6 @@ public class SigilHelper {
 				((extractBit(code, beginIndex+4, beginIndex+7)+1)*16 - 1),
 				((extractBit(code, beginIndex, beginIndex+3)+1)*16 - 1)
 				);
-	}
-	
-	
-	public static HeraldryPattern getPattern(byte[] code){
-		return HeraldryPattern.patterns.get(code[0] >> 4 & 0xF);
 	}
 	
 	//TODO: Still have to test this
@@ -308,21 +278,4 @@ public class SigilHelper {
 	public static int extractBitInt(int code, int begin, int end){
 		return (code << (31-end)) >>> (31+begin-end);
 	}
-	
-	public static byte[] translate(int code){
-		byte pattern = (byte) extractBitInt(code, 0, 3);
-		Color c1 = new Color(colourTranslationMap[extractBitInt(code, 4, 8)]);
-		Color c2 = new Color(colourTranslationMap[extractBitInt(code, 9, 13)]);
-		byte sigil = (byte) extractBitInt(code, 14, 18);
-		Color c3 = new Color(colourTranslationMap[extractBitInt(code, 19, 23)]);
-		Color c4 = new Color(colourTranslationMap[extractBitInt(code, 24, 28)]);
-		byte sigilPos = (byte) extractBitInt(code, 29, 31);
-		
-		return packSigil(HeraldryPattern.patterns.get(pattern), (byte)1, (byte)0,
-				c1, c2, HeraldryIcon.values()[sigil], HeraldryPositions.values()[sigilPos], c3, c4);
-	}
-	
-	
-	
-	
 }

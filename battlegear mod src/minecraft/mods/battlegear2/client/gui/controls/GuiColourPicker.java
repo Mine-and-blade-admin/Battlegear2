@@ -303,7 +303,6 @@ public class GuiColourPicker extends GuiButton {
         calculateBuffers();
     }
 
-
     private boolean isSwitchOn(int switchMask){
         return (type & switchMask) == switchMask;
     }
@@ -311,7 +310,6 @@ public class GuiColourPicker extends GuiButton {
     public void addListener(IControlListener listener){
     	listeners.add(listener);
     }
-
 
     public void drawTexturedModalRect(int x, int y, int width, int height, int tex_x, int tex_y, int tex_width, int tex_height)
     {

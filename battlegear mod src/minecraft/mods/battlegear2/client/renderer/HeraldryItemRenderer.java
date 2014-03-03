@@ -3,6 +3,7 @@ package mods.battlegear2.client.renderer;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.HeraldryTextureSmall;
+import mods.battlegear2.api.heraldry.RefreshableTexture;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -15,7 +16,6 @@ import net.minecraft.util.*;
 import org.lwjgl.opengl.GL11;
 
 public class HeraldryItemRenderer implements IItemRenderer{
-
 
     private RenderItem itemRenderer;
 
@@ -41,12 +41,12 @@ public class HeraldryItemRenderer implements IItemRenderer{
 
         switch (type){
             case INVENTORY:
-                doInventoryRendering(item, heraldryData, ((IHeraldryItem)item.getItem()));
+                doInventoryRendering(item, new HeraldryData(heraldryData), ((IHeraldryItem)item.getItem()));
                 break;
         }
     }
 
-    private void doInventoryRendering(ItemStack item, byte[] heraldryData, IHeraldryItem heraldryItem) {
+    private void doInventoryRendering(ItemStack item, HeraldryData heraldryData, IHeraldryItem heraldryItem) {
 
         IIcon icon =  heraldryItem.getBaseIcon(item);
 
@@ -56,11 +56,12 @@ public class HeraldryItemRenderer implements IItemRenderer{
 
             glColor3f(1, 1, 1);
             itemRenderer.renderIcon(0, 0, icon, 16, 16);
-
-            ResourceLocation crestLocation = new ResourceLocation("Small:"+HeraldryData.byteArrayToHex(heraldryData));
+            RefreshableTexture currentCrest = new RefreshableTexture(32, 32);
+            currentCrest.refreshWith(heraldryData, false);
+            ResourceLocation crestLocation = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("gui_crest", currentCrest);
             ITextureObject texture = Minecraft.getMinecraft().renderEngine.getTexture(crestLocation);
             if(texture == null){
-                texture = new HeraldryTextureSmall(new HeraldryData(heraldryData));
+                texture = new HeraldryTextureSmall(heraldryData);
                 Minecraft.getMinecraft().renderEngine.loadTexture(crestLocation, texture);
             }
             Minecraft.getMinecraft().renderEngine.bindTexture(crestLocation);
@@ -87,8 +88,6 @@ public class HeraldryItemRenderer implements IItemRenderer{
 
 
         itemRenderer.zLevel -=100;
-
-
 
     }
 

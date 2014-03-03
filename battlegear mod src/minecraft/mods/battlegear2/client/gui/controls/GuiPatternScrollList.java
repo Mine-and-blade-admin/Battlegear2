@@ -17,10 +17,10 @@ public class GuiPatternScrollList extends GUIScrollList{
 	
 	BattlegearSigilGUI parent;
 	public GuiPatternScrollList(BattlegearSigilGUI parent, int width, int top, int bottom, int left) {
-		super(Minecraft.getMinecraft(), width, top+20, bottom-20, left, 20);
+		super(width, top+20, bottom-20, left, 20);
 		this.parent = parent;
         dynamicTextures = new RefreshableTexture[
-                PatternStore.patterns.get(parent.getCurrentData().getPatternIndex()).length];
+                PatternStore.DEFAULT.patterns.get(parent.getCurrentData().getPatternIndex()).length];
 		for(int i = 0; i < dynamicTextures.length; i++){
             dynamicTextures[i] = new RefreshableTexture(32,32);
         }
@@ -33,7 +33,7 @@ public class GuiPatternScrollList extends GUIScrollList{
 
 	@Override
 	protected int getSize() {
-		return PatternStore.patterns.get(parent.getCurrentData().getPatternIndex()).length;
+		return PatternStore.DEFAULT.patterns.get(parent.getCurrentData().getPatternIndex()).length;
 	}
 
 	@Override
@@ -65,19 +65,19 @@ public class GuiPatternScrollList extends GUIScrollList{
 			dirtyTextures = false;
 		}
 		
-		 GL11.glColor3f(1F, 1F, 1F);
-	        GL11.glEnable(GL11.GL_BLEND);
-	        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GL11.glColor3f(1F, 1F, 1F);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glDisable(GL11.GL_ALPHA_TEST);
 
 
-	        dynamicTextures[var1].updateDynamicTexture();
-	        ResourceLocation rl = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("gui_dynamic_pattern_"+var1, dynamicTextures[var1]);
-	        Minecraft.getMinecraft().getTextureManager().bindTexture(rl);
-	        drawTexturedModalRect(var5, var2-listWidth/2-8, var3, 16, 16, 0);
+        dynamicTextures[var1].updateDynamicTexture();
+        ResourceLocation rl = Minecraft.getMinecraft().getTextureManager().getDynamicTextureLocation("gui_dynamic_pattern_"+var1, dynamicTextures[var1]);
+        Minecraft.getMinecraft().getTextureManager().bindTexture(rl);
+        drawTexturedModalRect(var5, var2-listWidth/2-8, var3, 16, 16, 0);
 
-	        GL11.glEnable(GL11.GL_ALPHA_TEST);
-	        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_ALPHA_TEST);
+        GL11.glDisable(GL11.GL_BLEND);
 		
 	}
 

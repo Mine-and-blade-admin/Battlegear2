@@ -4,5 +4,5 @@ public interface IHeraldyArmour extends IHeraldryItem{
 	
 	public String getBaseArmourPath(int armourSlot);
 
-    public String getPatternArmourPath(HeraldryPattern pattern, int armourSlot);
+    public String getPatternArmourPath(PatternStore pattern, int index, int armourSlot);
 }

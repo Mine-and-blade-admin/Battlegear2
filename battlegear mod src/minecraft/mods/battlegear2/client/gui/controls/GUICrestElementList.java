@@ -4,21 +4,16 @@ import mods.battlegear2.api.heraldry.Crest;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.RefreshableTexture;
 import mods.battlegear2.client.gui.BattlegearSigilGUI;
-import mods.battlegear2.api.heraldry.PatternStore;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GUICrestElementList extends GUIScrollList {
-
 
     private BattlegearSigilGUI parent;
     private List<Crest> entries;
@@ -28,7 +23,7 @@ public class GUICrestElementList extends GUIScrollList {
 
     public GUICrestElementList(BattlegearSigilGUI parent, int listWidth, int x)
     {
-        super(Minecraft.getMinecraft(), listWidth, 30 + 25, parent.height - 30 - 25, x, 25);
+        super(listWidth, 30 + 25, parent.height - 30 - 25, x, 25);
 
         this.parent=parent;
         this.entries = new ArrayList<Crest>();

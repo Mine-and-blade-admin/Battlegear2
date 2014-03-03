@@ -51,29 +51,34 @@ public class ModUpdateDetectorTickHandeler {
                     Minecraft.getMinecraft().currentScreen instanceof GuiIngameMenu ||
                     Minecraft.getMinecraft().currentScreen instanceof GuiModList){
                 lastScreen = Minecraft.getMinecraft().currentScreen;
-                int x = lastScreen.width / 2 + 105;
-                int y = lastScreen.height / 4 + 24 -16;
-                if(lastScreen instanceof GuiModList){
-                    x = lastScreen.width - 110;
-                    y = 10;
-                }
-
                 List buttonList = getButtonList(lastScreen);
-                boolean hasMumButton = false;
-                for(Object o : buttonList){
-                    if(o instanceof GuiModUpdateButton){
-                        hasMumButton = true;
-                        break;
+                if(buttonList!=null){
+                    boolean hasMumButton = false;
+                    for(Object o : buttonList){
+                        if(o instanceof GuiModUpdateButton){
+                            hasMumButton = true;
+                            break;
+                        }
                     }
-                }
-                if(!hasMumButton){
-                    buttonList.add(new GuiModUpdateButton(99, x, y, lastScreen));
+                    if(!hasMumButton){
+                        int x = lastScreen.width / 2 + 105;
+                        int y = lastScreen.height / 4 + 24 -16;
+                        if(lastScreen instanceof GuiModList){
+                            x = lastScreen.width - 110;
+                            y = 10;
+                        }
+                        buttonList.add(new GuiModUpdateButton(99, x, y, lastScreen));
+                    }
                 }
             }
         }
     }
 
     private List getButtonList(GuiScreen currentScreen) {
-        return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, currentScreen, "buttonList", "field_73887_h");
+        try{
+            return ObfuscationReflectionHelper.getPrivateValue(GuiScreen.class, currentScreen, "buttonList", "field_146292_n");
+        }catch (Exception e){
+            return null;
+        }
     }
 }

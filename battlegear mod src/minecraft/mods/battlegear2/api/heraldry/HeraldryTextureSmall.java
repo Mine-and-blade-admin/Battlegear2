@@ -16,7 +16,7 @@ public class HeraldryTextureSmall extends AbstractTexture {
 
     @Override
     public void loadTexture(IResourceManager resourcemanager) {
-        int [][][][] patt = PatternStore.patterns.get(heraldryData.getPatternIndex());
+        int [][][][] patt = PatternStore.DEFAULT.patterns.get(heraldryData.getPatternIndex());
         BufferedImage image = new BufferedImage(patt[heraldryData.getPattern()][0].length, patt[heraldryData.getPattern()][0][0].length,BufferedImage.TYPE_4BYTE_ABGR);
 
         for(int x = 0; x < image.getWidth(); x++){

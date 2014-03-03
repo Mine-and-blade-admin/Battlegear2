@@ -6,12 +6,14 @@ import java.util.List;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.RenderItemBarEvent;
+import mods.battlegear2.api.heraldry.HeraldryPattern;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
 import mods.battlegear2.client.gui.controls.GuiPlaceableButton;
 import mods.battlegear2.client.gui.controls.GuiSigilButton;
 import mods.battlegear2.api.heraldry.PatternStore;
+import mods.battlegear2.client.heraldry.CrestImages;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemQuiver;
@@ -191,6 +193,7 @@ public class BattlegearClientEvents {
 	@SubscribeEvent
 	public void preStitch(TextureStitchEvent.Pre event) {
 		if (event.map.getTextureType() == 1) {
+            System.out.println("texture loading");
 			ClientProxy.backgroundIcon = new IIcon[2];
 			ClientProxy.backgroundIcon[0] = event.map
 					.registerIcon("battlegear2:slots/mainhand");
@@ -205,8 +208,8 @@ public class BattlegearClientEvents {
 			ClientProxy.bowIcons[2] = event.map
 					.registerIcon("battlegear2:bow_pulling_2");
 
-            storageIndex = PatternStore.buildPatternAndStore(patterns);
-            // CrestImages.initialise(Minecraft.getMinecraft().func_110442_L());
+            storageIndex = PatternStore.DEFAULT.buildPatternAndStore(patterns);
+            CrestImages.initialise(Minecraft.getMinecraft().getResourceManager());
             /*for (HeraldryPattern pattern : HeraldryPattern.patterns) {
                 pattern.registerIcon(event.map);
             }*/

@@ -14,16 +14,21 @@ import java.util.List;
 public class PatternStore {
 
     public static final IResourceManager rm = Minecraft.getMinecraft().getResourceManager();
-    public static final int IMAGES_X = 8;
-    public static final int IMAGES_Y = 4;
-    public static List<int[][][][]> patterns = new ArrayList<int[][][][]>();
+    public static final PatternStore DEFAULT = new PatternStore(8,4);
+    private final int IMAGES_X;
+    private final int IMAGES_Y;
+    public List<int[][][][]> patterns = new ArrayList<int[][][][]>();
 
+    public PatternStore(int xSections,int ySections){
+        this.IMAGES_X = xSections;
+        this.IMAGES_Y = ySections;
+    }
     /**
      * Deconstruct an image and store its data for later use
      * @param image
      * @return the index used to get the data back
      */
-    public static int buildPatternAndStore(ResourceLocation image){
+    public int buildPatternAndStore(ResourceLocation image){
         try{
             if(patterns.add(buildPatternFrom(image))){
                 return patterns.size()-1;
@@ -39,7 +44,7 @@ public class PatternStore {
      * See {@link #buildPatternFrom(java.awt.image.BufferedImage)}
      * @throws IOException if the image can't be read
      */
-    public static int[][][][] buildPatternFrom(ResourceLocation image) throws IOException {
+    public int[][][][] buildPatternFrom(ResourceLocation image) throws IOException {
         return buildPatternFrom(rm.getResource(image).getInputStream());
     }
 
@@ -47,7 +52,7 @@ public class PatternStore {
      * See {@link #buildPatternFrom(java.awt.image.BufferedImage)}
      * @throws IOException if the image can't be read
      */
-    public static int[][][][] buildPatternFrom(InputStream resourceStream) throws IOException {
+    public int[][][][] buildPatternFrom(InputStream resourceStream) throws IOException {
         return buildPatternFrom(ImageIO.read(resourceStream));
     }
 
@@ -56,7 +61,7 @@ public class PatternStore {
      * @param image
      * @return the subimages rgb values into arrays
      */
-    public static int[][][][] buildPatternFrom(BufferedImage image){
+    public int[][][][] buildPatternFrom(BufferedImage image){
         int[][][][] rgbs = new int[IMAGES_X * IMAGES_Y][3][(image.getWidth() / IMAGES_X)][(image.getHeight() / IMAGES_Y)];
 
         int imageRes = image.getWidth() / IMAGES_X;
@@ -84,7 +89,7 @@ public class PatternStore {
         return rgbs;
     }
 
-    public static int getBlendedSmallPixel(int index, byte imageNo, int x, int y, int col1, int col2, int col3){
+    public int getBlendedSmallPixel(int index, byte imageNo, int x, int y, int col1, int col2, int col3){
         return getBlendedSmallPixel(patterns.get(index)[imageNo][0][x][y], patterns.get(index)[imageNo][1][x][y], patterns.get(index)[imageNo][2][x][y], col1, col2, col3);
     }
 

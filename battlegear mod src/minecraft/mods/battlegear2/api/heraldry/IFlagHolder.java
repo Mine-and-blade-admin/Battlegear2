@@ -17,8 +17,9 @@ public interface IFlagHolder {
     /**
      * Add given flag to the TileEntity
      * @param flag The flag to add
+     * return true if flag could be added
      */
-    public void addFlag(ItemStack flag);
+    public boolean addFlag(ItemStack flag);
 
     /**
      *

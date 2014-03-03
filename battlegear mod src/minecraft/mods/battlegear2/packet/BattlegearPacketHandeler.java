@@ -61,4 +61,8 @@ public class BattlegearPacketHandeler {
     public void sendPacketAround(Entity entity, double range, FMLProxyPacket packet){
         channels.get(packet.channel()).sendToAllAround(packet, new NetworkRegistry.TargetPoint(entity.dimension, entity.posX, entity.posY, entity.posZ, range));
     }
+
+    public void sendPacketToAll(FMLProxyPacket packet){
+        channels.get(packet.channel()).sendToAll(packet);
+    }
 }
