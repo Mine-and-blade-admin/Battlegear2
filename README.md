@@ -1,10 +1,10 @@
 Mine and Blade : Battlegear - 2
 ===============================
 	
-Minecraft version: 1.6.4  
-Forge Version: 1.6.4-9.11.1.964  
+Minecraft version: 1.7.2  
+Forge Version: 1.7.2-10.12.0.1034  
 
-Source is updated for Minecraft 1.6.4
+Source is updated for Minecraft 1.7.2
 
 This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft.
 The mod will have a heavy dependency on the use of ASM (coremod) to edit the bytecode of the minecraft base classess. 
@@ -38,28 +38,20 @@ What does and doesn't work
 
 Installation
 -----------
+**To make a fork**
 The files contained within the repository must be placed inside a minecraft forge-universal src installation.
 Due to potential legal issues of re-distributing Mojang .java files, all base class edits are distributed as .java.patch files.
-
-The full battlegear source can be obtained by running
-
-``./battlegear-install.sh``
-on a unix enviroment or
-``./battlegear-install.cmd``
-on a windows environment
-
-The patch source can be re-obtained by issuing
-
-`` ./battlegear-getsrc.sh``
-on a unix enviroment or
-``./battlegear-getsrc.cmd``
-on a windows environment
-
-Remember to set the execution bit to true on the unix environment
-
-You can also set a dev environment by Gradle, with IntelliJIdea:
+You can set a dev environment by Gradle, with IntelliJIdea:
 `` gradlew setupDevWorkspace idea genIntellijRuns``
+or Eclipse:
+`` gradlew setupDevWorkspace eclipse``
 then import the build.gradle file.
+
+**To make an addon**
+The files in /battlegear api folder can be used as external libraries.
+They are independent.
+To load them while making the addon, simply put them in the /mods folder in your mod run installation.
+
 
 Compiling the Mod
 -----------------
@@ -82,7 +74,6 @@ We currently have translation for the following languages (please note that many
 * Chinese 
 
 Please feel free to add to this list or update any of the current language files
-
 
 
 

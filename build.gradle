@@ -45,7 +45,7 @@ sourceSets {
             srcDir 'battlegear mod src/minecraft/' include('assets/**','*.cfg','*.png','*.mcmeta','*.info')
         }
 	    java {
-	        srcDir 'battlegear mod src/minecraft/'
+	        srcDir 'battlegear mod src/minecraft/' exclude('assets/**','net/minecraft/**')
 	    }
     }
 }
