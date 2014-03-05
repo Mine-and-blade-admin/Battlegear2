@@ -16,6 +16,7 @@ import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
 import mods.battlegear2.client.renderer.*;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -114,12 +115,11 @@ public class ClientProxy extends CommonProxy {
         if(BattlegearConfig.banner!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "flagpole")  < 0)
             MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BattlegearConfig.banner), new FlagPoleItemRenderer());
         if(Battlegear.debug){
-            //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
+            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
             MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem, new HeraldryCrestItemRenderer());
             Item it = null;
             for(Iterator itr = GameData.itemRegistry.iterator(); itr.hasNext(); it = (Item) itr.next()){
-            	if(it instanceof IHeraldryItem &&
-            			((IHeraldryItem)it).useDefaultRenderer()){
+            	if(it instanceof IHeraldryItem && ((IHeraldryItem)it).useDefaultRenderer()){
             		MinecraftForgeClient.registerItemRenderer(it, new HeraldryItemRenderer());
             	}
             }

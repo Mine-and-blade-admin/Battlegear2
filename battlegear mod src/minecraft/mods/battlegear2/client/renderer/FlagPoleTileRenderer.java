@@ -30,7 +30,6 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
     @Override
     public void renderTileEntityAt(TileEntity tileentity, double d0, double d1, double d2, float f) {
 
-
         if(tileentity instanceof TileEntityFlagPole){
             Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
             int type = tileentity.getBlockMetadata();

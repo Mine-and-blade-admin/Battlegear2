@@ -1,5 +1,6 @@
 package mods.battlegear2.utils;
 
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.ItemBlockFlagPole;
@@ -9,13 +10,11 @@ import mods.battlegear2.items.*;
 import mods.battlegear2.recipies.DyeRecipie;
 import mods.battlegear2.recipies.QuiverRecipie2;
 import mods.battlegear2.recipies.ShieldRemoveArrowRecipie;
-import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -34,13 +33,11 @@ public class BattlegearConfig {
     public static final String[] shieldTypes = new String[] {"wood", "hide", "iron", "diamond", "gold"};
 	public static final String[] armourTypes = new String[] {"helmet", "plate", "legs", "boots"};
 	public static final String[] enchantsName = {"BashWeight", "BashPower", "BashDamage", "ShieldUsage", "ShieldRecovery", "BowLoot", "BowCharge"};
-	public static int[] itemOffests = new int[]{0, 1, 2, 5, 10, 15, 20, 25, 30, 35};
 	public static int[] enchantsId = {125, 126, 127, 128, 129, 130, 131};
 	public static ItemWeapon[] dagger=new ItemWeapon[toolTypes.length],warAxe=new ItemWeapon[toolTypes.length],mace=new ItemWeapon[toolTypes.length],spear=new ItemWeapon[toolTypes.length];
     public static ItemShield[] shield=new ItemShield[shieldTypes.length];
 	public static Item chain,quiver,heradricItem,MbArrows;
 	public static BlockFlagPole banner;
-	public static ItemBlock bannerItem;
 	public static ItemArmor[] knightArmor=new ItemArmor[armourTypes.length];
 
 	public static String[] disabledItems = new String[0];
@@ -71,8 +68,10 @@ public class BattlegearConfig {
         Arrays.sort(disabledItems);
 
         heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName("battlegear2:heraldric").setTextureName("battlegear2:bg-icon");
-        banner = (BlockFlagPole)new BlockFlagPole().setCreativeTab(customTab).setBlockName("battlegear2:flagpole");
-        GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, "battlegear2:flagpole");
+        if(Battlegear.debug){
+            banner = (BlockFlagPole)new BlockFlagPole().setCreativeTab(customTab).setBlockName("battlegear2:flagpole");
+            GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, "battlegear2:flagpole");
+        }
 
         if(Arrays.binarySearch(disabledItems, itemNames[1]) < 0){
         	chain = new Item();
