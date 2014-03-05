@@ -1,5 +1,6 @@
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.4.9 ==
 * Update to 1.7.2
+* Added Config screen in mod list, with client-side options
 * Added official markers for all parts of the API
 * Progress toward the heraldry system
 
