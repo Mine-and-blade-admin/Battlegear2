@@ -1,3 +1,8 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.4.9 ==
+* Update to 1.7.2
+* Added official markers for all parts of the API
+* Progress toward the heraldry system
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.4.8 ==
 * Added option for quiver rendering on skeletons
 * Added descriptions for arrows
