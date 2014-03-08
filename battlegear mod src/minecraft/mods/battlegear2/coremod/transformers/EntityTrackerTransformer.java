@@ -48,7 +48,7 @@ public class EntityTrackerTransformer extends TransformerMethodProcess {
                 newList.add(new InsnNode(DUP));
                 newList.add(new VarInsnNode(ALOAD, 10));
                 newList.add(new MethodInsnNode(INVOKESPECIAL, syncPacket, "<init>", "(L"+entityPlayerClassName+";)V"));
-                newList.add(new MethodInsnNode(INVOKEVIRTUAL, syncPacket, "generatePacket", "()L"+packetClassName+";"));
+                newList.add(new MethodInsnNode(INVOKEVIRTUAL, syncPacket, "generatePacket", "()Lcpw/mods/fml/common/network/internal/FMLProxyPacket;"));
                 newList.add(new MethodInsnNode(INVOKEVIRTUAL, netServerHandlerClasName, sendPacketToPlayerMethodName, sendPacketToPlayerMethodDesc));
                 done = true;
             }else{
