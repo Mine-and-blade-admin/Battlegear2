@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import org.lwjgl.opengl.GL11;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,10 +41,7 @@ public class BattlegearConfigGUI extends GuiScreen{
         this.buttonList.add(new GuiToggleButton(5, this.width / 2 + 20, this.height / 2 - 70, I18n.format("render.arrow.bow")+":"+BattlegearConfig.arrowForceRendered, this.fontRendererObj));
         this.buttonList.add(new GuiToggleButton(6, this.width / 2 - 180, this.height / 2 - 40, I18n.format("render.back.sheathed")+":"+BattlegearConfig.forceBackSheath, this.fontRendererObj));
         this.possibleValues.registerScrollButtons(this.buttonList, 7, 8);
-        /*this.buttonList.add(new GuiOptionSlider(7, this.width / 2 - 75, this.height / 2 + 40, I18n.format("hotbar.shield.posx")));
-        this.buttonList.add(new GuiOptionSlider(8, this.width / 2 + 75, this.height / 2 + 40, I18n.format("hotbar.shield.posy")));
-        this.buttonList.add(new GuiOptionSlider(9, this.width / 2 - 75, this.height / 2 + 80, I18n.format("hotbar.quiver.posx")));
-        this.buttonList.add(new GuiOptionSlider(10,this.width / 2 + 75, this.height / 2 + 80, I18n.format("hotbar.quiver.posx")));*/
+        this.buttonList.add(new GuiButton(9, this.width / 2 - 180, this.height / 2 + 60, I18n.format("gui.open.fake")));
     }
 
     @Override
@@ -63,6 +59,8 @@ public class BattlegearConfigGUI extends GuiScreen{
                 BattlegearConfig.arrowForceRendered = !BattlegearConfig.arrowForceRendered;
             }else if(button.id == 6){
                 BattlegearConfig.forceBackSheath = !BattlegearConfig.forceBackSheath;
+            }else if(button.id == 9){
+                FMLClientHandler.instance().showGuiScreen(new BattlegearFakeGUI(parent));
             }
             if(button instanceof GuiToggleButton){
                 ((GuiToggleButton) button).toggleDisplayString();
@@ -88,19 +86,10 @@ public class BattlegearConfigGUI extends GuiScreen{
     @Override
     public void onGuiClosed(){
         super.onGuiClosed();
-        List<String> dat = this.possibleValues.getActivated();
-        List<String> temp = new ArrayList<String>();
-        for(String text:dat){
-            if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, text)<0){
-                temp.add(text);
-            }
-        }
-        if(!temp.isEmpty()){
-            String[] disabled = new String[BattlegearConfig.disabledRenderers.length+temp.size()];
-            System.arraycopy(BattlegearConfig.disabledRenderers, 0, disabled, 0, BattlegearConfig.disabledRenderers.length);
-            System.arraycopy(temp.toArray(), 0, disabled, disabled.length-temp.size(), temp.size());
-            BattlegearConfig.disabledRenderers = disabled;
-        }
+        List<String> temp = this.possibleValues.getActivated();
+        String[] disabled = new String[temp.size()];
+        System.arraycopy(temp.toArray(), 0, disabled, disabled.length, temp.size());
+        BattlegearConfig.disabledRenderers = disabled;
         BattlegearConfig.refreshConfig();
     }
 }

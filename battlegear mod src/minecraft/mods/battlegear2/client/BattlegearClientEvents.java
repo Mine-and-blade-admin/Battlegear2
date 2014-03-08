@@ -6,7 +6,6 @@ import java.util.List;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.RenderItemBarEvent;
-import mods.battlegear2.api.heraldry.HeraldryPattern;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
@@ -49,12 +48,26 @@ public class BattlegearClientEvents {
 	}
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void preRenderBars(RenderItemBarEvent.PreRender event){
-        if(event instanceof RenderItemBarEvent.PreDual){
-            event.xOffset = BattlegearConfig.quiverBarOffset;
+    public void postRenderBar(RenderItemBarEvent.BattleSlots event) {
+        if(!event.isMainHand){
+            event.xOffset += BattlegearConfig.battleBarOffset[0];
+            event.yOffset += BattlegearConfig.battleBarOffset[1];
         }else{
-            event.yOffset = - BattlegearConfig.shieldBarOffset;
+            event.xOffset += BattlegearConfig.battleBarOffset[2];
+            event.yOffset += BattlegearConfig.battleBarOffset[3];
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void postRenderQuiver(RenderItemBarEvent.QuiverSlots event) {
+        event.xOffset += BattlegearConfig.quiverBarOffset[0];
+        event.yOffset += BattlegearConfig.quiverBarOffset[1];
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void postRenderShield(RenderItemBarEvent.ShieldBar event) {
+        event.xOffset += BattlegearConfig.shieldBarOffset[0];
+        event.yOffset += BattlegearConfig.shieldBarOffset[1];
     }
 
 	@SubscribeEvent

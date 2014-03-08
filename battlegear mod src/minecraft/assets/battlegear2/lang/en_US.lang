@@ -8,6 +8,12 @@ use.gui.keys=Enable keys for inventory
 render.quiver.skeleton=Render quiver on skeletons
 render.arrow.bow=Render selected arrow on bow
 render.back.sheathed=Force sheathed rendering on player's back
+gui.open.fake=Open Screen Customizer
+gui.fake.help1=Move screen components by click and drag
+gui.fake.help2=Quiver Slots
+gui.fake.help3=Shield Stamina Bar
+gui.fake.help4=Offhand Slots
+gui.fake.help5=Mainhand Slots
 
 item.battlegear2:heraldric.name=Heraldic Icon
 item.battlegear2:chain.name=Chain
