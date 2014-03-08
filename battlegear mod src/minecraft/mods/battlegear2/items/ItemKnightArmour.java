@@ -93,14 +93,14 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
     @Override
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List){
         ItemStack armor = new ItemStack(par1);
-        ((ItemKnightArmour)armor.getItem()).setHeraldry(armor,SigilHelper.getDefault());
+        //((ItemKnightArmour)armor.getItem()).setHeraldry(armor,SigilHelper.getDefault());
         par3List.add(armor);
     }
 
 	@Override
 	public boolean hasHeraldry(ItemStack stack) {
 		if(stack.hasTagCompound()){
-            return stack.getTagCompound().hasKey("hc2");
+            return stack.getTagCompound().hasKey(heraldryTag);
 		}
 		return false;
 	}

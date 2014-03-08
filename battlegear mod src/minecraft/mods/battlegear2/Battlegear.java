@@ -35,7 +35,7 @@ public class Battlegear {
     @SidedProxy(modId="battlegear2", clientSide = "mods.battlegear2.client.ClientProxy", serverSide = "mods.battlegear2.CommonProxy")
     public static CommonProxy proxy;
 
-    public static final String imageFolder = "assets/battlegear2/textures/";
+    public static final String imageFolder = "battlegear2:textures/";
     public static final String CUSTOM_DAMAGE_SOURCE = "battlegearExtra";
     public static ItemArmor.ArmorMaterial knightArmourMaterial;
 
