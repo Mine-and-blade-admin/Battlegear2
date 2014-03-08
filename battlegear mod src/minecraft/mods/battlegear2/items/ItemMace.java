@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.api.weapons.IPotionEffect;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,8 +33,8 @@ public class ItemMace extends OneHandedWeapon implements IPotionEffect{
         effects.put(new PotionEffect(9,3*20,100), stunChance);
         effects.put(new PotionEffect(15,3*20,100), stunChance);
         effects.put(new PotionEffect(18,3*20,100), stunChance);
-        this.setMaxDamage(material.getMaxUses()*2);
-
+        this.setMaxDamage(material.getMaxUses() * 2);
+        GameRegistry.registerItem(this, this.name);
 	}
 
     public Map<PotionEffect, Float> getEffectsOnHit(EntityLivingBase entityHit, EntityLivingBase entityHitting){

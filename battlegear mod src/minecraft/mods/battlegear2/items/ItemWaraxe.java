@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.api.weapons.IPenetrateWeapon;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
@@ -21,6 +22,7 @@ public class ItemWaraxe extends OneHandedWeapon implements IPenetrateWeapon{ // 
 		//set the base damage to that of lower than usual (balance)
 		this.baseDamage -= 1 + ignoreDamageAmount;
 		this.setMaxDamage(material.getMaxUses()*2);
+        GameRegistry.registerItem(this, this.name);
     }
 	
 	@Override

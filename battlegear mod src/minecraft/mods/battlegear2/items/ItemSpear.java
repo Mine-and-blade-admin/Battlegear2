@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
@@ -23,6 +24,7 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 		super(material,name);
 		//set the base damage to that of lower than usual (balance)
 		this.baseDamage -= 2;
+        GameRegistry.registerItem(this, this.name);
 	}
 	
 	@Override

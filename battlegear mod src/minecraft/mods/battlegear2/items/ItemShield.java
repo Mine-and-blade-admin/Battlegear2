@@ -53,8 +53,6 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
             pitch[i] = (float)(Math.random()*50 - 25);
             yaw[i] = (float)(Math.random()*50 - 25);
         }
-
-
     }
 
     public ItemShield(ShieldType enumShield) {
