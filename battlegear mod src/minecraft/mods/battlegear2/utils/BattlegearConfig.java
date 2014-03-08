@@ -39,13 +39,13 @@ public class BattlegearConfig {
 	public static Item chain,quiver,heradricItem,MbArrows;
 	public static BlockFlagPole banner;
 	public static ItemArmor[] knightArmor=new ItemArmor[armourTypes.length];
-
+    private static String[] comments = new String[4];
 	public static String[] disabledItems = new String[0];
     public static String[] disabledRecipies = new String[0];
     public static String[] disabledRenderers = new String[0];
 
     public static double[] skeletonArrowSpawnRate = new double[ItemMBArrow.names.length];
-	public static int quiverBarOffset = 0, shieldBarOffset = 0;
+	public static int[] quiverBarOffset = new int[2], shieldBarOffset = new int[2], battleBarOffset = new int[4];
 	
 	public static void getConfig(Configuration config) {
         file = config;
@@ -56,7 +56,7 @@ public class BattlegearConfig {
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
         sb.append("The valid values are: \n");
         int count = 0;
-        for(int i = 1; i < itemNames.length; i++){
+        for(int i = 0; i < itemNames.length; i++){
             sb.append(itemNames[i]);
             sb.append(", ");
             count++;
@@ -64,10 +64,13 @@ public class BattlegearConfig {
                 sb.append("\n");
             }
         }
-        disabledItems = config.get(config.CATEGORY_GENERAL, "Disabled Items", new String[0], sb.toString()).getStringList(); 
+        comments[0] = sb.toString();
+        disabledItems = config.get(config.CATEGORY_GENERAL, "Disabled Items", new String[0], comments[0]).getStringList();
         Arrays.sort(disabledItems);
 
-        heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName("battlegear2:heraldric").setTextureName("battlegear2:bg-icon");
+        if(Arrays.binarySearch(disabledItems, itemNames[0]) < 0){
+            heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName("battlegear2:heraldric").setTextureName("battlegear2:bg-icon");
+        }
         if(Battlegear.debug){
             banner = (BlockFlagPole)new BlockFlagPole().setCreativeTab(customTab).setBlockName("battlegear2:flagpole");
             GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, "battlegear2:flagpole");
@@ -135,7 +138,8 @@ public class BattlegearConfig {
         if(last_comma > 0){
             sb.deleteCharAt(last_comma);
         }
-        disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], sb.toString()).getStringList();
+        comments[1] = sb.toString();
+        disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], comments[1]).getStringList();
         Arrays.sort(disabledRecipies);
 
         category = "Rendering";
@@ -144,10 +148,17 @@ public class BattlegearConfig {
         sb.append("This will disable the special rendering for the provided item.\n");
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
         sb.append("The valid values are: spear, shield, bow, quiver");
-        disabledRenderers = config.get(category, "Disabled Renderers", new String[0], sb.toString()).getStringList(); 
+        comments[2] = sb.toString();
+        disabledRenderers = config.get(category, "Disabled Renderers", new String[0], comments[2]).getStringList();
         Arrays.sort(disabledRenderers);
-        quiverBarOffset = config.get(category, "Quiver hotbar relative horizontal position", 0, "Change to move this bar in your gui").getInt();
-        shieldBarOffset = config.get(category, "Shield bar relative vertical position", 0, "Change to move this bar in your gui").getInt();
+        comments[3] = "Change to move this bar in your gui";
+        String[] pos = {"horizontal", "vertical"};
+        for(int i = 0; i<2; i++){
+            quiverBarOffset[i] = config.get(category, "Quiver hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
+            shieldBarOffset[i] = config.get(category, "Shield bar relative "+pos[i]+" position", 0, comments[3]).getInt();
+            battleBarOffset[i] = config.get(category, "Offhand hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
+            battleBarOffset[i+2] = config.get(category, "Mainhand hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
+        }
         arrowForceRendered = config.get(category, "Render arrow with bow uncharged", true).getBoolean(true);
         forceBackSheath=config.get(category, "Force Back Sheath", false).getBoolean(false);
         enableSkeletonQuiver=config.get(category, "Render quiver on skeleton back", true).getBoolean(true);
@@ -330,7 +341,7 @@ public class BattlegearConfig {
     public static void refreshConfig(){
         try{
             Arrays.sort(disabledRenderers);
-            file.get("Rendering", "Disabled Renderers", new String[0]).set(disabledRenderers);
+            file.get("Rendering", "Disabled Renderers", new String[0], comments[2]).set(disabledRenderers);
             file.get("Rendering", "Render arrow with bow uncharged", true).set(arrowForceRendered);
             file.get("Rendering", "Force Back Sheath", false).set(forceBackSheath);
             file.get("Rendering", "Render quiver on skeleton back", true).set(enableSkeletonQuiver);
@@ -338,7 +349,22 @@ public class BattlegearConfig {
             file.get(file.CATEGORY_GENERAL, "Enable GUI Buttons", true).set(enableGuiButtons);
             file.save();
         }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 
+    public static void refreshGuiValues(){
+        try{
+            String[] pos = {"horizontal", "vertical"};
+            for(int i = 0; i<2; i++){
+                file.get("Rendering", "Quiver hotbar relative "+pos[i]+" position", 0, comments[3]).set(quiverBarOffset[i]);
+                file.get("Rendering", "Shield bar relative "+pos[i]+" position", 0, comments[3]).set(shieldBarOffset[i]);
+                file.get("Rendering", "Offhand hotbar relative "+pos[i]+" position", 0, comments[3]).set(battleBarOffset[i]);
+                file.get("Rendering", "Mainhand hotbar relative "+pos[i]+" position", 0, comments[3]).set(battleBarOffset[i+2]);
+            }
+            file.save();
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 }

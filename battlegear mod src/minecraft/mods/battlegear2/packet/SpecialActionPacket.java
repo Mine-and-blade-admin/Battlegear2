@@ -33,8 +33,6 @@ public class SpecialActionPacket extends AbstractMBPacket{
             }
 
             ItemStack mainhand = this.player.getCurrentEquippedItem();
-            ItemStack offhand = ((InventoryPlayerBattle)this.player.inventory).getCurrentOffhandWeapon();
-
             ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, player);
 
             if(quiver != null){
@@ -43,6 +41,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
                                 ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver));
             } else if(entityHit != null && entityHit instanceof EntityLivingBase){
 
+                ItemStack offhand = ((InventoryPlayerBattle)this.player.inventory).getCurrentOffhandWeapon();
                 if(offhand != null && offhand.getItem() instanceof IShield){
                     if(entityHit.canBePushed()){
                         double d0 = entityHit.posX - this.player.posX;

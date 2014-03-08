@@ -12,7 +12,6 @@ public class GuiSliderAlt extends GuiButton
     /** Is this slider control being dragged. */
     public boolean dragging;
 
-
     private int min;
     private int max;
     private String label;
@@ -39,19 +38,8 @@ public class GuiSliderAlt extends GuiButton
         {
             if (this.dragging)
             {
-                this.sliderValue = (float)(par2 - (this.xPosition + 4)) / (float)(this.width - 8);
+                slideChange(par2);
 
-                if (this.sliderValue < 0.0F)
-                {
-                    this.sliderValue = 0.0F;
-                }
-
-                if (this.sliderValue > 1.0F)
-                {
-                    this.sliderValue = 1.0F;
-                }
-
-                this.displayString = label +": " + ((int)((max - min) * sliderValue) + min);
             }
 
             GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -60,24 +48,28 @@ public class GuiSliderAlt extends GuiButton
         }
     }
 
+    public void slideChange(int varX){
+        this.sliderValue = (float)(varX - (this.xPosition + 4)) / (float)(this.width - 8);
+
+        if (this.sliderValue < 0.0F)
+        {
+            this.sliderValue = 0.0F;
+        }
+
+        if (this.sliderValue > 1.0F)
+        {
+            this.sliderValue = 1.0F;
+        }
+
+        this.displayString = label +": " + ((int)((max - min) * sliderValue) + min);
+    }
+
     @Override
     public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3)
     {
         if (super.mousePressed(par1Minecraft, par2, par3))
         {
-            this.sliderValue = (float)(par2 - (this.xPosition + 4)) / (float)(this.width - 8);
-
-            if (this.sliderValue < 0.0F)
-            {
-                this.sliderValue = 0.0F;
-            }
-
-            if (this.sliderValue > 1.0F)
-            {
-                this.sliderValue = 1.0F;
-            }
-
-            this.displayString = label +": " + ((int)((max - min) * sliderValue) + min);
+            slideChange(par2);
             this.dragging = true;
             return true;
         }
