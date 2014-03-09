@@ -49,7 +49,7 @@ public class ShieldRemoveArrowRecipie implements IRecipe{
 
     @Override
     public int getRecipeSize() {
-        return 1; //To change body of implemented methods use File | Settings | File Templates.
+        return 1;
     }
 
     @Override

@@ -13,9 +13,7 @@ import net.minecraft.world.World;
 
 public class DyeRecipie implements IRecipe
 {
-    /**
-     * Used to check if a recipe matches current crafting inventory
-     */
+    @Override
     public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World)
     {
         ItemStack dyableStack = null;
@@ -55,9 +53,7 @@ public class DyeRecipie implements IRecipe
         return dyableStack != null && (!arraylist.isEmpty() ^ waterFound);
     }
 
-    /**
-     * Returns an Item that is the result of this recipe
-     */
+    @Override
     public ItemStack getCraftingResult(InventoryCrafting par1InventoryCrafting)
     {
         ItemStack dyableStack = null;
@@ -150,14 +146,13 @@ public class DyeRecipie implements IRecipe
         }
     }
 
-    /**
-     * Returns the size of the recipe area
-     */
+    @Override
     public int getRecipeSize()
     {
         return 10;
     }
 
+    @Override
     public ItemStack getRecipeOutput()
     {
         return null;

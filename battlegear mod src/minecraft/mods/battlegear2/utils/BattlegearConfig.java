@@ -17,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -235,10 +236,11 @@ public class BattlegearConfig {
 	        if(Arrays.binarySearch(disabledRecipies, itemNames[2])  < 0)
 	            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(quiver),
 	                "X X", "X X","XXX",'X', Items.leather));
-	
+
+            RecipeSorter.register("battlegear:quiverfilling", QuiverRecipie2.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 	        GameRegistry.addRecipe(new QuiverRecipie2());
 		}
-
+        RecipeSorter.register("battlegear:dyeing", DyeRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
         GameRegistry.addRecipe(new DyeRecipie());
 
         
@@ -249,20 +251,17 @@ public class BattlegearConfig {
             if(warAxe[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[4])  < 0){
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(warAxe[i]), "L L","LSL"," S ",
                             'S', "stickWood",
-                            'L',
-                            i!=0?craftingMaterial:woodStack));
+                            'L', i!=0?craftingMaterial:woodStack));
             }
             if(mace[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[5])  < 0) {
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(mace[i]), " LL"," LL","S  ",
                                 'S', "stickWood",
-                                'L',
-                                i!=0?craftingMaterial:woodStack));
+                                'L', i!=0?craftingMaterial:woodStack));
             }
             if(dagger[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[3])  < 0){
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dagger[i]), "L","S",
                                 'S', "stickWood",
-                                'L',
-                                i!=0?craftingMaterial:woodStack));
+                                'L', i!=0?craftingMaterial:woodStack));
             }
 
             if(spear[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[6])  < 0){
@@ -297,6 +296,7 @@ public class BattlegearConfig {
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[4]), "I I","IWI", " I ",
                             'W', woodStack,
                             'I', Items.gold_ingot));
+            RecipeSorter.register("battlegear:shieldarrowtaking", ShieldRemoveArrowRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
             GameRegistry.addRecipe(new ShieldRemoveArrowRecipie());
         }
 
@@ -314,7 +314,7 @@ public class BattlegearConfig {
 	        }
         }
 
-
+        RecipeSorter.register("battlegear:knightarmor", KnightArmourRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 		for(int i = 0; i < 4; i++){
 			GameRegistry.addRecipe(new KnightArmourRecipie(i));
 		}
