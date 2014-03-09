@@ -69,7 +69,14 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 		}
 	}
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public IIcon getIconIndex(ItemStack stack){
+        return getPostRenderIcon(stack);
+    }
+
 	@Override
+    @SideOnly(Side.CLIENT)
 	public IIcon getBaseIcon(ItemStack stack) {
 		if(armorType == 0){
 			return baseIcon[SigilHelper.getHelm(((IHeraldryItem) stack.getItem()).getHeraldry(stack))];
@@ -78,19 +85,22 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 	}
 
 	@Override
+    @SideOnly(Side.CLIENT)
 	public IIcon getPostRenderIcon(ItemStack stack) {
-		if(armorType == 0){
+		/*if(armorType == 0){
 			return postRenderIcon[SigilHelper.getHelm(((IHeraldryItem)stack.getItem()).getHeraldry(stack))];
-		}else 
+		}else */
 			return postRenderIcon[0];
 	}
 	
 	@Override
+    @SideOnly(Side.CLIENT)
 	public IIcon getTrimIcon(ItemStack stack) {
 		return trimRenderIcon;
 	}
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List){
         ItemStack armor = new ItemStack(par1);
         //((ItemKnightArmour)armor.getItem()).setHeraldry(armor,SigilHelper.getDefault());
@@ -99,10 +109,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 
 	@Override
 	public boolean hasHeraldry(ItemStack stack) {
-		if(stack.hasTagCompound()){
-            return stack.getTagCompound().hasKey(heraldryTag);
-		}
-		return false;
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey(heraldryTag);
 	}
 
 	@Override

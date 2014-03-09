@@ -82,7 +82,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
         if(heraldryItem.shouldDoPass(IHeraldryItem.HeraldyRenderPassess.PostRenderIcon) && icon != null){
             glPushMatrix();
             glColor3f(1, 1, 1);
-            //itemRenderer.renderIcon(0, 0, icon, 16, 16);
+            itemRenderer.renderIcon(0, 0, icon, 16, 16);
             glPopMatrix();
         }
 
