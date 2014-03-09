@@ -9,7 +9,6 @@ message.up.to.date=所有模组已经更新完毕
 
 button.download.latest=下载最新版本
 gui.downloading=下载中
-button.close=关闭
 button.ok=确定
 button.url=打开模组页面
 gui.download.complete=下载成功

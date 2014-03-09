@@ -7,7 +7,7 @@ message.up.to.date=Tous vos mods sont a jour
 
 button.download.latest=Telecharger la plus recente version
 gui.downloading=Telechargement
-button.close=Fermer
+mud.disable=Desactiver MUD
 button.ok=Ok
 button.url=Ouvrir page officielle du mod
 gui.download.complete=Telechargement reussi
@@ -17,3 +17,5 @@ gui.md5.fail=Telechargement corrompu ou impossible
 log.message.none=Aucun journal de dev fourni
 log.message.loading=Telechargement du journal de dev sur server
 log.message.fail=Echec de telechargement du journal de dev
+mud.version.out=Ancienne Version
+mud.version.latest=Derniere Version

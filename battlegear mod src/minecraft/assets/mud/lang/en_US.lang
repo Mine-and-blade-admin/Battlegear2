@@ -7,7 +7,7 @@ message.up.to.date=All mods up to date
 
 button.download.latest=Download Latest
 gui.downloading=Downloading
-button.close=Close
+mud.disable=Disable MUD
 button.ok=Ok
 button.url=Open mod webpage
 gui.download.complete=Download Successful
@@ -17,3 +17,6 @@ gui.md5.fail=Corrupt or invalid download
 log.message.none=No Changelog Provided
 log.message.loading=Loading changelog from server
 log.message.fail=Failed to download changelog
+mud.version.out=Outdated Version
+mud.version.latest=Latest Version
+

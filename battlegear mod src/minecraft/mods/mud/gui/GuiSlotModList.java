@@ -7,6 +7,7 @@ import cpw.mods.fml.common.ModContainer;
 import mods.mud.UpdateEntry;
 import mods.mud.exceptions.UnknownVersionFormatException;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.resources.I18n;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,9 +69,9 @@ public class GuiSlotModList extends GuiScrollingList
             this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(mc.getName(), listWidth - 10), this.left + 3 , var3 + 2, 0xFFFFFF);
             try{
                 if(entries.get(listIndex).isUpToDate()){
-                    this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth("Latest Version", listWidth - 10), this.left + 3 , var3 + 12, 0xFF00FF00);
+                    this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(I18n.format("mud.version.latest"), listWidth - 10), this.left + 3 , var3 + 12, 0xFF00FF00);
                 }else{
-                    this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth("Outdated Version", listWidth - 10), this.left + 3 , var3 + 12, 0xFFFF0000);
+                    this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(I18n.format("mud.version.out"), listWidth - 10), this.left + 3 , var3 + 12, 0xFFFF0000);
                 }
             }catch (UnknownVersionFormatException e){
 
