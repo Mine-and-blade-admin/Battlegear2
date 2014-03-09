@@ -11,6 +11,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -27,6 +28,7 @@ public class ModUpdateDetector {
     private static boolean hasInitialised = false;
     private static Map<String, UpdateEntry> updateMap;
     public static boolean hasChecked = false;
+    private static Property check;
     public static boolean enabled = true;
     private static ICommandSender sender = null;
 
@@ -55,6 +57,17 @@ public class ModUpdateDetector {
         registerMod(mc, new URL(updateXML), changelog!=null?new URL(changelog):null);
     }
 
+    /**
+     * Helper registration method for a mod
+     * @param mod A modid or mod instance
+     * @param updateXML String that can be converted as an url for an xml file, listing mod versions and download links by Minecraft releases
+     * @param changelog String that can be converted as an url for a file containing text to describe any changes, can be null
+     * @throws MalformedURLException If no known protocol is found, or <tt>updateXML</tt> is <tt>null</tt>.
+     */
+    public static void registerMod(Object mod, String updateXML, String changelog) throws MalformedURLException {
+        registerMod(FMLCommonHandler.instance().findContainerFor(mod), updateXML, changelog);
+    }
+
     public static void runUpdateChecker(){
 
         if(enabled){
@@ -75,17 +88,17 @@ public class ModUpdateDetector {
     }
 
     private static void initialise() {
-        updateMap = new HashMap<String, UpdateEntry>();/*
+        updateMap = new HashMap<String, UpdateEntry>();
+        /*
          * The time between update checks in minutes.
          * A value <=0 will only run the updater when a player joins the world.
          */
         int Timer = 60*60*20;
         try{
 	        Configuration config = new Configuration(new File(Loader.instance().getConfigDir(), "MUD.cfg"));
-	        config.load();
-	
 	        Timer = config.get(Configuration.CATEGORY_GENERAL, "Update Time", 60, "The time in minutes between update checks").getInt() * 60 * 20;
-	        enabled = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates").getBoolean(true);
+            check = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates");
+	        enabled = check.getBoolean(true);
 	        
 	        if(config.hasChanged()){
 	            config.save();
@@ -96,6 +109,11 @@ public class ModUpdateDetector {
 
         FMLCommonHandler.instance().bus().register(new ModUpdateDetectorTickHandeler(Timer));
         ClientCommandHandler.instance.registerCommand(new MudCommands());
+    }
+
+    public static void toggleState(){
+        enabled = !enabled;
+        check.set(enabled);
     }
 
     public static ICommandSender getSender() {
