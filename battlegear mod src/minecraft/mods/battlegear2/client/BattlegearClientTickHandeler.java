@@ -14,7 +14,6 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -60,7 +59,7 @@ public class BattlegearClientTickHandeler {
                     if(flashTimer > 0){
                         flashTimer --;
                     }
-                    if(GameSettings.isKeyDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem) && !player.isSwingInProgress){
+                    if(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress){
                         blockBar -= ((IShield) offhand.getItem()).getDecayRate(offhand);
                         if(blockBar > 0){
                             if(!wasBlocking){

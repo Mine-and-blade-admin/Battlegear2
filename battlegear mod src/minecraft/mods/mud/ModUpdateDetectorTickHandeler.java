@@ -21,13 +21,13 @@ import java.util.List;
 public class ModUpdateDetectorTickHandeler {
 
     private final int timer_interval;
-    protected static int timer;
-
-    private static GuiScreen lastScreen;
+    private int timer;
+    private GuiScreen lastScreen;
 
     public ModUpdateDetectorTickHandeler(int timer) {
         this.timer_interval = timer;
     }
+
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event){
         if(event.phase == TickEvent.Phase.START){
@@ -62,7 +62,7 @@ public class ModUpdateDetectorTickHandeler {
                     }
                     if(!hasMumButton){
                         int x = lastScreen.width / 2 + 105;
-                        int y = lastScreen.height / 4 + 24 -16;
+                        int y = lastScreen.height / 4 + 8;
                         if(lastScreen instanceof GuiModList){
                             x = lastScreen.width - 110;
                             y = 10;
