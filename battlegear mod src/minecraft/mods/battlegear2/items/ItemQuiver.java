@@ -18,6 +18,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.List;
@@ -43,10 +44,13 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
     	for(int i = 0; i<getSlotCount(stack);i++){
-            EntityItem entityitem = player.dropPlayerItemWithRandomChoice(getStackInSlot(stack, i), false);
-            entityitem.delayBeforeCanPickup = 0;
-            entityitem.func_145797_a(player.getCommandSenderName());
-    		setStackInSlot(stack, i, null);
+            ItemStack temp = getStackInSlot(stack, i);
+            if(temp!=null){
+                EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
+                entityitem.delayBeforeCanPickup = 0;
+                entityitem.func_145797_a(player.getCommandSenderName());
+                setStackInSlot(stack, i, null);
+            }
     	}
         return stack;
     }
