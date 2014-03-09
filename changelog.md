@@ -1,3 +1,11 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.5.0 ==
+* Fixed server crash with no method found exception
+* Fixed in-game option Disabled Renderers not removing values
+* Added Screen Customizer option in Config screen
+* Added a Disable button in MUD screen, to disable updates check
+* Added flag poles with rendering option and recipes
+* Sneak peek:Added back knight armor (incomplete rendering)
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.4.9 ==
 * Update to 1.7.2
 * Added Config screen in mod list, with client-side options
