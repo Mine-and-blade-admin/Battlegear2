@@ -228,10 +228,10 @@ public class GuiFlagDesigner extends GuiScreen {
         y_rpanel_start = y_lpanel_start;
 
 
-        this.buttonList.add(new GuiButton(ID_OK, 6 + x_rpanel_start, y_rpanel_start + y_rpanel_height - 25, 80, 20, StatCollector.translateToLocal("button.ok")));
-        this.buttonList.add(new GuiButton(ID_SAVE, guiLeft + 5, guiTop + 5, 100, 20,StatCollector.translateToLocal( "button.save")));
-        this.buttonList.add(new GuiButton(ID_LOAD, guiLeft + 5+100+11, guiTop + 5, 100, 20, StatCollector.translateToLocal("button.load")));
-        this.buttonList.add(new GuiButton(ID_LOAD_SECTION, guiLeft + 5+200+22, guiTop + 5, 100, 20, StatCollector.translateToLocal("button.load.sections")));
+        this.buttonList.add(new GuiButton(ID_OK, 6 + x_rpanel_start, y_rpanel_start + y_rpanel_height - 25, 80, 20, StatCollector.translateToLocal("gui.done")));
+        this.buttonList.add(new GuiButton(ID_SAVE, guiLeft + 5, guiTop + 5, 100, 20,StatCollector.translateToLocal("flag.design.save")));
+        this.buttonList.add(new GuiButton(ID_LOAD, guiLeft + 5+100+11, guiTop + 5, 100, 20, StatCollector.translateToLocal("flag.design.load")));
+        this.buttonList.add(new GuiButton(ID_LOAD_SECTION, guiLeft + 5+200+22, guiTop + 5, 100, 20, StatCollector.translateToLocal("flag.design.load.sections")));
         colourPicker = new GuiColourPicker(ID_COLOUR_PICKER, x_rpanel_start+6, y_rpanel_start+5, 0xFF000000, 7);
         colourPicker.addListener(new IControlListener() {
             @Override
