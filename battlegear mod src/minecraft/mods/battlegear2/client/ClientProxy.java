@@ -112,15 +112,16 @@ public class ClientProxy extends CommonProxy {
         	MinecraftForgeClient.registerItemRenderer(Items.bow, new BowRenderer());
         if(BattlegearConfig.quiver!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver")  < 0)
         	MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver, new QuiverItremRenderer());
-        if(BattlegearConfig.banner!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "flagpole")  < 0)
+        if(BattlegearConfig.banner!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "flagpole")  < 0){
             MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BattlegearConfig.banner), new FlagPoleItemRenderer());
+            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
+        }
         for(Item it:BattlegearConfig.knightArmor){
             if(it!=null){
                 MinecraftForgeClient.registerItemRenderer(it, new HeraldryItemRenderer());
             }
         }
         if(Battlegear.debug){
-            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
             MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem, new HeraldryCrestItemRenderer());
             Item it = null;
             for(Iterator itr = GameData.itemRegistry.iterator(); itr.hasNext(); it = (Item) itr.next()){

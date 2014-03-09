@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BattlegearConfigGUI extends GuiScreen{
-    private final String[] availableRenderers = {"spear", "shield", "bow", "quiver"};
+    private final String[] availableRenderers = BattlegearConfig.renderNames;
     private final GuiScreen parent;
     private GUITextList possibleValues;
     public BattlegearConfigGUI(GuiScreen parent){

@@ -1,6 +1,5 @@
 package mods.battlegear2.utils;
 
-import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.ItemBlockFlagPole;
@@ -11,6 +10,7 @@ import mods.battlegear2.recipies.DyeRecipie;
 import mods.battlegear2.recipies.QuiverRecipie2;
 import mods.battlegear2.recipies.ShieldRemoveArrowRecipie;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.Item;
@@ -28,10 +28,11 @@ public class BattlegearConfig {
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
 	public static boolean forceBackSheath = false, arrowForceRendered = true, enableSkeletonQuiver = true;
 	public static boolean enableGUIKeys = false, enableGuiButtons = true;
-	public static final String[] itemNames = new String[] {"heraldric","chain","quiver","dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow"};
-	public static final String[] toolTypes = new String[] {"wood", "stone", "iron", "diamond", "gold"};
-    public static final String[] shieldTypes = new String[] {"wood", "hide", "iron", "diamond", "gold"};
-	public static final String[] armourTypes = new String[] {"helmet", "plate", "legs", "boots"};
+	public static final String[] itemNames = {"heraldric","chain","quiver","dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow", "flagpole"};
+	public static final String[] renderNames = {"spear", "shield", "bow", "quiver", "flagpole"};
+    public static final String[] toolTypes = {"wood", "stone", "iron", "diamond", "gold"};
+    public static final String[] shieldTypes = {"wood", "hide", "iron", "diamond", "gold"};
+	public static final String[] armourTypes = {"helmet", "plate", "legs", "boots"};
 	public static final String[] enchantsName = {"BashWeight", "BashPower", "BashDamage", "ShieldUsage", "ShieldRecovery", "BowLoot", "BowCharge"};
 	public static int[] enchantsId = {125, 126, 127, 128, 129, 130, 131};
 	public static ItemWeapon[] dagger=new ItemWeapon[toolTypes.length],warAxe=new ItemWeapon[toolTypes.length],mace=new ItemWeapon[toolTypes.length],spear=new ItemWeapon[toolTypes.length];
@@ -71,7 +72,8 @@ public class BattlegearConfig {
         if(Arrays.binarySearch(disabledItems, itemNames[0]) < 0){
             heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName("battlegear2:heraldric").setTextureName("battlegear2:bg-icon");
         }
-        if(Battlegear.debug){
+
+        if(Arrays.binarySearch(disabledItems, itemNames[10]) < 0){
             banner = (BlockFlagPole)new BlockFlagPole().setCreativeTab(customTab).setBlockName("battlegear2:flagpole");
             GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, "battlegear2:flagpole");
         }
@@ -147,7 +149,11 @@ public class BattlegearConfig {
         sb = new StringBuffer();
         sb.append("This will disable the special rendering for the provided item.\n");
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
-        sb.append("The valid values are: spear, shield, bow, quiver");
+        sb.append("The valid values are: \n");
+        for(int i = 0; i < renderNames.length; i++){
+            sb.append(renderNames[i]);
+            sb.append(", ");
+        }
         comments[2] = sb.toString();
         disabledRenderers = config.get(category, "Disabled Renderers", new String[0], comments[2]).getStringList();
         Arrays.sort(disabledRenderers);
@@ -313,6 +319,12 @@ public class BattlegearConfig {
 			GameRegistry.addRecipe(new KnightArmourRecipie(i));
 		}
 
+        if(banner!=null){
+            for(int i = 0; i < 5; i++){
+                Object temp = i < 4 ? new ItemStack(Blocks.log, 1, i):Items.iron_ingot;
+                GameRegistry.addRecipe(new ItemStack(banner, 4, i), "W", "W", "W", 'W', temp);
+            }
+        }
         /*
 		for(int x = 0; x < 16; x++){
 			for(int y = 0; y < 16; y++){
