@@ -169,20 +169,19 @@ public class BattlegearClientTickHandeler implements ITickHandler {
      * @param theWorld
      * @return the stack expected for the creative pick button
      */
-    private static ItemStack getItemFromPointedAt(MovingObjectPosition objectMouseOver, World theWorld) {
-        if(objectMouseOver!=null){
-            int j,i=0;
-            if (objectMouseOver.typeOfHit == EnumMovingObjectType.TILE)
+    private static ItemStack getItemFromPointedAt(MovingObjectPosition target, World theWorld) {
+        if(target!=null){
+            if (target.typeOfHit == EnumMovingObjectType.TILE)
             {
-                int k = objectMouseOver.blockX;
-                int l = objectMouseOver.blockY;
-                int i1 = objectMouseOver.blockZ;
+                int k = target.blockX;
+                int l = target.blockY;
+                int i1 = target.blockZ;
                 Block block = Block.blocksList[theWorld.getBlockId(k, l, i1)];
                 if (block == null)
                 {
                     return null;
                 }
-                return block.getPickBlock(objectMouseOver, theWorld, k, l, i1);
+                return block.getPickBlock(target, theWorld, k, l, i1);
             }
             else
             {
