@@ -46,6 +46,7 @@
 !changelog.md
 !build.gradle
 !battlegear_dummy.jar
+!gradle/wrapper/gradle-wrapper.jar
 
 *~
 *.rej
