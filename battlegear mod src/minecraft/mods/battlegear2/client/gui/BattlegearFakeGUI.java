@@ -9,6 +9,10 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 
+/**
+ * A gui that displays like the in-game screen, where each element is a {@link GuiDrawButton}
+ * Used to move gui elements and save their position into configuration file
+ */
 public class BattlegearFakeGUI extends GuiScreen{
     private final GuiScreen previous;
     private final BattlegearInGameGUI helper = new BattlegearInGameGUI();

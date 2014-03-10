@@ -45,7 +45,6 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void registerKeyHandelers() {
-        FMLCommonHandler.instance().bus().register(new BattlegearKeyHandeler());
         if(BattlegearConfig.enableGUIKeys){
             FMLCommonHandler.instance().bus().register(new BattlegearGuiKeyHandler());
         }
@@ -122,13 +121,13 @@ public class ClientProxy extends CommonProxy {
             }
         }
         if(Battlegear.debug){
-            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem, new HeraldryCrestItemRenderer());
             Item it = null;
             for(Iterator itr = GameData.itemRegistry.iterator(); itr.hasNext(); it = (Item) itr.next()){
             	if(it instanceof IHeraldryItem && ((IHeraldryItem)it).useDefaultRenderer()){
             		MinecraftForgeClient.registerItemRenderer(it, new HeraldryItemRenderer());
             	}
             }
+            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem, new HeraldryCrestItemRenderer());
         }
     }
 
