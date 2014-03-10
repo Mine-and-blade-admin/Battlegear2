@@ -18,8 +18,6 @@ import net.minecraft.world.WorldServer;
 
 public class BattlegearTickHandeler {
 
-    //public HashMap<String, Integer> currentItemCache = new HashMap<String, Integer>();
-
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event){
         if(event.phase == TickEvent.Phase.START){
@@ -32,11 +30,6 @@ public class BattlegearTickHandeler {
     public void tickStart(EntityPlayer entityPlayer) {
 
         if (entityPlayer.worldObj instanceof WorldServer) {
-                /*if(!currentItemCache.containsKey(entityPlayer.username)||entityPlayer.inventory.currentItem!=currentItemCache.get(entityPlayer.username))
-                {
-                	entityPlayer.inventory.onInventoryChanged();
-                	currentItemCache.put(entityPlayer.username, entityPlayer.inventory.currentItem);
-                }*/
 
             if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 

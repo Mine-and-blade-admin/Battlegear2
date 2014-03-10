@@ -3,9 +3,12 @@ package mods.battlegear2.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.RenderItemBarEvent;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
@@ -16,7 +19,9 @@ import mods.battlegear2.client.heraldry.CrestImages;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemQuiver;
+import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -25,7 +30,9 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 
 import org.lwjgl.opengl.GL11;
@@ -179,8 +186,75 @@ public class BattlegearClientEvents {
 			GL11.glPopMatrix();
 
 		}
-
 	}
+    private static final int MAIN_INV = 9;
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void replacePickBlock(MouseEvent event){
+        if(event.buttonstate && event.button-100==Minecraft.getMinecraft().gameSettings.keyBindPickBlock.getKeyCode()){
+            Minecraft mc = FMLClientHandler.instance().getClient();
+            if(mc.thePlayer!=null && mc.theWorld!=null){
+                event.setCanceled(true);
+                if(!((IBattlePlayer)mc.thePlayer).isBattlemode()){
+                    boolean isCreative = mc.thePlayer.capabilities.isCreativeMode;
+                    ItemStack stack = getItemFromPointedAt(Minecraft.getMinecraft().objectMouseOver, mc.theWorld, isCreative);
+                    if(stack!=null){
+                        int k = -1;
+                        ItemStack temp;
+                        for(int slot=0; slot<MAIN_INV;slot++){
+                            temp = mc.thePlayer.inventory.getStackInSlot(slot);
+                            if(temp!=null && stack.isItemEqual(temp) && ItemStack.areItemStackTagsEqual(stack, temp)){
+                                k = slot;
+                                break;
+                            }
+                        }
+                        if(isCreative && k==-1){
+                            k = mc.thePlayer.inventory.getFirstEmptyStack();
+                            if(k < 0 || k >= MAIN_INV){
+                                k = mc.thePlayer.inventory.currentItem;
+                            }
+                        }
+                        if (k >= 0 && k < MAIN_INV)
+                        {
+                            Battlegear.packetHandler.sendPacketToServer(new PickBlockPacket(mc.thePlayer, stack, k).generatePacket());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Equivalent code to the creative pick block
+     * @param target The client target vector
+     * @param world The world of the player
+     * @param creative If player is in creative mode
+     * @return the stack expected for the creative pick button
+     */
+    private static ItemStack getItemFromPointedAt(MovingObjectPosition target, World world, boolean creative) {
+        if(target!=null){
+            if (target.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+            {
+                int x = target.blockX;
+                int y = target.blockY;
+                int z = target.blockZ;
+                Block block = world.getBlock(x, y, z);
+                if (block.isAir(world, x, y, z))
+                {
+                    return null;
+                }
+                return block.getPickBlock(target, world, x, y, z);
+            }
+            else
+            {
+                if (target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY || target.entityHit == null || !creative)
+                {
+                    return null;
+                }
+                return target.entityHit.getPickedResult(target);
+            }
+        }
+        return null;
+    }
 
 	/**
 	 * Returns a rotation angle that is inbetween two other rotation angles.

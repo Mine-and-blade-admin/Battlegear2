@@ -8,7 +8,7 @@ import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.RenderPlayerEventChild.*;
 import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.api.quiver.IArrowContainer2;
-import mods.battlegear2.client.BattlegearKeyHandeler;
+import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemSpear;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -523,8 +523,8 @@ public class BattlegearRenderHelper {
 
     private static void renderSheathedItems(EntityPlayer par1EntityPlayer, ModelBiped modelBipedMain, float frame) {
 
-        ItemStack mainhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearKeyHandeler.previousBattlemode);
-        ItemStack offhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearKeyHandeler.previousBattlemode+InventoryPlayerBattle.WEAPON_SETS);
+        ItemStack mainhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearClientTickHandeler.previousBattlemode);
+        ItemStack offhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearClientTickHandeler.previousBattlemode+InventoryPlayerBattle.WEAPON_SETS);
 
         ModelBiped chestModel = null;
         ModelBiped legsModel = null;
