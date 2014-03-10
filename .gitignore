@@ -30,23 +30,21 @@
 #Also don't ignore the install scripts
 !battlegear-*
 !gradlew*
-!gradle/
+!gradle/*
+!build.gradle
+!build.xml
 
 #Or this file ;) (or readme)
 !.gitignore
 !README.md
 !ForumPost
 !ItemStats.md
-!LICENCE.txt
 !LICENCE
-!build.xml
 !bg-logo.png
 !mod.properties
 !battlegear_update.xml
 !changelog.md
-!build.gradle
 !battlegear_dummy.jar
-!gradle/wrapper/gradle-wrapper.jar
 
 *~
 *.rej
