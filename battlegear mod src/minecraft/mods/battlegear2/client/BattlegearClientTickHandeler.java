@@ -182,82 +182,15 @@ public class BattlegearClientTickHandeler implements ITickHandler {
                 {
                     return null;
                 }
-                j = block.idPicked(theWorld, k, l, i1);
-                if (j == 0)
-                {
-                    return null;
-                }
-                int j1 = j < 256 && !Block.blocksList[block.blockID].isFlowerPot() ? j : block.blockID;
-                i = Block.blocksList[j1].getDamageValue(theWorld, k, l, i1);
-                return new ItemStack(j1, 1, i);
+                return block.getPickBlock(objectMouseOver, theWorld, k, l, i1);
             }
             else
             {
-                if (objectMouseOver.typeOfHit != EnumMovingObjectType.ENTITY || objectMouseOver.entityHit == null)
+                if (target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY || target.entityHit == null)
                 {
                     return null;
                 }
-
-                if (objectMouseOver.entityHit instanceof EntityPainting)
-                {
-                    j = Item.painting.itemID;
-                }
-                else if (objectMouseOver.entityHit instanceof EntityLeashKnot)
-                {
-                    j = Item.leash.itemID;
-                }
-                else if (objectMouseOver.entityHit instanceof EntityItemFrame)
-                {
-                    EntityItemFrame entityitemframe = (EntityItemFrame)objectMouseOver.entityHit;
-
-                    if (entityitemframe.getDisplayedItem() == null)
-                    {
-                        j = Item.itemFrame.itemID;
-                    }
-                    else
-                    {
-                        j = entityitemframe.getDisplayedItem().itemID;
-                        i = entityitemframe.getDisplayedItem().getItemDamage();
-                    }
-                }
-                else if (objectMouseOver.entityHit instanceof EntityMinecart)
-                {
-                    EntityMinecart entityminecart = (EntityMinecart)objectMouseOver.entityHit;
-
-                    if (entityminecart.getMinecartType() == 2)
-                    {
-                        j = Item.minecartPowered.itemID;
-                    }
-                    else if (entityminecart.getMinecartType() == 1)
-                    {
-                        j = Item.minecartCrate.itemID;
-                    }
-                    else if (entityminecart.getMinecartType() == 3)
-                    {
-                        j = Item.minecartTnt.itemID;
-                    }
-                    else if (entityminecart.getMinecartType() == 5)
-                    {
-                        j = Item.minecartHopper.itemID;
-                    }
-                    else
-                    {
-                        j = Item.minecartEmpty.itemID;
-                    }
-                }
-                else if (objectMouseOver.entityHit instanceof EntityBoat)
-                {
-                    j = Item.boat.itemID;
-                }
-                else
-                {
-                    j = Item.monsterPlacer.itemID;
-                    i = EntityList.getEntityID(objectMouseOver.entityHit);
-                    if (i <= 0 || !EntityList.entityEggs.containsKey(Integer.valueOf(i))){
-                        return null;
-                    }
-                }
-                return new ItemStack(j, 1, i);
+                return target.entityHit.getPickedResult(target);
             }
         }
         return null;
