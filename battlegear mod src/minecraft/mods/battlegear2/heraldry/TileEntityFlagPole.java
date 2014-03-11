@@ -5,7 +5,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.packet.BattlegearBannerPacket;
 import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
@@ -105,15 +104,5 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     @Override
     public List<ItemStack> getFlags() {
         return flags;
-    }
-
-    public boolean shouldRemoveFlag(EntityPlayer player){
-        return (flags.size() <= MAX_FLAGS & !player.capabilities.isCreativeMode);
-    }
-
-    public ItemStack popFlag(){
-        ItemStack flag = flags.get(flags.size()-1);
-        flags.remove(flags.size()-1);
-        return flag;
     }
 }

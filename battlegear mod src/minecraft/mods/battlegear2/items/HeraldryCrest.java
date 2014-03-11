@@ -106,7 +106,7 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
 
     @Override
     public boolean shouldDoPass(HeraldyRenderPassess pass) {
-        return ! pass.equals(HeraldyRenderPassess.SecondaryColourTrim);
+        return !pass.equals(HeraldyRenderPassess.SecondaryColourTrim);
     }
 
 
