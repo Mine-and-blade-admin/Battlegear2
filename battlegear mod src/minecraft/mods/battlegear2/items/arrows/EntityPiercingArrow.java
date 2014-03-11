@@ -51,7 +51,7 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 	}
 
     public DamageSource getPiercingDamage(){
-        return new EntityDamageSourceIndirect("piercing.arrow", this, shootingEntity).setProjectile().setDamageBypassesArmor();
+        return new EntityDamageSourceIndirect("piercing.arrow", null, shootingEntity).setProjectile().setDamageBypassesArmor();
     }
 
 	@Override
