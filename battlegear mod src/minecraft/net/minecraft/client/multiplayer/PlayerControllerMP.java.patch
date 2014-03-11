@@ -1,43 +1,40 @@
---- 
-+++ 
 @@ -2,6 +2,7 @@
  
  import cpw.mods.fml.relauncher.Side;
  import cpw.mods.fml.relauncher.SideOnly;
 +import mods.battlegear2.api.core.BattlegearUtils;
  import net.minecraft.block.Block;
+ import net.minecraft.block.material.Material;
  import net.minecraft.client.Minecraft;
- import net.minecraft.client.entity.EntityClientPlayerMP;
-@@ -29,6 +30,16 @@
+@@ -35,6 +36,16 @@
  @SideOnly(Side.CLIENT)
  public class PlayerControllerMP
  {
-+	/*
++  	/*
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
-+	 * 
++	 *
 +	 * Edits: 2
 +	 * Added Methods: 0
 +	 * Added Fields: 0
-+	 * 
++	 *
 +	 * Also prevention of index out of bounds errors
 +	 */
-     /** The Minecraft instance. */
-     private final Minecraft mc;
-     private final NetClientHandler netClientHandler;
-@@ -433,11 +444,13 @@
+     /**
+      * The Minecraft instance.
+      */
+@@ -457,11 +468,11 @@
          }
          else
          {
 -            par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = itemstack1;
-+        	//-----MB-Edited-----
-+        	BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, itemstack1);
++            BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, itemstack1);//-----MB-Edited-----
  
              if (itemstack1.stackSize <= 0)
              {
 -                par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = null;
-+            	//-----MB-Edited-----
-+            	BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, null);
++                BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, null);//-----MB-Edited-----
                  MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(par1EntityPlayer, itemstack1));
              }
- 
+
+

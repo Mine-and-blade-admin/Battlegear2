@@ -27,6 +27,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
@@ -187,7 +188,7 @@ public class BattlegearClientEvents {
 
 		}
 	}
-    private static final int MAIN_INV = 9;
+    private static final int MAIN_INV = InventoryPlayer.getHotbarSize();
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replacePickBlock(MouseEvent event){
         if(event.buttonstate && event.button-100==Minecraft.getMinecraft().gameSettings.keyBindPickBlock.getKeyCode()){

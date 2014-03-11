@@ -1,0 +1,52 @@
+@@ -17,6 +17,9 @@
+ import java.util.Map;
+ import java.util.Random;
+ import java.util.Map.Entry;
++
++import mods.battlegear2.api.core.BattlegearUtils;
++import mods.battlegear2.api.core.InventoryPlayerBattle;
+ import net.minecraft.block.Block;
+ import net.minecraft.client.ClientBrandRetriever;
+ import net.minecraft.client.Minecraft;
+@@ -199,6 +202,18 @@
+ @SideOnly(Side.CLIENT)
+ public class NetHandlerPlayClient implements INetHandlerPlayClient
+ {
++    /*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 *
++	 * Edits: 2
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 *
++	 * Edit to allow a switch to occur to items that are outside of the normal slot range.
++	 *
++	 * Also prevention of index out of bounds errors
++	 */
+     private static final Logger logger = LogManager.getLogger();
+     /**
+      * The NetworkManager instance used to communicate with the server (used only by handlePlayerPosLook to update
+@@ -527,11 +542,11 @@
+ 
+         if (i == 0)
+         {
+-            entityotherplayermp.inventory.mainInventory[entityotherplayermp.inventory.currentItem] = null;
++            BattlegearUtils.setPlayerCurrentItem(entityotherplayermp, null);//-----MB-Edited-----
+         }
+         else
+         {
+-            entityotherplayermp.inventory.mainInventory[entityotherplayermp.inventory.currentItem] = new ItemStack(Item.getItemById(i), 1, 0);
++            BattlegearUtils.setPlayerCurrentItem(entityotherplayermp, new ItemStack(Item.getItemById(i), 1, 0));//-----MB-Edited-----
+         }
+ 
+         entityotherplayermp.setPositionAndRotation(d0, d1, d2, f, f1);
+@@ -570,7 +585,7 @@
+      */
+     public void handleHeldItemChange(S09PacketHeldItemChange p_147257_1_)
+     {
+-        if (p_147257_1_.func_149385_c() >= 0 && p_147257_1_.func_149385_c() < InventoryPlayer.getHotbarSize())
++        if (InventoryPlayerBattle.isValidSwitch(p_147257_1_.func_149385_c()))//-----MB-Edited-----
+         {
+             this.gameController.thePlayer.inventory.currentItem = p_147257_1_.func_149385_c();
+         }

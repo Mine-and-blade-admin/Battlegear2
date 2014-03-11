@@ -1,49 +1,44 @@
---- 
-+++ 
 @@ -1,5 +1,6 @@
- package net.minecraft.item;
+ package net.minecraft.server.management;
  
 +import mods.battlegear2.api.core.BattlegearUtils;
  import net.minecraft.block.Block;
+ import net.minecraft.block.material.Material;
  import net.minecraft.entity.player.EntityPlayer;
- import net.minecraft.entity.player.EntityPlayerMP;
-@@ -18,6 +19,19 @@
+@@ -22,6 +23,18 @@
  
  public class ItemInWorldManager
  {
-+	/*
++    /*
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
-+	 * 
++	 *
 +	 * Edits: 2
 +	 * Added Methods: 0
 +	 * Added Fields: 0
-+	 * 
-+	 * Both of the edits to this class involve replacing a call to the inventory.mainInvetory array.
-+	 * This is just to prevent an index out of bounds error. *grumble about dodgey Majong coding*
-+	 * 
++	 *
++	 * Both of the edits to this class involve replacing a call to the inventory.mainInventory array.
++	 * This is just to prevent an index out of bounds error. *grumble about dodgey Mojang coding*
++	 *
 +	 */
-+	
      /** Forge reach distance */
      private double blockReachDistance = 5.0d;
- 
-@@ -358,7 +372,8 @@
+     /**
+@@ -352,7 +365,7 @@
          }
          else
          {
 -            par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = itemstack1;
-+            //-----MB-Edited-----
-+            BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, itemstack1);
++            BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, itemstack1);//-----MB-Edited-----
  
              if (this.isCreative())
              {
-@@ -372,7 +387,8 @@
+@@ -366,7 +379,7 @@
  
              if (itemstack1.stackSize == 0)
              {
 -                par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = null;
-+            	//-----MB-Edited-----
-+            	BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, null);
++                BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, null);//-----MB-Edited-----
                  MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thisPlayerMP, itemstack1));
              }
- 
+

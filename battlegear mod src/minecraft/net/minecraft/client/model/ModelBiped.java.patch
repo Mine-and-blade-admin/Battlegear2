@@ -1,5 +1,3 @@
---- 
-+++ 
 @@ -2,6 +2,7 @@
  
  import cpw.mods.fml.relauncher.Side;
@@ -8,42 +6,37 @@
  import net.minecraft.entity.Entity;
  import net.minecraft.util.MathHelper;
  import org.lwjgl.opengl.GL11;
-@@ -9,6 +10,18 @@
+@@ -9,6 +10,16 @@
  @SideOnly(Side.CLIENT)
  public class ModelBiped extends ModelBase
  {
-+	/*
++    /*
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
-+	 * 
++	 *
 +	 * Edits: 1
 +	 * Added Methods: 0
 +	 * Added Fields: 1
-+	 * 
++	 *
 +	 * Like the ItemRenderer and PlayerRenderer this class will differ the changes required to another class
-+	 * I will have to re-do the transformer for this
 +	 */
-+	
      public ModelRenderer bipedHead;
      public ModelRenderer bipedHeadwear;
      public ModelRenderer bipedBody;
-@@ -32,6 +45,8 @@
- 
-     /** Records whether the model should be rendered aiming a bow. */
+@@ -31,6 +42,8 @@
+      * Records whether the model should be rendered aiming a bow.
+      */
      public boolean aimedBow;
 +    //-----MB-AddField-----
 +    public float onGroundOffhand;
+     private static final String __OBFID = "CL_00000840";
  
      public ModelBiped()
-     {
-@@ -82,7 +97,9 @@
+@@ -82,6 +95,7 @@
      public void render(Entity par1Entity, float par2, float par3, float par4, float par5, float par6, float par7)
      {
          this.setRotationAngles(par2, par3, par4, par5, par6, par7, par1Entity);
--
-+        //-----MB-Edited-----
-+        BattlegearRenderHelper.moveOffHandArm(par1Entity, this, par7);
-+        
++        BattlegearRenderHelper.moveOffHandArm(par1Entity, this, par7);//-----MB-Edited-----
          if (this.isChild)
          {
              float f6 = 2.0F;

@@ -1,0 +1,60 @@
+@@ -12,6 +12,9 @@
+ import java.util.Iterator;
+ import java.util.Random;
+ import java.util.concurrent.Callable;
++
++import mods.battlegear2.api.core.BattlegearUtils;
++import mods.battlegear2.api.core.InventoryPlayerBattle;
+ import net.minecraft.block.material.Material;
+ import net.minecraft.command.server.CommandBlockLogic;
+ import net.minecraft.crash.CrashReport;
+@@ -95,6 +98,18 @@
+ 
+ public class NetHandlerPlayServer implements INetHandlerPlayServer
+ {
++    /*
++	 * Mine & Blade: Notes
++	 * Edits made by: nerd-boy
++	 *
++	 * Edits: 3
++	 * Added Methods: 0
++	 * Added Fields: 0
++	 *
++	 * Edit to allow a switch to occur to items that are outside of the normal slot range.
++	 *
++	 * A second & third edit to prevent an index out of bounds error when "using" a block
++	 */
+     private static final Logger logger = LogManager.getLogger();
+     public final NetworkManager netManager;
+     private final MinecraftServer serverController;
+@@ -640,14 +655,14 @@
+ 
+         if (itemstack != null && itemstack.stackSize == 0)
+         {
+-            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = null;
++            BattlegearUtils.setPlayerCurrentItem(playerEntity, null);//-----MB-Edited-----
+             itemstack = null;
+         }
+ 
+         if (itemstack == null || itemstack.getMaxItemUseDuration() == 0)
+         {
+             this.playerEntity.isChangingQuantityOnly = true;
+-            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = ItemStack.copyItemStack(this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem]);
++            BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));//-----MB-Edited-----
+             Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
+             this.playerEntity.openContainer.detectAndSendChanges();
+             this.playerEntity.isChangingQuantityOnly = false;
+@@ -722,7 +737,7 @@
+      */
+     public void processHeldItemChange(C09PacketHeldItemChange p_147355_1_)
+     {
+-        if (p_147355_1_.func_149614_c() >= 0 && p_147355_1_.func_149614_c() < InventoryPlayer.getHotbarSize())
++        if (InventoryPlayerBattle.isValidSwitch(p_147355_1_.func_149614_c()))
+         {
+             this.playerEntity.inventory.currentItem = p_147355_1_.func_149614_c();
+             this.playerEntity.func_143004_u();
+@@ -1388,4 +1403,7 @@
+             }
+         }
+     }
+-}
