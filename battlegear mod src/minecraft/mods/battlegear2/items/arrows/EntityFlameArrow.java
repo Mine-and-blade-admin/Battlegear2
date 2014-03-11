@@ -26,6 +26,7 @@ public class EntityFlameArrow extends AbstractMBArrow{
 
     @Override
     public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
+        source.setFireDamage();
         entityHit.setFire(3);
         return false;
     }

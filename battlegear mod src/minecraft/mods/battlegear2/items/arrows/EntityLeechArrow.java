@@ -33,7 +33,7 @@ public class EntityLeechArrow extends AbstractMBArrow{
         if(shootingEntity instanceof EntityLivingBase && entityHit instanceof EntityLivingBase){
             float value = ((EntityLivingBase) entityHit).getHealth()* 0.2F;//Leech 20% of opponent life
             ((EntityLivingBase) shootingEntity).heal(value);
-            entityHit.attackEntityFrom(DamageSource.causeThornsDamage(shootingEntity), value);
+            entityHit.attackEntityFrom(getLeechDamage(), value);
             ((EntityLivingBase) entityHit).addPotionEffect(new PotionEffect(Potion.weakness.getId(), 40));//Weaken the opponent
             ((EntityLivingBase) entityHit).setArrowCountInEntity(((EntityLivingBase) entityHit).getArrowCountInEntity()+1);
             this.setDead();
@@ -48,5 +48,9 @@ public class EntityLeechArrow extends AbstractMBArrow{
             worldObj.spawnEntityInWorld(new EntityPotion(worldObj, x, y, z, new ItemStack(Items.potionitem, 1, 16392)));//Splash weakness
         }
         this.setDead();
+    }
+
+    public DamageSource getLeechDamage(){
+        return DamageSource.causeThornsDamage(shootingEntity).setProjectile();
     }
 }
