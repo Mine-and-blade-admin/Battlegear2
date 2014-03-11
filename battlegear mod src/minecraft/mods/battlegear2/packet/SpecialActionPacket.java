@@ -39,6 +39,9 @@ public class SpecialActionPacket extends AbstractMBPacket{
                 ((IArrowContainer2)quiver.getItem()).setSelectedSlot(quiver,
                         (((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver)+1) %
                                 ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver));
+                if(this.player instanceof EntityPlayerMP){
+                    Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(), (EntityPlayerMP)this.player);
+                }
             } else if(entityHit != null && entityHit instanceof EntityLivingBase){
 
                 ItemStack offhand = ((InventoryPlayerBattle)this.player.inventory).getCurrentOffhandWeapon();
@@ -70,7 +73,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
         }
     }
 
-    public SpecialActionPacket(EntityPlayer player, ItemStack mainhand, ItemStack offhand, Entity entityHit) {
+    public SpecialActionPacket(EntityPlayer player, Entity entityHit) {
     	this.player = player;
     	this.entityHit = entityHit;
     }

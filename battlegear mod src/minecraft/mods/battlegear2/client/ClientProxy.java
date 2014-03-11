@@ -144,8 +144,7 @@ public class ClientProxy extends CommonProxy {
     public void doSpecialAction(EntityPlayer entityPlayer) {
 
         if(entityPlayer.getCommandSenderName().equals(Minecraft.getMinecraft().thePlayer.getCommandSenderName())){
-            ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory) .getCurrentOffhandWeapon();
-            ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
+            ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
 
             MovingObjectPosition mop = null;
 
@@ -155,7 +154,7 @@ public class ClientProxy extends CommonProxy {
 
             FMLProxyPacket p;
             if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase){
-                p = new SpecialActionPacket(entityPlayer, mainhand, offhand, mop.entityHit).generatePacket();
+                p = new SpecialActionPacket(entityPlayer, mop.entityHit).generatePacket();
                 Battlegear.packetHandler.sendPacketToServer(p);
 
                 if(mop.entityHit instanceof EntityPlayerMP){
@@ -163,7 +162,7 @@ public class ClientProxy extends CommonProxy {
                 }
 
             }else{
-                p = new SpecialActionPacket(entityPlayer, mainhand, offhand, null).generatePacket();
+                p = new SpecialActionPacket(entityPlayer, null).generatePacket();
             }
             Battlegear.packetHandler.sendPacketToServer(p);
         }
