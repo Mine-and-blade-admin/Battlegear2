@@ -199,12 +199,14 @@ public class BattlemodeHookContainerClass {
 
                     if(shouldBlock){
                         event.setCanceled(true);
+                        ShieldBlockEvent blockEvent = new ShieldBlockEvent(player, shield, event.source, event.ammount);
+                        MinecraftForge.EVENT_BUS.post(blockEvent);
 
                         ((IShield)shield.getItem()).blockAnimation(player, dmg);
 
-                        if(event.source.isProjectile() && event.source.getEntity() instanceof IProjectile){
+                        if(event.source.isProjectile() && event.source.getSourceOfDamage() instanceof IProjectile){
                             if(shield.getItem() instanceof IArrowCatcher){
-                                if(((IArrowCatcher)shield.getItem()).catchArrow(shield, player, (IProjectile)event.source.getEntity())){
+                                if(((IArrowCatcher)shield.getItem()).catchArrow(shield, player, (IProjectile)event.source.getSourceOfDamage())){
                                     ((InventoryPlayerBattle)player.inventory).hasChanged = true;
                                 }
                             }
