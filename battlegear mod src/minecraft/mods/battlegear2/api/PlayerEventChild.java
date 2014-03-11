@@ -38,6 +38,21 @@ public abstract class PlayerEventChild extends PlayerEvent{
         super.setResult(value);
         parent.setResult(value);
     }
+    
+	/**
+	 * Event to fire when a shield successfully blocks an attack (in @link LivingHurtEvent)
+	 */
+	 public static class ShieldBlockEvent extends PlayerEventChild {
+	 	public final ItemStack shield;
+	 	public final DamageSource source;
+	 	public final float ammount; // use same name as other Forge events
+	 	public ShieldBlockEvent(PlayerEvent parent, ItemStack shield, DamageSource source, float ammount) {
+	 		super(parent);
+	 		this.shield = shield;
+	 		this.source = source;
+	 		this.ammount = ammount;
+	 	}
+	 }
 
     /**
      * Called when a player right clicks in battlemode
