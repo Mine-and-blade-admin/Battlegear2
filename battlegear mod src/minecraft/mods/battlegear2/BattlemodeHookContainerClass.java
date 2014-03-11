@@ -199,6 +199,8 @@ public class BattlemodeHookContainerClass {
 
                     if(shouldBlock){
                         event.setCanceled(true);
+                        ShieldBlockEvent blockEvent = new ShieldBlockEvent(player, shield, event.source, event.ammount);
+                        MinecraftForge.EVENT_BUS.post(blockEvent);
 
                         ((IShield)shield.getItem()).blockAnimation(player, dmg);
 
