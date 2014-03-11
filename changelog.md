@@ -1,3 +1,13 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.5.1 ==
+* Fixed crash from using empty quiver
+* Registered recipes into forge sorter
+* Fixed pick block in survival
+* Added ShieldBlockEvent (API upgrade)
+* Fixed shields no catching arrows
+* Fixed quiver arrow switch
+* Enable possibility of mouse keybind for custom gameplay keys
+**Please report any bug you find**
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.0 ==
 * Fixed server crash with no method found exception
 * Fixed in-game option Disabled Renderers not removing values
