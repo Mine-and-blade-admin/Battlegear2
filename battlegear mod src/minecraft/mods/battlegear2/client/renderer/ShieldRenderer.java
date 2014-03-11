@@ -141,10 +141,7 @@ public class ShieldRenderer implements IItemRenderer{
                     GL11.glColor3f(1, 1, 1);
                     icon = shield.getTrimIcon();
                     itemRenderer.renderIcon(0, 0, icon, 16, 16);
-
                     GL11.glPopMatrix();
-
-
 
                     break;
             }
@@ -154,9 +151,7 @@ public class ShieldRenderer implements IItemRenderer{
             if(arrowCount > 64)
                 arrowCount = 64;
             for(int i = 0; i < arrowCount; i++){
-                BattlegearRenderHelper.renderArrow(type == ItemRenderType.ENTITY,
-                        ItemShield.arrowX[i],ItemShield.arrowY[i], ItemShield.arrowDepth[i],
-                        ItemShield.pitch[i]+90F, ItemShield.yaw[i]+45F);
+                BattlegearRenderHelper.renderArrow(type == ItemRenderType.ENTITY, i);
             }
             GL11.glPopMatrix();
 

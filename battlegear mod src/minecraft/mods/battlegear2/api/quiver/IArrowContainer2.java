@@ -92,9 +92,16 @@ public interface IArrowContainer2 {
     /**
      * Crafts the item with the items from {@link #isCraftableWithArrows(ItemStack, ItemStack)}
      * @param container The {@link #ItemStack} representing this item
-     * @param arrows Another valid item on the crafting bench
+     * @param newStack Another valid item on the crafting bench
      * @return Arrows that couldn't fit in
      */
     public ItemStack addArrows(ItemStack container, ItemStack newStack);
+
+    /**
+     * Called through post rendering event on the player
+     * @param container
+     * @return true if the default quiver model can be rendered
+     */
+    public boolean renderDefaultQuiverModel(ItemStack container);
 
 }

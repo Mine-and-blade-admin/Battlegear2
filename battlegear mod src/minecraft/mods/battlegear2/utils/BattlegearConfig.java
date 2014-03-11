@@ -1,5 +1,6 @@
 package mods.battlegear2.utils;
 
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.ItemBlockFlagPole;
@@ -360,6 +361,7 @@ public class BattlegearConfig {
             file.get(file.CATEGORY_GENERAL, "Enable GUI Keys", false).set(enableGUIKeys);
             file.get(file.CATEGORY_GENERAL, "Enable GUI Buttons", true).set(enableGuiButtons);
             file.save();
+            Battlegear.proxy.registerItemRenderers();
         }catch (Exception e){
             e.printStackTrace();
         }

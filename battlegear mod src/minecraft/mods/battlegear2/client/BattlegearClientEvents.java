@@ -7,8 +7,10 @@ import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.core.IBattlePlayer;
+import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
@@ -18,7 +20,6 @@ import mods.battlegear2.api.heraldry.PatternStore;
 import mods.battlegear2.client.heraldry.CrestImages;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
-import mods.battlegear2.items.ItemQuiver;
 import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
@@ -89,38 +90,34 @@ public class BattlegearClientEvents {
 	public void render3rdPersonBattlemode(RenderPlayerEvent.Specials.Post event) {
 
 		ModelBiped biped = (ModelBiped) event.renderer.mainModel;
-		//getModelBiped(event.renderer, 1);
-		BattlegearRenderHelper.renderItemIn3rdPerson(event.entityPlayer, biped,
-				event.partialRenderTick);
+		BattlegearRenderHelper.renderItemIn3rdPerson(event.entityPlayer, biped, event.partialRenderTick);
 
 		ItemStack mainhand = event.entityPlayer.getHeldItem();
 		if (mainhand != null) {
-			ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(
-                    mainhand, event.entityPlayer);
-			if (quiverStack != null
-					&& quiverStack.getItem() instanceof ItemQuiver) {
+			ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(mainhand, event.entityPlayer);
+			if (quiverStack != null && ((IArrowContainer2) quiverStack.getItem()).renderDefaultQuiverModel(quiverStack)) {
 
-				ItemQuiver quiver = (ItemQuiver) quiverStack.getItem();
-				int col = quiver.getColor(quiverStack);
-				float red = (float) (col >> 16 & 255) / 255.0F;
-				float green = (float) (col >> 8 & 255) / 255.0F;
-				float blue = (float) (col & 255) / 255.0F;
+                IArrowContainer2 quiver = (IArrowContainer2) quiverStack.getItem();
 				int maxStack = quiver.getSlotCount(quiverStack);
 				int arrowCount = 0;
 				for (int i = 0; i < maxStack; i++) {
-					arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0
-							: 1;
+					arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0 : 1;
 				}
 				GL11.glColor3f(1, 1, 1);
-				Minecraft.getMinecraft().renderEngine
-						.bindTexture(quiverDetails);
+				Minecraft.getMinecraft().renderEngine.bindTexture(quiverDetails);
 				GL11.glPushMatrix();
 				biped.bipedBody.postRender(0.0625F);
 				GL11.glScalef(1.05F, 1.05F, 1.05F);
 				quiverModel.render(arrowCount, 0.0625F);
 
 				Minecraft.getMinecraft().renderEngine.bindTexture(quiverBase);
-				GL11.glColor3f(red, green, blue);
+                if(quiverStack.getItem() instanceof IDyable){
+                    int col = ((IDyable)quiver).getColor(quiverStack);
+                    float red = (float) (col >> 16 & 255) / 255.0F;
+                    float green = (float) (col >> 8 & 255) / 255.0F;
+                    float blue = (float) (col & 255) / 255.0F;
+                    GL11.glColor3f(red, green, blue);
+                }
 				quiverModel.render(0, 0.0625F);
 				GL11.glColor3f(1, 1, 1);
 
@@ -129,6 +126,7 @@ public class BattlegearClientEvents {
 		}
 	}
 
+    private static final int SKELETON_ARROW = 5;
 	@SubscribeEvent
 	public void renderLiving(RenderLivingEvent.Post event) {
 
@@ -139,7 +137,6 @@ public class BattlegearClientEvents {
 			GL11.glPushMatrix();
 			GL11.glDisable(GL11.GL_CULL_FACE);
 
-			int arrowCount = 5;
 			GL11.glColor3f(1, 1, 1);
 			Minecraft.getMinecraft().renderEngine.bindTexture(quiverDetails);
 
@@ -154,8 +151,7 @@ public class BattlegearClientEvents {
 
 			GL11.glScalef(1, -1, 1);
 
-			float f2 = interpolateRotation(event.entity.prevRenderYawOffset,
-					event.entity.renderYawOffset, 0);
+			float f2 = interpolateRotation(event.entity.prevRenderYawOffset, event.entity.renderYawOffset, 0);
 
 			GL11.glRotatef(180.0F - f2, 0.0F, 1.0F, 0.0F);
 
@@ -176,7 +172,7 @@ public class BattlegearClientEvents {
 			GL11.glRotatef(event.entity.rotationPitch, 0, 1, 0);
             ((ModelBiped)event.renderer.mainModel).bipedBody.postRender(0.0625F);
 			GL11.glScalef(1.05F, 1.05F, 1.05F);
-			quiverModel.render(arrowCount, 0.0625F);
+			quiverModel.render(SKELETON_ARROW, 0.0625F);
 
 			Minecraft.getMinecraft().renderEngine.bindTexture(quiverBase);
 			GL11.glColor3f(0.10F, 0.10F, 0.10F);
@@ -185,9 +181,9 @@ public class BattlegearClientEvents {
 
 			GL11.glEnable(GL11.GL_CULL_FACE);
 			GL11.glPopMatrix();
-
 		}
 	}
+
     private static final int MAIN_INV = InventoryPlayer.getHotbarSize();
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replacePickBlock(MouseEvent event){

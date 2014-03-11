@@ -35,26 +35,6 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     private IIcon backIcon;
     private IIcon trimIcon;
 
-    public static final float[] arrowX = new float[64];
-    public static final float[] arrowY = new float[64];
-    public static final float[] arrowDepth = new float[64];
-    public static final float[] pitch = new float[64];
-    public static final float[] yaw = new float[64];
-
-    static{
-        for(int i = 0; i < 64; i++){
-            double r = Math.random()*5;
-            double theta = Math.random()*Math.PI*2;
-
-            arrowX[i] = (float)(r * Math.cos(theta));
-            arrowY[i] = (float)(r * Math.sin(theta));
-            arrowDepth[i] = (float)(Math.random()* 0.5 + 0.5F);
-
-            pitch[i] = (float)(Math.random()*50 - 25);
-            yaw[i] = (float)(Math.random()*50 - 25);
-        }
-    }
-
     public ItemShield(ShieldType enumShield) {
         super();
         this.setCreativeTab(BattlegearConfig.customTab);
