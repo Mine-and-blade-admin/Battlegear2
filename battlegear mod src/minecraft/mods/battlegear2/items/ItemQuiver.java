@@ -182,6 +182,10 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
         return null;
     }
 
+    @Override
+    public boolean renderDefaultQuiverModel(ItemStack container) {
+        return true;
+    }
 
     @Override
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {

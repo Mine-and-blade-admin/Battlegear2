@@ -199,10 +199,12 @@ public class BattlemodeHookContainerClass {
 
                     if(shouldBlock){
                         event.setCanceled(true);
-                        ShieldBlockEvent blockEvent = new ShieldBlockEvent(player, shield, event.source, event.ammount);
+                        PlayerEventChild.ShieldBlockEvent blockEvent = new PlayerEventChild.ShieldBlockEvent(new PlayerEvent(player), shield, event.source, dmg);
                         MinecraftForge.EVENT_BUS.post(blockEvent);
 
-                        ((IShield)shield.getItem()).blockAnimation(player, dmg);
+                        if(blockEvent.performAnimation){
+                            ((IShield)shield.getItem()).blockAnimation(player, dmg);
+                        }
 
                         if(event.source.isProjectile() && event.source.getSourceOfDamage() instanceof IProjectile){
                             if(shield.getItem() instanceof IArrowCatcher){
@@ -212,7 +214,7 @@ public class BattlemodeHookContainerClass {
                             }
                         }
 
-                        if(!player.capabilities.isCreativeMode){
+                        if(blockEvent.damageShield && !player.capabilities.isCreativeMode){
                             float red = ((IShield)shield.getItem()).getDamageReduction(shield, event.source);
                             if(red<dmg){
                                 shield.damageItem(Math.round(dmg-red), player);
