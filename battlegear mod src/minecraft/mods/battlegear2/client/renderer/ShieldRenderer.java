@@ -89,7 +89,7 @@ public class ShieldRenderer implements IItemRenderer{
                             icon.getIconHeight(), (8F+16F)/256F);
 
                     if(item.isItemEnchanted())
-                        SpearRenderer.renderEnchantmentEffects(tessellator);
+                        BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
                     break;
                 case EQUIPPED:
                 case EQUIPPED_FIRST_PERSON:
@@ -130,7 +130,7 @@ public class ShieldRenderer implements IItemRenderer{
                             icon.getIconHeight(), (8F+16F)/256F);
 
                     if(item.isItemEnchanted())
-                        SpearRenderer.renderEnchantmentEffects(tessellator);
+                        BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
 
                     break;
                 case INVENTORY:
