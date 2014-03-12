@@ -8,6 +8,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import org.lwjgl.opengl.GL11;
 
 public class ArmorSlot extends Slot {
     private final EntityPlayer player;
@@ -31,8 +32,7 @@ public class ArmorSlot extends Slot {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getBackgroundIconIndex()
-    {
+    public IIcon getBackgroundIconIndex(){
         return ItemArmor.func_94602_b(type);
     }
 }

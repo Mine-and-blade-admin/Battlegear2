@@ -209,6 +209,11 @@ public class BattlegearInGameGUI extends Gui {
             }
 
             itemRenderer.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, itemstack, x, y);
+            //MOJANG derp fixes:
+            if(itemstack.isItemDamaged()){
+                GL11.glEnable(GL11.GL_ALPHA_TEST);
+                GL11.glEnable(GL11.GL_BLEND);
+            }
         }
 
     }
