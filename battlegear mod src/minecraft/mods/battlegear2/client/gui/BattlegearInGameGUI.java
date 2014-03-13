@@ -176,7 +176,7 @@ public class BattlegearInGameGUI extends Gui {
         if(BattlegearClientTickHandeler.blockBar < 0.33F){
             colour = BattlegearClientTickHandeler.COLOUR_RED;
         }
-        if(BattlegearClientTickHandeler.flashTimer > 0 && (System.currentTimeMillis() / 250) % 2 == 0){
+        if(BattlegearClientTickHandeler.getFlashTimer() > 0 && (System.currentTimeMillis() / 250) % 2 == 0){
             colour = BattlegearClientTickHandeler.COLOUR_YELLOW;
         }
         GL11.glColor3f(colour[0], colour[1], colour[2]);

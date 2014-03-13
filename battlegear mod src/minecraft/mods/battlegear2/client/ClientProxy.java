@@ -81,7 +81,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void startFlash(EntityPlayer player, float damage) {
     	if(player.getCommandSenderName().equals(Minecraft.getMinecraft().thePlayer.getCommandSenderName())){
-            BattlegearClientTickHandeler.flashTimer = 30;
+            BattlegearClientTickHandeler.resetFlash();
             ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 
             if(offhand != null && offhand.getItem() instanceof IShield)

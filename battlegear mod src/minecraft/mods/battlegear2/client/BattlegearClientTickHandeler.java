@@ -42,7 +42,8 @@ public class BattlegearClientTickHandeler {
     public static final float[] COLOUR_DEFAULT = new float[]{0, 0.75F, 1};
     public static final float[] COLOUR_RED = new float[]{1, 0.1F, 0.1F};
     public static final float[] COLOUR_YELLOW = new float[]{1, 1F, 0.1F};
-    public static int flashTimer;
+    private static final int FLASH_MAX = 30;
+    private static int flashTimer;
 
     public static float partialTick;
 
@@ -51,6 +52,7 @@ public class BattlegearClientTickHandeler {
 
     private static int previousNormal = 0;
     public static int previousBattlemode = InventoryPlayerBattle.OFFSET;
+    private static boolean specialDone = false, drawDone = false;
 
     public BattlegearClientTickHandeler(){
         ClientRegistry.registerKeyBinding(drawWeapons);
@@ -66,7 +68,7 @@ public class BattlegearClientTickHandeler {
             if (mc != null && mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
 
                 EntityClientPlayerMP player = mc.thePlayer;
-                if (special.getIsKeyPressed() && ((IBattlePlayer) player).getSpecialActionTimer() == 0){
+                if (!specialDone && special.getIsKeyPressed() && ((IBattlePlayer) player).getSpecialActionTimer() == 0){
                     ItemStack quiver = QuiverArrowRegistry.getArrowContainer(player.getCurrentEquippedItem(), player);
 
                     if(quiver != null){
@@ -88,8 +90,11 @@ public class BattlegearClientTickHandeler {
                             }
                         }
                     }
-
-                } else if (drawWeapons.getIsKeyPressed()) {
+                    specialDone = true;
+                }else if(specialDone && !special.getIsKeyPressed()){
+                    specialDone = false;
+                }
+                if (!drawDone && drawWeapons.getIsKeyPressed()) {
                     InventoryPlayer playerInventory = player.inventory;
                     if (((IBattlePlayer) player).isBattlemode()) {
                         previousBattlemode = playerInventory.currentItem;
@@ -100,6 +105,9 @@ public class BattlegearClientTickHandeler {
                         playerInventory.currentItem = previousBattlemode;
                     }
                     mc.playerController.updateController();
+                    drawDone = true;
+                }else if(drawDone && !drawWeapons.getIsKeyPressed()){
+                    drawDone = false;
                 }
             }
         }
@@ -123,7 +131,7 @@ public class BattlegearClientTickHandeler {
             ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
             if(offhand != null){
                 if(offhand.getItem() instanceof IShield){
-                    if(flashTimer == 30){
+                    if(flashTimer == FLASH_MAX){
                         player.motionY = player.motionY/2;
                     }
                     if(flashTimer > 0){
@@ -258,5 +266,13 @@ public class BattlegearClientTickHandeler {
                 player.motionZ = player.motionZ/5;
             }
         }
+    }
+
+    public static void resetFlash(){
+        flashTimer = FLASH_MAX;
+    }
+
+    public static int getFlashTimer(){
+        return flashTimer;
     }
 }
