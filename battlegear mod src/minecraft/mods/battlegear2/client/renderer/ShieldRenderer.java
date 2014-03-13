@@ -137,6 +137,9 @@ public class ShieldRenderer implements IItemRenderer{
 
                     GL11.glPushMatrix();
                     GL11.glColor3f(red, green, blue);
+                    //MOJANG derp fixes:
+                        GL11.glEnable(GL11.GL_ALPHA_TEST);
+                        GL11.glEnable(GL11.GL_BLEND);
                     itemRenderer.renderIcon(0, 0, icon, 16, 16);
                     GL11.glColor3f(1, 1, 1);
                     icon = shield.getTrimIcon();

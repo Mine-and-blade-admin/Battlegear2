@@ -4,7 +4,6 @@ import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.HeraldryTextureSmall;
 import mods.battlegear2.api.heraldry.RefreshableTexture;
-import mods.battlegear2.items.HeraldryCrest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -20,12 +19,12 @@ import static org.lwjgl.opengl.GL11.glPopMatrix;
 public class HeraldryCrestItemRenderer implements IItemRenderer{
     private RenderItem itemRenderer;
 
-    
+
     public static final ResourceLocation map_overlay = new ResourceLocation("battlegear2", "textures/heraldry/Background.png");
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return item.getItem() instanceof HeraldryCrest &&
+        return item.getItem() instanceof IHeraldryItem &&
                 ((IHeraldryItem)item.getItem()).hasHeraldry(item) &&
                 (type == ItemRenderType.INVENTORY || type == ItemRenderType.FIRST_PERSON_MAP);
     }

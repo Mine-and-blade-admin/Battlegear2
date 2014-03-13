@@ -85,12 +85,8 @@ public class HeraldryItemRenderer implements IItemRenderer{
             itemRenderer.renderIcon(0, 0, icon, 16, 16);
             glPopMatrix();
         }
-
-
         itemRenderer.zLevel -=100;
-
     }
-
 
     public void renderTexturedQuad(int x, int y, float z, int width, int height)
     {

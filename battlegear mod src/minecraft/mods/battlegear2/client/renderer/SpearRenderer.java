@@ -21,20 +21,16 @@ import org.lwjgl.opengl.GL11;
  */
 public class SpearRenderer implements IItemRenderer {
 
-
     private Minecraft mc;
     private RenderItem itemRenderer;
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        //The Equipped First Person Will likely be removed in 1.6  (Damn Forge!)
         return type == ItemRenderType.INVENTORY || type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON;
     }
 
-
     @Override
-    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item,
-                                         ItemRendererHelper helper) {
+    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
         return false;
     }
 
@@ -72,6 +68,9 @@ public class SpearRenderer implements IItemRenderer {
 
             GL11.glColor4f(1F, 1F, 1F, 1F);
             //GL11.glRotatef(90, 0, 0, 1);
+            //MOJANG derp fixes:
+                GL11.glEnable(GL11.GL_ALPHA_TEST);
+                GL11.glEnable(GL11.GL_BLEND);
             itemRenderer.renderIcon(0, 0, item.getIconIndex(), 16, 16);
 
         }else if (type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
