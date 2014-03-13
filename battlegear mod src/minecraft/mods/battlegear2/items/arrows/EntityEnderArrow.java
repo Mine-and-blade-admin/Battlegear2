@@ -10,6 +10,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 /**
@@ -76,7 +77,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                 worldObj.setBlockToAir(x, y, z);
                 ItemStack item = new ItemStack(id, 1, meta);
                 if(!((EntityPlayer) shootingEntity).inventory.addItemStackToInventory(item)){
-                    EntityItem entityitem = ((EntityPlayer) shootingEntity).dropPlayerItemWithRandomChoice(item, false);
+                    EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) shootingEntity, item, true);
                     entityitem.delayBeforeCanPickup = 0;
                     entityitem.func_145797_a(shootingEntity.getCommandSenderName());
                 }

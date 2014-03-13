@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
+
 /**
  * An arrow which deals weird effects on living entities
  * @author GotoLink
@@ -50,7 +52,7 @@ public class EntityLoveArrow extends AbstractMBArrow{
                 setDead();
                 return true;
             }else if(entityHit instanceof EntityPlayer){
-                EntityItem entityitem = ((EntityPlayer) entityHit).dropPlayerItemWithRandomChoice(((EntityPlayer) entityHit).getCurrentEquippedItem(), false);
+                EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) entityHit, ((EntityPlayer) entityHit).getCurrentEquippedItem(), true);
                 entityitem.delayBeforeCanPickup = 0;
                 entityitem.func_145797_a(entityHit.getCommandSenderName());
                 ((EntityPlayer) entityHit).inventory.setInventorySlotContents(((EntityPlayer) entityHit).inventory.currentItem, new ItemStack(ItemMBArrow.component[5]));

@@ -11,6 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.ForgeHooks;
 
 public class CraftingHandeler {
 
@@ -44,7 +45,7 @@ public class CraftingHandeler {
                     arrowCount -= nextStackSize;
                     ItemStack temp = new ItemStack(Items.arrow, nextStackSize);
                     if(!player.inventory.addItemStackToInventory(temp)){
-                        EntityItem entityitem = player.dropPlayerItemWithRandomChoice(temp, false);
+                        EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
                         entityitem.delayBeforeCanPickup = 0;
                         entityitem.func_145797_a(player.getCommandSenderName());
                     }
@@ -105,7 +106,7 @@ public class CraftingHandeler {
         		while(itr.hasNext()){
         			ItemStack temp = (ItemStack) itr.next();
         			if(!player.inventory.addItemStackToInventory(temp)){
-                        EntityItem entityitem = player.dropPlayerItemWithRandomChoice(temp, false);
+                        EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
                         entityitem.delayBeforeCanPickup = 0;
                         entityitem.func_145797_a(player.getCommandSenderName());
         			}
