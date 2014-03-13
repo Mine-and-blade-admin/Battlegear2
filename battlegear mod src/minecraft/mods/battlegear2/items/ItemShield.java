@@ -3,7 +3,6 @@ package mods.battlegear2.items;
 import java.util.List;
 
 import cpw.mods.fml.common.registry.GameRegistry;
-import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
@@ -12,7 +11,6 @@ import mods.battlegear2.api.shield.IArrowDisplay;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.enchantments.BaseEnchantment;
-import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
@@ -118,8 +116,6 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     @Override
     public void blockAnimation(EntityPlayer player, float dmg){
-        Battlegear.packetHandler.sendPacketAround(player, 32,
-                new BattlegearShieldFlashPacket(player, dmg).generatePacket());
         player.worldObj.playSoundAtEntity(player, "battlegear2:shield", 1, 1);
     }
 

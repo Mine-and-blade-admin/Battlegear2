@@ -12,6 +12,7 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
@@ -203,6 +204,7 @@ public class BattlemodeHookContainerClass {
                         MinecraftForge.EVENT_BUS.post(blockEvent);
 
                         if(blockEvent.performAnimation){
+                            Battlegear.packetHandler.sendPacketAround(player, 32, new BattlegearShieldFlashPacket(player, dmg).generatePacket());
                             ((IShield)shield.getItem()).blockAnimation(player, dmg);
                         }
 

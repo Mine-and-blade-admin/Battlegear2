@@ -61,14 +61,16 @@ public interface IShield {
     public int getBashTimer(ItemStack shield);
 
     /**
-     * Perform the blocking animation
+     * Called after a successful block, if {@link #PlayerEventShield.ShieldBlockEvent] allowed additional blocking animation
+     * A common additional animation might include a sound, particle effects, etc.
      * @param player
      * @param amount
      */
     public void blockAnimation(EntityPlayer player, float amount);
 
     /**
-     *
+     * Called after a successful block, if {@link #PlayerEventShield.ShieldBlockEvent] allowed damage to be done
+     * and the player isn't in creative mode
      * @param shield The {@link #ItemStack} representing the shield
      * @param source The {@link #DamageSource} representing the current damage
      * @return The amount of damage from the source that won't be dealt to the shield
