@@ -3,14 +3,13 @@ package mods.battlegear2.packet;
 import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
 import net.minecraft.entity.player.EntityPlayer;
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class LoginPacket extends AbstractMBPacket{
     public static final String packetName = "MB|Login";
 
     @Override
     public void process(ByteBuf inputStream, EntityPlayer player) {
-        if(FMLCommonHandler.instance().getEffectiveSide().isClient()){
+        if(player.worldObj.isRemote){
             Battlegear.battlegearEnabled = true;
         }
     }

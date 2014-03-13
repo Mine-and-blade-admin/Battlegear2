@@ -1,3 +1,10 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.5.2 ==
+* Fixed keys toggle
+* Fixed darkened slots in inventory
+* Fixed delay issue for addon shields
+* Fixed leech arrow healing player even if his victim is invulnerable
+* Fixed incorrect version number (stop MUD cycle)
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.1 ==
 * Fixed crash from using empty quiver
 * Registered recipes into forge sorter
