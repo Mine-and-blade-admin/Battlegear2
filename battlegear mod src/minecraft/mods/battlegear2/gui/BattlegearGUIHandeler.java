@@ -5,7 +5,6 @@ import mods.battlegear2.Battlegear;
 import mods.battlegear2.client.gui.BattleEquipGUI;
 import mods.battlegear2.client.gui.BattlegearSigilGUI;
 import mods.battlegear2.client.gui.GuiFlagDesigner;
-import mods.mud.gui.GuiChangelogDownload;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
@@ -13,8 +12,7 @@ public class BattlegearGUIHandeler implements IGuiHandler {
 
     public static final int equipID = 1;
     public static final int sigilEditor = 2;
-    public static final int downloader = 3;
-    public static final int flagEditor = 4;
+    public static final int flagEditor = 3;
 
     @Override
     public Object getServerGuiElement(int ID, EntityPlayer player, World world,
@@ -38,8 +36,6 @@ public class BattlegearGUIHandeler implements IGuiHandler {
                 return new BattleEquipGUI(player, world.isRemote);
             case sigilEditor:
                 return Battlegear.debug?new BattlegearSigilGUI(player, world.isRemote):null;
-            case downloader:
-                return new GuiChangelogDownload();
             case flagEditor:
                 return new GuiFlagDesigner(player);
             default:
