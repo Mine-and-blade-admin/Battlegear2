@@ -1,8 +1,9 @@
 package mods.battlegear2.client.renderer;
 
+import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.client.utils.ImageCache;
+import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.TileEntityFlagPole;
-import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -33,7 +34,8 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         if(tileentity instanceof TileEntityFlagPole){
             Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
             int type = tileentity.getBlockMetadata();
-            int side = BattlegearConfig.banner.getOrient(tileentity.getBlockMetadata());
+            BlockFlagPole banner = (BlockFlagPole) tileentity.getBlockType();
+            int side = banner.getOrient(type);
 
             GL11.glPushMatrix();
             GL11.glTranslated(d0, d1, d2);
@@ -41,18 +43,18 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
 
             switch (side){
                 case 0:
-                    renderYFlagPole(tileentity, d0, d1, d2, f, type, side);
-                    renderYFlag(tileentity, d0, d1, d2, f, type, side);
+                    renderYFlagPole(banner, d0, d1, d2, f, type, side);
+                    renderYFlag((IFlagHolder)tileentity, d0, d1, d2, f, type, side);
                     break;
                 case 1:
-                    renderZFlagPole(tileentity, d0, d1, d2, f, type, side);
-                    renderZFlag(tileentity, d0, d1, d2, f, type, side);
+                    renderZFlagPole(banner, d0, d1, d2, f, type, side);
+                    renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type, side);
                     break;
                 case 2:
                     GL11.glRotatef(90, 0, 1, 0);
                     GL11.glTranslatef(-1, 0, 0);
-                    renderZFlagPole(tileentity, d0, d1, d2, f, type, side);
-                    renderZFlag(tileentity, d0, d1, d2, f, type, side);
+                    renderZFlagPole(banner, d0, d1, d2, f, type, side);
+                    renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type, side);
                     break;
             }
 
@@ -60,16 +62,15 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         }
     }
 
-    private void renderZFlag(TileEntity tileentity, double d0, double d1, double d2, float f, int type, int side) {
+    private void renderZFlag(IFlagHolder tileentity, double d0, double d1, double d2, float f, int type, int side) {
 
-        Tessellator tess = Tessellator.instance;
-
-        if(((TileEntityFlagPole) tileentity).hasFlag())
+        List<ItemStack> flags = tileentity.getFlags();
+        if(flags.size()>0)
         {
+            Tessellator tess = Tessellator.instance;
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            List<ItemStack> flags = ((TileEntityFlagPole) tileentity).getFlags();
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glMatrixMode(GL11.GL_TEXTURE);
             GL11.glPushMatrix();
@@ -128,41 +129,44 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         }
     }
 
-    private void renderZFlagPole(TileEntity tileentity, double d0, double d1, double d2, float f, int type, int side) {
-        IIcon icon = BattlegearConfig.banner.getIcon(2, type);
+    private void renderZFlagPole(BlockFlagPole banner, double d0, double d1, double d2, float f, int type, int side) {
+        IIcon icon = banner.getIcon(2, type);
         Tessellator tess = Tessellator.instance;
-
+        float[] dims = new float[5];
+        for(int i=0; i<5; i++){
+            dims[i] = banner.getTextDim(type, i);
+        }
         tess.startDrawingQuads();
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 0)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 0)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
+        tess.addVertexWithUV(9F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(9F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(9F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(9F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
         tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
+        tess.addVertexWithUV(7F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(9F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(9F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(7F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
         tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 3)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 3)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
+        tess.addVertexWithUV(7F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(7F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(7F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(7F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
         tess.draw();
 
 
         tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
+        tess.addVertexWithUV(7F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(9F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(9F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(7F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
         tess.draw();
 
 
-        icon = BattlegearConfig.banner.getIcon(0, type);
+        icon = banner.getIcon(0, type);
 
         tess.startDrawingQuads();
         tess.addVertexWithUV(7F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
@@ -183,16 +187,15 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
     }
 
 
-    private void renderYFlag(TileEntity tileentity, double d0, double d1, double d2, float f, int type, int side) {
+    private void renderYFlag(IFlagHolder tileentity, double d0, double d1, double d2, float f, int type, int side) {
 
-        Tessellator tess = Tessellator.instance;
-
-        if(((TileEntityFlagPole) tileentity).hasFlag())
+        List<ItemStack> flags = tileentity.getFlags();
+        if(flags.size()>0)
         {
+            Tessellator tess = Tessellator.instance;
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            List<ItemStack> flags = ((TileEntityFlagPole) tileentity).getFlags();
 
 
             GL11.glDisable(GL11.GL_LIGHTING);
@@ -243,42 +246,46 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         }
     }
 
-    private void renderYFlagPole(TileEntity tileentity, double d0, double d1, double d2, float f, int type, int side) {
+    private void renderYFlagPole(BlockFlagPole banner, double d0, double d1, double d2, float f, int type, int side) {
 
-        IIcon icon = BattlegearConfig.banner.getIcon(2, type);
+        IIcon icon = banner.getIcon(2, type);
         Tessellator tess = Tessellator.instance;
+        float[] dims = new float[5];
+        for(int i=0; i<5; i++){
+            dims[i] = banner.getTextDim(type, i);
+        }
 
         tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 0)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 0)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
+        tess.addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
         tess.startDrawingQuads();
-        tess.addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 1)),icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.draw();
-
-
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 3)),icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 3)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 2)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
+        tess.addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[1]),icon.getInterpolatedV(dims[4]));
         tess.draw();
 
 
         tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 3)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 4)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 0)));
-        tess.addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 4)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
-        tess.addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(BattlegearConfig.banner.getTextDim(type, 3)), icon.getInterpolatedV(BattlegearConfig.banner.getTextDim(type, 4)));
+        tess.addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[3]),icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
-        icon = BattlegearConfig.banner.getIcon(0, type);
+
+        tess.startDrawingQuads();
+        tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[4]), icon.getInterpolatedV(dims[0]));
+        tess.addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[4]), icon.getInterpolatedV(dims[4]));
+        tess.addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
+        tess.draw();
+
+        icon = banner.getIcon(0, type);
 
         tess.startDrawingQuads();
         tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
