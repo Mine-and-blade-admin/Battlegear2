@@ -294,7 +294,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     	super.dropAllItems();
         for (int i = 0; i < this.extraItems.length; ++i) {
             if (this.extraItems[i] != null) {
-                this.player.dropPlayerItemWithRandomChoice(this.extraItems[i], true);
+                this.player.func_146097_a(this.extraItems[i], true, false);
                 this.extraItems[i] = null;
             }
         }
