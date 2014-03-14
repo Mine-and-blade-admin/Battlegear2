@@ -5,6 +5,7 @@ import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.ItemBlockFlagPole;
 import mods.battlegear2.heraldry.KnightArmourRecipie;
+import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.items.*;
 import mods.battlegear2.recipies.DyeRecipie;
@@ -26,6 +27,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class BattlegearConfig {
+    public static final String MODID = "battlegear2:";
     private static Configuration file;
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
 	public static boolean forceBackSheath = false, arrowForceRendered = true, enableSkeletonQuiver = true;
@@ -72,17 +74,17 @@ public class BattlegearConfig {
         Arrays.sort(disabledItems);
 
         if(Arrays.binarySearch(disabledItems, itemNames[0]) < 0){
-            heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName("battlegear2:heraldric").setTextureName("battlegear2:bg-icon");
+            heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName(MODID+itemNames[0]).setTextureName(MODID+"bg-icon");
         }
 
         if(Arrays.binarySearch(disabledItems, itemNames[10]) < 0){
-            banner = (BlockFlagPole)new BlockFlagPole().setCreativeTab(customTab).setBlockName("battlegear2:flagpole");
-            GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, "battlegear2:flagpole");
+            banner = (BlockFlagPole)new BlockFlagPole().setCreativeTab(customTab).setBlockName(MODID+itemNames[10]);
+            GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, MODID+itemNames[10]);
+            GameRegistry.registerTileEntity(TileEntityFlagPole.class, MODID+itemNames[10]);
         }
 
         if(Arrays.binarySearch(disabledItems, itemNames[1]) < 0){
-        	chain = new Item();
-        	chain.setUnlocalizedName("battlegear2:"+itemNames[1]).setTextureName("battlegear2:"+itemNames[1]).setCreativeTab(customTab);
+        	chain = new Item().setUnlocalizedName(MODID+itemNames[1]).setTextureName(MODID+itemNames[1]).setCreativeTab(customTab);
         }
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", false).getBoolean(false);
         enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", true).getBoolean(true);
@@ -93,12 +95,10 @@ public class BattlegearConfig {
         config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.");
         
         if(Arrays.binarySearch(disabledItems, itemNames[2]) < 0){
-        	quiver = new ItemQuiver();
-        	quiver.setUnlocalizedName("battlegear2:"+itemNames[2]).setTextureName("battlegear2:quiver/"+itemNames[2]).setCreativeTab(customTab);
+        	quiver = new ItemQuiver().setUnlocalizedName(MODID+itemNames[2]).setTextureName(MODID+"quiver/"+itemNames[2]).setCreativeTab(customTab);
         }
         if(Arrays.binarySearch(disabledItems, itemNames[9]) < 0){
-        	MbArrows = new ItemMBArrow();
-        	MbArrows.setUnlocalizedName("battlegear2:" + itemNames[9]).setTextureName("battlegear2:" + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
+        	MbArrows = new ItemMBArrow().setUnlocalizedName(MODID + itemNames[9]).setTextureName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
         }
         String category = "Skeleton CustomArrow Spawn Rate";
         config.addCustomCategoryComment(category, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");

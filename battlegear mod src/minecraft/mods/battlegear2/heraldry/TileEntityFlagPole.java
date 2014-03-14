@@ -3,11 +3,12 @@ package mods.battlegear2.heraldry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.heraldry.IFlagHolder;
-import mods.battlegear2.packet.BattlegearBannerPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
@@ -80,11 +81,14 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
 
     @Override
     public Packet getDescriptionPacket() {
-        return new BattlegearBannerPacket(xCoord, yCoord, zCoord, flags).generatePacket();
+        NBTTagCompound flagCompound = new NBTTagCompound();
+        writeToNBT(flagCompound);
+        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, flagCompound);
     }
 
-    public boolean hasFlag(){
-        return flags.size() != 0;
+    @Override
+    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt){
+        readFromNBT(pkt.func_148857_g());
     }
 
     @Override

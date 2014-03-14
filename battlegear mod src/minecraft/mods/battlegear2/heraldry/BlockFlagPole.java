@@ -1,9 +1,9 @@
 package mods.battlegear2.heraldry;
 
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
+import mods.battlegear2.packet.BattlegearBannerPacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -97,7 +97,7 @@ public class BlockFlagPole extends Block {
                     if(flags.size()>0){
                         ItemStack flag = flags.remove(flags.size() - 1);
                         par5EntityPlayer.inventory.setInventorySlotContents(par5EntityPlayer.inventory.currentItem, flag);
-                        Battlegear.packetHandler.sendPacketToAll((FMLProxyPacket)te.getDescriptionPacket());
+                        Battlegear.packetHandler.sendPacketToAll(new BattlegearBannerPacket(x, y, z, flags).generatePacket());
                     }
                 }
 
@@ -105,10 +105,12 @@ public class BlockFlagPole extends Block {
             }else if(stack.getItem() instanceof IHeraldryItem){
 
                 if(!world.isRemote){
-                    if(((IFlagHolder) te).addFlag(stack) && !par5EntityPlayer.capabilities.isCreativeMode){
-                        par5EntityPlayer.inventory.decrStackSize(par5EntityPlayer.inventory.currentItem, 1);
+                    if(((IFlagHolder) te).addFlag(stack)){
+                        if(!par5EntityPlayer.capabilities.isCreativeMode){
+                            par5EntityPlayer.inventory.decrStackSize(par5EntityPlayer.inventory.currentItem, 1);
+                        }
+                        Battlegear.packetHandler.sendPacketToAll(new BattlegearBannerPacket(x, y, z, ((IFlagHolder) te).getFlags()).generatePacket());
                     }
-                    Battlegear.packetHandler.sendPacketToAll((FMLProxyPacket)te.getDescriptionPacket());
                 }
                 return true;
             }
