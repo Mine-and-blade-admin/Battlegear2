@@ -256,6 +256,6 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 
     @Override
     public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
-
+	stack.damageItem(damage, entity);
     }
 }
