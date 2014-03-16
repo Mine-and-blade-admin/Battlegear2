@@ -17,10 +17,10 @@ public class GuiPatternScrollList extends GUIScrollList{
 	
 	BattlegearSigilGUI parent;
 	public GuiPatternScrollList(BattlegearSigilGUI parent, int width, int top, int bottom, int left) {
-		super(Minecraft.getMinecraft(), width, top+20, bottom-20, left, 20);
+		super(width, top+20, bottom-20, left, 20);
 		this.parent = parent;
         dynamicTextures = new RefreshableTexture[
-                PatternStore.patterns.get(parent.getCurrentData().getPatternIndex()).length];
+                PatternStore.DEFAULT.patterns.get(parent.getCurrentData().getPatternIndex()).length];
 		for(int i = 0; i < dynamicTextures.length; i++){
             dynamicTextures[i] = new RefreshableTexture(32,32);
         }
@@ -33,7 +33,7 @@ public class GuiPatternScrollList extends GUIScrollList{
 
 	@Override
 	protected int getSize() {
-		return PatternStore.patterns.get(parent.getCurrentData().getPatternIndex()).length;
+		return PatternStore.DEFAULT.patterns.get(parent.getCurrentData().getPatternIndex()).length;
 	}
 
 	@Override

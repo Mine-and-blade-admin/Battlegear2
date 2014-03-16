@@ -239,7 +239,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     public float getStrVsBlock(Block block) {
         if (isBattlemode()) {
             ItemStack currentItemStack = getCurrentItem();
-
             return currentItemStack != null ? currentItemStack.getStrVsBlock(block) : 1.0F;
 
         } else {

@@ -44,12 +44,11 @@ public class BattlegearBannerPacket extends AbstractMBPacket{
 
     @Override
     public void process(DataInputStream in, EntityPlayer player) {
-        int size = 0;
         try{
             posX = in.readInt();
             posY = in.readInt();
             posZ = in.readInt();
-            size = in.readByte();
+            int size = in.readByte();
             for(int i = 0; i < size; i++){
                 parts.add(Packet.readItemStack(in));
             }

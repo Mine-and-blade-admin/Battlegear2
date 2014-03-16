@@ -10,8 +10,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-@Deprecated
-public class KnightArmourRecipie{/* implements IRecipe{
+public class KnightArmourRecipie implements IRecipe{
 
 	private ItemArmor knightArmour;
 	private int chainArmourId;
@@ -112,5 +111,4 @@ public class KnightArmourRecipie{/* implements IRecipe{
 		//TODO: may need to define the "code"
 		return new ItemStack(knightArmour);
 	}
-*/
 }

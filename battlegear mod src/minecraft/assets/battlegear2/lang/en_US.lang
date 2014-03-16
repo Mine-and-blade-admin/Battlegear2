@@ -1,5 +1,9 @@
 name.title=M&B Battlegear 2
 
+flag.design.save=Save
+flag.design.load=Load
+flag.design.load.sections=Load Section
+
 item.battlegear2:heraldric.name=Heraldic Icon
 item.battlegear2:chain.name=Chain
 item.battlegear2:quiver.name=Quiver
@@ -57,7 +61,11 @@ enchantment.shield.recover=Shield Recovery
 enchantment.bow.loot=Bow Luck
 enchantment.bow.charge=Bow Drawnback
 
-tile.battlegear2:banner.name=Banner
+tile.battlegear2:flagpole.oak.name=Oak Flag Pole
+tile.battlegear2:flagpole.spruce.name=Spruce Flag Pole
+tile.battlegear2:flagpole.birch.name=Birch Flag Pole
+tile.battlegear2:flagpole.jungle.name=Jungle Flag Pole
+tile.battlegear2:flagpole.iron.name=Iron Flag Pole
 
 sigil.pattern.title=Pattern
 sigil.icon.title=Sigil
@@ -101,3 +109,5 @@ lore.advanced.arrow.piercing=Shears sheeps with style
 lore.advanced.arrow.poison=Deals Wither effect
 lore.advanced.arrow.mystery=Sends a peace and love message
 lore.advanced.arrow.leech=Has a vampire touch
+
+tooltip.armour.points=Armor

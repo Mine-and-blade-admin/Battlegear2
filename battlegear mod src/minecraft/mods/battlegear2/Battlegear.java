@@ -31,8 +31,8 @@ import cpw.mods.fml.relauncher.FMLInjectionData;
 import java.net.URL;
 import java.util.logging.Logger;
 
-@Mod(modid="battlegear2")
-@NetworkMod(clientSideRequired = true, serverSideRequired = false,
+@Mod(modid="battlegear2", useMetadata = true)
+@NetworkMod(clientSideRequired = true,
         channels = {
                 BattlegearAnimationPacket.packetName,
                 BattlegearSyncItemPacket.packetName,
@@ -56,7 +56,7 @@ public class Battlegear {
             serverSide = "mods.battlegear2.CommonProxy")
     public static CommonProxy proxy;
 
-    public static String imageFolder = "assets/battlegear2/textures/";
+    public static String imageFolder = "battlegear2:textures/";
     public static final String CUSTOM_DAMAGE_SOURCE = "battlegearExtra";
     public static EnumArmorMaterial knightArmourMaterial;
 
@@ -97,18 +97,16 @@ public class Battlegear {
 	        	QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows.itemID, i, ItemMBArrow.arrows[i]);
 	        }
         }
-    }
-
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        BattlegearUtils.scanAndProcessItems();
         proxy.registerKeyHandelers();
         proxy.registerTickHandelers();
         proxy.registerItemRenderers();
 
         NetworkRegistry.instance().registerGuiHandler(this, new BattlegearGUIHandeler());
         GameRegistry.registerPlayerTracker(new BgPlayerTracker());
+    }
 
+    @EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
         if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
             proxy.tryUseTConstruct();
         }

@@ -30,15 +30,12 @@ public class GuiChangelogDownload extends GuiScreen
     private GuiSlotModList modList;
     private int selected = -1;
     private UpdateEntry selectedMod;
-    private int listWidth;
     private ArrayList<UpdateEntry> entries;
 
     private String[] changelog;
 
     int lineStart = 0;
-    int scrollbarHeight = 24;
-    int scrollLocHeight;
-
+    private GuiButton disable;
     private GuiButton download;
     private GuiButton close1;
     private GuiButton ok;
@@ -71,25 +68,20 @@ public class GuiChangelogDownload extends GuiScreen
     }
 
     @Override
-
-    /**
-     * Adds the buttons (and other controls) to the screen in question.
-     */
     public void initGui()
     {
-        listWidth=100;
         this.buttonList.clear();
-        this.modList=new GuiSlotModList(this, entries, listWidth);
+        this.modList=new GuiSlotModList(this, entries, 100);
         this.modList.registerScrollButtons(this.buttonList, 7, 8);
 
 
         for(int i= 0; i < bullets.length; i++){
             bulletWidth[i] = fontRenderer.getStringWidth(bullets[i]+" ");
         }
-
+        disable = new GuiButton(3, 15, 10, 125, 20, StatCollector.translateToLocal("mud.disable")+": "+Boolean.toString(!ModUpdateDetector.enabled));
         download = new GuiButton(4, 15, height-35, 125, 20, StatCollector.translateToLocal("button.download.latest"));
         download.enabled = false;
-        close1 = new GuiButton(5, width-15-125, height-35, 125, 20, StatCollector.translateToLocal("button.close"));
+        close1 = new GuiButton(5, width-140, height-35, 125, 20, StatCollector.translateToLocal("gui.done"));
         ok = new GuiButton(6, (width - 200)/2 + 5, (height - 150)/2+115, 190, 20, StatCollector.translateToLocal("button.ok"));
         urlButton = new GuiButton(7, (width - 125)/2, height-35, 125, 20, StatCollector.translateToLocal("button.url"));
         urlButton.enabled = false;
@@ -109,15 +101,12 @@ public class GuiChangelogDownload extends GuiScreen
         if(!isDownloading){
             if (par2 == 1)
             {
-                this.mc.displayGuiScreen((GuiScreen)parent);
+                this.mc.displayGuiScreen(parent);
                 this.mc.setIngameFocus();
             }
         }
     }
 
-    /**
-     * Fired when a control is clicked. This is the equivalent of ActionListener.actionPerformed(ActionEvent e).
-     */
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.enabled)
@@ -125,26 +114,31 @@ public class GuiChangelogDownload extends GuiScreen
             if(!isDownloading || (downloadFailed || downloadComplete) ){
                 switch (button.id)
                 {
+                    case 3:
+                        isDownloading = false;
+                        close1.enabled = true;
+                        ModUpdateDetector.toggleState();
+                        disable.displayString = StatCollector.translateToLocal("mud.disable")+":"+Boolean.toString(!ModUpdateDetector.enabled);
+                        return;
                     case 4:
-                            ModContainer mc = selectedMod.getMc();
-                            String filename = String.format("[%s] %s - %s.jar",
-                                    Loader.instance().getMCVersionString().replaceAll("Minecraft", "").trim(),
-                                    mc.getName(),
-                                    selectedMod.getLatest().getVersionString());
-                            File newFile = new File(mc.getSource().getParent(), filename);
-                            Thread t = new Thread(new Downloader(selectedMod.getLatest().download,
-                                    newFile, mc.getSource(), selectedMod.getLatest().md5
-                            ));
-                            t.start();
-                            isDownloading = true;
-                            ok.drawButton = true;
-                            close1.enabled = false;
-                            download.enabled = false;
-                            urlButton.enabled = false;
+                        ModContainer mc = selectedMod.getMc();
+                        String filename = String.format("[%s] %s - %s.jar",
+                                Loader.instance().getMCVersionString().replaceAll("Minecraft", "").trim(),
+                                mc.getName(),
+                                selectedMod.getLatest().getVersionString());
+                        File newFile = new File(mc.getSource().getParent(), filename);
+                        Thread t = new Thread(new Downloader(selectedMod.getLatest().download,
+                                newFile, mc.getSource(), selectedMod.getLatest().md5
+                        ));
+                        t.start();
+                        isDownloading = true;
+                        ok.drawButton = true;
+                        close1.enabled = false;
+                        download.enabled = false;
+                        urlButton.enabled = false;
                         return;
                     case 5:
-                        this.mc.displayGuiScreen((GuiScreen)parent);
-                        //this.mc.setIngameFocus();
+                        this.mc.displayGuiScreen(parent);
                         return;
                     case 6:
                         isDownloading = false;
@@ -177,10 +171,6 @@ public class GuiChangelogDownload extends GuiScreen
     }
 
     @Override
-
-    /**
-     * Draws the screen and all the components in it.
-     */
     public void drawScreen(int p_571_1_, int p_571_2_, float p_571_3_)
     {
         if(modList != null)
@@ -497,7 +487,6 @@ public class GuiChangelogDownload extends GuiScreen
 
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Download failed");
                 message = StatCollector.translateToLocal(e.getLocalizedMessage());
                 downloadFailed = true;
                 ok.enabled = true;

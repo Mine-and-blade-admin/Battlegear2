@@ -7,7 +7,6 @@ import mods.battlegear2.packet.BattlegearGUIPacket;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import org.lwjgl.opengl.GL11;
 
-import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.gui.controls.GUICrestElementList;

@@ -25,6 +25,7 @@ public class EntityExplossiveArrow extends AbstractMBArrow{
 
     @Override
     public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
+        source.setExplosion();
         this.onExplode();
         return false;
     }

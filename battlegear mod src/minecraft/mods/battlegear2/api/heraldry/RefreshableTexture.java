@@ -26,8 +26,8 @@ public class RefreshableTexture extends DynamicTexture{
     }
 
     public void refreshWith(int patternIndex, HeraldryData data, boolean scale){
-        if(patternIndex>=0 && patternIndex<PatternStore.patterns.size()){
-            refreshWith(PatternStore.patterns.get(patternIndex), data, scale);
+        if(patternIndex>=0 && patternIndex<PatternStore.DEFAULT.patterns.size()){
+            refreshWith(PatternStore.DEFAULT.patterns.get(patternIndex), data, scale);
         }
     }
 

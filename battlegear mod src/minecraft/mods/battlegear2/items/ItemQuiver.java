@@ -42,8 +42,11 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
     	for(int i = 0; i<getSlotCount(stack);i++){
-    		player.dropPlayerItem(getStackInSlot(stack, i));
-    		setStackInSlot(stack, i, null);
+            ItemStack temp = getStackInSlot(stack, i);
+            if(temp!=null){
+                player.dropPlayerItem(temp);
+                setStackInSlot(stack, i, null);
+            }
     	}
         return stack;
     }
@@ -53,7 +56,6 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
         super.registerIcons(par1IconRegister);
         quiverDetails = par1IconRegister.registerIcon("battlegear2:quiver/quiver-details");
         quiverArrows = par1IconRegister.registerIcon("battlegear2:quiver/quiver-arrows");
-
     }
 
     @Override
@@ -145,7 +147,6 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     public boolean isCraftableWithArrows(ItemStack stack, ItemStack arrows) {
         return arrows != null && QuiverArrowRegistry.isKnownArrow(arrows);
     }
-
 
     @Override
     public ItemStack addArrows(ItemStack container, ItemStack newStack) {

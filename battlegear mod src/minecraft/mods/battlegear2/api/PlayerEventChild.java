@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Cancelable;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
@@ -37,6 +38,29 @@ public abstract class PlayerEventChild extends PlayerEvent{
     public void setResult(Result value) {
         super.setResult(value);
         parent.setResult(value);
+    }
+
+    /**
+     * Event fired when a shield successfully blocks an attack (in @link LivingHurtEvent)
+     */
+    public static class ShieldBlockEvent extends PlayerEventChild {
+        public final ItemStack shield;
+        public final DamageSource source;
+        public final float ammount; // use same name as other Forge events
+        /**
+         * If the {@link IShield#blockAnimation(EntityPlayer, float)} should be called
+         */
+        public boolean performAnimation = true;
+        /**
+         * If the shield should be damaged based on the ammount and the result of {@link IShield#getDamageReduction(ItemStack, DamageSource)}
+         */
+        public boolean damageShield = true;
+        public ShieldBlockEvent(PlayerEvent parent, ItemStack shield, DamageSource source, float ammount) {
+            super(parent);
+            this.shield = shield;
+            this.source = source;
+            this.ammount = ammount;
+        }
     }
 
     /**
@@ -126,7 +150,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
         }
 
         /**
-         * Event fired after an arrow has been selected and taken from a {@link #IArrowContainer2}, before it is actually spawned
+         * Event fired after an arrow has been selected and taken from a {@link IArrowContainer2}, before it is actually spawned
          */
         @Cancelable
         public static class Firing extends QuiverArrowEvent {

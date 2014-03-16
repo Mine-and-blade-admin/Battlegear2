@@ -21,18 +21,11 @@ import java.util.EnumSet;
 
 public class BattlegearTickHandeler implements ITickHandler {
 
-    //public HashMap<String, Integer> currentItemCache = new HashMap<String, Integer>();
-
     @Override
     public void tickStart(EnumSet<TickType> type, Object... tickData) {
         EntityPlayer entityPlayer = (EntityPlayer) tickData[0];
 
         if (entityPlayer.worldObj instanceof WorldServer) {
-                /*if(!currentItemCache.containsKey(entityPlayer.username)||entityPlayer.inventory.currentItem!=currentItemCache.get(entityPlayer.username))
-                {
-                	entityPlayer.inventory.onInventoryChanged();
-                	currentItemCache.put(entityPlayer.username, entityPlayer.inventory.currentItem);
-                }*/
 
             if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 

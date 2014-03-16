@@ -31,11 +31,12 @@ public class EntityLeechArrow extends AbstractMBArrow{
     @Override
     public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
         if(shootingEntity instanceof EntityLivingBase && entityHit instanceof EntityLivingBase){
-            float value = ((EntityLivingBase) entityHit).getHealth()* 0.2F;//Leech 20% of opponent life
-            ((EntityLivingBase) shootingEntity).heal(value);
-            entityHit.attackEntityFrom(DamageSource.causeThornsDamage(shootingEntity), value);
-            ((EntityLivingBase) entityHit).addPotionEffect(new PotionEffect(Potion.weakness.getId(), 40));//Weaken the opponent
-            ((EntityLivingBase) entityHit).setArrowCountInEntity(((EntityLivingBase) entityHit).getArrowCountInEntity()+1);
+            float value = ((EntityLivingBase) entityHit).getHealth()* 0.2F;//20% of opponent life
+            if(entityHit.attackEntityFrom(getLeechDamage(), value)){//Try leech
+                ((EntityLivingBase) shootingEntity).heal(value);
+                ((EntityLivingBase) entityHit).addPotionEffect(new PotionEffect(Potion.weakness.getId(), 40));//Weaken the opponent
+                ((EntityLivingBase) entityHit).setArrowCountInEntity(((EntityLivingBase) entityHit).getArrowCountInEntity()+1);
+            }
             this.setDead();
             return true;
         }
@@ -48,5 +49,9 @@ public class EntityLeechArrow extends AbstractMBArrow{
             worldObj.spawnEntityInWorld(new EntityPotion(worldObj, x, y, z, new ItemStack(Item.potion, 1, 16392)));//Splash weakness
         }
         this.setDead();
+    }
+
+    public DamageSource getLeechDamage(){
+        return DamageSource.causeThornsDamage(shootingEntity).setProjectile();
     }
 }

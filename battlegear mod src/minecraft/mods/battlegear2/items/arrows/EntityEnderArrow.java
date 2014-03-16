@@ -45,7 +45,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                         }
                         entityplayermp.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                         entityplayermp.fallDistance = 0.0F;
-                        entityplayermp.attackEntityFrom(DamageSource.fall, event.attackDamage);
+                        entityplayermp.attackEntityFrom(getEnderDamage(), event.attackDamage);
                     }
                     event = new EnderTeleportEvent((EntityLivingBase) entityHit, x+0.5F, y, z+0.5F, ((EntityLivingBase) entityHit).getMaxHealth()/10);
                     if (!MinecraftForge.EVENT_BUS.post(event)){
@@ -54,7 +54,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                         }
                         ((EntityLivingBase) entityHit).setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                         entityHit.fallDistance = 0.0F;
-                        entityHit.attackEntityFrom(DamageSource.fall, event.attackDamage);
+                        entityHit.attackEntityFrom(getEnderDamage(), event.attackDamage);
                     }
                 }
             }
@@ -109,12 +109,16 @@ public class EntityEnderArrow extends AbstractMBArrow{
                             }
                             entityplayermp.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
                             entityplayermp.fallDistance = 0.0F;
-                            entityplayermp.attackEntityFrom(DamageSource.fall, event.attackDamage);
+                            entityplayermp.attackEntityFrom(getEnderDamage(), event.attackDamage);
                         }
                     }
                 }
             }
         }
         this.setDead();
+    }
+
+    public DamageSource getEnderDamage(){
+        return new BGDamageSource("fall").bypassesArmor().setProjectile();
     }
 }

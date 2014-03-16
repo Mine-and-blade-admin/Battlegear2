@@ -1,32 +1,28 @@
 package mods.battlegear2.client.heraldry;
 
-import java.awt.Color;
 import java.util.List;
 
+import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldyArmour;
+import mods.battlegear2.api.heraldry.PatternStore;
 import mods.battlegear2.heraldry.HelaldyArmourPositions;
 import mods.battlegear2.heraldry.HeraldryIcon;
 import mods.battlegear2.heraldry.SigilHelper;
 
 import org.lwjgl.opengl.GL11;
 
-
-
 import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.MinecraftForgeClient;
 
 @Deprecated
 public class HeraldryArmourModel extends ModelBiped{
-	/*
+
 	ItemStack stack;
 	int armourSlot;
 	
@@ -84,7 +80,7 @@ public class HeraldryArmourModel extends ModelBiped{
 				}
 				
 				
-				FMLClientHandler.instance().getClient().renderEngine.func_110577_a(new ResourceLocation(heraldryItem.getBaseArmourPath(armourSlot)));//.bindTexture(heraldryItem.getBaseArmourPath(armourSlot));
+				FMLClientHandler.instance().getClient().renderEngine.bindTexture(new ResourceLocation(heraldryItem.getBaseArmourPath(armourSlot)));//.bindTexture(heraldryItem.getBaseArmourPath(armourSlot));
 				float[] colour = SigilHelper.getPrimaryColourArray(code);
 				GL11.glColor3f(colour[0], colour[1], colour[2]);
 				this.bipedHead.render(par7);
@@ -112,8 +108,8 @@ public class HeraldryArmourModel extends ModelBiped{
 	            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	            GL11.glMatrixMode(GL11.GL_TEXTURE);
 	            
-	            FMLClientHandler.instance().getClient().renderEngine.func_110577_a(
-	            		new ResourceLocation(heraldryItem.getPatternArmourPath(SigilHelper.getPattern(code), armourSlot)));
+	            FMLClientHandler.instance().getClient().renderEngine.bindTexture(
+                        new ResourceLocation(heraldryItem.getPatternArmourPath(PatternStore.DEFAULT ,new HeraldryData(code).getPatternIndex(), armourSlot)));
 	            GL11.glLoadIdentity();
 	            
 	            GL11.glMatrixMode(GL11.GL_MODELVIEW);
@@ -150,7 +146,7 @@ public class HeraldryArmourModel extends ModelBiped{
 		            	
 		            	
 		            	GL11.glMatrixMode(GL11.GL_TEXTURE);
-				    	FMLClientHandler.instance().getClient().renderEngine.func_110577_a(sigil.getForegroundImage());
+				    	FMLClientHandler.instance().getClient().renderEngine.bindTexture(sigil.getForegroundImage());
 				    	GL11.glLoadIdentity();
 			            GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			            
@@ -181,7 +177,7 @@ public class HeraldryArmourModel extends ModelBiped{
 		            	}
 		            	
 		            	GL11.glMatrixMode(GL11.GL_TEXTURE);
-		    	    	FMLClientHandler.instance().getClient().renderEngine.func_110577_a(sigil.getBackgroundImage());
+		    	    	FMLClientHandler.instance().getClient().renderEngine.bindTexture(sigil.getBackgroundImage());
 		    	    	GL11.glLoadIdentity();
 		                GL11.glMatrixMode(GL11.GL_MODELVIEW);
 		            	
@@ -236,7 +232,7 @@ public class HeraldryArmourModel extends ModelBiped{
 	/**
      * Renders an item held in hand as a 2D texture with thickness
      */
-	/*
+
 	public static void renderTexturedQuad(Tessellator par0Tessellator, float par1, float par2, float par3, float par4, int par5, int par6, float par7)
     {
         par0Tessellator.startDrawingQuads();
@@ -299,6 +295,6 @@ public class HeraldryArmourModel extends ModelBiped{
 		}
 		GL11.glTranslatef(0, 0, -helmOffset);
 		GL11.glPopMatrix();
-	}*/
+	}
 	
 }

@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.world.World;
 
 public abstract class AbstractMBArrow extends EntityArrow {
@@ -68,4 +69,26 @@ public abstract class AbstractMBArrow extends EntityArrow {
 	public ItemStack getPickedUpItem(){
 		return QuiverArrowRegistry.getItem(this.getClass());
 	}
+
+    public static class BGDamageSource extends DamageSource{
+        public BGDamageSource(String name){
+            super(name);
+        }
+
+        public DamageSource bypassesArmor(){
+            setDamageBypassesArmor();
+            return this;
+        }
+    }
+
+    public class BGIndirectDamage extends EntityDamageSourceIndirect{
+        public BGIndirectDamage(String name, Entity source, Entity indirect){
+            super(name, source, indirect);
+        }
+
+        public DamageSource bypassesArmor(){
+            setDamageBypassesArmor();
+            return this;
+        }
+    }
 }

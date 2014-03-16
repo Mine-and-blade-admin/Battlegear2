@@ -4,44 +4,40 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.Cancelable;
 
-public class RenderItemBarEvent {
-	@Cancelable
-	public static class PreRender extends RenderGameOverlayEvent.Pre{
-		public final ItemStack item;
-		public int xOffset = 0;
-		public int yOffset = 0;
+public class RenderItemBarEvent extends RenderGameOverlayEvent{
+    public int xOffset = 0;
+    public int yOffset = 0;
 
-		public PreRender(RenderGameOverlayEvent parent, ItemStack item) {
-			super(parent, null);
-			this.item = item;
-		}
-		
-	}
-	
-	@Cancelable
-	public static class PreDual extends PreRender{
-		public final ItemStack mainhand;
-		public PreDual(RenderGameOverlayEvent parent, ItemStack mainhand, ItemStack item) {
-			super(parent, item);
-			this.mainhand = mainhand;
-		}
-		
-	}
-	
-	public static class PostRender extends RenderGameOverlayEvent.Post{
-		public final ItemStack item;
-		public PostRender(RenderGameOverlayEvent parent, ItemStack item) {
-			super(parent, null);
-			this.item = item;
-		}
-		
-	}
-	
-	public static class PostDual extends PostRender{
-		public final ItemStack mainhand;
-		public PostDual(RenderGameOverlayEvent parent, ItemStack mainhand, ItemStack item) {
-			super(parent, item);
-			this.mainhand = mainhand;
-		}
-	}
+    public RenderItemBarEvent(RenderGameOverlayEvent parent) {
+        super(parent.partialTicks, parent.resolution, parent.mouseX, parent.mouseY);
+    }
+
+    @Cancelable
+    public static class ShieldBar extends RenderItemBarEvent {
+        public final ItemStack shield;
+        public ShieldBar(RenderGameOverlayEvent parent, ItemStack item) {
+            super(parent);
+            this.shield = item;
+        }
+    }
+
+    @Cancelable
+    public static class QuiverSlots extends RenderItemBarEvent{
+        public final ItemStack mainhand;
+        public final ItemStack quiver;
+        public QuiverSlots(RenderGameOverlayEvent parent, ItemStack mainhand, ItemStack item) {
+            super(parent);
+            this.mainhand = mainhand;
+            this.quiver = item;
+        }
+    }
+
+    @Cancelable
+    public static class BattleSlots extends RenderItemBarEvent{
+        public final boolean isMainHand;
+        public BattleSlots(RenderGameOverlayEvent parent, boolean isMainHand){
+            super(parent);
+            this.isMainHand = isMainHand;
+        }
+    }
 }

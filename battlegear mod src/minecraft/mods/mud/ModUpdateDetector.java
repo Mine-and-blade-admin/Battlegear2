@@ -1,5 +1,6 @@
 package mods.mud;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.ModContainer;
 import cpw.mods.fml.common.registry.TickRegistry;
@@ -11,6 +12,7 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.Property;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -27,6 +29,7 @@ public class ModUpdateDetector {
     private static boolean hasInitialised = false;
     private static Map<String, UpdateEntry> updateMap;
     public static boolean hasChecked = false;
+    private static Property check;
     public static boolean enabled = true;
     private static ICommandSender sender = null;
 
@@ -53,6 +56,17 @@ public class ModUpdateDetector {
      */
     public static void registerMod(ModContainer mc, String updateXML, String changelog) throws MalformedURLException {
         registerMod(mc, new URL(updateXML), changelog!=null?new URL(changelog):null);
+    }
+
+    /**
+     * Helper registration method for a mod
+     * @param mod A modid or mod instance
+     * @param updateXML String that can be converted as an url for an xml file, listing mod versions and download links by Minecraft releases
+     * @param changelog String that can be converted as an url for a file containing text to describe any changes, can be null
+     * @throws MalformedURLException If no known protocol is found, or <tt>updateXML</tt> is <tt>null</tt>.
+     */
+    public static void registerMod(Object mod, String updateXML, String changelog) throws MalformedURLException {
+        registerMod(FMLCommonHandler.instance().findContainerFor(mod), updateXML, changelog);
     }
 
     public static void runUpdateChecker(){
@@ -85,9 +99,10 @@ public class ModUpdateDetector {
 	        config.load();
 	
 	        Timer = config.get(Configuration.CATEGORY_GENERAL, "Update Time", 60, "The time in minutes between update checks").getInt() * 60 * 20;
-	        enabled = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates").getBoolean(true);
-	        
-	        if(config.hasChanged()){
+            check = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates");
+            enabled = check.getBoolean(true);
+
+            if(config.hasChanged()){
 	            config.save();
 	        }
         }catch(Exception handled){
@@ -96,6 +111,11 @@ public class ModUpdateDetector {
 
         TickRegistry.registerTickHandler(new ModUpdateDetectorTickHandeler(Timer), Side.CLIENT);
         ClientCommandHandler.instance.registerCommand(new MudCommands());
+    }
+
+    public static void toggleState(){
+        enabled = !enabled;
+        check.set(enabled);
     }
 
     public static ICommandSender getSender() {
@@ -129,14 +149,14 @@ public class ModUpdateDetector {
         if(outOfDateCount > 0){
             if(sender != null){
                 sender.sendChatToPlayer(ChatMessageComponent.createFromText(
-                        String.format("%s%s %s %s",
-                        EnumChatFormatting.RED, StatCollector.translateToLocal("message.you.have"),
-                                outOfDateCount, StatCollector.translateToLocal("message.outdated"))
+                        String.format("%s%s",
+                        EnumChatFormatting.RED, StatCollector.translateToLocal("message.you.have.outdated"),
+                                outOfDateCount)
                 ));
                 sender.sendChatToPlayer(ChatMessageComponent.createFromText(
                         String.format("%s%s %s %s",
-                                EnumChatFormatting.RED, StatCollector.translateToLocal("message.type"),
-                                "/mud", StatCollector.translateToLocal("message.to.view"))
+                                EnumChatFormatting.RED, StatCollector.translateToLocal("message.type.to.view"),
+                                "/mud")
                 ));
             }
         }else{

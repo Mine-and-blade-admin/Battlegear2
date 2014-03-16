@@ -95,6 +95,6 @@ public class BowRenderer implements IItemRenderer {
         }
 
         if(item.isItemEnchanted())
-            SpearRenderer.renderEnchantmentEffects(tessellator);
+            BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
     }
 }

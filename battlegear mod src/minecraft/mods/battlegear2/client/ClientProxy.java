@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
+import cpw.mods.fml.client.registry.ClientRegistry;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BattlegearTickHandeler;
 import mods.battlegear2.CommonProxy;
@@ -12,6 +13,7 @@ import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
 import mods.battlegear2.client.renderer.*;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -83,7 +85,7 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void startFlash(EntityPlayer player, float damage) {
     	if(player.username.equals(Minecraft.getMinecraft().thePlayer.username)){
-            BattlegearClientTickHandeler.flashTimer = 30;
+            BattlegearClientTickHandeler.resetFlash();
             ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 
             if(offhand != null && offhand.getItem() instanceof IShield)
@@ -113,16 +115,23 @@ public class ClientProxy extends CommonProxy {
         	MinecraftForgeClient.registerItemRenderer(Item.bow.itemID, new BowRenderer());
         if(BattlegearConfig.quiver!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver")  < 0)
         	MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver.itemID, new QuiverItremRenderer());
-
+        if(BattlegearConfig.banner!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "flagpole") < 0){
+            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.banner.blockID, new FlagPoleItemRenderer());
+            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
+        }
+        for(Item it:BattlegearConfig.knightArmor){
+            if(it!=null){
+                MinecraftForgeClient.registerItemRenderer(it.itemID, new HeraldryItemRenderer());
+            }
+        }
         if(Battlegear.debug){
-            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem.itemID, new HeraldryCrestItemRenderer());
-            
             for(int i = 0; i < Item.itemsList.length; i++){
             	if(Item.itemsList[i] instanceof IHeraldryItem &&
             			((IHeraldryItem)Item.itemsList[i]).useDefaultRenderer()){
             		MinecraftForgeClient.registerItemRenderer(i, new HeraldryItemRenderer());
             	}
             }
+            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem.itemID, new HeraldryCrestItemRenderer());
         }
     }
 
@@ -140,7 +149,6 @@ public class ClientProxy extends CommonProxy {
 
         if(entityPlayer.username.equals(Minecraft.getMinecraft().thePlayer.username)){
             ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory) .getCurrentOffhandWeapon();
-            ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
 
             MovingObjectPosition mop = null;
 
@@ -150,7 +158,7 @@ public class ClientProxy extends CommonProxy {
 
             Packet p;
             if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase){
-                p = new SpecialActionPacket(entityPlayer, mainhand, offhand, mop.entityHit).generatePacket();
+                p = new SpecialActionPacket(entityPlayer, mop.entityHit).generatePacket();
                 PacketDispatcher.sendPacketToServer(p);
 
                 if(mop.entityHit instanceof EntityPlayer){
@@ -158,7 +166,7 @@ public class ClientProxy extends CommonProxy {
                 }
 
             }else{
-                p = new SpecialActionPacket(entityPlayer, mainhand, offhand, null).generatePacket();
+                p = new SpecialActionPacket(entityPlayer, null).generatePacket();
             }
             PacketDispatcher.sendPacketToServer(p);
         }

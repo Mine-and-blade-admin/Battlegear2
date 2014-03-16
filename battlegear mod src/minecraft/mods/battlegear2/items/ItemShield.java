@@ -2,7 +2,6 @@ package mods.battlegear2.items;
 
 import java.util.List;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.IDyable;
@@ -12,7 +11,6 @@ import mods.battlegear2.api.shield.IArrowDisplay;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.enchantments.BaseEnchantment;
-import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.enchantment.Enchantment;
@@ -34,28 +32,6 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     private Icon backIcon;
     private Icon trimIcon;
-
-    public static final float[] arrowX = new float[64];
-    public static final float[] arrowY = new float[64];
-    public static final float[] arrowDepth = new float[64];
-    public static final float[] pitch = new float[64];
-    public static final float[] yaw = new float[64];
-
-    static{
-        for(int i = 0; i < 64; i++){
-            double r = Math.random()*5;
-            double theta = Math.random()*Math.PI*2;
-
-            arrowX[i] = (float)(r * Math.cos(theta));
-            arrowY[i] = (float)(r * Math.sin(theta));
-            arrowDepth[i] = (float)(Math.random()* 0.5 + 0.5F);
-
-            pitch[i] = (float)(Math.random()*50 - 25);
-            yaw[i] = (float)(Math.random()*50 - 25);
-        }
-
-
-    }
 
     public ItemShield(int id, ShieldType enumShield) {
         super(id);
@@ -140,8 +116,6 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     @Override
     public void blockAnimation(EntityPlayer player, float dmg){
-        PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 32, player.dimension,
-                new BattlegearShieldFlashPacket(player, dmg).generatePacket());
         player.worldObj.playSoundAtEntity(player, "battlegear2:shield", 1, 1);
     }
 

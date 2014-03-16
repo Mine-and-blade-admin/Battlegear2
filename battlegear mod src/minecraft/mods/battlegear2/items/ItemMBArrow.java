@@ -33,7 +33,7 @@ public class ItemMBArrow extends Item {
     }
 
     @Override
-    public net.minecraft.util.Icon getIconFromDamage(int par1) {
+    public Icon getIconFromDamage(int par1) {
         return icons[par1];
     }
 

@@ -22,9 +22,8 @@ import java.util.List;
 public class ModUpdateDetectorTickHandeler implements ITickHandler {
 
     private final int timer_interval;
-    protected static int timer;
-
-    private static GuiScreen lastScreen;
+    private int timer;
+    private GuiScreen lastScreen;
 
     public ModUpdateDetectorTickHandeler(int timer) {
         this.timer_interval = timer;
@@ -48,23 +47,24 @@ public class ModUpdateDetectorTickHandeler implements ITickHandler {
                     Minecraft.getMinecraft().currentScreen instanceof GuiIngameMenu ||
                     Minecraft.getMinecraft().currentScreen instanceof GuiModList){
                 lastScreen = Minecraft.getMinecraft().currentScreen;
-                int x = lastScreen.width / 2 + 105;
-                int y = lastScreen.height / 4 + 24 -16;
-                if(lastScreen instanceof GuiModList){
-                    x = lastScreen.width - 110;
-                    y = 10;
-                }
-
                 List buttonList = getButtonList(lastScreen);
-                boolean hasMumButton = false;
-                for(Object o : buttonList){
-                    if(o instanceof GuiModUpdateButton){
-                        hasMumButton = true;
-                        break;
+                if(buttonList!=null){
+                    boolean hasMumButton = false;
+                    for(Object o : buttonList){
+                        if(o instanceof GuiModUpdateButton){
+                            hasMumButton = true;
+                            break;
+                        }
                     }
-                }
-                if(!hasMumButton){
-                    buttonList.add(new GuiModUpdateButton(99, x, y, lastScreen));
+                    if(!hasMumButton){
+                        int x = lastScreen.width / 2 + 105;
+                        int y = lastScreen.height / 4 + 8;
+                        if(lastScreen instanceof GuiModList){
+                            x = lastScreen.width - 110;
+                            y = 10;
+                        }
+                        buttonList.add(new GuiModUpdateButton(99, x, y, lastScreen));
+                    }
                 }
             }
         }

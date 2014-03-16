@@ -4,27 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.network.PacketDispatcher;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.RenderItemBarEvent;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
 import mods.battlegear2.client.gui.controls.GuiPlaceableButton;
 import mods.battlegear2.client.gui.controls.GuiSigilButton;
 import mods.battlegear2.api.heraldry.PatternStore;
+import mods.battlegear2.client.heraldry.CrestImages;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemQuiver;
+import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.sound.SoundLoadEvent;
 import net.minecraftforge.event.EventPriority;
@@ -50,12 +56,26 @@ public class BattlegearClientEvents {
 	}
 
     @ForgeSubscribe(priority = EventPriority.HIGHEST)
-    public void preRenderBars(RenderItemBarEvent.PreRender event){
-        if(event instanceof RenderItemBarEvent.PreDual){
-            event.xOffset = BattlegearConfig.quiverBarOffset;
+    public void postRenderBar(RenderItemBarEvent.BattleSlots event) {
+        if(!event.isMainHand){
+            event.xOffset += BattlegearConfig.battleBarOffset[0];
+            event.yOffset += BattlegearConfig.battleBarOffset[1];
         }else{
-            event.yOffset = - BattlegearConfig.shieldBarOffset;
+            event.xOffset += BattlegearConfig.battleBarOffset[2];
+            event.yOffset += BattlegearConfig.battleBarOffset[3];
         }
+    }
+
+    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    public void postRenderQuiver(RenderItemBarEvent.QuiverSlots event) {
+        event.xOffset += BattlegearConfig.quiverBarOffset[0];
+        event.yOffset += BattlegearConfig.quiverBarOffset[1];
+    }
+
+    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    public void postRenderShield(RenderItemBarEvent.ShieldBar event) {
+        event.xOffset += BattlegearConfig.shieldBarOffset[0];
+        event.yOffset += BattlegearConfig.shieldBarOffset[1];
     }
 
 	@ForgeSubscribe
@@ -109,6 +129,7 @@ public class BattlegearClientEvents {
 		}
 	}
 
+    private static final int SKELETON_ARROW = 5;
 	@ForgeSubscribe
 	public void renderLiving(RenderLivingEvent.Post event) {
 
@@ -119,7 +140,6 @@ public class BattlegearClientEvents {
 			GL11.glPushMatrix();
 			GL11.glDisable(GL11.GL_CULL_FACE);
 
-			int arrowCount = 5;
 			GL11.glColor3f(1, 1, 1);
 			Minecraft.getMinecraft().renderEngine.bindTexture(quiverDetails);
 
@@ -156,7 +176,7 @@ public class BattlegearClientEvents {
 			GL11.glRotatef(event.entity.rotationPitch, 0, 1, 0);
             ((ModelBiped)event.renderer.mainModel).bipedBody.postRender(0.0625F);
 			GL11.glScalef(1.05F, 1.05F, 1.05F);
-			quiverModel.render(arrowCount, 0.0625F);
+			quiverModel.render(SKELETON_ARROW, 0.0625F);
 
 			Minecraft.getMinecraft().renderEngine.bindTexture(quiverBase);
 			GL11.glColor3f(0.10F, 0.10F, 0.10F);
@@ -169,6 +189,75 @@ public class BattlegearClientEvents {
 		}
 
 	}
+
+    private static final int MAIN_INV = InventoryPlayer.getHotbarSize();
+    @ForgeSubscribe(priority = EventPriority.HIGHEST)
+    public void replacePickBlock(MouseEvent event){
+        if(event.buttonstate && event.button-100==Minecraft.getMinecraft().gameSettings.keyBindPickBlock.keyCode){
+            Minecraft mc = FMLClientHandler.instance().getClient();
+            if(mc.thePlayer!=null && mc.theWorld!=null){
+                event.setCanceled(true);
+                if(!((IBattlePlayer)mc.thePlayer).isBattlemode()){
+                    boolean isCreative = mc.thePlayer.capabilities.isCreativeMode;
+                    ItemStack stack = getItemFromPointedAt(Minecraft.getMinecraft().objectMouseOver, mc.theWorld, isCreative);
+                    if(stack!=null){
+                        int k = -1;
+                        ItemStack temp;
+                        for(int slot=0; slot<MAIN_INV;slot++){
+                            temp = mc.thePlayer.inventory.getStackInSlot(slot);
+                            if(temp!=null && stack.isItemEqual(temp) && ItemStack.areItemStackTagsEqual(stack, temp)){
+                                k = slot;
+                                break;
+                            }
+                        }
+                        if(isCreative && k==-1){
+                            k = mc.thePlayer.inventory.getFirstEmptyStack();
+                            if(k < 0 || k >= MAIN_INV){
+                                k = mc.thePlayer.inventory.currentItem;
+                            }
+                        }
+                        if (k >= 0 && k < MAIN_INV)
+                        {
+                            PacketDispatcher.sendPacketToServer(new PickBlockPacket(mc.thePlayer.username, stack, k).generatePacket());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Equivalent code to the creative pick block
+     * @param target The client target vector
+     * @param world The world of the player
+     * @param creative If player is in creative mode
+     * @return the stack expected for the creative pick button
+     */
+    private static ItemStack getItemFromPointedAt(MovingObjectPosition target, World world, boolean creative) {
+        if(target!=null){
+            if (target.typeOfHit == EnumMovingObjectType.TILE)
+            {
+                int x = target.blockX;
+                int y = target.blockY;
+                int z = target.blockZ;
+                Block block = Block.blocksList[world.getBlockId(x, y, z)];
+                if (block == null)
+                {
+                    return null;
+                }
+                return block.getPickBlock(target, world, x, y, z);
+            }
+            else
+            {
+                if (target.typeOfHit != EnumMovingObjectType.ENTITY || target.entityHit == null || !creative)
+                {
+                    return null;
+                }
+                return target.entityHit.getPickedResult(target);
+            }
+        }
+        return null;
+    }
 
 	/**
 	 * Returns a rotation angle that is inbetween two other rotation angles.
@@ -208,8 +297,8 @@ public class BattlegearClientEvents {
 			ClientProxy.bowIcons[2] = event.map
 					.registerIcon("battlegear2:bow_pulling_2");
 
-            storageIndex = PatternStore.buildPatternAndStore(patterns);
-            // CrestImages.initialise(Minecraft.getMinecraft().func_110442_L());
+            storageIndex = PatternStore.DEFAULT.buildPatternAndStore(patterns);
+            //CrestImages.initialise(Minecraft.getMinecraft().getResourceManager());
             /*for (HeraldryPattern pattern : HeraldryPattern.patterns) {
                 pattern.registerIcon(event.map);
             }*/

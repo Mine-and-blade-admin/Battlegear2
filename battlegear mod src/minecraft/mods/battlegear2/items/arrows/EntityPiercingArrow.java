@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 /**
@@ -33,7 +34,7 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 
 	@Override
 	public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
-		entityHit.attackEntityFrom(DamageSource.generic, ammount);
+		entityHit.attackEntityFrom(getPiercingDamage(), ammount);
 		if(!worldObj.isRemote && entityHit instanceof IShearable){
 			if(((IShearable)entityHit).isShearable(null, worldObj, (int) entityHit.posX, (int) entityHit.posY, (int) entityHit.posZ)){
 				ArrayList<ItemStack> drops = ((IShearable)entityHit).onSheared(null, worldObj, (int) entityHit.posX, (int) entityHit.posY, (int) entityHit.posZ, 1);
@@ -48,6 +49,10 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 		}
 		return true;
 	}
+
+    public DamageSource getPiercingDamage(){
+        return new BGIndirectDamage("piercing.arrow", null, shootingEntity).bypassesArmor().setProjectile();
+    }
 
 	@Override
 	public void onHitGround(int x, int y, int z) {

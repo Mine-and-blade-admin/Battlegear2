@@ -9,6 +9,7 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.utils.EnumBGAnimations;
@@ -200,18 +201,24 @@ public class BattlemodeHookContainerClass {
 
                     if(shouldBlock){
                         event.setCanceled(true);
+                        PlayerEventChild.ShieldBlockEvent blockEvent = new PlayerEventChild.ShieldBlockEvent(new PlayerEvent(player), shield, event.source, dmg);
+                        MinecraftForge.EVENT_BUS.post(blockEvent);
 
-                        ((IShield)shield.getItem()).blockAnimation(player, dmg);
+                        if(blockEvent.performAnimation){
+                            PacketDispatcher.sendPacketToAllAround(player.posX, player.posY, player.posZ, 32, player.dimension,
+                                    new BattlegearShieldFlashPacket(player, dmg).generatePacket());
+                            ((IShield)shield.getItem()).blockAnimation(player, dmg);
+                        }
                     	
-                        if(event.source.isProjectile() && event.source.getEntity() instanceof IProjectile){
+                        if(event.source.isProjectile() && event.source.getSourceOfDamage() instanceof IProjectile){
                             if(shield.getItem() instanceof IArrowCatcher){
-                                if(((IArrowCatcher)shield.getItem()).catchArrow(shield, player, (IProjectile)event.source.getEntity())){
+                                if(((IArrowCatcher)shield.getItem()).catchArrow(shield, player, (IProjectile)event.source.getSourceOfDamage())){
                                     ((InventoryPlayerBattle)player.inventory).hasChanged = true;
                                 }
                             }
                         }
 
-                        if(!player.capabilities.isCreativeMode){
+                        if(blockEvent.damageShield && !player.capabilities.isCreativeMode){
                             float red = ((IShield)shield.getItem()).getDamageReduction(shield, event.source);
                             if(red<dmg){
                                 shield.damageItem(Math.round(dmg-red), player);

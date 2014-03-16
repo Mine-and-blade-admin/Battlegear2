@@ -1,8 +1,11 @@
 package mods.battlegear2.packet;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.IBattlePlayer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
 
@@ -15,13 +18,13 @@ public class PickBlockPacket extends AbstractMBPacket{
     private String user;
     private ItemStack stack;
     private int slot;
-    private EntityPlayer player;
     public PickBlockPacket(){}
     public PickBlockPacket(String user,ItemStack stack, int slot){
         this.user = user;
         this.stack = stack;
         this.slot = slot;
     }
+
     @Override
     public String getChannel() {
         return packetName;
@@ -35,16 +38,22 @@ public class PickBlockPacket extends AbstractMBPacket{
     }
 
     @Override
-    public void process(DataInputStream inputStream, EntityPlayer player) {
+    public void process(DataInputStream inputStream, EntityPlayer fake) {
         try {
-            this.player = player.worldObj.getPlayerEntityByName(Packet.readString(inputStream, 30));
-            if(this.player!=null && this.player.capabilities.isCreativeMode && !((IBattlePlayer)this.player).isBattlemode()){
+            user = Packet.readString(inputStream, 30);
+            EntityPlayer player = fake.worldObj.getPlayerEntityByName(user);
+            if(player!=null && !((IBattlePlayer)player).isBattlemode()){
                 slot = inputStream.readInt();
-                this.player.inventory.currentItem = slot;
+            if(slot>=0 && slot<9){
+                player.inventory.currentItem = slot;
                 stack = Packet.readItemStack(inputStream);
-                if(!stack.isItemEqual(this.player.getCurrentEquippedItem())){
-                    BattlegearUtils.setPlayerCurrentItem(this.player, stack);
+                if(player.capabilities.isCreativeMode && !ItemStack.areItemStacksEqual(stack, player.getCurrentEquippedItem())){
+                    BattlegearUtils.setPlayerCurrentItem(player, stack);
                 }
+                if(player instanceof EntityPlayerMP){
+                    PacketDispatcher.sendPacketToPlayer(this.generatePacket(), (Player)player);
+                }
+            }
             }
         } catch (IOException e) {
             e.printStackTrace();

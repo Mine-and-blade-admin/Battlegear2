@@ -1,8 +1,35 @@
 package mods.battlegear2.items;
 
-@Deprecated
-public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, IArmorTextureProvider*/{
-/*
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.api.heraldry.IHeraldryItem;
+import mods.battlegear2.api.heraldry.IHeraldyArmour;
+import mods.battlegear2.api.heraldry.PatternStore;
+import mods.battlegear2.client.heraldry.HeraldryArmourModel;
+import mods.battlegear2.heraldry.SigilHelper;
+import mods.battlegear2.utils.BattlegearConfig;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.Icon;
+import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.ISpecialArmor;
+
+import java.util.List;
+
+public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpecialArmor{
+
 	private Icon baseIcon[];
 	private Icon postRenderIcon[];
 	private Icon trimRenderIcon;
@@ -13,6 +40,7 @@ public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, I
 		super(id, Battlegear.knightArmourMaterial, 1, armourType);
 		this.setCreativeTab(BattlegearConfig.customTab);
 		setUnlocalizedName("battlegear2:knights_armour."+BattlegearConfig.armourTypes[armourType]);
+        GameRegistry.registerItem(this, this.getUnlocalizedName());
 	}
 	
 	@Override
@@ -39,6 +67,12 @@ public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, I
 		}
 	}
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Icon getIconIndex(ItemStack stack){
+        return getPostRenderIcon(stack);
+    }
+
 	@Override
 	public Icon getBaseIcon(ItemStack stack) {
 		if(armorType == 0){
@@ -49,9 +83,9 @@ public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, I
 
 	@Override
 	public Icon getPostRenderIcon(ItemStack stack) {
-		if(armorType == 0){
+		/*if(armorType == 0){
 			return postRenderIcon[SigilHelper.getHelm(((IHeraldryItem)stack.getItem()).getHeraldry(stack))];
-		}else 
+		}else */
 			return postRenderIcon[0];
 	}
 	
@@ -68,10 +102,13 @@ public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, I
 				int oldcode = stack.getTagCompound().getInteger("heraldry");
 				stack.getTagCompound().setByteArray("hc2", SigilHelper.translate(oldcode));
 				stack.getTagCompound().removeTag("heraldry");
-			}
+                return true;
+			}else if(stack.getTagCompound().hasKey("hc2")){
+                return true;
+            }
 		}
 		
-		return true;
+		return false;
 	}
 
 	@Override
@@ -125,19 +162,13 @@ public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, I
 		
 	}
 
-	//@Override
-	//public String getArmorTextureFile(ItemStack itemstack) {
-	//	return null;
-		//return BattleGear.imageFolder+"armours/knights/knights-"+(slot==2?1:0)+".png";
-	//}
-
 	@Override
 	public boolean useDefaultRenderer() {
 		return true;
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, int layer) {
+	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String layer) {
 		return Battlegear.imageFolder+"armours/knights/knights-"+(slot==2?1:0)+".png";
 	}
 
@@ -190,8 +221,43 @@ public class ItemKnightArmour/* extends ItemArmor implements IHeraldyArmour/*, I
 	}
 
 	@Override
-	public String getPatternArmourPath(HeraldryPattern pattern, int armourSlot) {
-		return Battlegear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-"+pattern.ordinal()+".png";
+	public String getPatternArmourPath(PatternStore pattern, int index, int armourSlot) {
+		return Battlegear.imageFolder+"armours/knights/patterns/knights-pattern-"+(armourSlot==2?1:0)+"-"+index+".png";
 	}
-	*/
+
+    @Override
+    public ISpecialArmor.ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
+        if(slot==1||slot==2){
+            return new ArmorProperties(1,0.8,10);
+        }else if(slot==0){
+            return new ArmorProperties(0,0.6,16);
+        }else if(slot==3){
+            return new ArmorProperties(0,0.4,8);
+        }
+        return null;
+    }
+
+    @Override
+    public int getArmorDisplay(EntityPlayer player, ItemStack armor, int slot) {
+        if(slot==1){
+            if(player.getCurrentItemOrArmor(1)!=null&&player.getCurrentItemOrArmor(1).getItem() instanceof ItemKnightArmour){
+                if(player.getCurrentItemOrArmor(3)!=null&&player.getCurrentItemOrArmor(3).getItem() instanceof ItemKnightArmour){
+                    if(player.getCurrentItemOrArmor(4)!=null&&player.getCurrentItemOrArmor(4).getItem() instanceof ItemKnightArmour){
+                        return 9;
+                    }
+                }
+            }
+            return 7;
+        }else if(slot==2){
+            return 5;
+        }else if(slot==0||slot==3){
+            return 3;
+        }
+        return 0;
+    }
+
+    @Override
+    public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
+        stack.damageItem(damage, entity);
+    }
 }

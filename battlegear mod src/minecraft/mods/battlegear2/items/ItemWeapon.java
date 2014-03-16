@@ -55,7 +55,6 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 		this.setTextureName("battlegear2:"+name);
 		
 		this.baseDamage = 4 + material.getDamageVsEntity();
-        GameRegistry.registerItem(this, this.name);
 	}
 	
 	

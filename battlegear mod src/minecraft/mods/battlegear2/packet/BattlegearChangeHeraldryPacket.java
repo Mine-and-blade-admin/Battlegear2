@@ -49,7 +49,7 @@ public class BattlegearChangeHeraldryPacket extends AbstractMBPacket{
             if(target != null){
                 ItemStack targetEquip = target.getCurrentEquippedItem();
                 if(targetEquip != null && targetEquip.getItem() instanceof IHeraldryItem){
-                    ((IHeraldryItem)target).setHeraldry(targetEquip, data);
+                    ((IHeraldryItem)targetEquip.getItem()).setHeraldry(targetEquip, data);
                 }
             }
 

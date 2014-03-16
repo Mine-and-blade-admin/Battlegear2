@@ -1,8 +1,5 @@
 package mods.battlegear2.client.gui.controls;
 
-import mods.battlegear2.api.heraldry.HeraldryData;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.input.Mouse;
@@ -12,7 +9,6 @@ import java.util.List;
 
 public abstract class GUIScrollList {
 
-    private final Minecraft client;
     protected final int listWidth;
     protected final int top;
     protected final int bottom;
@@ -33,9 +29,8 @@ public abstract class GUIScrollList {
     private int field_27261_r;
 	public boolean drawList = true;
 
-    public GUIScrollList(Minecraft client, int width, int top, int bottom, int left, int entryHeight)
+    public GUIScrollList(int width, int top, int bottom, int left, int entryHeight)
     {
-        this.client = client;
         this.listWidth = width;
         this.top = top;
         this.bottom = bottom;

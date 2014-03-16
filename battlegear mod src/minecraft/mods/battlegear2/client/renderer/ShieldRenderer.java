@@ -89,7 +89,7 @@ public class ShieldRenderer implements IItemRenderer{
                             icon.getIconHeight(), (8F+16F)/256F);
 
                     if(item.isItemEnchanted())
-                        SpearRenderer.renderEnchantmentEffects(tessellator);
+                        BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
                     break;
                 case EQUIPPED:
                 case EQUIPPED_FIRST_PERSON:
@@ -130,7 +130,7 @@ public class ShieldRenderer implements IItemRenderer{
                             icon.getIconHeight(), (8F+16F)/256F);
 
                     if(item.isItemEnchanted())
-                        SpearRenderer.renderEnchantmentEffects(tessellator);
+                        BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
 
                     break;
                 case INVENTORY:
@@ -154,15 +154,9 @@ public class ShieldRenderer implements IItemRenderer{
             if(arrowCount > 64)
                 arrowCount = 64;
             for(int i = 0; i < arrowCount; i++){
-                BattlegearRenderHelper.renderArrow(type == ItemRenderType.ENTITY,
-                        ItemShield.arrowX[i],ItemShield.arrowY[i], ItemShield.arrowDepth[i],
-                        ItemShield.pitch[i]+90F, ItemShield.yaw[i]+45F);
+                BattlegearRenderHelper.renderArrow(type == ItemRenderType.ENTITY, i);
             }
             GL11.glPopMatrix();
-
         }
     }
-
-
-
 }

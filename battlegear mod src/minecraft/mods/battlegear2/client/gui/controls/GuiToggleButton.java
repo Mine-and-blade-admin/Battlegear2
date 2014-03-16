@@ -5,15 +5,17 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.network.rcon.IServer;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiToggleButton extends GuiButton{
 	public static final ResourceLocation resourceLocation = new ResourceLocation("battlegear2", "textures/gui/widgets-extra.png");
 	private boolean isSelected = false;
 	private GuiToggleButton[] siblingButtons;
-		
-	
+
+    public GuiToggleButton(int id, int x, int y, String label, FontRenderer font) {
+        this(id, x, y, font.getStringWidth(label)+10, 20, label);
+    }
+
 	public GuiToggleButton(int id, int x, int y, int width, int height, String label) {
 		super(id, x, y, width, height, label);
 		siblingButtons = new GuiToggleButton[0];
@@ -65,6 +67,7 @@ public class GuiToggleButton extends GuiButton{
      * 2 if it IS hovering over this button.
      * 3 if the mouse is NOT hovering over this button (and it IS NOT selected)
      */
+    @Override
     protected int getHoverState(boolean par1)
     {
         byte b0 = 3;
@@ -81,4 +84,14 @@ public class GuiToggleButton extends GuiButton{
         return b0;
     }
 
+    public void toggleDisplayString(){
+        int i = this.displayString.indexOf("true");
+        if(i>0){
+            this.displayString = this.displayString.substring(0, i)+"false";
+        }else{
+            i = this.displayString.indexOf("false");
+            if(i>0)
+                this.displayString = this.displayString.substring(0, i)+"true";
+        }
+    }
 }

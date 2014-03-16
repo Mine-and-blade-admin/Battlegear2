@@ -19,4 +19,8 @@ public class FileExtension extends File{
             return null;
         }
     }
+
+    public boolean isImage(){
+        return get()!=null && (get().equalsIgnoreCase("jpg")||get().equalsIgnoreCase("jpeg")||get().equalsIgnoreCase("gif")||get().equalsIgnoreCase("png"));
+    }
 }

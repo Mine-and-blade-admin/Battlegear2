@@ -40,8 +40,28 @@ public class BattlegearRenderHelper {
 
     public static EntityLivingBase dummyEntity;
 
-    private static final ResourceLocation arrowTex = new ResourceLocation("textures/entity/arrow.png");
+    private static final ResourceLocation ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
+    private static final ResourceLocation DEFAULT_ARROW = new ResourceLocation("textures/entity/arrow.png");
 
+    public static final float[] arrowX = new float[64];
+    public static final float[] arrowY = new float[64];
+    public static final float[] arrowDepth = new float[64];
+    public static final float[] arrowPitch = new float[64];
+    public static final float[] arrowYaw = new float[64];
+
+    static{
+        for(int i = 0; i < 64; i++){
+            double r = Math.random()*5;
+            double theta = Math.random()*Math.PI*2;
+
+            arrowX[i] = (float)(r * Math.cos(theta));
+            arrowY[i] = (float)(r * Math.sin(theta));
+            arrowDepth[i] = (float)(Math.random()* 0.5 + 0.5F);
+
+            arrowPitch[i] = (float)(Math.random()*50 - 25);
+            arrowYaw[i] = (float)(Math.random()*50 - 25);
+        }
+    }
 
     public static void renderItemInFirstPerson(float frame, Minecraft mc, ItemRenderer itemRenderer, ItemStack itemToRender) {
 
@@ -563,11 +583,9 @@ public class BattlegearRenderHelper {
                 target = legsModel;
             }
 
-
             GL11.glPushMatrix();
-
+            target.bipedBody.postRender(0.0625F);
             if(onBack){
-                target.bipedBody.postRender(0.0625F);
                 if(mainhandSheathed.getItem() instanceof ItemSpear){
                     GL11.glScalef(0.6F, -0.6F, 0.6F);
                     GL11.glTranslatef(0, -1, 0);
@@ -579,7 +597,6 @@ public class BattlegearRenderHelper {
                 GL11.glTranslatef(0, 0, 4F/16F - backCount*2F/16F);
                 backCount++;
             }else{
-                target.bipedBody.postRender(0.0625F);
                 GL11.glScalef(0.6F, 0.6F, 0.6F);
                 GL11.glTranslatef(8F/16F, 1, -4F/16F);
                 if(hasChestArmour || hasLegArmour){
@@ -630,9 +647,9 @@ public class BattlegearRenderHelper {
             }
 
             GL11.glPushMatrix();
+            target.bipedBody.postRender(0.0625F);
 
             if(onBack){
-                target.bipedBody.postRender(0.0625F);
                 if(offhandSheathed.getItem() instanceof IShield){
                     GL11.glScalef(-0.6F, -0.6F, 0.6F);
                     GL11.glTranslatef(0, -1, 0);
@@ -645,7 +662,6 @@ public class BattlegearRenderHelper {
                 GL11.glTranslatef(0, 0, 4F/16F - backCount*2F/16F);
                 backCount++;
             }else{
-                target.bipedBody.postRender(0.0625F);
                 GL11.glScalef(0.6F, 0.6F, 0.6F);
                 GL11.glTranslatef(-7F/16F, 1, -4F/16F);
                 if(hasChestArmour || hasLegArmour){
@@ -677,10 +693,46 @@ public class BattlegearRenderHelper {
             }
 
             BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, false, offhandSheathed));
-            
             GL11.glPopMatrix();
         }
+    }
 
+    public static void renderEnchantmentEffects(Tessellator tessellator) {
+        GL11.glDepthFunc(GL11.GL_EQUAL);
+        GL11.glDisable(GL11.GL_LIGHTING);
+        Minecraft.getMinecraft().renderEngine.bindTexture(ITEM_GLINT);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_COLOR, GL11.GL_ONE);
+        float f7 = 0.76F;
+        GL11.glColor4f(0.5F * f7, 0.25F * f7, 0.8F * f7, 1.0F);
+        GL11.glMatrixMode(GL11.GL_TEXTURE);
+        GL11.glPushMatrix();
+        float f8 = 0.125F;
+        GL11.glScalef(f8, f8, f8);
+        float f9 = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
+        GL11.glTranslatef(f9, 0.0F, 0.0F);
+        GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
+        ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
+        GL11.glPopMatrix();
+        GL11.glPushMatrix();
+        GL11.glScalef(f8, f8, f8);
+        f9 = (float) (Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
+        GL11.glTranslatef(-f9, 0.0F, 0.0F);
+        GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
+        ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
+        GL11.glPopMatrix();
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_LIGHTING);
+        GL11.glDepthFunc(GL11.GL_LEQUAL);
+    }
+
+    public static void renderArrow(boolean isEntity, int id){
+        if(id<arrowX.length){
+            float pitch = arrowPitch[id]+90F;
+            float yaw = arrowYaw[id]+45F;
+            renderArrow(isEntity, arrowX[id], arrowY[id], arrowDepth[id], pitch, yaw);
+        }
     }
 
     public static void renderArrow(boolean isEntity, float x, float y, float depth, float pitch, float yaw){
@@ -688,7 +740,7 @@ public class BattlegearRenderHelper {
 
         //depth = 1;
 
-        Minecraft.getMinecraft().renderEngine.bindTexture(arrowTex);
+        Minecraft.getMinecraft().renderEngine.bindTexture(DEFAULT_ARROW);
         Tessellator tessellator = Tessellator.instance;
 
         byte b0 = 0;

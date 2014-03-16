@@ -1,5 +1,7 @@
 package mods.battlegear2.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.core.BattlegearUtils;
@@ -7,6 +9,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 
 public class WeaponSlot extends Slot {
 
@@ -15,9 +18,13 @@ public class WeaponSlot extends Slot {
 
     public WeaponSlot(IInventory par1iInventory, int par2, int par3, int par4, boolean mainhand) {
         super(par1iInventory, par2, par3, par4);
-
-        this.setBackgroundIcon(Battlegear.proxy.getSlotIcon(mainhand ? 0 : 1));
         this.mainHand = mainhand;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Icon getBackgroundIconIndex(){
+        return Battlegear.proxy.getSlotIcon(mainHand ? 0 : 1);
     }
 
     public WeaponSlot getPartner() {

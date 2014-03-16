@@ -8,7 +8,6 @@ import java.io.IOException;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
-import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.core.BattlegearUtils;
@@ -19,7 +18,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.util.DamageSource;
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.PacketDispatcher;
 import cpw.mods.fml.common.network.Player;
 
@@ -51,6 +49,9 @@ public class SpecialActionPacket extends AbstractMBPacket{
 	                ((IArrowContainer2)quiver.getItem()).setSelectedSlot(quiver,
 	                        (((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver)+1) %
 	                                ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver));
+                    if(!this.player.worldObj.isRemote){
+                        PacketDispatcher.sendPacketToPlayer(this.generatePacket(), (Player)this.player);
+                    }
 	            } else if(entityHit != null && entityHit instanceof EntityLivingBase){
 	
 	                if(offhand != null && offhand.getItem() instanceof IShield){
@@ -72,20 +73,10 @@ public class SpecialActionPacket extends AbstractMBPacket{
 	                			entityHit.playSound("damage.thorns", 0.5F, 1.0F);
 	                		}
 	                	}
-	                    if(FMLCommonHandler.instance().getEffectiveSide().isServer() &&
-	                    		entityHit instanceof EntityPlayer){
+	                    if(!this.player.worldObj.isRemote && entityHit instanceof EntityPlayer){
 	                        PacketDispatcher.sendPacketToPlayer(this.generatePacket(), (Player)entityHit);
 	                    }
-	
-	
-	
-	                }else if(mainhand != null && offhand != null){
-	                    //This will be handeled elsewhere
-	                }else if (mainhand != null && mainhand.getItem() instanceof IBattlegearWeapon){
-	                	//What's the plan here ?
-	                }
-	                else if(mainhand != null){
-	
+
 	                }
 	
 	            }
@@ -99,7 +90,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
         }
     }
 
-    public SpecialActionPacket(EntityPlayer player, ItemStack mainhand, ItemStack offhand, Entity entityHit) {
+    public SpecialActionPacket(EntityPlayer player, Entity entityHit) {
     	this.player = player;
     	this.entityHit = entityHit;
     }
