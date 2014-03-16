@@ -3,6 +3,7 @@
 * Fixed player not dropping items on death
 * Fixed mystery arrow crash 
 * Added damage in knight armor
+* Fixed flagpole
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.2 ==
 * Fixed keys toggle
