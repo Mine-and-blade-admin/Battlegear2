@@ -14,7 +14,6 @@ public class PickBlockPacket extends AbstractMBPacket{
     private String user;
     private ItemStack stack;
     private int slot;
-    private EntityPlayer player;
     public PickBlockPacket(){}
     public PickBlockPacket(EntityPlayer user,ItemStack stack, int slot){
         this.user = user.getCommandSenderName();
@@ -35,19 +34,19 @@ public class PickBlockPacket extends AbstractMBPacket{
     }
 
     @Override
-    public void process(ByteBuf inputStream, EntityPlayer player) {
+    public void process(ByteBuf inputStream, EntityPlayer fake) {
         user = ByteBufUtils.readUTF8String(inputStream);
-        this.player = player.worldObj.getPlayerEntityByName(user);
-        if(this.player!=null && !((IBattlePlayer)this.player).isBattlemode()){
+        EntityPlayer player = fake.worldObj.getPlayerEntityByName(user);
+        if(player!=null && !((IBattlePlayer)player).isBattlemode()){
             slot = inputStream.readInt();
             if(slot>=0 && slot<9){
-                this.player.inventory.currentItem = slot;
+                player.inventory.currentItem = slot;
                 stack = ByteBufUtils.readItemStack(inputStream);
-                if(this.player.capabilities.isCreativeMode && !ItemStack.areItemStacksEqual(stack, this.player.getCurrentEquippedItem())){
-                    BattlegearUtils.setPlayerCurrentItem(this.player, stack);
+                if(player.capabilities.isCreativeMode && !ItemStack.areItemStacksEqual(stack, player.getCurrentEquippedItem())){
+                    BattlegearUtils.setPlayerCurrentItem(player, stack);
                 }
-                if(this.player instanceof EntityPlayerMP)
-                    Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(),(EntityPlayerMP) this.player);
+                if(player instanceof EntityPlayerMP)
+                    Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(),(EntityPlayerMP) player);
             }
         }
     }

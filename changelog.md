@@ -1,3 +1,9 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.5.3 ==
+* Fixed shield sounds
+* Fixed player not dropping items on death
+* Fixed mystery arrow crash 
+* Added damage in knight armor
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.2 ==
 * Fixed keys toggle
 * Fixed darkened slots in inventory
