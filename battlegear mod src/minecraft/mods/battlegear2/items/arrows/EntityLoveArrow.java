@@ -1,5 +1,6 @@
 package mods.battlegear2.items.arrows;
 
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.items.ItemMBArrow;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
@@ -53,9 +54,12 @@ public class EntityLoveArrow extends AbstractMBArrow{
                 return true;
             }else if(entityHit instanceof EntityPlayer){
                 EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) entityHit, ((EntityPlayer) entityHit).getCurrentEquippedItem(), true);
-                entityitem.delayBeforeCanPickup = 0;
-                entityitem.func_145797_a(entityHit.getCommandSenderName());
-                ((EntityPlayer) entityHit).inventory.setInventorySlotContents(((EntityPlayer) entityHit).inventory.currentItem, new ItemStack(ItemMBArrow.component[5]));
+                if(entityitem!=null){
+                    entityitem.delayBeforeCanPickup = 0;
+                    entityitem.func_145797_a(entityHit.getCommandSenderName());
+                }
+                if(!((IBattlePlayer)entityHit).isBattlemode())
+                    ((EntityPlayer) entityHit).inventory.setInventorySlotContents(((EntityPlayer) entityHit).inventory.currentItem, new ItemStack(ItemMBArrow.component[5]));
                 setDead();
                 return true;
             }
