@@ -1,47 +1,17 @@
 {
-    "battlegear:shield": {
+    "shield": {
     "category": "player",
     "sounds": [
-        {
-            "type": "event",
-            "name": "shield0.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield1.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield2.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield3.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield4.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield5.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield6.wav"
-        },
-        {
-             "type": "event",
-             "name": "shield7.wav"
-        },
-        {
-             "type": "event",
-             "name": "shield8.wav"
-        },
-        {
-             "type": "event",
-             "name": "shield9.wav"
-        }
+        "shield0.wav",
+        "shield1.wav",
+        "shield2.wav",
+        "shield3.wav",
+        "shield4.wav",
+        "shield5.wav",
+        "shield6.wav",
+        "shield7.wav",
+        "shield8.wav",
+        "shield9.wav"
       ]
     }
 }
