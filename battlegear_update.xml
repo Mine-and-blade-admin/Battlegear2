@@ -1,5 +1,10 @@
 <mod modid="battlegear2">
     <mcVersion version="1.7.2">
+        <release type="release" version="1.0.5.3"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
+                 download="http://www.curseforge.com/media/files/779/47/1.7.2-MB_Battlegear2-Bullseye-1.0.5.3.jar"
+                 md5="9d0576a6e9799dc3f8ccff603ffe7f68"
+                />
         <release type="release" version="1.0.5.2"
                  url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
                  download="http://www.curseforge.com/media/files/778/529/1.7.2-MB_Battlegear2-Bullseye-1.0.5.2.jar"
@@ -22,6 +27,11 @@
                 />
     </mcVersion>
 	<mcVersion version="1.6.4">
+        <release type="release" version="1.0.5.3"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
+                 download="http://www.curseforge.com/media/files/779/48/1.6.4-MB_Battlegear2-Bullseye-1.0.5.3.jar"
+                 md5="a9bce57e52bc45f362d3f35ffbb17afd"
+                />
 	<release type="release" version="1.0.4.8"
                  url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
                  download="http://www.curseforge.com/media/files/775/604/1.6.4-MB_Battlegear2-Bullseye-1.0.4.8.jar"

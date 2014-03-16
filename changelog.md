@@ -2,7 +2,7 @@
 * Fixed shield sounds
 * Fixed player not dropping items on death
 * Fixed mystery arrow crash 
-* Added damage in knight armor
+* Added damage in knight armor (still incomplete)
 * Fixed flagpole
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.2 ==
