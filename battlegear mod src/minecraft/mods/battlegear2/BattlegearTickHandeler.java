@@ -42,7 +42,7 @@ public class BattlegearTickHandeler implements ITickHandler {
             }
             //Force update every 3 seconds
             //TODO: This is a temp fix
-            else if(entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
+            else if(((IBattlePlayer)entityPlayer).isBattlemode() && entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
                 ((WorldServer)entityPlayer.worldObj)
                         .getEntityTracker().sendPacketToAllAssociatedPlayers(
                         entityPlayer,
