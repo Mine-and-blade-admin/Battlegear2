@@ -2,46 +2,16 @@
     "shield": {
     "category": "player",
     "sounds": [
-        {
-            "type": "event",
-            "name": "shield0.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield1.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield2.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield3.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield4.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield5.wav"
-        },
-        {
-            "type": "event",
-            "name": "shield6.wav"
-        },
-        {
-             "type": "event",
-             "name": "shield7.wav"
-        },
-        {
-             "type": "event",
-             "name": "shield8.wav"
-        },
-        {
-             "type": "event",
-             "name": "shield9.wav"
-        }
+        "shield0",
+        "shield1",
+        "shield2",
+        "shield3",
+        "shield4",
+        "shield5",
+        "shield6",
+        "shield7",
+        "shield8",
+        "shield9"
       ]
     }
 }
