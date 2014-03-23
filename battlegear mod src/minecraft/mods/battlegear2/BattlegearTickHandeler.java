@@ -44,14 +44,14 @@ public class BattlegearTickHandeler {
                 ((InventoryPlayerBattle)entityPlayer.inventory).hasChanged = entityPlayer.ticksExisted < 10;
 
             }
-            /*Force update every 3 seconds
-            else if(entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
+            //Force update every 3 seconds
+            else if(((IBattlePlayer)entityPlayer).isBattlemode() && entityPlayer.ticksExisted % (20*1) == 0 && !entityPlayer.isUsingItem()){
                 ((WorldServer)entityPlayer.worldObj)
                         .getEntityTracker().func_151248_b(
                         entityPlayer,
                         new BattlegearSyncItemPacket(entityPlayer).generatePacket()
                 );
-            }*/
+            }
 
         }
     }
