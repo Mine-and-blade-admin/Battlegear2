@@ -5,6 +5,7 @@ import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3
 
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.ISheathed;
+import mods.battlegear2.api.shield.IArrowDisplay;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.RenderPlayerEventChild.*;
 import mods.battlegear2.api.core.IOffhandRender;
@@ -462,7 +463,6 @@ public class BattlegearRenderHelper {
 	                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
 	                }
                 }
-                
             }else if(!(var21.getItem() instanceof IArrowContainer2)){
 
                 if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.getBlockFromItem(var21.getItem()).getRenderType()))) {
@@ -721,6 +721,18 @@ public class BattlegearRenderHelper {
         GL11.glDisable(GL11.GL_BLEND);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glDepthFunc(GL11.GL_LEQUAL);
+    }
+
+    public static void renderArrows(ItemStack stack, boolean isEntity){
+        if(stack.getItem() instanceof IArrowDisplay){
+            int arrowCount = ((IArrowDisplay)stack.getItem()).getArrowCount(stack);
+            //Bounds checking (rendering this many is quite silly, any more would look VERY silly)
+            if(arrowCount > 64)
+                arrowCount = 64;
+            for(int i = 0; i < arrowCount; i++){
+                BattlegearRenderHelper.renderArrow(isEntity, i);
+            }
+        }
     }
 
     public static void renderArrow(boolean isEntity, int id){

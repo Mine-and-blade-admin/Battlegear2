@@ -132,7 +132,6 @@ public class BattlegearClientEvents {
 
 		if (BattlegearConfig.enableSkeletonQuiver && event.entity instanceof EntitySkeleton
 				&& event.renderer instanceof RenderSkeleton) {
-			//ObfuscationReflectionHelper.getPrivateValue(RenderBiped.class, (RenderBiped) event.renderer, 0);
 
 			GL11.glPushMatrix();
 			GL11.glDisable(GL11.GL_CULL_FACE);

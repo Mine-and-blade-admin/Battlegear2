@@ -174,7 +174,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
                     }
                 }
             }
-            if(left_over > 0 ){
+            if(left_over > 0){
                 newStack.stackSize = left_over;
                 return newStack;
             }

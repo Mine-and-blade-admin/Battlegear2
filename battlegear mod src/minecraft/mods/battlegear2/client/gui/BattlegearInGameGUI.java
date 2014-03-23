@@ -55,9 +55,10 @@ public class BattlegearInGameGUI extends Gui {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 zLevel = -90.0F;
                 if(!ClientProxy.tconstructEnabled || mc.thePlayer.capabilities.isCreativeMode){
-	                if(previousGui!=null && mc.currentScreen==null) {
-	                	previousGui=null;
-	                }else if (mc.currentScreen!=null){
+	                if(mc.currentScreen==null) {
+                        if(previousGui!=null)
+	                	    previousGui=null;
+	                }else{
                         Class<?> currentGui = mc.currentScreen.getClass();
                         if(currentGui!=previousGui && (currentGui.equals(GuiContainerCreative.class) || currentGui.equals(GuiInventory.class))){
                             BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList, ((GuiContainer) mc.currentScreen).guiLeft-30, ((GuiContainer)mc.currentScreen).guiTop);

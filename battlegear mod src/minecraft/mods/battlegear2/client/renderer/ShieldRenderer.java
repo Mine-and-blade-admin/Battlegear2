@@ -49,7 +49,7 @@ public class ShieldRenderer implements IItemRenderer{
             float green = (float)(col >> 8 & 255) / 255.0F;
             float blue = (float)(col & 255) / 255.0F;
 
-            IIcon icon = shield.getIconIndex(item);
+            IIcon icon = item.getItem().getIconIndex(item);
 
             switch (type){
                 case ENTITY:
@@ -148,14 +148,8 @@ public class ShieldRenderer implements IItemRenderer{
 
                     break;
             }
+            BattlegearRenderHelper.renderArrows(item, type == ItemRenderType.ENTITY);
 
-            int arrowCount = shield.getArrowCount(item);
-	    //Bounds checking (rendering this many is quite silly, any more would look VERY silly)
-            if(arrowCount > 64)
-                arrowCount = 64;
-            for(int i = 0; i < arrowCount; i++){
-                BattlegearRenderHelper.renderArrow(type == ItemRenderType.ENTITY, i);
-            }
             GL11.glPopMatrix();
 
         }
