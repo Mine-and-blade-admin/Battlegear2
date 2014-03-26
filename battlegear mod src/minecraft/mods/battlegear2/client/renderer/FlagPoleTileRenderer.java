@@ -2,8 +2,7 @@ package mods.battlegear2.client.renderer;
 
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.client.utils.ImageCache;
-import mods.battlegear2.heraldry.BlockFlagPole;
-import mods.battlegear2.heraldry.TileEntityFlagPole;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -22,8 +21,8 @@ import java.util.List;
  * TODO: Add discription
  */
 public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
-    public static final int period = 250;
-    public static final int flag_sections = 16;
+    public static int period = 250;
+    public static int flag_sections = 16;
     public static double getZLevel(float x, float size, long time){
         return Math.pow(x, 0.5/(size/5)) * Math.sin(Math.PI * ( -x/size * 3 + ((float)(time% period)) / (0.5F*(float)period))) / 4;
     }
@@ -31,29 +30,33 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
     @Override
     public void renderTileEntityAt(TileEntity tileentity, double d0, double d1, double d2, float f) {
 
-        if(tileentity instanceof TileEntityFlagPole){
+        if(tileentity instanceof IFlagHolder){
             Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
             int type = tileentity.getBlockMetadata();
-            BlockFlagPole banner = (BlockFlagPole) tileentity.getBlockType();
-            int side = banner.getOrient(type);
+            int side = ((IFlagHolder)tileentity).getOrientation(type);
 
             GL11.glPushMatrix();
             GL11.glTranslated(d0, d1, d2);
             GL11.glColor3f(1,1,1);
 
+            float[] dims = new float[5];
+            for(int i=0; i<5; i++){
+                dims[i] = ((IFlagHolder)tileentity).getTextureDimensions(type, i);
+            }
+            Block banner = tileentity.getBlockType();
             switch (side){
                 case 0:
-                    renderYFlagPole(banner, d0, d1, d2, f, type, side);
+                    renderYFlagPole(banner, f, type, side, dims);
                     renderYFlag((IFlagHolder)tileentity, d0, d1, d2, f, type, side);
                     break;
                 case 1:
-                    renderZFlagPole(banner, d0, d1, d2, f, type, side);
+                    renderZFlagPole(banner, f, type, side, dims);
                     renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type, side);
                     break;
                 case 2:
                     GL11.glRotatef(90, 0, 1, 0);
                     GL11.glTranslatef(-1, 0, 0);
-                    renderZFlagPole(banner, d0, d1, d2, f, type, side);
+                    renderZFlagPole(banner, f, type, side, dims);
                     renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type, side);
                     break;
             }
@@ -129,13 +132,9 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         }
     }
 
-    private void renderZFlagPole(BlockFlagPole banner, double d0, double d1, double d2, float f, int type, int side) {
+    private void renderZFlagPole(Block banner, float f, int type, int side, float[] dims) {
         IIcon icon = banner.getIcon(2, type);
         Tessellator tess = Tessellator.instance;
-        float[] dims = new float[5];
-        for(int i=0; i<5; i++){
-            dims[i] = banner.getTextDim(type, i);
-        }
         tess.startDrawingQuads();
         tess.addVertexWithUV(9F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[0]));
         tess.addVertexWithUV(9F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
@@ -157,14 +156,12 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         tess.addVertexWithUV(7F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
         tess.draw();
 
-
         tess.startDrawingQuads();
         tess.addVertexWithUV(7F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
         tess.addVertexWithUV(9F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
         tess.addVertexWithUV(9F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
         tess.addVertexWithUV(7F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
         tess.draw();
-
 
         icon = banner.getIcon(0, type);
 
@@ -175,17 +172,13 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         tess.addVertexWithUV(7F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
         tess.draw();
 
-
         tess.startDrawingQuads();
         tess.addVertexWithUV(7F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
         tess.addVertexWithUV(9F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
         tess.addVertexWithUV(9F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
         tess.addVertexWithUV(7F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
         tess.draw();
-
-
     }
-
 
     private void renderYFlag(IFlagHolder tileentity, double d0, double d1, double d2, float f, int type, int side) {
 
@@ -242,18 +235,13 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
             }
             GL11.glEnable(GL11.GL_LIGHTING);
             GL11.glDisable(GL11.GL_BLEND);
-
         }
     }
 
-    private void renderYFlagPole(BlockFlagPole banner, double d0, double d1, double d2, float f, int type, int side) {
+    private void renderYFlagPole(Block banner, float f, int type, int side, float[] dims) {
 
         IIcon icon = banner.getIcon(2, type);
         Tessellator tess = Tessellator.instance;
-        float[] dims = new float[5];
-        for(int i=0; i<5; i++){
-            dims[i] = banner.getTextDim(type, i);
-        }
 
         tess.startDrawingQuads();
         tess.addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[0]));
@@ -269,14 +257,12 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         tess.addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[1]),icon.getInterpolatedV(dims[4]));
         tess.draw();
 
-
         tess.startDrawingQuads();
         tess.addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
         tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[3]),icon.getInterpolatedV(dims[0]));
         tess.addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
         tess.addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
         tess.draw();
-
 
         tess.startDrawingQuads();
         tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[0]));

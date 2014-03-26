@@ -1,9 +1,7 @@
 package mods.battlegear2.heraldry;
 
-import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
-import mods.battlegear2.packet.BattlegearBannerPacket;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -88,31 +86,22 @@ public class BlockFlagPole extends Block {
     public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9) {
 
         TileEntity te = world.getTileEntity(x, y, z);
-        if(te != null && te instanceof IFlagHolder){
+        if(te instanceof IFlagHolder){
             ItemStack stack = par5EntityPlayer.getCurrentEquippedItem();
             if(stack == null){
-
-                if(!world.isRemote){
-                    List<ItemStack> flags = ((IFlagHolder) te).getFlags();
-                    if(flags.size()>0){
-                        ItemStack flag = flags.remove(flags.size() - 1);
-                        par5EntityPlayer.inventory.setInventorySlotContents(par5EntityPlayer.inventory.currentItem, flag);
-                        Battlegear.packetHandler.sendPacketToAll(new BattlegearBannerPacket(x, y, z, flags).generatePacket());
-                    }
+                List<ItemStack> flags = ((IFlagHolder) te).getFlags();
+                if(flags.size()>0){
+                    ItemStack flag = flags.remove(flags.size() - 1);
+                    par5EntityPlayer.inventory.setInventorySlotContents(par5EntityPlayer.inventory.currentItem, flag);
+                    return true;
                 }
-
-                return true;
             }else if(stack.getItem() instanceof IHeraldryItem){
-
-                if(!world.isRemote){
-                    if(((IFlagHolder) te).addFlag(stack)){
-                        if(!par5EntityPlayer.capabilities.isCreativeMode){
-                            par5EntityPlayer.inventory.decrStackSize(par5EntityPlayer.inventory.currentItem, 1);
-                        }
-                        Battlegear.packetHandler.sendPacketToAll(new BattlegearBannerPacket(x, y, z, ((IFlagHolder) te).getFlags()).generatePacket());
+                if(((IFlagHolder) te).addFlag(stack)){
+                    if(!par5EntityPlayer.capabilities.isCreativeMode){
+                        par5EntityPlayer.inventory.decrStackSize(par5EntityPlayer.inventory.currentItem, 1);
                     }
+                    return true;
                 }
-                return true;
             }
         }
         return super.onBlockActivated(world, x, y, z, par5EntityPlayer, par6, par7, par8, par9);
@@ -176,12 +165,13 @@ public class BlockFlagPole extends Block {
     public void breakBlock(World par1World, int par2, int par3, int par4, Block par5, int par6) {
         if(!par1World.isRemote){
             TileEntity te = par1World.getTileEntity(par2, par3, par4);
-            if(te != null && te instanceof IFlagHolder){
+            if(te instanceof IFlagHolder){
                 List<ItemStack> flags = ((IFlagHolder)te).getFlags();
 
                 for(ItemStack f : flags){
                     par1World.spawnEntityInWorld(new EntityItem(par1World, par2, par3, par4, f));
                 }
+                ((IFlagHolder) te).clearFlags();
             }
         }
         super.breakBlock(par1World, par2, par3, par4, par5, par6);

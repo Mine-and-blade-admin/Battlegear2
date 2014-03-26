@@ -26,4 +26,19 @@ public interface IFlagHolder {
      * @return All flags currently contained, empty list if none
      */
     public List<ItemStack> getFlags();
+
+    /**
+     * Called by the default {@link FlagPoleTileRenderer}
+     * @param metadata
+     * @param section
+     * @return the value to interpolate on the flagpole icon, to render the flagpole
+     */
+    public float getTextureDimensions(int metadata, int section);
+
+    /**
+     * Called by the default {@link FlagPoleTileRenderer}
+     * @param metadata
+     * @return the rendered orientation value for the flagpole and thus the flags
+     */
+    public int getOrientation(int metadata);
 }

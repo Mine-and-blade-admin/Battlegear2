@@ -54,7 +54,7 @@ public class BattlegearBannerPacket extends AbstractMBPacket{
             e.printStackTrace();
         }
         TileEntity te = player.worldObj.getTileEntity(posX, posY, posZ);
-        if(te != null && te instanceof IFlagHolder){
+        if(te instanceof IFlagHolder){
             ((IFlagHolder) te).clearFlags();
             for(ItemStack flag:parts){
                 ((IFlagHolder)te).addFlag(flag);

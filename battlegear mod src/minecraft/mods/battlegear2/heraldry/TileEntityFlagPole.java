@@ -109,4 +109,14 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     public List<ItemStack> getFlags() {
         return flags;
     }
+
+    @Override
+    public float getTextureDimensions(int metadata, int section) {
+        return ((BlockFlagPole)this.getBlockType()).getTextDim(metadata, section);
+    }
+
+    @Override
+    public int getOrientation(int metadata) {
+        return ((BlockFlagPole)this.getBlockType()).getOrient(metadata);
+    }
 }
