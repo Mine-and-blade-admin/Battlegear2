@@ -40,4 +40,8 @@ public class CommonProxy {
 
 	public void tryUseTConstruct() {
 	}
+
+    public EntityPlayer getClientPlayer(){
+        return null;
+    }
 }

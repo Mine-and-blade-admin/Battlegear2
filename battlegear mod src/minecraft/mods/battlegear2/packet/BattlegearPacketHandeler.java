@@ -8,11 +8,8 @@ import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.Minecraft;
+import mods.battlegear2.Battlegear;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
 
@@ -42,12 +39,7 @@ public class BattlegearPacketHandeler {
 
     @SubscribeEvent
     public void onClientPacket(FMLNetworkEvent.ClientCustomPacketEvent event){
-        map.get(event.packet.channel()).process(event.packet.payload(), getClientPlayer());
-    }
-
-    @SideOnly(Side.CLIENT)
-    private EntityPlayer getClientPlayer(){
-        return Minecraft.getMinecraft().thePlayer;
+        map.get(event.packet.channel()).process(event.packet.payload(), Battlegear.proxy.getClientPlayer());
     }
 
     public void sendPacketToPlayer(FMLProxyPacket packet, EntityPlayerMP player){

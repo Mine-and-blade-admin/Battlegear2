@@ -115,11 +115,6 @@ public class ClientProxy extends CommonProxy {
             MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BattlegearConfig.banner), new FlagPoleItemRenderer());
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
         }
-        for(Item it:BattlegearConfig.knightArmor){
-            if(it!=null){
-                MinecraftForgeClient.registerItemRenderer(it, new HeraldryItemRenderer());
-            }
-        }
         if(Battlegear.debug){
             Item it = null;
             for(Iterator itr = GameData.itemRegistry.iterator(); itr.hasNext(); it = (Item) itr.next()){
@@ -257,4 +252,9 @@ public class ClientProxy extends CommonProxy {
 		}
     	tconstructEnabled = true;
 	}
+
+    @Override
+    public EntityPlayer getClientPlayer(){
+        return Minecraft.getMinecraft().thePlayer;
+    }
 }
