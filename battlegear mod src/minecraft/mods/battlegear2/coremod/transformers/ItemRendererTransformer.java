@@ -8,6 +8,7 @@ import java.util.List;
 import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.api.core.BattlegearTranslator;
 
+import org.apache.logging.log4j.Level;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
@@ -111,7 +112,7 @@ public class ItemRendererTransformer extends TransformerBase {
 
 	@Override
 	boolean processFields(List<FieldNode> fields) {
-		System.out.println("\tAdding new fields to ItemRenderer");
+        logger.log(Level.INFO, "\tAdding new fields to ItemRenderer");
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandItemToRender", "L" + itemStackClass + ";", null, null));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "equippedItemOffhandSlot", "I", null, 0));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "equippedOffHandProgress", "F", null, 0F));

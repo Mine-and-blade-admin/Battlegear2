@@ -28,11 +28,9 @@
 !mods/
 
 #Also don't ignore the install scripts
-!battlegear-*
 !gradlew*
 !gradle/*
 !build.gradle
-!build.xml
 
 #Or this file ;) (or readme)
 !.gitignore
