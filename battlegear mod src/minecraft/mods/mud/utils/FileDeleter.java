@@ -1,5 +1,7 @@
 package mods.mud.utils;
 
+import mods.mud.ModUpdateDetector;
+
 import java.io.File;
 
 public class FileDeleter {
@@ -9,7 +11,7 @@ public class FileDeleter {
             if(f.exists()){
                 while(f.exists()){
                     f.delete();
-                    System.out.println("File in use, try again in 1 second");
+                    ModUpdateDetector.logger.trace("File in use, try again in 1 second");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {

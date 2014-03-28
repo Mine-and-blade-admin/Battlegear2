@@ -3,6 +3,7 @@ package mods.battlegear2.coremod.transformers;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.BattlegearTranslator;
 
+import org.apache.logging.log4j.Level;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
@@ -61,7 +62,7 @@ public class EntityPlayerTransformer extends TransformerBase {
 
     @Override
     boolean processFields(List<FieldNode> fields) {
-        System.out.println("\tAdding new fields to EntityPlayer");
+        logger.log(Level.INFO, "\tAdding new fields to EntityPlayer");
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgress", "F", null, 0F));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "prevOffHandSwingProgress", "F", null, 0F));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgressInt", "I", null, 0));
@@ -70,7 +71,7 @@ public class EntityPlayerTransformer extends TransformerBase {
 
         for (FieldNode fn : fields) {
             if (fn.name.equals(playerInventoryFieldName) && fn.desc.equals("L"+inventoryClassName + ";")) {
-                System.out.println("M&B - Marking field inventory as final in EntityPlayer");
+                logger.log(Level.INFO, "M&B - Marking field inventory as final in EntityPlayer");
                 fn.access = ACC_PUBLIC | ACC_FINAL;
                 return true;
             }
@@ -83,7 +84,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         int found = 0;
     	for (MethodNode mn : methods) {
             if (mn.name.equals("<init>")) {
-                System.out.println("\tPatching constructor in EntityPlayer");
+                logger.log(Level.INFO, "\tPatching constructor in EntityPlayer");
                 ListIterator<AbstractInsnNode> it = mn.instructions.iterator();
 
                 while (it.hasNext()) {
@@ -139,7 +140,7 @@ public class EntityPlayerTransformer extends TransformerBase {
             }
         }
 
-        System.out.println("\tCreating new methods in EntityPlayer");
+        logger.log(Level.INFO, "\tCreating new methods in EntityPlayer");
         methods.add(methods.size(), generateAttackOffhandMethod());
         methods.add(methods.size(), generateSwingOffhand());
         methods.add(methods.size(), generateGetOffSwingMethod());

@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.logging.log4j.*;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.*;
@@ -17,7 +18,7 @@ import mods.battlegear2.api.core.BattlegearTranslator;
 import net.minecraft.launchwrapper.IClassTransformer;
 
 public abstract class TransformerBase implements IClassTransformer{
-
+    public Logger logger = LogManager.getLogger("battlegear2");
 	protected final String classPath;
 	protected final String unobfClass;
 	public TransformerBase(String classPath){
@@ -28,7 +29,7 @@ public abstract class TransformerBase implements IClassTransformer{
 	@Override
 	public byte[] transform(String name, String transformedName, byte[] bytes) {
 		if (transformedName.equals(classPath)) {
-			System.out.println("M&B - Patching Class "+ unobfClass +" (" + name + ")");
+			logger.log(Level.INFO, "M&B - Patching Class "+ unobfClass +" (" + name + ")");
 
             ClassReader cr = new ClassReader(bytes);
             ClassNode cn = new ClassNode(ASM4);
@@ -42,7 +43,7 @@ public abstract class TransformerBase implements IClassTransformer{
 			ClassWriter cw = new ClassWriter(0);
             cn.accept(cw);
 
-            System.out.println("M&B - Patching Class "+ unobfClass + (success?" done":" FAILED!"));
+            logger.log(success ?Level.INFO:Level.ERROR, "M&B - Patching Class " + unobfClass + (success ? " done" : " FAILED!"));
             if (!success && BattlegearTranslator.debug) {
                 writeClassFile(cw, unobfClass+" ("+name+")");
             }
@@ -128,7 +129,7 @@ public abstract class TransformerBase implements IClassTransformer{
     }
     
     public void sendPatchLog(String method){
-    	System.out.println("\tPatching method "+method+" in "+unobfClass);
+        logger.log(Level.INFO, "\tPatching method " + method + " in " + unobfClass);
     }
 
     public static MethodNode generateSetter(String className, String methodName, String fieldName, String fieldType){

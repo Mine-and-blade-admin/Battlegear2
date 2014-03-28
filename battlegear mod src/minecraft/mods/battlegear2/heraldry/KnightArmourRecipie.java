@@ -86,7 +86,6 @@ public class KnightArmourRecipie implements IRecipe{
 		
 		float damage =  1 - ((1 - ((float)iron.getItemDamage() / (float)iron.getMaxDamage())) * 0.67F +
 				(1 - ((float)chain.getItemDamage() / (float)chain.getMaxDamage())) * 0.33F);
-		System.out.println(damage);
 		
 		ItemStack kArmourStack = new ItemStack(knightArmour, 1, (int)(knightArmour.getMaxDamage() * damage));
 		if(iron.hasTagCompound()){

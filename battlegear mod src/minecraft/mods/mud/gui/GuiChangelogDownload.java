@@ -434,8 +434,8 @@ public class GuiChangelogDownload extends GuiScreen
                         dis.close();
                         byte[] md5 = md.digest(fileData);
 
-                        System.out.println("Expected MD5: "+bytArrayToHex(expectedMd5));
-                        System.out.println("File MD5: "+bytArrayToHex(md5));
+                        ModUpdateDetector.logger.trace("Expected MD5: "+bytArrayToHex(expectedMd5));
+                        ModUpdateDetector.logger.trace("File MD5: "+bytArrayToHex(md5));
 
                         if(Arrays.equals(md5, expectedMd5)){
                             downloadComplete = true;
@@ -474,9 +474,9 @@ public class GuiChangelogDownload extends GuiScreen
                         !orginial.getName().equals(file.getName()) &&
                         !orginial.isDirectory()
                         ){
-                    System.out.println("Deleting: "+orginial.getAbsolutePath());
+                    ModUpdateDetector.logger.trace("Deleting: "+orginial.getAbsolutePath());
                     if(!orginial.delete()){
-                        System.out.println("Deleting failed, spawning new process to delete");
+                        ModUpdateDetector.logger.trace("Deleting failed, spawning new process to delete");
                         String cmd = "java -classpath \""+file.getAbsolutePath()+"\" mods.mud.utils.FileDeleter \""+orginial.getAbsolutePath()+"\"";
                         Runtime.getRuntime().exec(cmd);
                     }

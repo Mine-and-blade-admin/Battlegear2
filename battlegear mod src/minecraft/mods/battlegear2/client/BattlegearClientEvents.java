@@ -276,7 +276,6 @@ public class BattlegearClientEvents {
 	@SubscribeEvent
 	public void preStitch(TextureStitchEvent.Pre event) {
 		if (event.map.getTextureType() == 1) {
-            System.out.println("texture loading");
 			ClientProxy.backgroundIcon = new IIcon[2];
 			ClientProxy.backgroundIcon[0] = event.map
 					.registerIcon("battlegear2:slots/mainhand");

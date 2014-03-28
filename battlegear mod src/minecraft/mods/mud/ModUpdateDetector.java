@@ -12,6 +12,8 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -24,7 +26,7 @@ import java.util.Map;
  * MUD is a client side only utility for mods to send automated report for updates and changelog
  */
 public class ModUpdateDetector {
-    
+    public static Logger logger = LogManager.getLogger("M.U.D");
     private static boolean hasInitialised = false;
     private static Map<String, UpdateEntry> updateMap;
     public static boolean hasChecked = false;
