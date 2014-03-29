@@ -87,9 +87,9 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 	@Override
     @SideOnly(Side.CLIENT)
 	public IIcon getPostRenderIcon(ItemStack stack) {
-		/*if(armorType == 0){
+		if(armorType == 0){
 			return postRenderIcon[SigilHelper.getHelm(((IHeraldryItem)stack.getItem()).getHeraldry(stack))];
-		}else */
+		}else
 			return postRenderIcon[0];
 	}
 	
@@ -103,7 +103,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
     @SideOnly(Side.CLIENT)
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List){
         ItemStack armor = new ItemStack(par1);
-        //((ItemKnightArmour)armor.getItem()).setHeraldry(armor,SigilHelper.getDefault());
+        setHeraldry(armor,SigilHelper.getDefault());
         par3List.add(armor);
     }
 
@@ -150,14 +150,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 
 	@Override
 	public boolean shouldDoPass(HeraldyRenderPassess pass) {
-		
-		if(pass.equals(HeraldyRenderPassess.Pattern) || 
-				pass.equals(HeraldyRenderPassess.SecondaryColourTrim) ||
-				pass.equals(HeraldyRenderPassess.PostRenderIcon)){
-			return true;
-		}else
-			return armorType==1;
-		
+		return true;
 	}
 
 	@Override
@@ -256,6 +249,6 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 
     @Override
     public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
-	stack.damageItem(damage, entity);
+	    stack.damageItem(damage, entity);
     }
 }
