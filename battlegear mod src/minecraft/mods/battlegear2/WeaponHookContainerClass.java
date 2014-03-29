@@ -105,11 +105,11 @@ public class WeaponHookContainerClass {
     }
 
     protected static void performEffects(Map<PotionEffect, Float> map, EntityLivingBase entityHit) {
-        double roll =  Math.random();
+        double roll = Math.random();
         for(PotionEffect effect:map.keySet()){
             //add effects if they aren't already applied, with corresponding chance factor
             if(!entityHit.isPotionActive(effect.getPotionID()) && map.get(effect) > roll){
-                entityHit.addPotionEffect(effect);
+                entityHit.addPotionEffect(new PotionEffect(effect));
             }
         }
     }
