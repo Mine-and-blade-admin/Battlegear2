@@ -1,3 +1,9 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.5.4 ==
+* Added picking up arrows into offhand quiver
+* Fixed creative knight armor missing things
+* Fixed mace effects
+* Force-fixed MCPC+ inventory bug
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.3 ==
 * Fixed shield sounds
 * Fixed player not dropping items on death
