@@ -46,8 +46,10 @@ public class CraftingHandeler {
                     ItemStack temp = new ItemStack(Items.arrow, nextStackSize);
                     if(!player.inventory.addItemStackToInventory(temp)){
                         EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
-                        entityitem.delayBeforeCanPickup = 0;
-                        entityitem.func_145797_a(player.getCommandSenderName());
+                        if(entityitem!=null) {
+                            entityitem.delayBeforeCanPickup = 0;
+                            entityitem.func_145797_a(player.getCommandSenderName());
+                        }
                     }
 
                 }
@@ -107,8 +109,10 @@ public class CraftingHandeler {
         			ItemStack temp = (ItemStack) itr.next();
         			if(!player.inventory.addItemStackToInventory(temp)){
                         EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
-                        entityitem.delayBeforeCanPickup = 0;
-                        entityitem.func_145797_a(player.getCommandSenderName());
+                        if(entityitem!=null) {
+                            entityitem.delayBeforeCanPickup = 0;
+                            entityitem.func_145797_a(player.getCommandSenderName());
+                        }
         			}
         		}
         		for(int index=0;index<craftMatrix.getSizeInventory();index++){

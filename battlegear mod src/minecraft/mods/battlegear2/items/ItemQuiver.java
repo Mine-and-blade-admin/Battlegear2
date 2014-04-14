@@ -47,8 +47,10 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
             ItemStack temp = getStackInSlot(stack, i);
             if(temp!=null){
                 EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
-                entityitem.delayBeforeCanPickup = 0;
-                entityitem.func_145797_a(player.getCommandSenderName());
+                if(entityitem!=null) {
+                    entityitem.delayBeforeCanPickup = 0;
+                    entityitem.func_145797_a(player.getCommandSenderName());
+                }
                 setStackInSlot(stack, i, null);
             }
     	}

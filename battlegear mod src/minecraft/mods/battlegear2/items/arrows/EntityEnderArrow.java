@@ -78,8 +78,10 @@ public class EntityEnderArrow extends AbstractMBArrow{
                 ItemStack item = new ItemStack(id, 1, meta);
                 if(!((EntityPlayer) shootingEntity).inventory.addItemStackToInventory(item)){
                     EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) shootingEntity, item, true);
-                    entityitem.delayBeforeCanPickup = 0;
-                    entityitem.func_145797_a(shootingEntity.getCommandSenderName());
+                    if(entityitem!=null) {
+                        entityitem.delayBeforeCanPickup = 0;
+                        entityitem.func_145797_a(shootingEntity.getCommandSenderName());
+                    }
                 }
             }
         }else if(shootingEntity != null){
