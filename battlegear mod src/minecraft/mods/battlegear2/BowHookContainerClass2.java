@@ -56,7 +56,7 @@ public class BowHookContainerClass2 {
         }
     }
 
-    @SubscribeEvent(receiveCanceled=true)
+    @SubscribeEvent
     public void onBowUse(ArrowNockEvent event){
     	boolean canDrawBow = false;
         if(event.entityPlayer.capabilities.isCreativeMode
@@ -96,7 +96,7 @@ public class BowHookContainerClass2 {
     	return false;
     }
 
-    @SubscribeEvent(receiveCanceled=true)
+    @SubscribeEvent
     public void onBowFiring(ArrowLooseEvent event) {
         //Check if bow is charged enough
         float f = new PlayerEventChild.QuiverArrowEvent.ChargeCalculations(event).getCharge();
