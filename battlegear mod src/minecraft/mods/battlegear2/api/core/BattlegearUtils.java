@@ -45,28 +45,14 @@ public class BattlegearUtils {
      */
     public static final EventBus RENDER_BUS = new EventBus();
 
-
-    private static String[] itemBlackListMethodNames;
-    private static Class[][] itemBlackListMethodParams;
-    static {
-
-        if (World.class.getName().equals("net.minecraft.world.World")) {
-            itemBlackListMethodNames = new String[]{
-                    "onItemUse",
-                    "onItemRightClick"
-            };
-        } else {
-            itemBlackListMethodNames = new String[]{
-                    BattlegearTranslator.getMapedMethodName("Item", "func_77648_a", "onItemUse"),
-                    BattlegearTranslator.getMapedMethodName("Item", "func_77659_a", "onItemRightClick")
-            };
-        }
-
-        itemBlackListMethodParams = new Class[][]{
+    private static String[] itemBlackListMethodNames = {
+            BattlegearTranslator.getMapedMethodName("Item", "func_77648_a", "onItemUse"),
+            BattlegearTranslator.getMapedMethodName("Item", "func_77659_a", "onItemRightClick")
+    };
+    private static Class[][] itemBlackListMethodParams = {
                 new Class[]{ItemStack.class, EntityPlayer.class, World.class, int.class, int.class, int.class, int.class, float.class, float.class, float.class},
                 new Class[]{ItemStack.class, World.class, EntityPlayer.class}
-        };
-    }
+    };
 
     public static boolean isBlockingWithShield(EntityPlayer player){
         //TODO: Use this ?
