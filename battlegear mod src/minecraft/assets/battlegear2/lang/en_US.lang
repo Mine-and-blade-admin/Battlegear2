@@ -125,3 +125,6 @@ lore.advanced.arrow.mystery=Sends a peace and love message
 lore.advanced.arrow.leech=Has a vampire touch
 
 tooltip.armour.points=Armor
+
+commands.weaponwield.usage=/weaponwield <itemSearch:current/name> <handWielding:both/right/left> <player or item name>
+commands.weaponwield.set=Item successfully set as wieldable weapon

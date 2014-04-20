@@ -9,6 +9,7 @@ import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
+import mods.battlegear2.api.weapons.CommandWeaponWield;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.api.core.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
@@ -94,6 +95,11 @@ public class Battlegear {
         if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
             proxy.tryUseTConstruct();
         }
+    }
+
+    @Mod.EventHandler
+    public void serverStart(FMLServerStartingEvent event){
+        event.registerServerCommand(new CommandWeaponWield());
     }
     
     @Mod.EventHandler
