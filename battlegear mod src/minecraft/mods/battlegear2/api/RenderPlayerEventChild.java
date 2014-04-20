@@ -4,6 +4,9 @@ import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 
+/**
+ * Those events are posted to {@link BattlegearUtils.RENDER_BUS} from {@link BattlegearRenderHelper}
+ */
 public abstract class RenderPlayerEventChild extends RenderPlayerEvent{
 	public static enum PlayerElementType{
 		Offhand,
@@ -11,15 +14,19 @@ public abstract class RenderPlayerEventChild extends RenderPlayerEvent{
 		ItemOffhandSheathed,
 		ItemMainhandSheathed,
 	}
-	
+
+    /**
+     * Describe what element is rendered, either the player arm or the item hold/sheathed
+     */
 	public final PlayerElementType type;
+    /**
+     * True in first person rendering, false in third person rendering
+     */
 	public final boolean isFirstPerson;
+    /**
+     * The element to be rendered, or null if a player arm
+     */
 	public final ItemStack element;
-	/**
-	 * @param type Describe what element is rendered, either the player arm or the item hold/sheathed
-	 * @param firstPerson True in first person rendering, false in third person rendering
-	 * @param item The element to be rendered, null if a player arm
-	 */
 	public RenderPlayerEventChild(RenderPlayerEvent parent, PlayerElementType type, boolean firstPerson, ItemStack item) {
 		super(parent.entityPlayer, parent.renderer, parent.partialRenderTick);
 		this.type = type;

@@ -3,7 +3,7 @@ package mods.battlegear2.api.core;
 import net.minecraft.entity.Entity;
 
 /**
- * Interface added to {@link #EntityPlayer} to support offhand management
+ * Interface added to {@link EntityPlayer} to support offhand management
  * @author GotoLink
  */
 public interface IBattlePlayer{

@@ -12,8 +12,8 @@ import net.minecraft.item.ItemStack;
 public interface IArrowCatcher {
     /**
      *
-     * @param shield the {@link #ItemStack} corresponding to the shield in use
-     * @param player the {@link #EntityPlayer} holding the shield
+     * @param shield the {@link ItemStack} corresponding to the shield in use
+     * @param player the {@link EntityPlayer} holding the shield
      * @param projectile heading towards the shield
      * @return true if the projectile has been caught
      */

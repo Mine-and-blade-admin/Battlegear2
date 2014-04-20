@@ -194,6 +194,9 @@ public abstract class PlayerEventChild extends PlayerEvent{
          */
         @HasResult
         public static class ChargeCalculations extends QuiverArrowEvent {
+            /**
+             * Returned value if the result is set to allow
+             */
             protected float charge;
             public ChargeCalculations(ArrowLooseEvent event){
                 super(event);

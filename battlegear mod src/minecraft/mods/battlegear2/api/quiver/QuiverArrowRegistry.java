@@ -70,7 +70,7 @@ public class QuiverArrowRegistry {
     }
 
     /**
-     * Search for an ItemStack whose item is an {@link #IArrowContainer2}
+     * Search for an ItemStack whose item is an {@link IArrowContainer2}
      * @param bow the bow in use
      * @param entityPlayer the player using it
      * @return the first non-null itemstack found through the quiver selection algorithms
