@@ -26,9 +26,7 @@ public class FloodFillTool implements ITool {
     public void drawOverlay(int x, int y, int[] pixelsCurrent, DynamicTexture overlay, int rgb, boolean shift) {
         int[] pixelsOverlay = overlay.getTextureData();
 
-        for(int i = 0; i < pixelsOverlay.length; i++){
-            pixelsOverlay[i] = pixelsCurrent[i];
-        }
+        System.arraycopy(pixelsCurrent, 0, pixelsOverlay, 0, pixelsOverlay.length);
 
         if (x > -1 && x < ImageData.IMAGE_RES && y > -1 && y < ImageData.IMAGE_RES){
             pixelsOverlay[x+ImageData.IMAGE_RES*y] = rgb;

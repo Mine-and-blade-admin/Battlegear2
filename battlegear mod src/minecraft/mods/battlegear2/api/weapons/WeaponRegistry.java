@@ -88,13 +88,7 @@ public class WeaponRegistry {
 			if (obj == null) {
 				return false;
 			}
-			if (!(obj instanceof StackHolder)) {
-				return false;
-			}
-			if (!ItemStack.areItemStacksEqual(stack, ((StackHolder) obj).stack)) {
-				return false;
-			}
-			return true;
+			return obj instanceof StackHolder && ItemStack.areItemStacksEqual(stack, ((StackHolder) obj).stack);
 		}
 	}
 }

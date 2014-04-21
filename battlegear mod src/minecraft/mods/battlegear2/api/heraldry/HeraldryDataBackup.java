@@ -40,7 +40,7 @@ public class HeraldryDataBackup {
         try{
             input = new DataInputStream(new ByteArrayInputStream(data));
 
-            pattern = input.readByte();;
+            pattern = input.readByte();
             crest = input.readShort();
             crestPosition = input.readByte();
             colours= new int[5];

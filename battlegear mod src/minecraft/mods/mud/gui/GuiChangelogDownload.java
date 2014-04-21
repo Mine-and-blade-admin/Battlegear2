@@ -320,22 +320,23 @@ public class GuiChangelogDownload extends GuiScreen
             }
 
             urlButton.enabled = selectedMod!=null && selectedMod.getLatest()!=null && selectedMod.getLatest().url!=null;
-
-            if(selectedMod.getChangelogURL() == null){
-                changelog = new String[]{StatCollector.translateToLocal("log.message.none")};
-            }else{
-                getChangeLogThread = new Thread(new ChangelogLoader(selectedMod.getChangelogURL()));
-                getChangeLogThread.start();
-                changelog = new String[]{StatCollector.translateToLocal("log.message.loading")};
-            }
-
-            try{
-                if(!selectedMod.isUpToDate()){
-                    download.enabled = true;
-                    download.displayString = StatCollector.translateToLocal("button.download.latest");
+            if(selectedMod!=null) {
+                if (selectedMod.getChangelogURL() == null) {
+                    changelog = new String[]{StatCollector.translateToLocal("log.message.none")};
+                } else {
+                    getChangeLogThread = new Thread(new ChangelogLoader(selectedMod.getChangelogURL()));
+                    getChangeLogThread.start();
+                    changelog = new String[]{StatCollector.translateToLocal("log.message.loading")};
                 }
-            }catch (Exception e){
 
+                try {
+                    if (!selectedMod.isUpToDate()) {
+                        download.enabled = true;
+                        download.displayString = StatCollector.translateToLocal("button.download.latest");
+                    }
+                } catch (Exception e) {
+
+                }
             }
         }
     }

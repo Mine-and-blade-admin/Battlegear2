@@ -14,7 +14,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
 
 public class HeraldryCrestItemRenderer implements IItemRenderer{
     private RenderItem itemRenderer;

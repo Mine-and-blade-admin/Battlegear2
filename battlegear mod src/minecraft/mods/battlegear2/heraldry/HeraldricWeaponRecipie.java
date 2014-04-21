@@ -65,8 +65,9 @@ public class HeraldricWeaponRecipie implements IRecipe{
 					icon = stack;
 				}
 			}
-			
 		}
+        if(item==null)
+            return null;
 		
 		NBTTagCompound compound = item.getTagCompound();
 		if(compound == null){

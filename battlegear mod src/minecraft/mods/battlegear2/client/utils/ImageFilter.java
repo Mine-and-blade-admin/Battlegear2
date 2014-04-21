@@ -4,7 +4,6 @@ import mods.battlegear2.utils.FileExtension;
 
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

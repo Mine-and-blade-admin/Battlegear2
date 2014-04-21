@@ -28,9 +28,7 @@ public class PenTool implements ITool {
     public void drawOverlay(int x, int y, int[] pixelsCurrent, DynamicTexture overlay, int rgb, boolean shift) {
         int[] pixelsOverlay = overlay.getTextureData();
 
-        for(int i = 0; i < pixelsOverlay.length; i++){
-            pixelsOverlay[i] = pixelsCurrent[i];
-        }
+        System.arraycopy(pixelsCurrent, 0, pixelsOverlay, 0, pixelsOverlay.length);
 
         if(shift){
             drawLine(x, last_x, y, last_y, pixelsOverlay, rgb);

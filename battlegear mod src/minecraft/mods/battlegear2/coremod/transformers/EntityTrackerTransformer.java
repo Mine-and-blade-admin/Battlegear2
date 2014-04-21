@@ -17,7 +17,6 @@ public class EntityTrackerTransformer extends TransformerMethodProcess {
     private String entityPlayerClassName;
     private String entityPlayerMPClassName;
     private String netServerHandlerClasName;
-    private String packetClassName;
     private String playerMPplayerNetServerHandlerField;
     private String sendPacketToPlayerMethodName;
     private String sendPacketToPlayerMethodDesc;
@@ -65,7 +64,7 @@ public class EntityTrackerTransformer extends TransformerMethodProcess {
 		 entityPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer");
          entityPlayerMPClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayerMP");
          netServerHandlerClasName =BattlegearTranslator.getMapedClassName("network.NetHandlerPlayServer");
-         packetClassName = BattlegearTranslator.getMapedClassName("network.Packet");
+         String packetClassName = BattlegearTranslator.getMapedClassName("network.Packet");
 
          playerMPplayerNetServerHandlerField = BattlegearTranslator.getMapedFieldName("EntityPlayerMP", "field_71135_a", "playerNetServerHandler");
 

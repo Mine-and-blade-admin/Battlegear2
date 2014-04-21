@@ -62,8 +62,9 @@ public class HeraldyRecipie implements IRecipe{
 					icon = stack;
 				}
 			}
-			
 		}
+        if(item==null)
+            return null;
 		
 		item=item.copy();
 		

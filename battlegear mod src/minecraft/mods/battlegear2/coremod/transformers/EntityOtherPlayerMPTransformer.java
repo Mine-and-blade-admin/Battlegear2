@@ -15,7 +15,6 @@ public class EntityOtherPlayerMPTransformer extends TransformerBase {
 		super("net.minecraft.client.entity.EntityOtherPlayerMP");
 	}
 
-    private String itemStackClassName;
     private String entityOtherPlayerMPClassName;
     private String playerInventoryFieldName;
     private String onUpdateMethodName;
@@ -98,7 +97,7 @@ public class EntityOtherPlayerMPTransformer extends TransformerBase {
 
 	@Override
 	void setupMappings() {
-        itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
+        String itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
         entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("client.entity.EntityOtherPlayerMP");
 
         isItemInUseFieldName = BattlegearTranslator.getMapedFieldName("EntityOtherPlayerMP", "field_71186_a", "isItemInUse");

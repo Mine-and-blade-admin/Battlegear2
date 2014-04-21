@@ -2,10 +2,7 @@ package mods.battlegear2.api.weapons;
 
 import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.api.core.BattlegearUtils;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.PlayerNotFoundException;
-import net.minecraft.command.WrongUsageException;
+import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
@@ -92,5 +89,10 @@ public class CommandWeaponWield extends CommandBase{
             return getListOfStringsMatchingLastWord(par2ArrayOfStr, MinecraftServer.getServer().getAllUsernames());
         else
             return null;
+    }
+
+    @Override
+    public int compareTo(Object object){
+        return compareTo((ICommand) object);
     }
 }

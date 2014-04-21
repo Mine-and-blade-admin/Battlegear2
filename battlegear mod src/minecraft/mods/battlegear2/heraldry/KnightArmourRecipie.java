@@ -83,6 +83,8 @@ public class KnightArmourRecipie implements IRecipe{
 				}
 			}
 		}
+        if(iron==null||chain==null)
+            return null;
 		
 		float damage =  1 - ((1 - ((float)iron.getItemDamage() / (float)iron.getMaxDamage())) * 0.67F +
 				(1 - ((float)chain.getItemDamage() / (float)chain.getMaxDamage())) * 0.33F);

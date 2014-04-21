@@ -103,7 +103,7 @@ public class ImageData {
         return bb.array();
     }
 
-    public static final String getHexArray(byte[] bytes){
+    public static String getHexArray(byte[] bytes){
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
             sb.append(String.format("%02X ", b));
@@ -133,8 +133,6 @@ public class ImageData {
     }
 
     public void setTexture(int[] pixalArray){
-        for(int i = 0; i < pixalArray.length; i++){
-            pixalArray[i] = pixels[i];
-        }
+        System.arraycopy(pixels, 0, pixalArray, 0, pixalArray.length);
     }
 }

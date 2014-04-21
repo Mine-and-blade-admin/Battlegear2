@@ -260,10 +260,10 @@ public class BattlegearClientEvents {
 	 * = 40
 	 */
 	private float interpolateRotation(float par1, float par2, float par3) {
-		float f3;
+		float f3 = par2 - par1;
 
-		for (f3 = par2 - par1; f3 < -180.0F; f3 += 360.0F) {
-			;
+		while (f3 < -180.0F) {
+            f3 += 360.0F;
 		}
 
 		while (f3 >= 180.0F) {

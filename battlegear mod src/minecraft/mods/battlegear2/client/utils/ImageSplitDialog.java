@@ -163,7 +163,7 @@ public class ImageSplitDialog extends JDialog {
             @Override
             public void stateChanged(ChangeEvent e) {
                 JSlider source = (JSlider)e.getSource();
-                x2slider.setMaximum((int)source.getValue());
+                x2slider.setMaximum(source.getValue());
 
                 resetImage();
             }
@@ -180,7 +180,7 @@ public class ImageSplitDialog extends JDialog {
             @Override
             public void stateChanged(ChangeEvent e) {
                 JSlider source = (JSlider)e.getSource();
-                y2slider.setMaximum((int)source.getValue());
+                y2slider.setMaximum(source.getValue());
                 resetImage();
             }
         });

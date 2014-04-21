@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
-import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.api.weapons.*;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.entity.SharedMonsterAttributes;

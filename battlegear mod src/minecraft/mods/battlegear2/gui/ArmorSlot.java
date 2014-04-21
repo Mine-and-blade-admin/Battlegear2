@@ -8,7 +8,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import org.lwjgl.opengl.GL11;
 
 public class ArmorSlot extends Slot {
     private final EntityPlayer player;
@@ -26,8 +25,7 @@ public class ArmorSlot extends Slot {
 
     @Override
     public boolean isItemValid(ItemStack par1ItemStack){
-        if (par1ItemStack == null) return false;
-        return par1ItemStack.getItem().isValidArmor(par1ItemStack, type, player);
+        return par1ItemStack != null && par1ItemStack.getItem().isValidArmor(par1ItemStack, type, player);
     }
 
     @Override

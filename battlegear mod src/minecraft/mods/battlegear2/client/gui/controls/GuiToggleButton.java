@@ -5,7 +5,6 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.network.rcon.IServer;
 import net.minecraft.util.ResourceLocation;
 
 public class GuiToggleButton extends GuiButton{

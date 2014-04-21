@@ -31,9 +31,7 @@ public class RectangleTool implements ITool {
     public void drawOverlay(int x, int y, int[] pixelsCurrent, DynamicTexture overlay, int rgb, boolean shift) {
 
         int[] pixelsOverlay = overlay.getTextureData();
-        for(int i = 0; i < pixelsOverlay.length; i++){
-            pixelsOverlay[i] = pixelsCurrent[i];
-        }
+        System.arraycopy(pixelsCurrent, 0, pixelsOverlay, 0, pixelsOverlay.length);
 
         if(Mouse.isButtonDown(0) && last_x > -1000 && last_y > -1000){
             if(shift){

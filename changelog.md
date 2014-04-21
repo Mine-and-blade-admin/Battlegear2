@@ -3,6 +3,10 @@
 * Fixed creative knight armor missing things
 * Fixed mace effects
 * Force-fixed MCPC+ inventory bug
+* Fixed multiple null errors
+* Attempt to be more compatible with modded bows
+* Improved weapon selection in battle slots
+* Added command for op to set weapons wielding
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.3 ==
 * Fixed shield sounds
