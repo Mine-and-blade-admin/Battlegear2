@@ -20,6 +20,7 @@ import mods.battlegear2.api.heraldry.PatternStore;
 import mods.battlegear2.client.heraldry.CrestImages;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
+import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
@@ -27,8 +28,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MathHelper;
@@ -56,6 +59,9 @@ public class BattlegearClientEvents {
 		tabsList.add(new GuiSigilButton(1, 20, 20));
 	}
 
+    /**
+     * Offset battle slots rendering according to config values
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void postRenderBar(RenderItemBarEvent.BattleSlots event) {
         if(!event.isMainHand){
@@ -67,18 +73,27 @@ public class BattlegearClientEvents {
         }
     }
 
+    /**
+     * Offset quiver slots rendering according to config values
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void postRenderQuiver(RenderItemBarEvent.QuiverSlots event) {
         event.xOffset += BattlegearConfig.quiverBarOffset[0];
         event.yOffset += BattlegearConfig.quiverBarOffset[1];
     }
 
+    /**
+     * Offset shield stamina rendering according to config values
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void postRenderShield(RenderItemBarEvent.ShieldBar event) {
         event.xOffset += BattlegearConfig.shieldBarOffset[0];
         event.yOffset += BattlegearConfig.shieldBarOffset[1];
     }
 
+    /**
+     * Render all the Battlegear HUD elements
+     */
 	@SubscribeEvent
 	public void postRenderOverlay(RenderGameOverlayEvent.Post event) {
 		if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
@@ -86,6 +101,9 @@ public class BattlegearClientEvents {
 		}
 	}
 
+    /**
+     * Render a player left hand item, or sheathed items, and quiver on player back
+     */
 	@SubscribeEvent
 	public void render3rdPersonBattlemode(RenderPlayerEvent.Specials.Post event) {
 
@@ -127,6 +145,9 @@ public class BattlegearClientEvents {
 	}
 
     private static final int SKELETON_ARROW = 5;
+    /**
+     * Render quiver on skeletons if possible
+     */
 	@SubscribeEvent
 	public void renderLiving(RenderLivingEvent.Post event) {
 
@@ -183,7 +204,30 @@ public class BattlegearClientEvents {
 		}
 	}
 
+    /**
+     * Counter the bow use fov jerkyness with the draw enchantment
+     */
+    @SubscribeEvent
+    public void onBowFOV(FOVUpdateEvent event){
+        ItemStack stack = event.entity.getItemInUse();
+        if (stack!=null && stack.getItem() instanceof ItemBow && EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId, stack)>0){
+            int i = event.entity.getItemInUseDuration();
+            float f1 = (float)i / 20.0F;
+            if (f1 > 1.0F){
+                f1 = 1.0F;
+            }
+            else{
+                f1 *= f1;
+            }
+            event.newfov /= 1.0F - f1 * 0.15F;
+        }
+    }
+
     private static final int MAIN_INV = InventoryPlayer.getHotbarSize();
+
+    /**
+     * Fixes pick block
+     */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replacePickBlock(MouseEvent event){
         if(event.buttonstate && event.button-100==Minecraft.getMinecraft().gameSettings.keyBindPickBlock.getKeyCode()){
@@ -273,6 +317,9 @@ public class BattlegearClientEvents {
 		return par1 + par3 * f3;
 	}
 
+    /**
+     * Register a few "item" icons
+     */
 	@SubscribeEvent
 	public void preStitch(TextureStitchEvent.Pre event) {
 		if (event.map.getTextureType() == 1) {
@@ -298,6 +345,12 @@ public class BattlegearClientEvents {
 		}
 	}
 
+    /**
+     * Helper method to add buttons to a gui when opened
+     * @param buttons the List<GuiButton> of the opened gui
+     * @param guiLeft horizontal placement parameter
+     * @param guiTop vertical placement parameter
+     */
 	public static void onOpenGui(List buttons, int guiLeft, int guiTop) {
         if(BattlegearConfig.enableGuiButtons){
 			int count = 0;
