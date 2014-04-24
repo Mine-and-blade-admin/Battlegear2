@@ -19,12 +19,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class InventoryPlayerBattle extends InventoryPlayer {
 
     public boolean hasChanged = true;
-
+    public static int ARMOR_OFFSET = 100;
     public static int OFFSET = 150;
     public static int WEAPON_SETS = 3;
 
     public static int EXTRA_ITEMS = WEAPON_SETS * 2;
-    public static int EXTRA_INV_SIZE = WEAPON_SETS * 2 + 6 + 6;
+    public static int EXTRA_INV_SIZE = EXTRA_ITEMS + 6 + 6;
 
     public ItemStack[] extraItems;
 
@@ -35,11 +35,44 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     public boolean isBattlemode() {
-        return this.currentItem < OFFSET + 2 * WEAPON_SETS && this.currentItem >= OFFSET;
+        return this.currentItem >= OFFSET && this.currentItem < OFFSET + EXTRA_ITEMS;
+    }
+
+    /**
+     * Returns a new slot index according to the type
+     * @param type determines which inventory array to expand
+     * @return the new slot index, or Integer.MIN_VALUE if it is not possible to expand further
+     */
+    public int requestNewSlot(InventorySlotType type){
+        ItemStack[] temp;
+        switch(type){
+            case MAIN:
+                if(mainInventory.length+1<ARMOR_OFFSET) {
+                    temp = new ItemStack[mainInventory.length + 1];
+                    System.arraycopy(mainInventory, 0, temp, 0, mainInventory.length);
+                    mainInventory = temp;
+                    return mainInventory.length;//Between 36 and 99
+                }
+                break;
+            case ARMOR:
+                if(ARMOR_OFFSET+armorInventory.length+1<OFFSET) {
+                    temp = new ItemStack[armorInventory.length + 1];
+                    System.arraycopy(armorInventory, 0, temp, 0, armorInventory.length);
+                    armorInventory = temp;
+                    return armorInventory.length;//Between 4 and 49
+                }
+                break;
+            case BATTLE:
+                temp = new ItemStack[extraItems.length+1];
+                System.arraycopy(extraItems, 0, temp, 0, extraItems.length);
+                extraItems = temp;
+                return extraItems.length + OFFSET;
+        }
+        return Integer.MIN_VALUE;//Impossible because of byte cast in inventory NBT
     }
 
     public static boolean isValidSwitch(int id) {
-        return (id >= 0 && id < getHotbarSize()) || (id >= OFFSET && id < OFFSET + 2 * WEAPON_SETS);
+        return (id >= 0 && id < getHotbarSize()) || (id >= OFFSET && id < OFFSET + EXTRA_ITEMS);
     }
 
     /**
@@ -263,18 +296,24 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
     @Override
     public void readFromNBT(NBTTagList nbtTagList) {
-        super.readFromNBT(nbtTagList);
-
-        extraItems = new ItemStack[EXTRA_INV_SIZE];
+        this.mainInventory = new ItemStack[mainInventory.length];
+        this.armorInventory = new ItemStack[armorInventory.length];
+        this.extraItems = new ItemStack[extraItems.length];
 
         for (int i = 0; i < nbtTagList.tagCount(); ++i) {
             NBTTagCompound nbttagcompound = nbtTagList.getCompoundTagAt(i);
             int j = nbttagcompound.getByte("Slot") & 255;
+            ItemStack itemstack = ItemStack.loadItemStackFromNBT(nbttagcompound);
 
-            if (j >= OFFSET) {
-                ItemStack itemstack = ItemStack.loadItemStackFromNBT(nbttagcompound);
-                if (itemstack != null) {
-                    extraItems[j - OFFSET] = itemstack;
+            if (itemstack != null) {
+                if (j >= 0 && j < this.mainInventory.length) {
+                    this.mainInventory[j] = itemstack;
+                }
+                if (j >= ARMOR_OFFSET && j - ARMOR_OFFSET < this.armorInventory.length) {
+                    this.armorInventory[j - ARMOR_OFFSET] = itemstack;
+                }
+                if (j >= OFFSET && j - OFFSET < this.extraItems.length) {
+                    this.extraItems[j - OFFSET] = itemstack;
                 }
             }
         }
@@ -287,6 +326,12 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         } else {
             return super.getStackInSlot(slot);
         }
+    }
+
+    @Override
+    public int getSizeInventory()
+    {
+        return this.mainInventory.length + this.armorInventory.length;
     }
 
     @Override
@@ -309,10 +354,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     @Override
     public void copyInventory(InventoryPlayer par1InventoryPlayer) {
         hasChanged = true;
-        extraItems = new ItemStack[EXTRA_INV_SIZE];
-
         super.copyInventory(par1InventoryPlayer);
-
         if (par1InventoryPlayer instanceof InventoryPlayerBattle) {
             for (int i = 0; i < extraItems.length; i++) {
                 this.extraItems[i] = par1InventoryPlayer.getStackInSlot(i + OFFSET);

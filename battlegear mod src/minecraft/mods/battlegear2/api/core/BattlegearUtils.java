@@ -245,6 +245,18 @@ public class BattlegearUtils {
     }
 
     /**
+     * Helper method to request a new slot within player inventory
+     * All data and hooks are handled by {@link InventoryPlayerBattle}
+     * The slot content display is to be done by the modder
+     * @param entityPlayer the player whose inventory will be expanded
+     * @param type the type of inventory which will be expanded
+     * @return the new slot index, or Integer.MIN_VALUE if it is not possible to expand further
+     */
+    public static int requestInventorySpace(EntityPlayer entityPlayer, InventorySlotType type){
+        return ((InventoryPlayerBattle)entityPlayer.inventory).requestNewSlot(type);
+    }
+
+    /**
      * Basically, a copy of {@link EntityPlayer#attackTargetEntityWithCurrentItem}, adapted for the offhand
      * Used as a hook by {@link IBattlePlayer}
      * @param player the attacker
