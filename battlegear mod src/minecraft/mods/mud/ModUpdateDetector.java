@@ -30,6 +30,7 @@ public class ModUpdateDetector {
     private static boolean hasInitialised = false;
     private static Map<String, UpdateEntry> updateMap;
     public static boolean hasChecked = false;
+    private static Configuration config;
     private static Property check;
     public static boolean enabled = true;
     private static ICommandSender sender = null;
@@ -97,11 +98,10 @@ public class ModUpdateDetector {
          */
         int Timer = 60*60*20;
         try{
-	        Configuration config = new Configuration(new File(Loader.instance().getConfigDir(), "MUD.cfg"));
+	        config = new Configuration(new File(Loader.instance().getConfigDir(), "MUD.cfg"));
 	        Timer = config.get(Configuration.CATEGORY_GENERAL, "Update Time", 60, "The time in minutes between update checks").getInt() * 60 * 20;
             check = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates");
 	        enabled = check.getBoolean(true);
-	        
 	        if(config.hasChanged()){
 	            config.save();
 	        }
@@ -116,6 +116,7 @@ public class ModUpdateDetector {
     public static void toggleState(){
         enabled = !enabled;
         check.set(enabled);
+        config.save();
     }
 
     public static ICommandSender getSender() {

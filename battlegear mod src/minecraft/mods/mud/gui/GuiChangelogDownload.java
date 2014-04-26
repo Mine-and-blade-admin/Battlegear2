@@ -74,7 +74,6 @@ public class GuiChangelogDownload extends GuiScreen
         this.modList=new GuiSlotModList(this, entries, 100);
         this.modList.registerScrollButtons(this.buttonList, 1, 2);
 
-
         for(int i= 0; i < bullets.length; i++){
             bulletWidth[i] = fontRendererObj.getStringWidth(bullets[i]+" ");
         }
