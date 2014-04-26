@@ -12,12 +12,23 @@ import net.minecraft.world.World;
 
 public class QuiverArrowRegistry {
 
-    private static Map<ItemStack, Class<? extends EntityArrow>> itemToClasses = new TreeMap<ItemStack, Class<? extends EntityArrow>>(new StackComparator());
-    private static Map<Class<? extends EntityArrow>, ItemStack> classToItems = new HashMap<Class<? extends EntityArrow>, ItemStack>();
+    private static Map<Item, Class<? extends EntityArrow>> itemToClasses = new HashMap<Item, Class<? extends EntityArrow>>();
+    private static Map<ItemStack, Class<? extends EntityArrow>> stackToClasses = new TreeMap<ItemStack, Class<? extends EntityArrow>>(new StackComparator());
+    private static Map<Class<? extends EntityArrow>, ItemStack> classToStacks = new HashMap<Class<? extends EntityArrow>, ItemStack>();
     private static List<IQuiverSelection> quiverSelectors = new ArrayList<IQuiverSelection>();
     private static List<IArrowFireHandler> fireHandlers = new ArrayList<IArrowFireHandler>();
     static{
         fireHandlers.add(new DefaultArrowFire());
+    }
+
+    /**
+     * Adds an item to the known arrow lists, not metadata sensitive
+     * @param itemId the item id
+     * @param entityArrow the class from which the arrow entity will be constructed
+     */
+    public static void addArrowToRegistry(Item itemId, Class<? extends EntityArrow> entityArrow){
+        itemToClasses.put(itemId, entityArrow);
+        classToStacks.put(entityArrow, new ItemStack(itemId));
     }
 
     /**
@@ -41,8 +52,8 @@ public class QuiverArrowRegistry {
     public static void addArrowToRegistry(ItemStack stack, Class<? extends EntityArrow> entityArrow){
         ItemStack st = stack.copy();
         st.stackSize = 1;
-        itemToClasses.put(st, entityArrow);
-        classToItems.put(entityArrow, st);
+        stackToClasses.put(st, entityArrow);
+        classToStacks.put(entityArrow, st);
     }
 
     /**
@@ -112,7 +123,11 @@ public class QuiverArrowRegistry {
      * @return the EntityArrow class attached to the given stack
      */
     public static Class<? extends EntityArrow> getArrowClass(ItemStack stack){
-        return itemToClasses.get(stack);
+        Class<? extends EntityArrow> clazz = stackToClasses.get(stack);
+        if(clazz!=null)
+            return clazz;
+        else
+            return itemToClasses.get(stack.getItem());
     }
 
     /**
@@ -120,7 +135,7 @@ public class QuiverArrowRegistry {
      * @return the ItemStack attached to the given EntityArrow class
      */
     public static ItemStack getItem(Class<? extends EntityArrow> clazz){
-    	ItemStack temp = classToItems.get(clazz);
+    	ItemStack temp = classToStacks.get(clazz);
         if(temp == null){
 			return new ItemStack(Items.arrow);
 		}else{
@@ -134,7 +149,7 @@ public class QuiverArrowRegistry {
      * @return true if that ItemStack is attached to an EntityArrow class
      */
     public static boolean isKnownArrow(ItemStack test){
-    	return itemToClasses.containsKey(test);
+    	return test!=null && (stackToClasses.containsKey(test)||itemToClasses.containsKey(test.getItem()));
     }
 
     /**

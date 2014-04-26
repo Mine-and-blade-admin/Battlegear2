@@ -152,9 +152,8 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
 
     @Override
     public boolean isCraftableWithArrows(ItemStack stack, ItemStack arrows) {
-        return arrows != null && QuiverArrowRegistry.isKnownArrow(arrows);
+        return QuiverArrowRegistry.isKnownArrow(arrows);
     }
-
 
     @Override
     public ItemStack addArrows(ItemStack container, ItemStack newStack) {

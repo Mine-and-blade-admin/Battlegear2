@@ -74,7 +74,7 @@ public class Battlegear {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         BattlegearConfig.registerRecipes();
-        QuiverArrowRegistry.addArrowToRegistry(Items.arrow, 0, EntityArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(Items.arrow, EntityArrow.class);
         if(BattlegearConfig.MbArrows!=null){
 	        for(int i = 0; i<ItemMBArrow.arrows.length; i++){
 	        	QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows, i, ItemMBArrow.arrows[i]);
@@ -128,7 +128,7 @@ public class Battlegear {
                             Class<?> clazz = null;
                             try {
                                 clazz = Class.forName(message.key.split(":")[1]);//Complete key should look like Arrow:class-path
-                            } catch (ClassNotFoundException ignored) {
+                            } catch (Exception ignored) {
                             }
                             if(clazz!=null && EntityArrow.class.isAssignableFrom(clazz)){//The arrow entity should use EntityArrow, at least as a superclass
                                 QuiverArrowRegistry.addArrowToRegistry(stack, (Class<? extends EntityArrow>) clazz);
