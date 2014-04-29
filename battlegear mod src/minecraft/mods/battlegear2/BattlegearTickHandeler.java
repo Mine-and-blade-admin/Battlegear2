@@ -1,19 +1,14 @@
 package mods.battlegear2;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
-import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.WorldServer;
 
 public class BattlegearTickHandeler {
@@ -57,25 +52,6 @@ public class BattlegearTickHandeler {
     }
 
     public void tickEnd(EntityPlayer entityPlayer) {
-        //If we JUST swung an Item
-        if (entityPlayer.swingProgressInt == 1) {
-            ItemStack mainhand = entityPlayer.getCurrentEquippedItem();
-            if (mainhand != null && mainhand.getItem() instanceof IExtendedReachWeapon) {
-                float extendedReach = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
-                if(extendedReach > 0){
-                    MovingObjectPosition mouseOver = Battlegear.proxy.getMouseOver(0, extendedReach + 4);
-                    if (mouseOver != null && mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
-                        Entity target = mouseOver.entityHit;
-                        if (target instanceof EntityLiving && target != entityPlayer) {
-                            if (target.hurtResistantTime != ((EntityLiving) target).maxHurtResistantTime) {
-                                FMLClientHandler.instance().getClient().playerController.attackEntity(entityPlayer, target);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         int timer = ((IBattlePlayer)entityPlayer).getSpecialActionTimer();
         if(timer > 0){
             ((IBattlePlayer)entityPlayer).setSpecialActionTimer(timer-1);

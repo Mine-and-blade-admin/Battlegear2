@@ -6,10 +6,12 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.BattlegearShieldBlockPacket;
@@ -23,6 +25,8 @@ import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
@@ -52,18 +56,18 @@ public class BattlegearClientTickHandeler {
 
     private static int previousNormal = 0;
     public static int previousBattlemode = InventoryPlayerBattle.OFFSET;
-    private static boolean specialDone = false, drawDone = false;
-
+    private boolean specialDone = false, drawDone = false;
+    private Minecraft mc;
     public BattlegearClientTickHandeler(){
         ClientRegistry.registerKeyBinding(drawWeapons);
         ClientRegistry.registerKeyBinding(special);
+        mc = FMLClientHandler.instance().getClient();
     }
 
     @SubscribeEvent
     public void keyDown(TickEvent.ClientTickEvent event) {
 
         if(event.phase == TickEvent.Phase.START && Battlegear.battlegearEnabled){
-            Minecraft mc = FMLClientHandler.instance().getClient();
             //null checks to prevent any crash outside the world (and to make sure we have no screen open)
             if (mc != null && mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
 
@@ -86,7 +90,7 @@ public class BattlegearClientTickHandeler {
                                 Battlegear.packetHandler.sendPacketToServer(p);
                                 ((IBattlePlayer) player).setSpecialActionTimer(((IShield)offhand.getItem()).getBashTimer(offhand));
 
-                                BattlegearClientTickHandeler.blockBar = BattlegearClientTickHandeler.blockBar - shieldBashPenalty;
+                                BattlegearClientTickHandeler.blockBar -= shieldBashPenalty;
                             }
                         }
                     }
@@ -137,7 +141,7 @@ public class BattlegearClientTickHandeler {
                     if(flashTimer > 0){
                         flashTimer --;
                     }
-                    if(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress){
+                    if(mc.gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress){
                         blockBar -= ((IShield) offhand.getItem()).getDecayRate(offhand);
                         if(blockBar > 0){
                             if(!wasBlocking){
@@ -164,14 +168,14 @@ public class BattlegearClientTickHandeler {
                         }
                     }
                 }else if(offhand.getItem() instanceof ItemBlock){
-                    if(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress){
-                        MovingObjectPosition mouseOver = Minecraft.getMinecraft().objectMouseOver;
+                    if(mc.gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress){
+                        MovingObjectPosition mouseOver = mc.objectMouseOver;
 
                         if (mouseOver != null)
                         {
                             if (mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY)
                             {
-                                Minecraft.getMinecraft().playerController.interactWithEntitySendPacket(player, mouseOver.entityHit);
+                                mc.playerController.interactWithEntitySendPacket(player, mouseOver.entityHit);
                             }
                             else if (mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
                             {
@@ -181,13 +185,13 @@ public class BattlegearClientTickHandeler {
                                 int i1 = mouseOver.sideHit;
 
                                 boolean result = !ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, j, k, l, i1).isCanceled();
-                                if (result && onPlayerPlaceBlock(Minecraft.getMinecraft().playerController, player, player.worldObj, offhand, j, k, l, i1, mouseOver.hitVec))
+                                if (result && onPlayerPlaceBlock(mc.playerController, player, player.worldObj, offhand, j, k, l, i1, mouseOver.hitVec))
                                 {
                                     ((IBattlePlayer)player).swingOffItem();
                                 }
 
-                                if (offhand != null && offhand.stackSize == 0){
-                                    player.inventory.setInventorySlotContents(player.inventory.currentItem+ 3, null);
+                                if (offhand != null && offhand.stackSize <= 0){
+                                    BattlegearUtils.setPlayerCurrentItem(player, null, 3);
                                 }
                             }
                         }
@@ -201,7 +205,7 @@ public class BattlegearClientTickHandeler {
     public void onRenderTick(TickEvent.RenderTickEvent event){
         if(event.phase == TickEvent.Phase.START){
             partialTick = event.renderTickTime;
-            if(Minecraft.getMinecraft().currentScreen instanceof GuiMainMenu){
+            if(mc.currentScreen instanceof GuiMainMenu){
                 Battlegear.battlegearEnabled = false;
             }
         }
@@ -249,7 +253,7 @@ public class BattlegearClientTickHandeler {
                     return false;
                 }
                 if (offhand.stackSize <= 0){
-                    player.inventory.setInventorySlotContents(player.inventory.currentItem+ 3, null);
+                    BattlegearUtils.setPlayerCurrentItem(player, null, 3);
                     ForgeEventFactory.onPlayerDestroyItem(player, offhand);
                 }
                 Battlegear.packetHandler.sendPacketToServer(new BattlegearSyncItemPacket(player).generatePacket());
@@ -259,11 +263,31 @@ public class BattlegearClientTickHandeler {
     }
 
     public void tickEnd(EntityPlayer player) {
+        //If we use a shield
         ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
         if(offhand != null && offhand.getItem() instanceof IShield){
-            if(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress && blockBar > 0){
+            if(mc.gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress && blockBar > 0){
                 player.motionX = player.motionX/5;
                 player.motionZ = player.motionZ/5;
+            }
+        }
+
+        //If we JUST swung an Item
+        if (player.swingProgressInt == 1) {
+            ItemStack mainhand = player.getCurrentEquippedItem();
+            if (mainhand != null && mainhand.getItem() instanceof IExtendedReachWeapon) {
+                float extendedReach = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
+                if(extendedReach > 0){
+                    MovingObjectPosition mouseOver = Battlegear.proxy.getMouseOver(partialTick, extendedReach + mc.playerController.getBlockReachDistance());
+                    if (mouseOver != null && mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+                        Entity target = mouseOver.entityHit;
+                        if (target instanceof EntityLivingBase && target != player && player.getDistanceToEntity(target) > mc.playerController.getBlockReachDistance()) {
+                            if (target.hurtResistantTime != ((EntityLivingBase) target).maxHurtResistantTime) {
+                                mc.playerController.attackEntity(player, target);
+                            }
+                        }
+                    }
+                }
             }
         }
     }

@@ -60,7 +60,7 @@ public class BattlemodeHookContainerClass {
             reachMod = -2.1F;//Reduce block in hands range too
         else if(mainhand.getItem() instanceof IExtendedReachWeapon)
             reachMod = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
-        if(reachMod < 0 && reachMod + 4 < event.entityPlayer.getDistanceToEntity(event.target)){
+        if(reachMod < 0 && reachMod + (event.entityPlayer.capabilities.isCreativeMode?5.0F:4.5F) < event.entityPlayer.getDistanceToEntity(event.target)){
             event.setCanceled(true);
         }
     }
