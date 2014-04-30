@@ -253,8 +253,8 @@ public class BattlegearClientTickHandeler {
                     return false;
                 }
                 if (offhand.stackSize <= 0){
-                    BattlegearUtils.setPlayerCurrentItem(player, null, 3);
                     ForgeEventFactory.onPlayerDestroyItem(player, offhand);
+                    BattlegearUtils.setPlayerCurrentItem(player, null, 3);
                 }
                 Battlegear.packetHandler.sendPacketToServer(new BattlegearSyncItemPacket(player).generatePacket());
                 return true;

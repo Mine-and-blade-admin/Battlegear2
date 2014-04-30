@@ -137,6 +137,7 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
         }
 
         if (itemStack != null && itemStack.stackSize <= 0){
+            ForgeEventFactory.onPlayerDestroyItem(player, itemStack);
             player.inventory.setInventorySlotContents(player.inventory.currentItem+ 3, null);
             itemStack = null;
         }
