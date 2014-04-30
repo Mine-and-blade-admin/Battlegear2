@@ -3,7 +3,9 @@ package mods.battlegear2.heraldry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.heraldry.IFlagHolder;
+import mods.battlegear2.items.HeraldryCrest;
 import mods.battlegear2.utils.BattlegearConfig;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -23,6 +25,7 @@ import java.util.List;
 public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     private static final int MAX_FLAGS = 4;
     private ArrayList<ItemStack> flags;
+    public boolean receiveUpdates = false;
 
     public TileEntityFlagPole(){
         flags = new ArrayList<ItemStack>(MAX_FLAGS);
@@ -67,6 +70,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
                 flags.add(ItemStack.loadItemStackFromNBT(par1NBTTagCompound.getCompoundTag("flag"+i)));
             }
         }
+        receiveUpdates = par1NBTTagCompound.getBoolean("hasUpdate");
     }
 
     @Override
@@ -75,8 +79,9 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
         for(int i = 0; i < flags.size(); i++){
             NBTTagCompound flagCompound = new NBTTagCompound();
             flags.get(i).writeToNBT(flagCompound);
-            par1NBTTagCompound.setTag("flag" + i, flagCompound);
+            par1NBTTagCompound.setTag("flag"+i, flagCompound);
         }
+        par1NBTTagCompound.setBoolean("hasUpdate", receiveUpdates);
     }
 
     @Override
@@ -98,7 +103,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
 
     @Override
     public boolean addFlag(ItemStack flag) {
-        if(flags.size() < MAX_FLAGS){
+        if(flag.getItem() instanceof HeraldryCrest && flags.size() < MAX_FLAGS){
             this.flags.add(flag);
             return true;
         }
@@ -118,5 +123,23 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     @Override
     public int getOrientation(int metadata) {
         return ((BlockFlagPole)this.getBlockType()).getOrient(metadata);
+    }
+
+    @Override
+    public boolean canUpdate(){
+        return receiveUpdates;
+    }
+
+    @Override
+    public void updateEntity() {
+        if(!getWorldObj().isRemote && canUpdate() && getWorldObj().rand.nextInt(100) == 0){
+            List entities = getWorldObj().getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getAABBPool().getAABB(xCoord-3, yCoord, zCoord-3, xCoord + 3, yCoord + 1, zCoord + 3));
+            if(entities.isEmpty())
+                spawnUnit();
+        }
+    }
+
+    public void spawnUnit(){
+        //getWorldObj().spawnEntityInWorld(new EntityMBUnit(getWorldObj()));
     }
 }
