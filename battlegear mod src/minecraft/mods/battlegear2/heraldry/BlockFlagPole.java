@@ -1,13 +1,11 @@
 package mods.battlegear2.heraldry;
 
 import mods.battlegear2.api.heraldry.IFlagHolder;
-import mods.battlegear2.api.heraldry.IHeraldryItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -80,31 +78,6 @@ public class BlockFlagPole extends Block {
     @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
         return getSelectedBoundingBoxFromPool(par1World, par2, par3, par4);
-    }
-
-    @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9) {
-
-        TileEntity te = world.getTileEntity(x, y, z);
-        if(te instanceof IFlagHolder){
-            ItemStack stack = par5EntityPlayer.getCurrentEquippedItem();
-            if(stack == null){
-                List<ItemStack> flags = ((IFlagHolder) te).getFlags();
-                if(flags.size()>0){
-                    ItemStack flag = flags.remove(flags.size() - 1);
-                    par5EntityPlayer.inventory.setInventorySlotContents(par5EntityPlayer.inventory.currentItem, flag);
-                    return true;
-                }
-            }else if(stack.getItem() instanceof IHeraldryItem){
-                if(((IFlagHolder) te).addFlag(stack)){
-                    if(!par5EntityPlayer.capabilities.isCreativeMode){
-                        par5EntityPlayer.inventory.decrStackSize(par5EntityPlayer.inventory.currentItem, 1);
-                    }
-                    return true;
-                }
-            }
-        }
-        return super.onBlockActivated(world, x, y, z, par5EntityPlayer, par6, par7, par8, par9);
     }
 
     public float getTextDim(int metadata, int section){

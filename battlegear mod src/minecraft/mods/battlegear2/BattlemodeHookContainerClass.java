@@ -3,6 +3,8 @@ package mods.battlegear2;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mods.battlegear2.api.heraldry.IFlagHolder;
+import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.IBattlePlayer;
@@ -26,12 +28,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.*;
+
+import java.util.List;
 
 public class BattlemodeHookContainerClass {
 
@@ -87,11 +92,32 @@ public class BattlemodeHookContainerClass {
                     }
                     break;
             }
+        }else if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && !event.entityPlayer.worldObj.isRemote) {
+            TileEntity tile = event.entityPlayer.worldObj.getTileEntity(event.x, event.y, event.z);
+            if(tile != null && tile instanceof IFlagHolder) {
+                ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
+                if (mainHandItem == null) {
+                    List<ItemStack> flags = ((IFlagHolder) tile).getFlags();
+                    if(flags.size()>0){
+                        ItemStack flag = flags.remove(flags.size() - 1);
+                        event.entityPlayer.inventory.setInventorySlotContents(event.entityPlayer.inventory.currentItem, flag);
+                        event.entityPlayer.worldObj.markBlockForUpdate(event.x, event.y, event.z);
+                        event.setCanceled(true);
+                    }
+                } else if (mainHandItem.getItem() instanceof IHeraldryItem) {
+                    if(((IFlagHolder) tile).addFlag(mainHandItem)){
+                        if(!event.entityPlayer.capabilities.isCreativeMode){
+                            event.entityPlayer.inventory.decrStackSize(event.entityPlayer.inventory.currentItem, 1);
+                        }
+                        event.entityPlayer.worldObj.markBlockForUpdate(event.x, event.y, event.z);
+                        event.setCanceled(true);
+                    }
+                }
+            }
         }
-
     }
 
-    private static void sendOffSwingEvent(PlayerEvent event, ItemStack mainHandItem, ItemStack offhandItem){
+    public static void sendOffSwingEvent(PlayerEvent event, ItemStack mainHandItem, ItemStack offhandItem){
         if(!MinecraftForge.EVENT_BUS.post(new PlayerEventChild.OffhandSwingEvent(event, mainHandItem, offhandItem))){
             ((IBattlePlayer) event.entityPlayer).swingOffItem();
             Battlegear.proxy.sendAnimationPacket(EnumBGAnimations.OffHandSwing, event.entityPlayer);
@@ -220,7 +246,7 @@ public class BattlemodeHookContainerClass {
                             float red = ((IShield)shield.getItem()).getDamageReduction(shield, event.source);
                             if(red<dmg){
                                 shield.damageItem(Math.round(dmg-red), player);
-                                if(shield.getItemDamage() <= 0){
+                                if(shield.stackSize <= 0){
                                     ForgeEventFactory.onPlayerDestroyItem(player, shield);
                                     player.inventory.setInventorySlotContents(player.inventory.currentItem + 3, null);
                                     //TODO Render item break
