@@ -9,6 +9,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.common.MinecraftForge;
 
 /**
  * User: nerd-boy
@@ -59,14 +60,14 @@ public class InventoryPlayerBattle extends InventoryPlayer {
                     temp = new ItemStack[armorInventory.length + 1];
                     System.arraycopy(armorInventory, 0, temp, 0, armorInventory.length);
                     armorInventory = temp;
-                    return armorInventory.length;//Between 4 and 49
+                    return ARMOR_OFFSET + armorInventory.length;//Between 104 and 149
                 }
                 break;
             case BATTLE:
                 temp = new ItemStack[extraItems.length+1];
                 System.arraycopy(extraItems, 0, temp, 0, extraItems.length);
                 extraItems = temp;
-                return extraItems.length + OFFSET;
+                return OFFSET + extraItems.length;
         }
         return Integer.MIN_VALUE;//Impossible because of byte cast in inventory NBT
     }
@@ -190,7 +191,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
 
     /**
-     * Get if a specifiied item id is inside the inventory.
+     * Get if a specified item id is inside the inventory.
      */
     @Override
     public boolean hasItem(Item par1) {
@@ -309,11 +310,14 @@ public class InventoryPlayerBattle extends InventoryPlayer {
                 if (j >= 0 && j < this.mainInventory.length) {
                     this.mainInventory[j] = itemstack;
                 }
-                if (j >= ARMOR_OFFSET && j - ARMOR_OFFSET < this.armorInventory.length) {
+                else if (j >= ARMOR_OFFSET && j - ARMOR_OFFSET < this.armorInventory.length) {
                     this.armorInventory[j - ARMOR_OFFSET] = itemstack;
                 }
-                if (j >= OFFSET && j - OFFSET < this.extraItems.length) {
+                else if (j >= OFFSET && j - OFFSET < this.extraItems.length) {
                     this.extraItems[j - OFFSET] = itemstack;
+                }
+                else{
+                    MinecraftForge.EVENT_BUS.post(new UnhandledInventoryItemEvent(player, j, itemstack));
                 }
             }
         }
@@ -329,8 +333,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     @Override
-    public int getSizeInventory()
-    {
+    public int getSizeInventory() {
         return this.mainInventory.length + this.armorInventory.length;
     }
 
