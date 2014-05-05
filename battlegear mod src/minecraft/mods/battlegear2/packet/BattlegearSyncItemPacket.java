@@ -26,9 +26,9 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
     }
 
     public BattlegearSyncItemPacket(String user, InventoryPlayer inventory, EntityPlayer player) {
-            this.user = user;
-            this.inventory = inventory;
-            this.player = player;
+        this.user = user;
+        this.inventory = inventory;
+        this.player = player;
     }
 
     public BattlegearSyncItemPacket() {
@@ -43,14 +43,13 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
 
             for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
                 ItemStack stack = ByteBufUtils.readItemStack(inputStream);
-
-                //if(stack!=null){
                 this.player.inventory.setInventorySlotContents(InventoryPlayerBattle.OFFSET + i, stack);
-                //}
             }
             ((IBattlePlayer) this.player).setSpecialActionTimer(0);
             if(!player.worldObj.isRemote){//Using data sent only by client
-                this.player.setItemInUse(ByteBufUtils.readItemStack(inputStream), inputStream.readInt());
+                try {
+                    this.player.setItemInUse(ByteBufUtils.readItemStack(inputStream), inputStream.readInt());
+                }catch (Exception e){}
             }
         }
     }
