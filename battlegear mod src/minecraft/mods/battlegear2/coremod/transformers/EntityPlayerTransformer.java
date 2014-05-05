@@ -68,15 +68,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandSwingProgressInt", "I", null, 0));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "isOffHandSwingInProgress", "Z", null, false));
         fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "specialActionTimer", "I", null, 0));
-
-        for (FieldNode fn : fields) {
-            if (fn.name.equals(playerInventoryFieldName) && fn.desc.equals("L"+inventoryClassName + ";")) {
-                logger.log(Level.INFO, "M&B - Marking field inventory as final in EntityPlayer");
-                fn.access = ACC_PUBLIC | ACC_FINAL;
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
 
     @Override

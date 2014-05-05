@@ -3,6 +3,7 @@ package mods.battlegear2;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import mods.battlegear2.api.core.InventoryExceptionEvent;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.shield.IArrowCatcher;
@@ -30,6 +31,7 @@ import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -40,16 +42,30 @@ import java.util.List;
 
 public class BattlemodeHookContainerClass {
 
+    /**
+     * Crash the game if our inventory has been replaced by something else, or the coremod failed
+     * Also synchronize battle inventory
+     * @param event that spawned the player
+     */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onEntityJoin(EntityJoinWorldEvent event){
-        if(event.entity instanceof EntityPlayerMP){
-            Battlegear.packetHandler.sendPacketToPlayer(
-                    new BattlegearSyncItemPacket((EntityPlayer) event.entity).generatePacket(),
-                    (EntityPlayerMP) event.entity);
+        if (event.entity instanceof EntityPlayer && !(event.entity instanceof FakePlayer)) {
+            if (!(((EntityPlayer) event.entity).inventory instanceof InventoryPlayerBattle) && !MinecraftForge.EVENT_BUS.post(new InventoryExceptionEvent((EntityPlayer)event.entity))) {
+                throw new RuntimeException("Player inventory has been replaced with " + ((EntityPlayer) event.entity).inventory.getClass());
+            }
+            if(event.entity instanceof EntityPlayerMP){
+                Battlegear.packetHandler.sendPacketToPlayer(
+                        new BattlegearSyncItemPacket((EntityPlayer) event.entity).generatePacket(),
+                        (EntityPlayerMP) event.entity);
 
+            }
         }
     }
 
+    /**
+     * Cancel the attack if the player reach is lowered by some types of items, or if barehanded
+     * @param event for the player attacking an entity
+     */
     @SubscribeEvent
     public void attackEntity(AttackEntityEvent event){
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
