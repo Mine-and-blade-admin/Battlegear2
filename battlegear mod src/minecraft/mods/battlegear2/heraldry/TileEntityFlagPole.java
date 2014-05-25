@@ -4,7 +4,6 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.items.HeraldryCrest;
-import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -26,15 +25,16 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     private static final int MAX_FLAGS = 4;
     private ArrayList<ItemStack> flags;
     public boolean receiveUpdates = false;
+    public int side;
 
     public TileEntityFlagPole(){
         flags = new ArrayList<ItemStack>(MAX_FLAGS);
     }
 
+    @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox()
     {
-        int side = BattlegearConfig.banner.getOrient(getBlockMetadata());
         switch (side){
             case 0:
                 return AxisAlignedBB.getAABBPool().getAABB(
@@ -63,7 +63,8 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
 
     @Override
     public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readFromNBT(par1NBTTagCompound);
+        super.readFromNBT(par1NBTTagCompound);;
+        side = par1NBTTagCompound.getInteger("orientation");
         flags = new ArrayList<ItemStack>(MAX_FLAGS);
         for(int i = 0; i < MAX_FLAGS; i++){
             if(par1NBTTagCompound.hasKey("flag"+i)){
@@ -76,6 +77,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     @Override
     public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
         super.writeToNBT(par1NBTTagCompound);
+        par1NBTTagCompound.setInteger("orientation", side);
         for(int i = 0; i < flags.size(); i++){
             NBTTagCompound flagCompound = new NBTTagCompound();
             flags.get(i).writeToNBT(flagCompound);
@@ -122,7 +124,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
 
     @Override
     public int getOrientation(int metadata) {
-        return ((BlockFlagPole)this.getBlockType()).getOrient(metadata);
+        return side;
     }
 
     @Override

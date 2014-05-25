@@ -27,7 +27,7 @@ public class FlagPoleItemRenderer implements IItemRenderer {
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-        int poleType = item.getItemDamage() % 5;
+        int poleType = item.getItemDamage();
         if(pole==null||item.getItem()!=itemCache){
             itemCache = item.getItem();
             Block temp = Block.getBlockFromItem(itemCache);

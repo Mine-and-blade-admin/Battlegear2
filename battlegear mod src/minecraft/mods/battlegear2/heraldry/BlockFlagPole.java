@@ -47,14 +47,14 @@ public class BlockFlagPole extends Block {
 
     @Override
     public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        for(int i = 0; i < 5; i++){
+        for(int i = 0; i < 7; i++){
             par3List.add(new ItemStack(par1, 1, i));
         }
     }
 
     @Override
     public int damageDropped(int par1){
-        return par1 % 5;
+        return par1 % 7;
     }
 
     @Override
@@ -62,17 +62,19 @@ public class BlockFlagPole extends Block {
     }
 
     @Override
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
-        int side = getOrient(par1World.getBlockMetadata(par2, par3, par4));
-        switch(side){
-            case 0:
-                return AxisAlignedBB.getAABBPool().getAABB((double)par2 + 6F/16F, (double)par3 + 0, (double)par4 + 6F/16F, (double)par2 + 10F/16F, (double)par3 + 1, (double)par4 + 10F/16F);
-            case 1:
-                return AxisAlignedBB.getAABBPool().getAABB((double)par2 + 6F/16F, (double)par3 + 13F/16F, (double)par4 + 0, (double)par2 + 10F/16F, (double)par3 + 1, (double)par4 + 1);
-            case 2:
-                return AxisAlignedBB.getAABBPool().getAABB((double)par2 + 0, (double)par3 + 13F/16F, (double)par4 + 6F/16F, (double)par2 + 1, (double)par3 + 1, (double)par4 + 10F/16F);
+    public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int par2, int par3, int par4) {
+        TileEntity te = world.getTileEntity(par2, par3, par4);
+        if(te instanceof IFlagHolder) {
+            switch (((IFlagHolder) te).getOrientation(world.getBlockMetadata(par2, par3, par4))) {
+                case 0:
+                    return AxisAlignedBB.getAABBPool().getAABB((double) par2 + 6F / 16F, (double) par3 + 0, (double) par4 + 6F / 16F, (double) par2 + 10F / 16F, (double) par3 + 1, (double) par4 + 10F / 16F);
+                case 1:
+                    return AxisAlignedBB.getAABBPool().getAABB((double) par2 + 6F / 16F, (double) par3 + 13F / 16F, (double) par4 + 0, (double) par2 + 10F / 16F, (double) par3 + 1, (double) par4 + 1);
+                case 2:
+                    return AxisAlignedBB.getAABBPool().getAABB((double) par2 + 0, (double) par3 + 13F / 16F, (double) par4 + 6F / 16F, (double) par2 + 1, (double) par3 + 1, (double) par4 + 10F / 16F);
+            }
         }
-        return super.getSelectedBoundingBoxFromPool(par1World, par2, par3, par4);
+        return super.getSelectedBoundingBoxFromPool(world, par2, par3, par4);
     }
 
     @Override
@@ -81,7 +83,7 @@ public class BlockFlagPole extends Block {
     }
 
     public float getTextDim(int metadata, int section){
-        if(metadata % 5 == 4){
+        if(metadata % 7 == 4){
             return ironTexDims[section];
         }else{
             return woodTexDims[section];
@@ -114,24 +116,13 @@ public class BlockFlagPole extends Block {
     }
 
     @Override
-    public IIcon getIcon(int par1, int par2) {
-
-        if(par2 % 5 == 4)
-            return Blocks.iron_block.getIcon(par1,0);
-        else{
-            return Blocks.log.getIcon(par1,par2 % 5);
-        }
-    }
-
-    @Override
-    public int onBlockPlaced(World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ, int meta)
-    {
-        meta = meta % 5 + (5 * (side / 2));
-        return meta;
-    }
-
-    public int getOrient(int meta){
-        return meta / 5;
+    public IIcon getIcon(int par1, int meta) {
+        if(meta == 4)
+            return Blocks.iron_block.getIcon(par1, 0);
+        else if(meta < 4)
+            return Blocks.log.getIcon(par1, meta);
+        else
+            return Blocks.log2.getIcon(par1, meta - 5);
     }
 
     @Override
