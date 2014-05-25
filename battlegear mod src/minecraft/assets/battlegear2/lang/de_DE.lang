@@ -58,12 +58,12 @@ sigil.helm.title=Helm
 sigil.colour.select=Wählen
 
 
-attribute.weapon.penetrateArmor=Rüstung Durchschlagen
-attribute.weapon.daze=Betäubung
-attribute.weapon.extendedReach=Reichweite
-attribute.weapon.attackSpeed=Attacken-Geschwindigkeit
-attribute.weapon.backstab=Rückenstich
-attribute.weapon.mountedBonus=Berittener Schaden
+attribute.name.weapon.penetrateArmor=Rüstung Durchschlagen
+attribute.name.weapon.daze=Betäubung
+attribute.name.weapon.extendedReach=Reichweite
+attribute.name.weapon.attackSpeed=Attacken-Geschwindigkeit
+attribute.name.weapon.backstab=Rückenstich
+attribute.name.weapon.mountedBonus=Berittener Schaden
 attribute.shield.block.time=s Block
 attribute.shield.arrow.count=Pfeile
 attribute.quiver.arrow.empty=Leer

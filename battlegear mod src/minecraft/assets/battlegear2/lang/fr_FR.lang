@@ -1,16 +1,16 @@
-name.title=M&B Battlegear 2
+ï»¿name.title=M&B Battlegear 2
 
 item.battlegear2:heraldric.name=Blason
 item.battlegear2:chain.name=Chaine
 item.battlegear2:quiver.name=Carquois
 
-item.battlegear2:mb.arrow.ender.name=Flèche d'Ender
-item.battlegear2:mb.arrow.explosive.name=Flèche Explosive
-item.battlegear2:mb.arrow.flame.name=Flèche de Feu
-item.battlegear2:mb.arrow.piercing.name=Flèche Aiguisée
-item.battlegear2:mb.arrow.piercing.name=Flèche Empoisonnée
-item.battlegear2:mb.arrow.mystery.name=Flèche Mystère
-item.battlegear2:mb.arrow.mystery.name=Flèche Vampire
+item.battlegear2:mb.arrow.ender.name=FlÃ¨che d'Ender
+item.battlegear2:mb.arrow.explosive.name=FlÃ¨che Explosive
+item.battlegear2:mb.arrow.flame.name=FlÃ¨che de Feu
+item.battlegear2:mb.arrow.piercing.name=FlÃ¨che AiguisÃ©e
+item.battlegear2:mb.arrow.piercing.name=FlÃ¨che EmpoisonnÃ©e
+item.battlegear2:mb.arrow.mystery.name=FlÃ¨che MystÃ¨re
+item.battlegear2:mb.arrow.mystery.name=FlÃ¨che Vampire
 
 item.battlegear2:dagger.wood.name=Dague en bois
 item.battlegear2:dagger.stone.name=Dague en pierre
@@ -53,7 +53,7 @@ enchantment.bash.weightless=Retour de Frappe de Bouclier
 enchantment.bash.power=Puissance de Frappe de Bouclier
 enchantment.bash.damage=Bouclier d'Epines
 enchantment.shield.usage=Bouclier Efficace
-enchantment.shield.recover=Récupération de Bouclier
+enchantment.shield.recover=RÃ©cupÃ©ration de Bouclier
 enchantment.bow.loot=Chance
 enchantment.bow.charge=Souplesse
 
@@ -75,13 +75,13 @@ gui.sigil.remove=Enleve
 gui.sigil.crest=Cimier
 gui.sigil.pattern=Fond
 
-attribute.weapon.penetrateArmor=Penetration d'armure
-attribute.weapon.extendedReach=Allonge
-attribute.weapon.daze=Etourdissement
-attribute.weapon.attackSpeed=Vitesse
-attribute.weapon.backstab=Coup en traitre
-attribute.weapon.mountedBonus=Degat sur monture
+attribute.name.weapon.penetrateArmor=PÃ©nÃ©tration d'armure
+attribute.name.weapon.extendedReach=Allonge
+attribute.name.weapon.daze=Etourdissement
+attribute.name.weapon.attackSpeed=Vitesse
+attribute.name.weapon.backstab=Coup en traitre
+attribute.name.weapon.mountedBonus=DÃ©gat sur monture
 attribute.shield.block.time=s Block
-attribute.shield.arrow.count=Fleches
+attribute.shield.arrow.count=FlÃ¨ches
 attribute.quiver.arrow.empty=Vide
-attribute.quiver.arrow.count=Fleches
+attribute.quiver.arrow.count=FlÃ¨ches
