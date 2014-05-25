@@ -10,6 +10,7 @@
 * Catch a crash with offhand block placement
 * Overriden hotbar keys in battlemode
 ** allow item switching without mouse scroll
+* Added more wood types into flagpoles
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.4 ==
 * Added picking up arrows into offhand quiver
