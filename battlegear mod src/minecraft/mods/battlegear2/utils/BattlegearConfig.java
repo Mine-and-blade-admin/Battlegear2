@@ -178,13 +178,13 @@ public class BattlegearConfig {
 	            warAxe[i]=new ItemWaraxe(material, itemNames[4], i==4?2:1);
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[3]) < 0){
-	        	dagger[i]=new ItemDagger(material, itemNames[3]);
+	        	dagger[i]=new ItemDagger(material, itemNames[3], 0.5F, -2);
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[5]) < 0){
 	    		mace[i]=new ItemMace(material, itemNames[5], 0.05F + 0.05F*i);
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[6]) < 0){
-	    		spear[i]=new ItemSpear(material, itemNames[6]);
+	    		spear[i]=new ItemSpear(material, itemNames[6], 3, 2.0F);
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[7]) < 0){
                 shield[i] = new ItemShield(types[i]);
@@ -321,8 +321,8 @@ public class BattlegearConfig {
 		}
 
         if(banner!=null){
-            for(int i = 0; i < 5; i++){
-                Object temp = i < 4 ? new ItemStack(Blocks.log, 1, i):Items.iron_ingot;
+            for(int i = 0; i < 7; i++){
+                Object temp = i < 4 ? new ItemStack(Blocks.log, 1, i):i==4?Items.iron_ingot:new ItemStack(Blocks.log2, 1, i-5);
                 GameRegistry.addRecipe(new ItemStack(banner, 4, i), "W", "W", "W", 'W', temp);
             }
         }

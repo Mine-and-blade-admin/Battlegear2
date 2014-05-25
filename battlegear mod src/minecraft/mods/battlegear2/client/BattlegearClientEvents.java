@@ -12,6 +12,10 @@ import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
+import mods.battlegear2.api.weapons.IBackStabbable;
+import mods.battlegear2.api.weapons.IExtendedReachWeapon;
+import mods.battlegear2.api.weapons.IHitTimeModifier;
+import mods.battlegear2.api.weapons.IPenetrateWeapon;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
 import mods.battlegear2.client.gui.controls.GuiPlaceableButton;
@@ -21,6 +25,7 @@ import mods.battlegear2.client.heraldry.CrestImages;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.enchantments.BaseEnchantment;
+import mods.battlegear2.items.ItemWeapon;
 import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
@@ -33,13 +38,11 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import org.lwjgl.opengl.GL11;
 
 public class BattlegearClientEvents {
@@ -344,6 +347,21 @@ public class BattlegearClientEvents {
             }*/
 		}
 	}
+
+    @SubscribeEvent
+    public void onItemTooltip(ItemTooltipEvent event){
+        if(event.itemStack.getItem() instanceof IPenetrateWeapon || event.itemStack.getItem() instanceof IHitTimeModifier || event.itemStack.getItem() instanceof IExtendedReachWeapon){
+            for(String txt:event.toolTip){
+                if(txt.startsWith(EnumChatFormatting.BLUE.toString())){
+                    if(txt.contains(StatCollector.translateToLocal("attribute.name."+ ItemWeapon.armourPenetrate.getAttributeUnlocalizedName())) || txt.contains(StatCollector.translateToLocal("attribute.name."+ ItemWeapon.attackSpeed.getAttributeUnlocalizedName())) || txt.contains(StatCollector.translateToLocal("attribute.name."+ ItemWeapon.extendedReach.getAttributeUnlocalizedName())))
+                        event.toolTip.set(event.toolTip.indexOf(txt), EnumChatFormatting.DARK_GREEN + EnumChatFormatting.getTextWithoutFormattingCodes(txt));
+                }
+            }
+        }
+        if(event.itemStack.getItem() instanceof IBackStabbable){
+            event.toolTip.add(EnumChatFormatting.GOLD + StatCollector.translateToLocal("attribute.name.weapon.backstab"));
+        }
+    }
 
     /**
      * Helper method to add buttons to a gui when opened

@@ -1,3 +1,16 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.5.5 ==
+* Fixed bow FOV with "draw" enchantment
+* Added player inventory expansion API
+* Fixed M.U.D state not saved after changes in GUI
+* Enhanced Quiver API to support arrows from plugins
+* Fixed spears taking double damage
+* Expanded heraldry API (not official yet)
+* Removed warning with flagpoles
+* Put FakePlayer out of inventory IllegalAccessException (PneumatiCraft compatibility)
+* Catch a crash with offhand block placement
+* Overriden hotbar keys in battlemode
+** allow item switching without mouse scroll
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.4 ==
 * Added picking up arrows into offhand quiver
 * Fixed creative knight armor missing things

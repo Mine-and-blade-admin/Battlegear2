@@ -2,6 +2,8 @@ package mods.battlegear2.items;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.items.arrows.*;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -26,6 +28,7 @@ public class ItemMBArrow extends Item {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister par1IconRegister) {
         icons = new IIcon[names.length];
         for(int i = 0; i < names.length; i++){
@@ -34,6 +37,7 @@ public class ItemMBArrow extends Item {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public IIcon getIconFromDamage(int par1) {
         return icons[par1];
     }
@@ -44,6 +48,7 @@ public class ItemMBArrow extends Item {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List){
         for (int j = 0; j < names.length; ++j){
             par3List.add(new ItemStack(par1, 1, j));
@@ -51,6 +56,7 @@ public class ItemMBArrow extends Item {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
         int dmg = par1ItemStack.getItemDamage();

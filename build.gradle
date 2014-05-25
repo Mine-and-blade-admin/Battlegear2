@@ -28,14 +28,13 @@ configFile.withReader {
     // Load config. Can be referenced as config
     def prop = new Properties()
     prop.load(it)
-    project.ext.config = new ConfigSlurper().parse prop
+    ext.config = new ConfigSlurper().parse prop
 }
 //Set things from the properties file
 version = config.modversion
 minecraft {
     assetDir = "eclipse/assets"
     version = config.mcversion + "-" + config.forgeversion
-    replace '${version}', project.version
 }
 archivesBaseName = config.mcversion + "-" + config.distname
 //Set the workspace
@@ -51,7 +50,13 @@ sourceSets {
 }
 
 processResources {
+    // this will ensure that this task is redone when the versions change.
 
+    inputs.property "version", project.version
+
+    inputs.property "mcversion", project.minecraft.version
+
+    
     from(sourceSets.main.resources.srcDirs) {
         // replace stuff in mcmod.info, nothing else
         include 'mcmod.info'

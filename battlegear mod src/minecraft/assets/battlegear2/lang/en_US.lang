@@ -80,6 +80,8 @@ tile.battlegear2:flagpole.spruce.name=Spruce Flag Pole
 tile.battlegear2:flagpole.birch.name=Birch Flag Pole
 tile.battlegear2:flagpole.jungle.name=Jungle Flag Pole
 tile.battlegear2:flagpole.iron.name=Iron Flag Pole
+tile.battlegear2:flagpole.acacia.name=Acacia Flag Pole
+tile.battlegear2:flagpole.big_oak.name=Dark Oak Flag Pole
 
 sigil.pattern.title=Pattern
 sigil.icon.title=Sigil
@@ -98,12 +100,12 @@ gui.sigil.crest=Crest
 gui.sigil.pattern=Background
 
 
-attribute.weapon.penetrateArmor=Armor Penetration
-attribute.weapon.daze=Daze
-attribute.weapon.extendedReach=Reach
-attribute.weapon.attackSpeed=Attack Speed
-attribute.weapon.backstab=Backstab
-attribute.weapon.mountedBonus=Mounted Damage
+attribute.name.weapon.penetrateArmor=Armor Penetration
+attribute.name.weapon.daze=Daze
+attribute.name.weapon.extendedReach=Reach
+attribute.name.weapon.attackSpeed=Attack Speed
+attribute.name.weapon.backstab=Backstab
+attribute.name.weapon.mountedBonus=Mounted Damage
 attribute.shield.block.time=s Block
 attribute.shield.arrow.count=Arrows
 attribute.quiver.arrow.empty=Empty
@@ -128,3 +130,8 @@ tooltip.armour.points=Armor
 
 commands.weaponwield.usage=/weaponwield <itemSearch:current/name> <handWielding:both/right/left> <player or item name>
 commands.weaponwield.set=Item successfully set as wieldable weapon
+
+death.attack.battlegearExtra.backstab=%1$s was stabbed from behind by %2$s
+death.attack.battlegearExtra.backstab.item=%1$s was stabbed from behind by %2$s using %3$s
+death.attack.battlegearExtra.mounted=%1$s was pierced by %2$s and his mount
+death.attack.battlegearExtra.mounted.item=%1$s was pierced by %2$s and his mount using %3$s

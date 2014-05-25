@@ -37,7 +37,7 @@ public class WeaponHookContainerClass {
         //Record the hurt times
         int hurtTimeTemp = entityHit.hurtTime;
         int hurtResistanceTimeTemp = entityHit.hurtResistantTime;
-        if(event.source instanceof EntityDamageSource && !event.source.damageType.equals(Battlegear.CUSTOM_DAMAGE_SOURCE) &&
+        if(event.source instanceof EntityDamageSource && !event.source.damageType.startsWith(Battlegear.CUSTOM_DAMAGE_SOURCE) &&
                 !(event.source instanceof EntityDamageSourceIndirect) )
         {
             Entity attacker = event.source.getEntity();

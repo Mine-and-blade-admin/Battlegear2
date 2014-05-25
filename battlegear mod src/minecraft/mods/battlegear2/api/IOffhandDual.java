@@ -43,6 +43,7 @@ public interface IOffhandDual {
      */
     public boolean offhandClickBlock(PlayerInteractEvent event, ItemStack mainhandItem, ItemStack offhandItem);
 
+    @SuppressWarnings("unused")//To be removed
     /**
      * Perform any passive effects on each game tick when the item is held in the offhand
      *

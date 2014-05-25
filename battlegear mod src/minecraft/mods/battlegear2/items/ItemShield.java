@@ -3,6 +3,8 @@ package mods.battlegear2.items;
 import java.util.List;
 
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
@@ -49,6 +51,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
         backIcon = par1IconRegister.registerIcon("battlegear2:shield/shield."+enumShield.getName()+".back");
@@ -140,13 +143,14 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
 
         par3List.add("");
 
         par3List.add(EnumChatFormatting.DARK_GREEN+
-                ItemWeapon.decimal_format.format((float) 1F / (enumShield.getDecayRate()) / 20F)+
+                ItemStack.field_111284_a.format( 1F / (enumShield.getDecayRate()) / 20F)+
                 StatCollector.translateToLocal("attribute.shield.block.time"));
 
         int arrowCount = getArrowCount(par1ItemStack);

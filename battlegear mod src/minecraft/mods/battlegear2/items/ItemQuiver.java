@@ -1,5 +1,7 @@
 package mods.battlegear2.items;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.quiver.IArrowContainer2;
@@ -58,6 +60,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
         quiverDetails = par1IconRegister.registerIcon("battlegear2:quiver/quiver-details");
@@ -189,6 +192,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
         super.addInformation(stack, par2EntityPlayer, list, par4);
 
