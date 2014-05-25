@@ -36,7 +36,7 @@
       * Inventory of the player
       */
 -    public InventoryPlayer inventory = new InventoryPlayer(this);
-+    public final InventoryPlayer inventory = new InventoryPlayerBattle(this);
++    public InventoryPlayer inventory = new InventoryPlayerBattle(this);
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
      /**
       * The Container for the player's inventory (which opens when they press E)
