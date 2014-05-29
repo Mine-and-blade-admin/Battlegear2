@@ -14,6 +14,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityMultiPart;
 import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -257,22 +258,28 @@ public class BattlegearUtils {
     }
 
     /**
-     * Basically, a copy of {@link EntityPlayer#attackTargetEntityWithCurrentItem}, adapted for the offhand
+     * Basically, a copy of {@link EntityPlayer#attackTargetEntityWithCurrentItem(Entity)}, adapted for the offhand
+     * Hotswap the "current item" value to the offhand, then refresh the player attributes according to the newly selected item
+     * Reset everything back if the attack is cancelled by {@link AttackEntityEvent} or {@link Item#onLeftClickEntity(ItemStack, EntityPlayer, Entity)}
      * Used as a hook by {@link IBattlePlayer}
      * @param player the attacker
      * @param par1Entity the attacked
      */
-    public static void attackTargetEntityWithCurrentOffItem(EntityPlayer player, Entity par1Entity)
-    {
+    public static void attackTargetEntityWithCurrentOffItem(EntityPlayer player, Entity par1Entity){
+        final ItemStack oldItem = player.getCurrentEquippedItem();
         player.inventory.currentItem += InventoryPlayerBattle.WEAPON_SETS;
+        ItemStack stack = player.getCurrentEquippedItem();
+        refreshAttributes(player.getAttributeMap(), oldItem, stack);
         if (MinecraftForge.EVENT_BUS.post(new AttackEntityEvent(player, par1Entity)))
         {
+            refreshAttributes(player.getAttributeMap(), player.getCurrentEquippedItem(), oldItem);
             player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
             return;
         }
-        ItemStack stack = player.getCurrentEquippedItem();
+        stack = player.getCurrentEquippedItem();
         if (stack != null && stack.getItem().onLeftClickEntity(stack, player, par1Entity))
         {
+            refreshAttributes(player.getAttributeMap(), player.getCurrentEquippedItem(), oldItem);
             player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
             return;
         }
@@ -391,8 +398,21 @@ public class BattlegearUtils {
                 }
             }
         }
-
+        refreshAttributes(player.getAttributeMap(), player.getCurrentEquippedItem(), oldItem);
         player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
+    }
+
+    /**
+     * Refresh the attribute map by removing from the old item and applying the current item
+     * @param attributeMap the map to refresh
+     * @param oldItem the old item whose attributes will be removed
+     * @param currentItem the current item whose attributes will be applied
+     */
+    public static void refreshAttributes(BaseAttributeMap attributeMap, ItemStack oldItem, ItemStack currentItem) {
+        if(oldItem!=null)
+            attributeMap.removeAttributeModifiers(oldItem.getAttributeModifiers());
+        if(currentItem!=null)
+            attributeMap.applyAttributeModifiers(currentItem.getAttributeModifiers());
     }
 
     public static void closeStream(Closeable c){
