@@ -156,8 +156,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     /**
-     * Decrement the number of animations remaining. Only called on client side. This is used to handle the animation of
-     * receiving a block.
+     *  Called by EntityPlayer#onLivingUpdate(), usually to animate the item being picked up
      */
     @Override
     public void decrementAnimations() {
