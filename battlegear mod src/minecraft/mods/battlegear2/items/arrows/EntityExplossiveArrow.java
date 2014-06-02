@@ -2,6 +2,7 @@ package mods.battlegear2.items.arrows;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 /**
@@ -36,8 +37,10 @@ public class EntityExplossiveArrow extends AbstractMBArrow{
     }
     
     public void onExplode(){
-        this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, getExplosionStrength(), true);
-        this.setDead();
+        if (!this.worldObj.isRemote) {
+            this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, getExplosionStrength(), canBreakBlocks());
+            this.setDead();
+        }
     }
 
 	public float getExplosionStrength() {

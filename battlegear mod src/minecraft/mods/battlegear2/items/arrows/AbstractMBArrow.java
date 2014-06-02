@@ -7,6 +7,7 @@ import mods.battlegear2.items.ItemMBArrow;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -104,4 +105,9 @@ public abstract class AbstractMBArrow extends EntityArrow {
 	public ItemStack getPickedUpItem(){
 		return QuiverArrowRegistry.getItem(this.getClass());
 	}
+
+
+    public boolean canBreakBlocks(){
+        return !(this.shootingEntity instanceof EntityMob) || this.worldObj.getGameRules().getGameRuleBooleanValue("mobGriefing");
+    }
 }

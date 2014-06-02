@@ -56,28 +56,31 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 
 	@Override
 	public void onHitGround(int x, int y, int z) {
-        Block block = worldObj.getBlock(x, y, z);
-		if(block.getMaterial() == Material.glass){
-            worldObj.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (worldObj.getBlockMetadata(x, y, z) << 12));
-            worldObj.setBlockToAir(x, y, z);
-		}else if (!worldObj.isRemote){
-			if(block instanceof IShearable){
-				IShearable target = (IShearable)block;
-				if (target.isShearable(null, worldObj, x, y, z)){
-					ArrayList<ItemStack> drops = target.onSheared(null, worldObj, x, y, z, 1);
-					Random rand = new Random();
-					for(ItemStack stack : drops){
-	                    float f = 0.7F;
-	                    double d  = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-	                    double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-	                    double d2 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
-	                    EntityItem entityitem = new EntityItem(worldObj, (double)x + d, (double)y + d1, (double)z + d2, stack);
-	                    entityitem.delayBeforeCanPickup = 10;
-	                    worldObj.spawnEntityInWorld(entityitem);
-					}
-					worldObj.setBlockToAir(x, y, z);
+        if(canBreakBlocks()) {
+            Block block = worldObj.getBlock(x, y, z);
+            if (block.getMaterial() == Material.glass) {
+                worldObj.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (worldObj.getBlockMetadata(x, y, z) << 12));
+                worldObj.setBlockToAir(x, y, z);
+            } else if (!worldObj.isRemote) {
+                if (block instanceof IShearable) {
+                    IShearable target = (IShearable) block;
+                    if (target.isShearable(null, worldObj, x, y, z)) {
+                        ArrayList<ItemStack> drops = target.onSheared(null, worldObj, x, y, z, 1);
+                        Random rand = new Random();
+                        for (ItemStack stack : drops) {
+                            float f = 0.7F;
+                            double d = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+                            double d1 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+                            double d2 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
+                            EntityItem entityitem = new EntityItem(worldObj, (double) x + d, (double) y + d1, (double) z + d2, stack);
+                            entityitem.delayBeforeCanPickup = 10;
+                            worldObj.spawnEntityInWorld(entityitem);
+                        }
+                        worldObj.setBlockToAir(x, y, z);
+                    }
                 }
-			}
-		}
+            }
+        }
 	}
+
 }
