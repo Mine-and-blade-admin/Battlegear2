@@ -3,6 +3,7 @@ package mods.battlegear2;
 import cpw.mods.fml.common.FMLCommonHandler;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
@@ -41,6 +42,9 @@ public class CommonProxy {
 
 	public void tryUseTConstruct() {
 	}
+
+    public void tryUseDynamicLight(EntityPlayer player, ItemStack stack){
+    }
 
     public EntityPlayer getClientPlayer(){
         return null;

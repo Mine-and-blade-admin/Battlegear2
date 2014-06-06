@@ -32,6 +32,7 @@ configFile.withReader {
 }
 //Set things from the properties file
 version = config.modversion
+group = "com.github.mine-blade.battlegear"
 minecraft {
     assetDir = "eclipse/assets"
     version = config.mcversion + "-" + config.forgeversion
@@ -77,7 +78,7 @@ jar {
     destinationDir = file "battlegear dist/"
     //Keep the jar as clean as possible
     includeEmptyDirs = false
-    exclude('*.java', 'tconstruct/**')
+    exclude('*.java', 'tconstruct/**', 'atomicstryker/**')
     // Add Coremod Manifest
     manifest {
         attributes 'FMLCorePlugin': config.loadingPlugin

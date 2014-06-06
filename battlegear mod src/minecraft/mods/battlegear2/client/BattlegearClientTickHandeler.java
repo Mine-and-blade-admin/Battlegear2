@@ -28,7 +28,6 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
@@ -273,8 +272,9 @@ public class BattlegearClientTickHandeler {
     }
 
     public void tickEnd(EntityPlayer player) {
-        //If we use a shield
         ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
+        Battlegear.proxy.tryUseDynamicLight(player, offhand);
+        //If we use a shield
         if(offhand != null && offhand.getItem() instanceof IShield){
             if(mc.gameSettings.keyBindUseItem.getIsKeyPressed() && !player.isSwingInProgress && blockBar > 0){
                 player.motionX = player.motionX/5;

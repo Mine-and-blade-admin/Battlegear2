@@ -7,6 +7,7 @@ import java.util.List;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.common.registry.GameData;
 import mods.battlegear2.Battlegear;
@@ -40,6 +41,9 @@ public class ClientProxy extends CommonProxy {
 
     public static boolean tconstructEnabled = false;
     public static Method updateTab, addTabs;
+    public static Object dynLightPlayerMod;
+    public static Method dynLightFromItemStack;
+    public static ItemStack heldCache;
     public static IIcon[] backgroundIcon;
     public static IIcon[] bowIcons;
 
@@ -252,6 +256,35 @@ public class ClientProxy extends CommonProxy {
 		}
     	tconstructEnabled = true;
 	}
+
+    @Override
+    public void tryUseDynamicLight(EntityPlayer player, ItemStack stack){
+        if(player==null && stack==null){
+            dynLightPlayerMod = Loader.instance().getIndexedModList().get("DynamicLights_thePlayer").getMod();
+            try {
+                if(dynLightPlayerMod!=null) {
+                    dynLightFromItemStack = dynLightPlayerMod.getClass().getDeclaredMethod("getLightFromItemStack", ItemStack.class);
+                    dynLightFromItemStack.setAccessible(true);
+                }
+            }catch (Exception e){
+                return;
+            }
+        }
+        if(dynLightFromItemStack!=null && dynLightPlayerMod!=null){
+            if(!ItemStack.areItemStacksEqual(stack, heldCache)) {
+                try {
+                    int lightNew = Integer.class.cast(dynLightFromItemStack.invoke(dynLightPlayerMod, stack));
+                    int lightOld = Integer.class.cast(dynLightFromItemStack.invoke(dynLightPlayerMod, heldCache));
+                    if (lightNew != lightOld) {
+                        Class.forName("mods.battlegear2.client.utils.DualHeldLight").getMethod("refresh", EntityPlayer.class, int.class, int.class).invoke(null, player, lightNew, lightOld);
+                    }
+                }catch (Exception e){
+                    return;
+                }
+                heldCache = stack;
+            }
+        }
+    }
 
     @Override
     public EntityPlayer getClientPlayer(){
