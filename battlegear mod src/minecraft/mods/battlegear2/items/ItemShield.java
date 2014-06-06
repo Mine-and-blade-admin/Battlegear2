@@ -164,46 +164,36 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
      * Return whether the specified armor ItemStack has a color.
      */
     @Override
-    public boolean hasColor(ItemStack par1ItemStack)
-    {
+    public boolean hasColor(ItemStack par1ItemStack){
         return par1ItemStack.hasTagCompound() && par1ItemStack.getTagCompound().hasKey("display") && par1ItemStack.getTagCompound().getCompoundTag("display").hasKey("color");
     }
 
     /**
-     * Return the color for the specified armor ItemStack.
+     * Return the color for the specified ItemStack.
      */
     @Override
-    public int getColor(ItemStack par1ItemStack)
-    {
-        {
-            NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
-
-            if (nbttagcompound == null)
-            {
-                return getDefaultColor(par1ItemStack);
-            }
-            else
-            {
-                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
-                return nbttagcompound1 == null ? getDefaultColor(par1ItemStack): (nbttagcompound1.hasKey("color") ? nbttagcompound1.getInteger("color") : getDefaultColor(par1ItemStack));
-            }
+    public int getColor(ItemStack par1ItemStack){
+        NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
+        if (nbttagcompound == null){
+            return getDefaultColor(par1ItemStack);
+        }
+        else{
+            NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
+            return nbttagcompound1 == null ? getDefaultColor(par1ItemStack): (nbttagcompound1.hasKey("color") ? nbttagcompound1.getInteger("color") : getDefaultColor(par1ItemStack));
         }
     }
 
     /**
-     * Remove the color from the specified armor ItemStack.
+     * Remove the color from the specified ItemStack.
      */
     @Override
-    public void removeColor(ItemStack par1ItemStack)
-    {
+    public void removeColor(ItemStack par1ItemStack){
         NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
 
-        if (nbttagcompound != null)
-        {
+        if (nbttagcompound != null) {
             NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
 
-            if (nbttagcompound1.hasKey("color"))
-            {
+            if (nbttagcompound1.hasKey("color")) {
                 nbttagcompound1.removeTag("color");
             }
         }
@@ -215,11 +205,8 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     }
 
     @Override
-    public void setColor(ItemStack par1ItemStack, int par2)
-    {
-
+    public void setColor(ItemStack par1ItemStack, int par2) {
         NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
-
         if (nbttagcompound == null)
         {
             nbttagcompound = new NBTTagCompound();
