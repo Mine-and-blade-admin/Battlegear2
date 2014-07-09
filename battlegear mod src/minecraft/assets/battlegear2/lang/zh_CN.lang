@@ -1,6 +1,24 @@
 #zh_CN
 
 name.title=挖矿与砍杀|战备双持2
+config.battlegear.title=挖矿与砍杀2 配置文件
+config.battlegear.category=禁用自定义物品渲染
+config.battlegear.warn.part1=需要重启
+config.battlegear.warn.part2=才能生效
+use.gui.buttons=开启物品栏按钮
+use.gui.keys=开启物品栏快捷键
+render.quiver.skeleton=渲染骷髅箭袋
+render.arrow.bow=渲染拉弓动画
+render.back.sheathed=强制渲染玩家背部覆盖贴图
+gui.open.fake=开启界面定制功能
+gui.fake.help1=点击拖拽来移动屏幕部件
+gui.fake.help2=箭袋格子
+gui.fake.help3=护盾耐久条
+gui.fake.help4=副手格子
+gui.fake.help5=主手格子
+flag.design.save=保存
+flag.design.load=载入
+flag.design.load.sections=载入选择
 
 item.battlegear2:heraldric.name=纹章图标
 item.battlegear2:chain.name=铁链
@@ -59,6 +77,14 @@ enchantment.shield.recover=护盾回复
 enchantment.bow.loot=时运之矢
 enchantment.bow.charge=张弦
 
+tile.battlegear2:flagpole.oak.name=橡木旗杆
+tile.battlegear2:flagpole.spruce.name=云杉旗杆
+tile.battlegear2:flagpole.birch.name=白桦旗杆
+tile.battlegear2:flagpole.jungle.name=丛林木旗杆
+tile.battlegear2:flagpole.iron.name=铁旗杆
+tile.battlegear2:flagpole.acacia.name=刺槐旗杆
+tile.battlegear2:flagpole.big_oak.name=黑橡木旗杆
+
 tile.battlegear2:banner.name=旗帜
 
 sigil.pattern.title=图案
@@ -87,3 +113,28 @@ attribute.shield.block.time=秒格挡
 attribute.shield.arrow.count=弓箭
 attribute.quiver.arrow.empty=已空
 attribute.quiver.arrow.count=弓箭
+
+lore.base.arrow.explosive=包裹着爆裂新的能量
+lore.base.arrow.ender=末影之眼看上去很痛...
+lore.base.arrow.flame=燧石?不需要了
+lore.base.arrow.piercing=非同寻常的切割能力
+lore.base.arrow.poison=很贵吧,啊哈?
+lore.base.arrow.mystery=人人都爱曲奇饼!
+lore.base.arrow.leech=让你感到虚弱和悲伤
+lore.advanced.arrow.explosive=爆炸强度取决于箭矢暴击伤害
+lore.advanced.arrow.ender=立即进行/取消传送
+lore.advanced.arrow.flame=让生物,玩家和方块着火
+lore.advanced.arrow.piercing=花式剪羊毛
+lore.advanced.arrow.poison=造成凋灵效果
+lore.advanced.arrow.mystery=发出爱与和平的信息
+lore.advanced.arrow.leech=拥有吸血鬼之触
+
+tooltip.armour.points=护甲
+
+commands.weaponwield.usage=/weaponwield <itemSearch:current/name> <handWielding:both/right/left> <player or item name>
+commands.weaponwield.set=已成功设置该物品可装备至护盾格
+
+death.attack.battlegearExtra.backstab=%1$s死于%2$s的背刺.
+death.attack.battlegearExtra.backstab.item=%1$死于%2$s使用%3$s发起的背刺.
+death.attack.battlegearExtra.mounted=%1$s被%2$s和他的坐骑踩得粉碎.
+death.attack.battlegearExtra.mounted.item=%1$s被骑着坐骑的%2$s用%3$s刺得粉碎.
