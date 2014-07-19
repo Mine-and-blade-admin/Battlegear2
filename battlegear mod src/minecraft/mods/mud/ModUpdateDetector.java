@@ -32,7 +32,7 @@ public class ModUpdateDetector {
     public static boolean hasChecked = false;
     private static Configuration config;
     private static Property check;
-    public static boolean enabled = true;
+    public static boolean enabled = true, verbose = false;
     private static ICommandSender sender = null;
 
     /**
@@ -74,11 +74,13 @@ public class ModUpdateDetector {
     public static void runUpdateChecker(){
 
         if(enabled){
-            ICommandSender sender = getSender();
-            sender.addChatMessage(new ChatComponentText(
-                    EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
-                    EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.checking")
-            ));
+            if(verbose) {
+                ICommandSender sender = getSender();
+                if(sender != null)
+                sender.addChatMessage(new ChatComponentText(
+                        EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
+                                EnumChatFormatting.WHITE + ": " + StatCollector.translateToLocal("message.checking")));
+            }
 
             Thread t = new Thread(new UpdateChecker(updateMap.values()));
             t.run();
@@ -101,7 +103,8 @@ public class ModUpdateDetector {
 	        config = new Configuration(new File(Loader.instance().getConfigDir(), "MUD.cfg"));
 	        Timer = config.get(Configuration.CATEGORY_GENERAL, "Update Time", 60, "The time in minutes between update checks").getInt() * 60 * 20;
             check = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates");
-	        enabled = check.getBoolean(true);
+	        verbose = config.get(Configuration.CATEGORY_GENERAL, "Chat stats", false, "Should MUD print in chat its status").getBoolean();
+            enabled = check.getBoolean(true);
 	        if(config.hasChanged()){
 	            config.save();
 	        }
@@ -129,7 +132,7 @@ public class ModUpdateDetector {
 
     public static void notifyUpdateDone(){
         ICommandSender sender = getSender();
-        if(sender != null){
+        if(verbose && sender != null){
             sender.addChatMessage(new ChatComponentText(
                     EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
                             EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.check.done")
@@ -157,7 +160,7 @@ public class ModUpdateDetector {
                 chat.getChatStyle().setColor(EnumChatFormatting.RED);
                 sender.addChatMessage(chat);
             }
-        }else{
+        }else if (verbose){
             if(sender != null){
                 chat = new ChatComponentTranslation("message.up.to.date");
                 chat.getChatStyle().setColor(EnumChatFormatting.DARK_GREEN);

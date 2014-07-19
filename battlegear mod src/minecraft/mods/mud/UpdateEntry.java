@@ -7,9 +7,9 @@ import java.net.URL;
 
 public class UpdateEntry{
 
-    private ModContainer mc;
-    private URL updateXML;
-    private URL changelogURL;
+    private final ModContainer mc;
+    private final URL updateXML;
+    private final URL changelogURL;
     private Release latest = null;
 
     public UpdateEntry(ModContainer mc, URL updateXML, URL changelogURL) {
