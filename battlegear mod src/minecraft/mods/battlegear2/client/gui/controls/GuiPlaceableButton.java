@@ -29,7 +29,7 @@ public abstract class GuiPlaceableButton extends GuiButton {
 	}
 
 	@Override
-	protected int getHoverState(boolean isMouseOver)
+	public int getHoverState(boolean isMouseOver)
     {
 		if(!isInGui(Minecraft.getMinecraft().currentScreen)){
 			return super.getHoverState(isMouseOver);

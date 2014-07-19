@@ -46,7 +46,7 @@ public class BattlegearInGameGUI extends Gui {
     public void renderGameOverlay(float frame, int mouseX, int mouseY) {
 
         if(Battlegear.battlegearEnabled){
-            ScaledResolution scaledresolution = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
+            ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
             int width = scaledresolution.getScaledWidth();
             int height = scaledresolution.getScaledHeight();
             RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution, mouseX, mouseY);

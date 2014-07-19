@@ -68,7 +68,7 @@ public class GuiToggleButton extends GuiButton{
      * 3 if the mouse is NOT hovering over this button (and it IS NOT selected)
      */
     @Override
-    protected int getHoverState(boolean par1)
+    public int getHoverState(boolean par1)
     {
         byte b0 = 3;
 

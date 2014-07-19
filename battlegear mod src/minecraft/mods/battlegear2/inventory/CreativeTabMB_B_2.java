@@ -27,14 +27,14 @@ public class CreativeTabMB_B_2 extends CreativeTabs{
     }
 	
 	@Override
+    @SideOnly(Side.CLIENT)
 	public Item getTabIconItem() {
 		return BattlegearConfig.heradricItem;
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void displayAllReleventItems(List list)
-    {
+	public void displayAllReleventItems(List list){
         super.displayAllReleventItems(list);
         this.addEnchantmentBooksToList(list, BaseEnchantment.getEnchants());
     }

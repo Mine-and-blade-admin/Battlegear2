@@ -94,7 +94,7 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
                 return;
             }
 
-            PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1);
+            PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, worldserver);
             if (event.useItem != Event.Result.DENY){
                 ((EntityPlayerMP)player).theItemInWorldManager.tryUseItem(player, worldserver, itemStack);
             }

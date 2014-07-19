@@ -34,7 +34,7 @@ configFile.withReader {
 version = config.modversion
 group = "com.github.mine-blade.battlegear"
 minecraft {
-    assetDir = "eclipse/assets"
+    runDir = "eclipse/assets"
     version = config.mcversion + "-" + config.forgeversion
 }
 archivesBaseName = config.mcversion + "-" + config.distname

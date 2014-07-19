@@ -193,7 +193,7 @@ public class BattlegearClientTickHandeler {
                                 int l = mouseOver.blockZ;
                                 int i1 = mouseOver.sideHit;
 
-                                boolean result = !ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, j, k, l, i1).isCanceled();
+                                boolean result = !ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, j, k, l, i1, player.worldObj).isCanceled();
                                 if (result && onPlayerPlaceBlock(mc.playerController, player, player.worldObj, offhand, j, k, l, i1, mouseOver.hitVec))
                                 {
                                     ((IBattlePlayer)player).swingOffItem();

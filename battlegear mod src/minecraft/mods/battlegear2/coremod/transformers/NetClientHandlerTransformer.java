@@ -32,7 +32,7 @@ public class NetClientHandlerTransformer extends TransformerBase {
                     method.desc.equals(netClientHandlerHandleNamedEntitySpawnMethodDesc)) {
                 sendPatchLog("handleSpawnPlayer");
 
-                replaceInventoryArrayAccess(method, entityOtherPlayerMPClassName, playerInventoryFieldName, 9, 13);
+                replaceInventoryArrayAccess(method, entityOtherPlayerMPClassName, playerInventoryFieldName, 9, 14);
                 found++;
             }else if (method.name.equals(netClientHandlerHandleBlockItemSwitchMethodName) &&
                     method.desc.equals(netClientHandlerHandleBlockItemSwitchMethodDesc)) {

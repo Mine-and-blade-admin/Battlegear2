@@ -37,7 +37,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     {
         switch (side){
             case 0:
-                return AxisAlignedBB.getAABBPool().getAABB(
+                return AxisAlignedBB.getBoundingBox(
                         xCoord - flags.size(),
                         yCoord,
                         zCoord,
@@ -45,7 +45,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
                         yCoord + 1, zCoord + 1);
             case 1:
             case 2:
-                return AxisAlignedBB.getAABBPool().getAABB(
+                return AxisAlignedBB.getBoundingBox(
                         xCoord,
                         yCoord - flags.size(),
                         zCoord,
@@ -53,7 +53,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
                         yCoord+ flags.size()+1, zCoord + 1);
         }
 
-        return AxisAlignedBB.getAABBPool().getAABB(
+        return AxisAlignedBB.getBoundingBox(
                 xCoord - flags.size(),
                 yCoord,
                 zCoord,
@@ -135,7 +135,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     @Override
     public void updateEntity() {
         if(!getWorldObj().isRemote && canUpdate() && getWorldObj().rand.nextInt(100) == 0){
-            List entities = getWorldObj().getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getAABBPool().getAABB(xCoord-3, yCoord, zCoord-3, xCoord + 3, yCoord + 1, zCoord + 3));
+            List entities = getWorldObj().getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord-3, yCoord, zCoord-3, xCoord + 3, yCoord + 1, zCoord + 3));
             if(entities.isEmpty())
                 spawnUnit();
         }

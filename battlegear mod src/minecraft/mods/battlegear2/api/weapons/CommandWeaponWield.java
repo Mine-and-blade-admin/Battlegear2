@@ -8,6 +8,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Command that can be used by op to set held items in the WeaponRegistry
@@ -47,13 +48,13 @@ public class CommandWeaponWield extends CommandBase{
                 if(var2[0].equals(searchModes[0]))
                     itemStack = getPlayer(var1, var2[2]).getCurrentEquippedItem();
                 else if(var2[0].equals(searchModes[1])) {
-                    String[] splits = var2[2].split(":");
+                    String[] splits = var2[2].split(":", 2);
                     if(splits.length == 2)
                         itemStack = GameRegistry.findItemStack(splits[0], splits[1], 1);
                 }
             }
-            if(var2.length>1 && setWeapon(itemStack, var2[1].toLowerCase()))
-                notifyAdmins(var1, "commands.weaponwield.set", itemStack);
+            if(var2.length>1 && setWeapon(itemStack, var2[1].toLowerCase(Locale.ENGLISH)))
+                func_152373_a(var1, this, "commands.weaponwield.set", itemStack);
             else
                 throw new WrongUsageException(getCommandUsage(var1), itemStack);
         }

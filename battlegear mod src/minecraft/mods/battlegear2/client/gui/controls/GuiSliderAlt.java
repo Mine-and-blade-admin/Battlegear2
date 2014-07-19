@@ -26,7 +26,7 @@ public class GuiSliderAlt extends GuiButton
     }
 
     @Override
-    protected int getHoverState(boolean par1)
+    public int getHoverState(boolean par1)
     {
         return 0;
     }

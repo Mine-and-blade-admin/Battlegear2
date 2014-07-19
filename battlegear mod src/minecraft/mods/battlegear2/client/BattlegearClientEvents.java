@@ -341,8 +341,8 @@ public class BattlegearClientEvents {
 					.registerIcon("battlegear2:bow_pulling_2");
 
             storageIndex = PatternStore.DEFAULT.buildPatternAndStore(patterns);
-            CrestImages.initialise(Minecraft.getMinecraft().getResourceManager());
-            /*for (HeraldryPattern pattern : HeraldryPattern.patterns) {
+            /*CrestImages.initialise(Minecraft.getMinecraft().getResourceManager());
+            for (HeraldryPattern pattern : HeraldryPattern.patterns) {
                 pattern.registerIcon(event.map);
             }*/
 		}
