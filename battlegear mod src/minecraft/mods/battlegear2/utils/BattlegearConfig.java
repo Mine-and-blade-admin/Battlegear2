@@ -1,5 +1,6 @@
 package mods.battlegear2.utils;
 
+import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.heraldry.BlockFlagPole;
@@ -79,7 +80,7 @@ public class BattlegearConfig {
 
         if(Arrays.binarySearch(disabledItems, itemNames[10]) < 0){
             banner = (BlockFlagPole)new BlockFlagPole().setCreativeTab(customTab).setBlockName(MODID+itemNames[10]);
-            GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, MODID+itemNames[10]);
+            GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, itemNames[10]);
             GameRegistry.registerTileEntity(TileEntityFlagPole.class, MODID+itemNames[10]);
         }
 
@@ -98,7 +99,7 @@ public class BattlegearConfig {
         	quiver = new ItemQuiver().setUnlocalizedName(MODID+itemNames[2]).setTextureName(MODID+"quiver/"+itemNames[2]).setCreativeTab(customTab);
         }
         if(Arrays.binarySearch(disabledItems, itemNames[9]) < 0){
-        	MbArrows = new ItemMBArrow().setUnlocalizedName(MODID + itemNames[9]).setTextureName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
+        	MbArrows = new ItemMBArrow().setUnlocalizedName(MODID+itemNames[9]).setTextureName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
         }
         String category = "Skeleton CustomArrow Spawn Rate";
         config.addCustomCategoryComment(category, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
@@ -201,7 +202,7 @@ public class BattlegearConfig {
                 if(Item.class.isAssignableFrom(f.getType())){
                     Item it = (Item)f.get(null);
                     if(it!=null){
-                        GameRegistry.registerItem(it, it.getUnlocalizedName());
+                        GameRegistry.registerItem(it, it.getUnlocalizedName().replace("item.", "").replace(MODID, "").trim());
                     }
                 }
             }
@@ -380,5 +381,47 @@ public class BattlegearConfig {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public static boolean remap(FMLMissingMappingsEvent.MissingMapping mapping) {
+        if(mapping.type == GameRegistry.Type.ITEM){
+            if(mapping.name.contains("item."+MODID)){
+                for(Item sheild:shield){
+                    if(sheild!=null && mapping.name.contains(sheild.getUnlocalizedName().substring(5))) {
+                        mapping.remap(sheild);
+                        return true;
+                    }
+                }
+                for(Item armor:knightArmor){
+                    if(armor!=null && mapping.name.contains(armor.getUnlocalizedName().substring(5))){
+                        mapping.remap(armor);
+                        return true;
+                    }
+                }
+                try {
+                    for (Field f : BattlegearConfig.class.getFields()) {
+                        if (Item.class.isAssignableFrom(f.getType())) {
+                            Item it = (Item) f.get(null);
+                            if (it != null && mapping.name.contains(it.getUnlocalizedName().substring(5))) {
+                                mapping.remap(it);
+                                return true;
+                            }
+                        }
+                    }
+                }catch (Throwable t){}
+            }
+        }
+        if(mapping.name.contains(MODID+MODID+"flagpole")) {
+            if (banner != null) {
+                if(mapping.type == GameRegistry.Type.ITEM){
+                    mapping.remap(Item.getItemFromBlock(banner));
+                }
+                else {
+                    mapping.remap(banner);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 }

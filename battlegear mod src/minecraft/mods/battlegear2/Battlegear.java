@@ -163,4 +163,12 @@ public class Battlegear {
             }
     	}
     }
+
+    @Mod.EventHandler
+    public void onRemapId(FMLMissingMappingsEvent event){
+        for(FMLMissingMappingsEvent.MissingMapping mapping:event.get()){
+            if(BattlegearConfig.remap(mapping))
+                logger.warn("ReMapped: " + mapping.name);
+        }
+    }
 }

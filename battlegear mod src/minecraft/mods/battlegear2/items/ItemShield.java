@@ -47,7 +47,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         this.setMaxDamage(enumShield.getMaxDamage());
         this.setMaxStackSize(1);
         this.setHasSubtypes(false);
-        GameRegistry.registerItem(this, this.getUnlocalizedName());
+        GameRegistry.registerItem(this, "shield."+enumShield.getName());
     }
 
     @Override

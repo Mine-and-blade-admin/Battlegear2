@@ -42,7 +42,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 		super(Battlegear.knightArmourMaterial, 1, armourType);
 		setCreativeTab(BattlegearConfig.customTab);
 		setUnlocalizedName("battlegear2:knights_armour."+ BattlegearConfig.armourTypes[armourType]);
-        GameRegistry.registerItem(this,this.getUnlocalizedName());
+        GameRegistry.registerItem(this, "knights_armour."+ BattlegearConfig.armourTypes[armourType]);
 	}
 	
 	@Override
