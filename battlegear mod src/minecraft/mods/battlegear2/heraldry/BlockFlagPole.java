@@ -1,5 +1,7 @@
 package mods.battlegear2.heraldry;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -46,6 +48,7 @@ public class BlockFlagPole extends Block {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
         for(int i = 0; i < 7; i++){
             par3List.add(new ItemStack(par1, 1, i));
@@ -58,28 +61,30 @@ public class BlockFlagPole extends Block {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void registerBlockIcons(IIconRegister par1IconRegister) {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int par2, int par3, int par4) {
+        return getCollisionBoundingBoxFromPool(world, par2, par3, par4);
+    }
+
+    @Override
+    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int par2, int par3, int par4) {
         TileEntity te = world.getTileEntity(par2, par3, par4);
         if(te instanceof IFlagHolder) {
             switch (((IFlagHolder) te).getOrientation(world.getBlockMetadata(par2, par3, par4))) {
                 case 0:
-                    return AxisAlignedBB.getAABBPool().getAABB((double) par2 + 6F / 16F, (double) par3 + 0, (double) par4 + 6F / 16F, (double) par2 + 10F / 16F, (double) par3 + 1, (double) par4 + 10F / 16F);
+                    return AxisAlignedBB.getBoundingBox((double) par2 + 6F / 16F, (double) par3 + 0, (double) par4 + 6F / 16F, (double) par2 + 10F / 16F, (double) par3 + 1, (double) par4 + 10F / 16F);
                 case 1:
-                    return AxisAlignedBB.getAABBPool().getAABB((double) par2 + 6F / 16F, (double) par3 + 13F / 16F, (double) par4 + 0, (double) par2 + 10F / 16F, (double) par3 + 1, (double) par4 + 1);
+                    return AxisAlignedBB.getBoundingBox((double) par2 + 6F / 16F, (double) par3 + 13F / 16F, (double) par4 + 0, (double) par2 + 10F / 16F, (double) par3 + 1, (double) par4 + 1);
                 case 2:
-                    return AxisAlignedBB.getAABBPool().getAABB((double) par2 + 0, (double) par3 + 13F / 16F, (double) par4 + 6F / 16F, (double) par2 + 1, (double) par3 + 1, (double) par4 + 10F / 16F);
+                    return AxisAlignedBB.getBoundingBox((double) par2 + 0, (double) par3 + 13F / 16F, (double) par4 + 6F / 16F, (double) par2 + 1, (double) par3 + 1, (double) par4 + 10F / 16F);
             }
         }
-        return super.getSelectedBoundingBoxFromPool(world, par2, par3, par4);
-    }
-
-    @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) {
-        return getSelectedBoundingBoxFromPool(par1World, par2, par3, par4);
+        return super.getCollisionBoundingBoxFromPool(world, par2, par3, par4);
     }
 
     public float getTextDim(int metadata, int section){
@@ -116,6 +121,7 @@ public class BlockFlagPole extends Block {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public IIcon getIcon(int par1, int meta) {
         if(meta == 4)
             return Blocks.iron_block.getIcon(par1, 0);
