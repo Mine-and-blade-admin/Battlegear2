@@ -1,6 +1,7 @@
 package mods.battlegear2.items;
 
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.UUID;
 
 import mods.battlegear2.api.weapons.*;
@@ -44,7 +45,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon 
 		if(material == ToolMaterial.EMERALD){
 			this.name = named+".diamond";
 		}else{
-			this.name= named+"."+material.name().toLowerCase();
+			this.name= named+"."+material.name().toLowerCase(Locale.ENGLISH);
 		}
 		
 		this.setUnlocalizedName("battlegear2:"+name);

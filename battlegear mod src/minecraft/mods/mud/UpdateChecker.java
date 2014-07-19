@@ -119,7 +119,7 @@ public class UpdateChecker implements Runnable{
             }
 
             if(versionNode != null && releaseType.level <= versionLevel.level){
-                String[] split = versionNode.getNodeValue().toLowerCase().split("\\.");
+                String[] split = versionNode.getNodeValue().toLowerCase(Locale.ENGLISH).split("\\.");
                 int[] version = new int[split.length];
                 for(int i = 0; i < split.length; i++){
                     try{

@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class BattlegearTranslator implements IFMLCallHook {
@@ -97,8 +98,8 @@ public class BattlegearTranslator implements IFMLCallHook {
     		String line = br.readLine();
 
     		while(line != null){
-    			if(line.toLowerCase().contains("asm debug mode")){
-    				debug = line.toLowerCase().contains("true");
+    			if(line.toLowerCase(Locale.ENGLISH).contains("asm debug mode")){
+    				debug = line.toLowerCase(Locale.ENGLISH).contains("true");
                     break;
     			}
     			line = br.readLine();

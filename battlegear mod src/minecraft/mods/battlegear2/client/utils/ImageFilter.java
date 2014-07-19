@@ -6,6 +6,7 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by Aaron on 3/08/13.
@@ -21,7 +22,7 @@ public class ImageFilter extends FileFilter {
     @Override
     public boolean accept(File pathname) {
         String extention = new FileExtension(pathname).get();
-        return extention == null || valid.contains(extention.toLowerCase());
+        return extention == null || valid.contains(extention.toLowerCase(Locale.ENGLISH));
     }
 
     @Override
