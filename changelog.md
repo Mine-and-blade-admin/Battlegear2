@@ -1,3 +1,14 @@
+== Soon for 1.7.10 ==
+* Added DynamicLight support for light sources in left hand
+* Reduced M.U.D chatting (with verbose option to configure)
+* Fixed flagpole crashing dedicated servers
+* Fixed iron textures for some systems
+* Remapped item registry names for consistency
+** world saves should be convertible without loss
+
+**Known issue**
+Enchanted books from vanilla creative tabs (weapons, misc) with the Battlegear enchantments don't apply correctly to items
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.5 ==
 * Fixed bow FOV with "draw" enchantment
 * Added player inventory expansion API
