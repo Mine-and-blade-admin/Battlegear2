@@ -78,7 +78,6 @@ jar {
     destinationDir = file "battlegear dist/"
     //Keep the jar as clean as possible
     includeEmptyDirs = false
-    exclude('*.java', 'tconstruct/**', 'atomicstryker/**')
     // Add Coremod Manifest
     manifest {
         attributes 'FMLCorePlugin': config.loadingPlugin
@@ -91,11 +90,17 @@ jar.doLast { task ->
 }
 
 task jarBGSrc(dependsOn:'processResources', type:Jar)
-jarBGSrc{
+jarBGSrc {
     destinationDir = file "battlegear api/"
-    baseName = config.mcversion+"-Battlegear-Src"
-    from 'build/sources/java'
-    include 'mods/battlegear2/**'
+    baseName = config.mcversion + "-Battlegear-Src"
+    from('build/sources/java/'){
+        include 'mods/battlegear2/**'
+        exclude '**/DualHeldLight.java', '**/EquipGearTab.java', '**/SigilTab.java'
+    }
+	
+    // Add Resources
+    from 'build/resources/main'
+    include 'LICENCE'
 }
 
 task jarMUDSrc(dependsOn:'processResources', type:Jar)
@@ -104,16 +109,22 @@ jarMUDSrc{
     baseName = config.mcversion+"-MUD-Src"
     from 'build/sources/java'
     include 'mods/mud/**'
+	
+    // Add Resources
+    from 'build/resources/main'
+    include 'LICENCE'
 }
 
 task jarBGBin(dependsOn:'build', type:Jar)
-jarBGBin{
+jarBGBin {
     destinationDir = file "battlegear api/"
-    baseName = config.mcversion+"-Battlegear-Bin"
+    baseName = config.mcversion + "-Battlegear-Bin"
     // Add classes
-    from 'build/classes/main'
-    include 'mods/battlegear2/**'
-	
+    from('build/classes/main/'){
+        include 'mods/battlegear2/**'
+        exclude '**/DualHeldLight.class', '**/EquipGearTab.class', '**/SigilTab.class'
+    }
+
     // Add Resources
     from 'build/resources/main'
     include 'assets/battlegear2/**', '*.cfg', '*.png', '*.info', '*.mcmeta', 'LICENCE'
@@ -138,4 +149,4 @@ jarMUDBin{
     include 'assets/mud/**', 'LICENCE'
 }
 
-task jarAPI(dependsOn:['jarMUDBin','jarBGBin','jarMUDSrc','jarBGBin'])
+task jarAPI(dependsOn:['jarMUDBin','jarBGBin','jarMUDSrc','jarBGSrc'])

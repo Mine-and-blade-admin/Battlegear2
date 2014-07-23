@@ -1,35 +1,22 @@
-﻿*.class
-
-# Package Files #
-*.jar
-*.war
-*.ear
-
-#Ignore EVERYTHING
+﻿#Ignore EVERYTHING
 /*
-/*/
 
 #Don't ignore the battlegear mod src folder
-!/battlegear mod src/
-!battlegear mod src/*
+!battlegear mod src/
 
-!/battlegear api/
-!battlegear api/*
+!battlegear api/
 
-!/battlegear lang files/
-!battlegear lang files/*
-
-!battlegear gimp files/
-!battlegear gimp files/*
+!battlegear gimp files
 
 !battlegear dist/
-!battlegear dist/*
 
 !mods/
 
+!src/
+
 #Also don't ignore the install scripts
-!gradlew*
-!gradle/*
+!gradle*
+!gradle/
 !build.gradle
 
 #Or this file ;) (or readme)
@@ -42,11 +29,5 @@
 !mod.properties
 !battlegear_update.xml
 !changelog.md
-!battlegear_dummy.jar
-
-*~
-*.rej
-*.orig
-*Thumbs.db
 
 
