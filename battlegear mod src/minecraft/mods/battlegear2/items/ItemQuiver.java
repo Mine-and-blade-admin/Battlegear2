@@ -136,6 +136,9 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
 
     @Override
     public void onPreArrowFired(PlayerEventChild.QuiverArrowEvent.Firing arrowEvent) {
+        if(arrowEvent.getArcher().capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, arrowEvent.getBow()) > 0){
+            arrowEvent.arrow.canBePickedUp = 2;
+        }
         writeBowNBT(arrowEvent.getBow(), getStackInSlot(arrowEvent.quiver, getSelectedSlot(arrowEvent.quiver)));
     }
 

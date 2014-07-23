@@ -1,10 +1,13 @@
 == Soon for 1.7.10 ==
+* Fixed invalid attributes while using weapon in left hand
+* Fixed arrows not obeying GameRule
 * Added DynamicLight support for light sources in left hand
 * Reduced M.U.D chatting (with verbose option to configure)
 * Fixed flagpole crashing dedicated servers
 * Fixed iron textures for some systems
 * Remapped item registry names for consistency
 ** world saves should be convertible without loss
+* Fixed pickable quiver arrows from infinity bow
 
 **Known issue**
 Enchanted books from vanilla creative tabs (weapons, misc) with the Battlegear enchantments don't apply correctly to items

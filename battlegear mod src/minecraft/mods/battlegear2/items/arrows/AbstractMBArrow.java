@@ -64,10 +64,10 @@ public abstract class AbstractMBArrow extends EntityArrow {
     @Override//Fixes picking up arrows
     public void onCollideWithPlayer(EntityPlayer par1EntityPlayer){
         if (!this.worldObj.isRemote && this.ticksInGround>0 && this.arrowShake <= 0){
-            boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
-            if (flag && !tryPickArrow(par1EntityPlayer)){
-            	flag = false;
+            if (this.canBePickedUp == 1 && !tryPickArrow(par1EntityPlayer)){
+            	return;
             }
+            boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
             if (flag){
                 this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 par1EntityPlayer.onItemPickup(this, 1);//That second parameter is unused
