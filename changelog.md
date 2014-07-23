@@ -1,4 +1,5 @@
-== Soon for 1.7.10 ==
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.5.6 ==
+* Update for 1.7.10
 * Fixed invalid attributes while using weapon in left hand
 * Fixed arrows not obeying GameRule
 * Added DynamicLight support for light sources in left hand
