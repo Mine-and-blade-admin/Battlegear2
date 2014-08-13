@@ -222,7 +222,7 @@ public class BattlemodeHookContainerClass {
                             float red = ((IShield)shield.getItem()).getDamageReduction(shield, event.source);
                             if(red<dmg){
                                 shield.damageItem(Math.round(dmg-red), player);
-                                if(shield.getItemDamage() <= 0){
+                                if(shield.stackSize <= 0){
                                     ForgeEventFactory.onPlayerDestroyItem(player, shield);
                                     player.inventory.setInventorySlotContents(player.inventory.currentItem + 3, null);
                                     //TODO Render item break
