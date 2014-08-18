@@ -128,7 +128,7 @@ lore.advanced.arrow.leech=Has a vampire touch
 
 tooltip.armour.points=Armor
 
-commands.weaponwield.usage=/weaponwield <itemSearch:current/name> <handWielding:both/right/left> <player or item name>
+commands.weaponwield.usage=/weaponwield current <hand> [player] OR /weaponwield name <hand> <item name> OR /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
 commands.weaponwield.set=Item successfully set as wieldable weapon
 
 death.attack.battlegearExtra.backstab=%1$s was stabbed from behind by %2$s

@@ -1,10 +1,14 @@
 package mods.battlegear2.api.weapons;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
+import cpw.mods.fml.common.event.FMLInterModComms;
+import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
@@ -17,53 +21,118 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *
  */
 public class WeaponRegistry {
-	private static Set<StackHolder> weapons = new HashSet<StackHolder>();
-	private static Set<StackHolder> mainHand = new HashSet<StackHolder>();
-	private static Set<StackHolder> offHand = new HashSet<StackHolder>();
+    private static Map<StackHolder, Wield> wielding = new HashMap<StackHolder, Wield>();
+    private static Set<Sensitivity> sensitivities;
+
+    /**
+     * Called by a {@link FMLInterModComms.IMCMessage} with key as type, and the {@link ItemStack} as value
+     * @param type the key from the message, accepted values (case don't matter) are: "dual", "mainhand", "offhand", "both", "right", "left"
+     * @param stack registered as either dual-wieldable, wieldable only in mainhand or in offhand
+     */
+    public static boolean setWeapon(String type, ItemStack stack){
+        if(type.equalsIgnoreCase("Dual")){
+            return Wield.BOTH.setWeapon(stack);
+        }else if(type.equalsIgnoreCase("MainHand")){
+            return Wield.RIGHT.setWeapon(stack);
+        }else if(type.equalsIgnoreCase("OffHand")) {
+            return Wield.LEFT.setWeapon(stack);
+        }else{
+            try{
+                return Wield.valueOf(type.toUpperCase()).setWeapon(stack);
+            }catch (IllegalArgumentException ignored){
+                return false;
+            }
+        }
+    }
+
 	/**
-	 * Called by a {@link IMCMessage} with "Dual" as key, and the {@link ItemStack} as value
-	 * @param stack registered as dual wieldable
+	 * Helper method to set an {@link ItemStack} as dual-wieldable, bypassing right-click method check
 	 */
 	public static void addDualWeapon(ItemStack stack) {
-        weapons.add(new StackHolder(stack));
-        mainHand.add(new StackHolder(stack));
-        offHand.add(new StackHolder(stack));
+        wielding.put(new StackHolder(stack), Wield.BOTH);
 	}
 	
 	/**
-	 * Called by a {@link IMCMessage} with "MainHand" as key, and the {@link ItemStack} as value
-	 * @param stack registered as wieldable only in main hand
+	 * Helper method to set an {@link ItemStack} as wieldable only in mainhand
 	 */
 	public static void addTwoHanded(ItemStack stack) {
-        weapons.add(new StackHolder(stack));
-        mainHand.add(new StackHolder(stack));
+        wielding.put(new StackHolder(stack), Wield.RIGHT);
 	}
 
 	/**
-	 * Called by a {@link IMCMessage} with "OffHand" as key, and the {@link ItemStack} as value
-	 * @param stack registered as wieldable only in offhand
+	 * Helper method to set an {@link ItemStack} as wieldable only in offhand, bypassing right-click method check
 	 */
 	public static void addOffhandWeapon(ItemStack stack) {
-        weapons.add(new StackHolder(stack));
-        offHand.add(new StackHolder(stack));
+        wielding.put(new StackHolder(stack), Wield.LEFT);
 	}
+
+    public static boolean addSensitivity(Sensitivity sensitivity){
+        if(sensitivities == null)
+            sensitivities = new HashSet<Sensitivity>(5);
+        return sensitivities.add(sensitivity);
+    }
+
+    public static boolean removeSensitivity(Sensitivity sensitivity){
+        return sensitivities != null && sensitivities.remove(sensitivity);
+    }
 	
 	public static boolean isWeapon(ItemStack stack) {
-		return weapons.contains(new StackHolder(stack));
+        StackHolder holder = new StackHolder(stack);
+        if(sensitivities==null)
+            return wielding.containsKey(holder);
+        else
+            return isWeapon(holder, sensitivities.iterator());
 	}
+
+    public static boolean isWeapon(StackHolder holder, Iterator<Sensitivity> itr){
+        final Predicate<StackHolder> filter = new StackFilter(holder, itr);
+        Map<StackHolder,Wield> tempMap = Maps.filterKeys(wielding, filter);
+        return !tempMap.isEmpty();
+    }
 	
 	public static boolean isMainHand(ItemStack stack) {
-		return mainHand.contains(new StackHolder(stack));
+        StackHolder holder = new StackHolder(stack);
+        if(sensitivities==null) {
+            Wield w = wielding.get(holder);
+            return w != null && w.isMainhand();
+        }else
+            return isMainHand(holder, sensitivities.iterator());
 	}
+
+    public static boolean isMainHand(StackHolder holder, Iterator<Sensitivity> itr){
+        final Predicate<StackHolder> filter = new StackFilter(holder, itr);
+        Map<StackHolder,Wield> tempMap = Maps.filterEntries(wielding, new Predicate<Map.Entry<StackHolder,Wield>>() {
+            @Override
+            public boolean apply(Map.Entry<StackHolder,Wield> input) {
+                return input.getValue().isMainhand() && filter.apply(input.getKey());
+            }
+        });
+        return !tempMap.isEmpty();
+    }
 	
 	public static boolean isOffHand(ItemStack stack) {
-		return offHand.contains(new StackHolder(stack));
+        StackHolder holder = new StackHolder(stack);
+        if(sensitivities==null) {
+            Wield w = wielding.get(holder);
+            return w != null && w.isOffhand();
+        }else
+            return isOffHand(holder, sensitivities.iterator());
 	}
-	
-	static class StackHolder{
-		private final ItemStack stack;
-        private int hash;
 
+    public static boolean isOffHand(StackHolder holder, Iterator<Sensitivity> itr){
+        final Predicate<StackHolder> filter = new StackFilter(holder, itr);
+        Map<StackHolder,Wield> tempMap = Maps.filterEntries(wielding, new Predicate<Map.Entry<StackHolder,Wield>>() {
+            @Override
+            public boolean apply(Map.Entry<StackHolder,Wield> input) {
+                return input.getValue().isOffhand() && filter.apply(input.getKey());
+            }
+        });
+        return !tempMap.isEmpty();
+    }
+	
+	static final class StackHolder{
+		final ItemStack stack;
+        private int hash;
 		public StackHolder(ItemStack stack){
 			this.stack = stack;
 		}
@@ -85,10 +154,107 @@ public class WeaponRegistry {
 			if (this == obj) {
 				return true;
 			}
-			if (obj == null) {
-				return false;
-			}
-			return obj instanceof StackHolder && ItemStack.areItemStacksEqual(stack, ((StackHolder) obj).stack);
+			return obj!=null && obj instanceof StackHolder && ItemStack.areItemStacksEqual(stack, ((StackHolder) obj).stack);
 		}
 	}
+
+    public enum Sensitivity{
+        ORE{
+            @Override
+            boolean diffWith(StackHolder holder1, StackHolder holder2) {
+                return !Objects.deepEquals(OreDictionary.getOreIDs(holder1.stack), OreDictionary.getOreIDs(holder2.stack));
+            }
+        },
+        TYPE{
+            @Override
+            boolean diffWith(StackHolder holder1, StackHolder holder2) {
+                return !holder1.stack.getItem().getClass().equals(holder2.stack.getItem().getClass());
+            }
+        },
+        ID{
+            @Override
+            boolean diffWith(StackHolder holder1, StackHolder holder2) {
+                return holder1.stack.getItem() != holder2.stack.getItem();
+            }
+        },
+        DAMAGE {
+            @Override
+            boolean diffWith(StackHolder holder1, StackHolder holder2) {
+                return holder1.stack.getItemDamage() != holder2.stack.getItemDamage();
+            }
+        },
+        NBT {
+            @Override
+            boolean diffWith(StackHolder holder1, StackHolder holder2) {
+                return (holder1.stack.hasTagCompound() && !holder1.stack.getTagCompound().equals(holder2.stack.getTagCompound()))
+                        ||(holder2.stack.hasTagCompound() && !holder2.stack.getTagCompound().equals(holder1.stack.getTagCompound()));
+            }
+        };
+
+        abstract boolean diffWith(StackHolder holder1, StackHolder holder2);
+    }
+
+    public enum Wield{
+        BOTH,
+        RIGHT{
+            @Override
+            public boolean setWeapon(ItemStack stack){
+                wielding.put(new StackHolder(stack), this);
+                return true;
+            }
+            @Override
+            public boolean isOffhand(){
+                return false;
+            }
+        },
+        LEFT{
+            @Override
+            public boolean isMainhand(){
+                return false;
+            }
+        };
+
+        public boolean isOffhand(){
+            return true;
+        }
+
+        public boolean isMainhand(){
+            return true;
+        }
+
+        public boolean setWeapon(ItemStack stack){
+            if(!BattlegearUtils.checkForRightClickFunction(stack)){
+                wielding.put(new StackHolder(stack), this);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    static class StackFilter implements Predicate<StackHolder>{
+        private final Iterator<Sensitivity> senses;
+        private final StackHolder toCompare;
+        public StackFilter(StackHolder compare, Iterator<Sensitivity> sensitivities){
+            this.toCompare = compare;
+            this.senses = sensitivities;
+        }
+
+        @Override
+        public boolean apply(StackHolder input) {
+            while(senses.hasNext()){
+                if(senses.next().diffWith(input, toCompare)){
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        public boolean equals(Object object){
+            if(this == object){
+                return true;
+            }
+            return object!=null && object instanceof StackFilter && this.toCompare.equals(((StackFilter) object).toCompare) && this.senses.equals(((StackFilter) object).senses);
+        }
+    }
 }

@@ -5,7 +5,6 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.network.FMLEventChannel;
-import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
@@ -95,7 +94,7 @@ public class Battlegear {
         if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
             proxy.tryUseTConstruct();
         }
-        if(Loader.isModLoaded("DynamicLights_thePlayer")){
+        if(Loader.isModLoaded("DynamicLights_thePlayer")){//Dynamic Light support for held light in left hand
             proxy.tryUseDynamicLight(null, null);
         }
     }
@@ -114,19 +113,8 @@ public class Battlegear {
                 if(message.isItemStackMessage()){
                     ItemStack stack = message.getItemStackValue();
                     if(stack!=null){
-                        if(message.key.equals("Dual")){
-                            if(!BattlegearUtils.checkForRightClickFunction(stack.getItem(), stack)){
-                                WeaponRegistry.addDualWeapon(stack);
-                                success = true;
-                            }
-                        }else if(message.key.equals("MainHand")){
-                            WeaponRegistry.addTwoHanded(stack);
+                        if(WeaponRegistry.setWeapon(message.key, stack)){
                             success = true;
-                        }else if(message.key.equals("OffHand")){
-                            if(!BattlegearUtils.checkForRightClickFunction(stack.getItem(), stack)){
-                                WeaponRegistry.addOffhandWeapon(stack);
-                                success = true;
-                            }
                         }else if(message.key.startsWith("Arrow:")){
                             Class<?> clazz = null;
                             try {
