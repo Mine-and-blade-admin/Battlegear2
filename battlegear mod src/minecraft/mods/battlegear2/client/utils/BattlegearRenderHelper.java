@@ -67,7 +67,7 @@ public class BattlegearRenderHelper {
         }
     }
 
-    public static void renderItemInFirstPerson(float frame, Minecraft mc, ItemRenderer itemRenderer, ItemStack itemToRender) {
+    public static void renderItemInFirstPerson(float frame, Minecraft mc, ItemRenderer itemRenderer) {
 
         if(dummyEntity == null){
             dummyEntity = new EntityChicken(mc.theWorld);
@@ -78,8 +78,7 @@ public class BattlegearRenderHelper {
 
         IOffhandRender offhandRender = (IOffhandRender)itemRenderer;
 
-        if (offhandRender.getItemToRender() != dummyStack &&
-                (itemToRender == null || BattlegearUtils.isOffHand(itemToRender))) {
+        if (offhandRender.getItemToRender() != dummyStack && BattlegearUtils.isOffHand(offhandRender.getItemToRender())) {
             float progress = offhandRender.getPrevEquippedProgress() + (offhandRender.getEquippedProgress() - offhandRender.getPrevEquippedProgress()) * frame;
 
             EntityClientPlayerMP player = mc.thePlayer;
@@ -151,7 +150,7 @@ public class BattlegearRenderHelper {
                     BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()));
 	        		GL11.glPopMatrix();
 
-	        	}else{
+	        	}else if(!(offhandRender.getItemToRender().getItem() instanceof IArrowContainer2)){
                     GL11.glPushMatrix();
                     var7 = 0.8F;
 
@@ -333,7 +332,7 @@ public class BattlegearRenderHelper {
 
         ItemStack offhand = ((IBattlePlayer)var1).isBattlemode() ? var1.inventory.getStackInSlot(var1.inventory.currentItem + 3) : dummyStack;
 
-        offhand = (mainhandToRender == null || BattlegearUtils.isMainHand(mainhandToRender, offhand)) ? offhand : dummyStack;
+        offhand = (BattlegearUtils.isMainHand(mainhandToRender, offhand)) ? offhand : dummyStack;
         var3 = var3 & (offhandRender.getEquippedItemSlot() == var1.inventory.currentItem + 3 && offhand == offhandRender.getItemToRender());
 
         float var4 = 0.4F;

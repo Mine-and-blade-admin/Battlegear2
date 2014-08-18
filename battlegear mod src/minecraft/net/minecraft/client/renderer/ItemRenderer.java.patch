@@ -32,7 +32,7 @@
  
          GL11.glDisable(GL12.GL_RESCALE_NORMAL);
          RenderHelper.disableStandardItemLighting();
-+        BattlegearRenderHelper.renderItemInFirstPerson(par1, mc, this, offHandItemToRender);//-----MB-Edited-----
++        BattlegearRenderHelper.renderItemInFirstPerson(par1, mc, this);//-----MB-Edited-----
      }
  
      /**

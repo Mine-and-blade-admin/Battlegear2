@@ -73,10 +73,8 @@ public class ItemRendererTransformer extends TransformerBase {
                 newList.add(new VarInsnNode(ALOAD, 0));
                 newList.add(new FieldInsnNode(GETFIELD, itemRendererClass, itemRendererMinecraftField, "L" + minecraftClass + ";"));
                 newList.add(new VarInsnNode(ALOAD, 0));
-                newList.add(new VarInsnNode(ALOAD, 0));
-                newList.add(new FieldInsnNode(GETFIELD, itemRendererClass, "offHandItemToRender", "L" + itemStackClass + ";"));
                 newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearRenderHelper", "renderItemInFirstPerson"
-                        , "(FL" + minecraftClass + ";L" + itemRendererClass + ";L" + itemStackClass + ";)V"));
+                        , "(FL" + minecraftClass + ";L" + itemRendererClass + ";)V"));
             }
 
             newList.add(insn);

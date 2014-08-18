@@ -6,6 +6,7 @@ import java.io.IOException;
 import cpw.mods.fml.common.eventhandler.EventBus;
 import mods.battlegear2.api.IAllowItem;
 import mods.battlegear2.api.IOffhandDual;
+import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.api.weapons.WeaponRegistry;
@@ -80,79 +81,56 @@ public class BattlegearUtils {
     public static boolean isWeapon(ItemStack main) {
         if (main.getItem() instanceof IBattlegearWeapon)
             return true;
+        else if(main.getMaxStackSize()==1 && main.getMaxDamage()>0 && !main.getHasSubtypes())
+            return main.getItemUseAction() == EnumAction.bow || main.getAttributeModifiers().containsKey(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
         else if(WeaponRegistry.isWeapon(main))
             return true;
-        else{
-            boolean valid = main.getMaxStackSize()==1 && main.getMaxDamage()>0 && !main.getHasSubtypes();
-            if(valid){
-                valid = main.getItem() instanceof ItemSword ||
-                        main.getItem() instanceof ItemBow ||
-                        main.getItem() instanceof ItemTool;
-            }
-            return valid;
+        else if(!checkForRightClickFunction(main)){//make sure there are no special functions for offhand/mainhand weapons
+            WeaponRegistry.addDualWeapon(main);
+            return true;
         }
+        return false;
     }
 
     public static boolean isMainHand(ItemStack main, ItemStack off) {
-    	if(main.getItem() instanceof IAllowItem)
-            return ((IAllowItem) main.getItem()).allowOffhand(main, off);
-        else if(WeaponRegistry.isMainHand(main))
+        if(main == null)
             return true;
-        else{
-            if(isWeapon(main)){
-                //make sure there are no special functions for offhand/mainhand weapons
-                boolean rightClick = checkForRightClickFunction(main.getItem(), main);
-                boolean offhand = !(main.getItem() instanceof ItemTool || main.getItem() instanceof ItemBow) && !rightClick;
-                boolean mainhand = !(main.getItem() instanceof ItemBow) && !rightClick;
-                if(mainhand){
-                    if(offhand)
-                        WeaponRegistry.addDualWeapon(main);
-                    else
-                        WeaponRegistry.addTwoHanded(main);
-                    return true;
-                }
-                if(offhand){
-                    WeaponRegistry.addOffhandWeapon(main);
-                }
-            }
-            return false;
-        }
+    	else if(main.getItem() instanceof IAllowItem)
+            return ((IAllowItem) main.getItem()).allowOffhand(main, off);
+        else if(main.getItem() instanceof ItemBow)
+            return (off == null || off.getItem() instanceof IArrowContainer2);
+        else if(main.getItem() instanceof ItemSword || main.getItem() instanceof ItemTool)
+            return true;
+        else if(isWeapon(main))
+            return main.getItemUseAction() == EnumAction.bow || WeaponRegistry.isMainHand(main);
+        return false;
     }
 
     public static boolean isOffHand(ItemStack off) {
-    	if(off.getItem() instanceof IOffhandDual)
+        if(off == null)
+            return true;
+    	else if(off.getItem() instanceof IOffhandDual)
             return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);
-        else if(off.getItem() instanceof IShield || off.getItem() instanceof ItemBlock)
+        else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || off.getItem() instanceof ItemBlock || off.getItem() instanceof ItemSword)
             return true;
-        else if(WeaponRegistry.isOffHand(off))
-            return true;
-        else{
-            if(isWeapon(off)){
-                //make sure there are no special functions for offhand/mainhand weapons
-                boolean rightClick = checkForRightClickFunction(off.getItem(), off);
-                boolean offhand = !(off.getItem() instanceof ItemTool || off.getItem() instanceof ItemBow) && !rightClick;
-                boolean mainhand = !(off.getItem() instanceof ItemBow) && !rightClick;
-                if(offhand){
-                    if(mainhand)
-                        WeaponRegistry.addDualWeapon(off);
-                    else
-                        WeaponRegistry.addOffhandWeapon(off);
-                    return true;
-                }
-                if(mainhand){
-                    WeaponRegistry.addTwoHanded(off);
-                }
-            }
+        else if(off.getItem() instanceof ItemBow || off.getItem() instanceof ItemTool)
             return false;
-        }
+        else if(isWeapon(off))
+            return off.getItemUseAction() != EnumAction.bow && WeaponRegistry.isOffHand(off);
+        return false;
+    }
+
+    @Deprecated//See method below
+    public static boolean checkForRightClickFunction(Item item, ItemStack stack){
+        return checkForRightClickFunction(stack);
     }
 
     @SuppressWarnings("unchecked")
-    public static boolean checkForRightClickFunction(Item item, ItemStack stack) {
+    public static boolean checkForRightClickFunction(ItemStack stack) {
         try {
-            if (item.getItemUseAction(stack) == EnumAction.block || item.getItemUseAction(stack) == EnumAction.none) {
+            if (stack.getItemUseAction() == EnumAction.block || stack.getItemUseAction() == EnumAction.none) {
 
-                Class c = item.getClass();
+                Class c = stack.getItem().getClass();
                 while (!(c.equals(Item.class) || c.equals(ItemTool.class) || c.equals(ItemSword.class))) {
                     try {
                         try {

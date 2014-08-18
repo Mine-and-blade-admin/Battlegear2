@@ -72,7 +72,7 @@ public class BowHookContainerClass2 {
 	        }
         }
 	    if(canDrawBow){
-            event.entityPlayer.setItemInUse(event.result, event.result.getItem().getMaxItemUseDuration(event.result)-EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId,event.result)*20000);
+            event.entityPlayer.setItemInUse(event.result, event.result.getMaxItemUseDuration()-EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId,event.result)*20000);
             event.setCanceled(true);
 	    }
     }

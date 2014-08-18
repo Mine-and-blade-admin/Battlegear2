@@ -87,7 +87,7 @@ public class BattlemodeHookContainerClass {
     }
 
     @SubscribeEvent
-    public void playerInterect(PlayerInteractEvent event) {
+    public void playerInteract(PlayerInteractEvent event) {
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
             event.entityPlayer.isSwingInProgress = false;
@@ -159,6 +159,10 @@ public class BattlemodeHookContainerClass {
                 }
             }
         }
+        if(event.mainHand !=null && event.mainHand.getItem() instanceof ItemBow && event.parent.getClass().equals(PlayerInteractEvent.class)){
+            event.setCanceled(true);
+            event.setCancelParentEvent(false);
+        }
     }
 
     @SubscribeEvent
@@ -170,7 +174,7 @@ public class BattlemodeHookContainerClass {
         } else if (((IBattlePlayer) event.entityPlayer).isBattlemode()) {
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = ((InventoryPlayerBattle)event.entityPlayer.inventory).getCurrentOffhandWeapon();
-            if(mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem, offhandItem)){
+            if(BattlegearUtils.isMainHand(mainHandItem, offhandItem)){
                 PlayerEventChild.OffhandAttackEvent offAttackEvent = new PlayerEventChild.OffhandAttackEvent(event, mainHandItem, offhandItem);
                 if(!MinecraftForge.EVENT_BUS.post(offAttackEvent)){
                     if (offAttackEvent.swingOffhand){
@@ -200,6 +204,10 @@ public class BattlemodeHookContainerClass {
             }else if(event.offHand.getItem() instanceof IArrowContainer2){
                 event.shouldAttack = false;
             }
+        }
+        if(event.mainHand !=null && event.mainHand.getItem() instanceof ItemBow){
+            event.swingOffhand = false;
+            event.shouldAttack = false;
         }
     }
 
