@@ -13,6 +13,7 @@ import mods.battlegear2.recipies.DyeRecipie;
 import mods.battlegear2.recipies.QuiverRecipie2;
 import mods.battlegear2.recipies.ShieldRemoveArrowRecipie;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item.ToolMaterial;
@@ -20,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -71,7 +73,7 @@ public class BattlegearConfig {
             }
         }
         comments[0] = sb.toString();
-        disabledItems = config.get(config.CATEGORY_GENERAL, "Disabled Items", new String[0], comments[0]).getStringList();
+        disabledItems = config.get(config.CATEGORY_GENERAL, "Disabled Items", new String[0], comments[0]).setRequiresMcRestart(true).getStringList();
         Arrays.sort(disabledItems);
 
         if(Arrays.binarySearch(disabledItems, itemNames[0]) < 0){
@@ -90,10 +92,23 @@ public class BattlegearConfig {
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", false).getBoolean(false);
         enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", true).getBoolean(true);
         
-        for(int i=0; i<enchantsName.length; i++){
-        	enchantsId[i] = config.get("EnchantmentsID", enchantsName[i], enchantsId[i]).getInt();
+        for(int i = 0; i<enchantsName.length; i++){
+            Property props = config.get("EnchantmentsID", enchantsName[i], enchantsId[i]);
+            props.setRequiresMcRestart(true).setMaxValue(Enchantment.enchantmentsList.length-1);
+        	enchantsId[i] = props.getInt();
+            if(Enchantment.enchantmentsList[enchantsId[i]]!=null){
+                Battlegear.logger.warn("Found conflicting enchantment id for "+enchantsName[i]+ " with assigned id:"+enchantsId);
+                for(int j = enchantsId[i]; j<Enchantment.enchantmentsList.length; j++) {
+                    if (Enchantment.enchantmentsList[j] == null) {
+                        enchantsId[i] = j;
+                        props.set(j);
+                        Battlegear.logger.warn("Assigned new id for "+enchantsName[i]+ ":" + j);
+                        break;
+                    }
+                }
+            }
         }
-        config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.");
+        config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.").setRequiresMcRestart(true);
         
         if(Arrays.binarySearch(disabledItems, itemNames[2]) < 0){
         	quiver = new ItemQuiver().setUnlocalizedName(MODID+itemNames[2]).setTextureName(MODID+"quiver/"+itemNames[2]).setCreativeTab(customTab);
@@ -106,11 +121,11 @@ public class BattlegearConfig {
 
         //default 10% for everything but ender (which is 0%)
         for(int i = 0; i < ItemMBArrow.names.length; i++){
-            skeletonArrowSpawnRate[i] = config.get(category, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0).getDouble(i!=1?0.1F:0);
+            skeletonArrowSpawnRate[i] = config.get(category, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0, "", 0, 1).setRequiresMcRestart(true).getDouble(i!=1?0.1F:0);
         }
         
         sb = new StringBuffer();
-        sb.append("This will disable the crafting recipie for the provided item/blocks.\n");
+        sb.append("This will disable the crafting recipe for the provided item/blocks.\n");
         sb.append("It should be noted that this WILL NOT remove the item from the game, it will only disable the recipe.\n");
         sb.append("In this way the items may still be obtained through creative mode and cheats, but playes will be unable to craft them.\n");
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'. The valid values are: \n");
@@ -144,7 +159,7 @@ public class BattlegearConfig {
             sb.deleteCharAt(last_comma);
         }
         comments[1] = sb.toString();
-        disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], comments[1]).getStringList();
+        disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], comments[1]).setRequiresMcRestart(true).getStringList();
         Arrays.sort(disabledRecipies);
 
         category = "Rendering";
