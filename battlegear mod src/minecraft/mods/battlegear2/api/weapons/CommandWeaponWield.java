@@ -1,5 +1,7 @@
 package mods.battlegear2.api.weapons;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -26,7 +28,7 @@ public class CommandWeaponWield extends CommandBase{
     /**
      * Selected sensitivities for the WeaponRegistry comparison algorithm
      */
-    private Set<String> sensitivities;
+    private Set<String> sensitivities = Sets.newHashSet("ID", "DAMAGE", "NBT");
     @Override
     public String getCommandName() {
         return "weaponwield";
@@ -55,12 +57,7 @@ public class CommandWeaponWield extends CommandBase{
                     else
                         throw new PlayerNotFoundException();
                 }else if(var2[0].equals(searchModes[2]) && var2[1].equals(operations[2])){//sensitivity get
-                    if(sensitivities==null){
-                        func_152373_a(var1, this, "commands.weaponwield.sensitivity.default");
-                    }else {
-                        func_152373_a(var1, this, "commands.weaponwield.sensitivity");
-                        var1.addChatMessage(new ChatComponentText(sensitivities.toString()));
-                    }
+                    func_152373_a(var1, this, "commands.weaponwield.sensitivity", sensitivities);
                     return;
                 }
             }else if(var2.length == 3){
@@ -72,29 +69,24 @@ public class CommandWeaponWield extends CommandBase{
                         itemStack = GameRegistry.findItemStack(splits[0], splits[1], 1);
                 }else if(var2[0].equals(searchModes[2])){//sensitivity
                     if(var2[1].equals(operations[0])){//add
-                        if(sensitivities==null){
-                            sensitivities = new HashSet<String>(5);
-                        }
                         try {
                             WeaponRegistry.Sensitivity sens = WeaponRegistry.Sensitivity.valueOf(var2[2].toUpperCase(Locale.ENGLISH));
                             if (sensitivities.add(sens.name()) && WeaponRegistry.addSensitivity(sens)) {
-                                func_152373_a(var1, this, "commands.weaponwield.sensitivity.added");
+                                func_152373_a(var1, this, "commands.weaponwield.sensitivity.added", sens);
                                 var1.addChatMessage(new ChatComponentText(sensitivities.toString()));
                                 return;
                             }
                         } catch (IllegalArgumentException t) {
                         }
                     }else if(var2[1].equals(operations[1])){//remove
-                        if(sensitivities!=null){
-                            try {
-                                WeaponRegistry.Sensitivity sens = WeaponRegistry.Sensitivity.valueOf(var2[2].toUpperCase(Locale.ENGLISH));
-                                if (sensitivities.remove(sens.name()) && WeaponRegistry.removeSensitivity(sens)) {
-                                    func_152373_a(var1, this, "commands.weaponwield.sensitivity.removed");
-                                    var1.addChatMessage(new ChatComponentText(sensitivities.toString()));
-                                    return;
-                                }
-                            }catch (IllegalArgumentException t){}
-                        }
+                        try {
+                            WeaponRegistry.Sensitivity sens = WeaponRegistry.Sensitivity.valueOf(var2[2].toUpperCase(Locale.ENGLISH));
+                            if (sensitivities.remove(sens.name()) && WeaponRegistry.removeSensitivity(sens)) {
+                                func_152373_a(var1, this, "commands.weaponwield.sensitivity.removed", sens);
+                                var1.addChatMessage(new ChatComponentText(sensitivities.toString()));
+                                return;
+                            }
+                        }catch (IllegalArgumentException t){}
                     }
                 }
             }
@@ -115,7 +107,7 @@ public class CommandWeaponWield extends CommandBase{
             return getListOfStringsMatchingLastWord(par2ArrayOfStr, searchModes);
         else if(par2ArrayOfStr.length == 2) {
             if(par2ArrayOfStr[0].equals(searchModes[0])||par2ArrayOfStr[0].equals(searchModes[1]))
-                return getListOfStringsMatchingLastWord(par2ArrayOfStr, getNames(WeaponRegistry.Wield.values()));
+                return getListOfStringsMatchingLastWord(par2ArrayOfStr, getNames(WeaponRegistry.Wield.values(), true));
             else if(par2ArrayOfStr[0].equals(searchModes[2]))//sensitivity
                 return getListOfStringsMatchingLastWord(par2ArrayOfStr, operations);
         }
@@ -124,20 +116,21 @@ public class CommandWeaponWield extends CommandBase{
                 return getListOfStringsMatchingLastWord(par2ArrayOfStr, MinecraftServer.getServer().getAllUsernames());
             else if (par2ArrayOfStr[0].equals(searchModes[2])) {//sensitivity
                 if(par2ArrayOfStr[1].equals(operations[0]))//add
-                    return getListOfStringsMatchingLastWord(par2ArrayOfStr, getNames(WeaponRegistry.Sensitivity.values()));
+                    return getListOfStringsFromIterableMatchingLastWord(par2ArrayOfStr, Sets.difference(ImmutableSet.copyOf(getNames(WeaponRegistry.Sensitivity.values(), false)), sensitivities));
                 else if(par2ArrayOfStr[1].equals(operations[1])) {//remove
-                    if (sensitivities != null)
-                        return getListOfStringsFromIterableMatchingLastWord(par2ArrayOfStr, sensitivities);
+                    return getListOfStringsFromIterableMatchingLastWord(par2ArrayOfStr, sensitivities);
                 }
             }
         }
         return null;
     }
 
-    private String[] getNames(Object[] values) {
+    private String[] getNames(Object[] values, boolean lowerCase) {
         String[] names = new String[values.length];
         for(int i = 0; i<values.length; i++) {
-            names[i] = values[i].toString().toLowerCase(Locale.ENGLISH);
+            names[i] = values[i].toString();
+            if(lowerCase)
+                names[i] = names[i].toLowerCase(Locale.ENGLISH);
         }
         return names;
     }

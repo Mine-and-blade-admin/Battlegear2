@@ -4,7 +4,11 @@ import java.util.*;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import cpw.mods.fml.common.event.FMLInterModComms;
+import mods.battlegear2.api.ISensible;
+import mods.battlegear2.api.StackHolder;
 import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -22,7 +26,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class WeaponRegistry {
     private static Map<StackHolder, Wield> wielding = new HashMap<StackHolder, Wield>();
-    private static Set<Sensitivity> sensitivities;
+    private static Set sensitivities = Sets.newHashSet(Sensitivity.ID, Sensitivity.DAMAGE, Sensitivity.NBT);
 
     /**
      * Called by a {@link FMLInterModComms.IMCMessage} with key as type, and the {@link ItemStack} as value
@@ -66,14 +70,12 @@ public class WeaponRegistry {
         wielding.put(new StackHolder(stack), Wield.LEFT);
 	}
 
-    public static boolean addSensitivity(Sensitivity sensitivity){
-        if(sensitivities == null)
-            sensitivities = new HashSet<Sensitivity>(5);
+    public static boolean addSensitivity(ISensible sensitivity){
         return sensitivities.add(sensitivity);
     }
 
-    public static boolean removeSensitivity(Sensitivity sensitivity){
-        return sensitivities != null && sensitivities.remove(sensitivity);
+    public static boolean removeSensitivity(ISensible sensitivity){
+        return sensitivities.remove(sensitivity);
     }
 	
 	public static boolean isWeapon(ItemStack stack) {
@@ -84,7 +86,7 @@ public class WeaponRegistry {
             return isWeapon(holder, sensitivities.iterator());
 	}
 
-    public static boolean isWeapon(StackHolder holder, Iterator<Sensitivity> itr){
+    public static boolean isWeapon(StackHolder holder, Iterator<ISensible> itr){
         final Predicate<StackHolder> filter = new StackFilter(holder, itr);
         Map<StackHolder,Wield> tempMap = Maps.filterKeys(wielding, filter);
         return !tempMap.isEmpty();
@@ -99,7 +101,7 @@ public class WeaponRegistry {
             return isMainHand(holder, sensitivities.iterator());
 	}
 
-    public static boolean isMainHand(StackHolder holder, Iterator<Sensitivity> itr){
+    public static boolean isMainHand(StackHolder holder, Iterator<ISensible> itr){
         final Predicate<StackHolder> filter = new StackFilter(holder, itr);
         Map<StackHolder,Wield> tempMap = Maps.filterEntries(wielding, new Predicate<Map.Entry<StackHolder,Wield>>() {
             @Override
@@ -119,7 +121,7 @@ public class WeaponRegistry {
             return isOffHand(holder, sensitivities.iterator());
 	}
 
-    public static boolean isOffHand(StackHolder holder, Iterator<Sensitivity> itr){
+    public static boolean isOffHand(StackHolder holder, Iterator<ISensible> itr){
         final Predicate<StackHolder> filter = new StackFilter(holder, itr);
         Map<StackHolder,Wield> tempMap = Maps.filterEntries(wielding, new Predicate<Map.Entry<StackHolder,Wield>>() {
             @Override
@@ -129,69 +131,42 @@ public class WeaponRegistry {
         });
         return !tempMap.isEmpty();
     }
-	
-	static final class StackHolder{
-		final ItemStack stack;
-        private int hash;
-		public StackHolder(ItemStack stack){
-			this.stack = stack;
-		}
-		
-		@Override
-		public int hashCode() {
-            int init = 17, mult = 37;
-            if(hash==0) {
-                if(stack==null)
-                    hash = new HashCodeBuilder(init, mult).toHashCode();
-                else
-                    hash = new HashCodeBuilder(init, mult).append(Item.getIdFromItem(stack.getItem())).append(stack.getItemDamage()).append(stack.getTagCompound()).toHashCode();
-            }
-            return hash;
-		}
 
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			return obj!=null && obj instanceof StackHolder && ItemStack.areItemStacksEqual(stack, ((StackHolder) obj).stack);
-		}
-	}
-
-    public enum Sensitivity{
+    public enum Sensitivity implements ISensible{
         ORE{
             @Override
-            boolean diffWith(StackHolder holder1, StackHolder holder2) {
+            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
                 return !Objects.deepEquals(OreDictionary.getOreIDs(holder1.stack), OreDictionary.getOreIDs(holder2.stack));
             }
         },
         TYPE{
             @Override
-            boolean diffWith(StackHolder holder1, StackHolder holder2) {
+            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
                 return !holder1.stack.getItem().getClass().equals(holder2.stack.getItem().getClass());
             }
         },
         ID{
             @Override
-            boolean diffWith(StackHolder holder1, StackHolder holder2) {
+            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
                 return holder1.stack.getItem() != holder2.stack.getItem();
             }
         },
         DAMAGE {
             @Override
-            boolean diffWith(StackHolder holder1, StackHolder holder2) {
+            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
                 return holder1.stack.getItemDamage() != holder2.stack.getItemDamage();
             }
         },
         NBT {
             @Override
-            boolean diffWith(StackHolder holder1, StackHolder holder2) {
-                return (holder1.stack.hasTagCompound() && !holder1.stack.getTagCompound().equals(holder2.stack.getTagCompound()))
-                        ||(holder2.stack.hasTagCompound() && !holder2.stack.getTagCompound().equals(holder1.stack.getTagCompound()));
+            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
+                if(holder1.stack.hasTagCompound())
+                    return !holder1.stack.getTagCompound().equals(holder2.stack.getTagCompound());
+                else if(holder1.stack.hasTagCompound())
+                    return true;
+                return false;
             }
         };
-
-        abstract boolean diffWith(StackHolder holder1, StackHolder holder2);
     }
 
     public enum Wield{
@@ -232,9 +207,9 @@ public class WeaponRegistry {
     }
 
     static class StackFilter implements Predicate<StackHolder>{
-        private final Iterator<Sensitivity> senses;
+        private final Iterator<ISensible> senses;
         private final StackHolder toCompare;
-        public StackFilter(StackHolder compare, Iterator<Sensitivity> sensitivities){
+        public StackFilter(StackHolder compare, Iterator<ISensible> sensitivities){
             this.toCompare = compare;
             this.senses = sensitivities;
         }
