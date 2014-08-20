@@ -2,6 +2,7 @@ package mods.battlegear2.utils;
 
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.ItemBlockFlagPole;
@@ -20,6 +21,7 @@ import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.oredict.RecipeSorter;
@@ -115,6 +117,9 @@ public class BattlegearConfig {
         }
         if(Arrays.binarySearch(disabledItems, itemNames[9]) < 0){
         	MbArrows = new ItemMBArrow().setUnlocalizedName(MODID+itemNames[9]).setTextureName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
+            for(int i = 0; i<ItemMBArrow.arrows.length; i++){
+                QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows, i, ItemMBArrow.arrows[i]);
+            }
         }
         String category = "Skeleton CustomArrow Spawn Rate";
         config.addCustomCategoryComment(category, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
@@ -398,6 +403,11 @@ public class BattlegearConfig {
         }
     }
 
+    /**
+     * Remap old item names for consistency
+     * @param mapping receive from the event
+     * @return true if remap was successful
+     */
     public static boolean remap(FMLMissingMappingsEvent.MissingMapping mapping) {
         if(mapping.type == GameRegistry.Type.ITEM){
             if(mapping.name.contains("item."+MODID)){
@@ -435,6 +445,57 @@ public class BattlegearConfig {
                     mapping.remap(banner);
                 }
                 return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Sets a new item instance from a {@link NBTTagCompound}, used in received IMCMessage
+     * @param nbtValue [Item:Dagger/Mace/Spear/Waraxe; Material (ToolMaterial name); Name (registration name); other values]
+     * @return true if an item was successfully initiated
+     */
+    public static boolean initItemFromNBT(NBTTagCompound nbtValue) {
+        if(nbtValue.hasKey("Item") && nbtValue.hasKey("Material") && nbtValue.hasKey("Name")){
+            String type = nbtValue.getString("Item");
+            String name = nbtValue.getString("Name");
+            if(type.equals("")||name.equals(""))
+                return false;
+            try {
+                Item.ToolMaterial material = Item.ToolMaterial.valueOf(nbtValue.getString("Material").toUpperCase());
+                Item item = null;
+                if(type.equalsIgnoreCase("Dagger")){
+                    float hitTime = nbtValue.getFloat("Time");
+                    float reach = nbtValue.getFloat("Reach");
+                    item = new ItemDagger(material, name, hitTime, reach);
+                }else if(type.equalsIgnoreCase("Mace")){
+                    float stun = nbtValue.getFloat("Stun");
+                    item = new ItemMace(material, name, stun);
+                }else if(type.equalsIgnoreCase("Spear")){
+                    int mount = nbtValue.getInteger("Mount");
+                    float reach = nbtValue.getFloat("Reach");
+                    item = new ItemSpear(material, name, mount, reach);
+                }else if(type.equalsIgnoreCase("Waraxe")){
+                    int penetrate = nbtValue.getInteger("Penetration");
+                    item = new ItemWaraxe(material, name, penetrate);
+                }
+                if(item!=null) {//Optional tags for additional variations
+                    if (nbtValue.hasKey("UnlocalizedName")) {
+                        item.setUnlocalizedName(nbtValue.getString("UnlocalizedName"));
+                    }
+                    if(nbtValue.hasKey("TextureName")){
+                        item.setTextureName(nbtValue.getString("TextureName"));
+                    }
+                    if(nbtValue.hasKey("MaxDamage")){
+                        item.setMaxDamage(nbtValue.getInteger("MaxDamage"));
+                    }
+                    if(nbtValue.hasKey("StackSize")){
+                        item.setMaxStackSize(nbtValue.getInteger("StackSize"));
+                    }
+                    return true;
+                }
+            }catch (IllegalArgumentException e){
+                return false;
             }
         }
         return false;

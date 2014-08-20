@@ -12,7 +12,6 @@ import mods.battlegear2.api.weapons.CommandWeaponWield;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.api.core.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
-import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.packet.BattlegearPacketHandeler;
 import mods.battlegear2.utils.*;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -74,11 +73,6 @@ public class Battlegear {
     public void init(FMLInitializationEvent event) {
         BattlegearConfig.registerRecipes();
         QuiverArrowRegistry.addArrowToRegistry(Items.arrow, EntityArrow.class);
-        if(BattlegearConfig.MbArrows!=null){
-	        for(int i = 0; i<ItemMBArrow.arrows.length; i++){
-	        	QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows, i, ItemMBArrow.arrows[i]);
-	        }
-        }
         packetHandler = new BattlegearPacketHandeler();
         FMLEventChannel eventChannel;
         for(String channel:packetHandler.map.keySet()){
@@ -142,6 +136,8 @@ public class Battlegear {
                         }
                     } catch (Exception logged) {
                     }
+                }else if(message.isNBTMessage() && BattlegearConfig.initItemFromNBT(message.getNBTValue())){
+                    success = true;
                 }
                 if(success){
                     logger.trace("Mine&Blade:Battlegear2 successfully managed message from "+ message.getSender());
