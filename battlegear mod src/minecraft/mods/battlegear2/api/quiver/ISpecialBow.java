@@ -31,7 +31,7 @@ public interface ISpecialBow {
 	 * circumventing this method entirely.
 	 * @param arrow	Perhaps unnecessary?
 	 * @return	A list of fire handlers to be used by {@link QuiverArrowRegistry#getArrowType};
-	 *			Returning null will cause the default fire handlers are used.
+	 *			Returning null will cause the default fire handlers to be used.
 	 *			Returning an empty list will prevent any fire handlers from processing, effectively rendering the bow useless.
 	 */
 	public List<IArrowFireHandler> getFireHandlers(ItemStack arrow, ItemStack bow, EntityPlayer player);
@@ -44,9 +44,9 @@ public interface ISpecialBow {
 	 * @param bow		The ISpecialBow stack attempting to be nocked
 	 * @param player	The player attempting to use the bow
 	 * @return	Result.DEFAULT to use generic nocking behavior from BG2;
-	 * 			Result.DENY to prevent the bow from being nocked;
-	 * 			Result.ALLOW to allow the bow to be nocked, ignoring the
-	 * 				default BG2 nocking behavior.
+	 * 		Result.DENY to prevent the bow from being nocked;
+	 * 		Result.ALLOW to allow the bow to be nocked, ignoring the
+	 * 			default BG2 nocking algorithms.
 	 */
 	public Result nockArrow(ItemStack bow, EntityPlayer player);
 
