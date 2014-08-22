@@ -33,8 +33,8 @@ public class BattlegearAnimationPacket extends AbstractMBPacket {
         if (username != null && animation != null) {
             EntityPlayer entity = player.worldObj.getPlayerEntityByName(username);
             if(entity!=null){
-                if (!player.worldObj.isRemote) {
-                    ((WorldServer) player.worldObj).getEntityTracker().func_151247_a(entity, this.generatePacket());
+                if (entity.worldObj instanceof WorldServer) {
+                    ((WorldServer) entity.worldObj).getEntityTracker().func_151247_a(entity, this.generatePacket());
                 }
                 animation.processAnimation((IBattlePlayer)entity);
             }

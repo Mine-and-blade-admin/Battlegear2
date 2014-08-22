@@ -25,12 +25,13 @@ public class BattlegearShieldBlockPacket extends AbstractMBPacket {
         block = in.readBoolean();
         username = ByteBufUtils.readUTF8String(in);
         if (username != null) {
-            EntityPlayer entity = player.worldObj
-                    .getPlayerEntityByName(username);
-            if (player.worldObj instanceof WorldServer) {
-                ((WorldServer) player.worldObj).getEntityTracker().func_151247_a(entity, this.generatePacket());
+            EntityPlayer entity = player.worldObj.getPlayerEntityByName(username);
+            if(entity!=null) {
+                if (entity.worldObj instanceof WorldServer) {
+                    ((WorldServer) entity.worldObj).getEntityTracker().func_151247_a(entity, this.generatePacket());
+                }
+                ((IBattlePlayer) entity).setBlockingWithShield(block);
             }
-            ((IBattlePlayer) entity).setBlockingWithShield(block);
         }
 	}
 

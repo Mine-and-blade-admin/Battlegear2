@@ -255,7 +255,6 @@ public class GuiFlagDesigner extends GuiScreen {
         tools[1] = new RectangleTool();
         tools[2] = new CircleTool();
         tools[3] = new FloodFillTool();
-// tools[4] = new EyeDropperTool();
         tools[4] = new TextTool();
         tools[5] = new EyeDropperTool();
         cursors = new org.lwjgl.input.Cursor[tools.length+1];
