@@ -6,6 +6,8 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.IQuiverSelection;
+import mods.battlegear2.api.quiver.ISpecialArrow;
+import mods.battlegear2.api.quiver.ISpecialBow;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
@@ -58,23 +60,36 @@ public class BowHookContainerClass2 {
 
     @SubscribeEvent
     public void onBowUse(ArrowNockEvent event){
-    	boolean canDrawBow = false;
-        if(event.entityPlayer.capabilities.isCreativeMode
-                || event.entityPlayer.inventory.hasItem(Items.arrow)){
-        	canDrawBow = true;
+    	// change to use Result: DENY (cannot fire), DEFAULT (attempt standard nocking algorithm), ALLOW (nock without further checks)
+    	Result canDrawBow = Result.DEFAULT;
+    	// insert special bow check here:
+    	if (event.result.getItem() instanceof ISpecialBow) {
+    		canDrawBow = ((ISpecialBow) event.result.getItem()).nockArrow(event.result, event.entityPlayer);
+    	}
+
+    	// Special bow did not determine a result, so use standard algorithms instead:
+    	if(canDrawBow == Result.DEFAULT && (event.entityPlayer.capabilities.isCreativeMode
+    		|| event.entityPlayer.inventory.hasItem(Items.arrow))) {
+        	canDrawBow = Result.ALLOW;
         }
-        if(!canDrawBow){
-        	ItemStack quiver = QuiverArrowRegistry.getArrowContainer(event.result, event.entityPlayer);
-	        if(quiver != null &&
-	                ((IArrowContainer2)quiver.getItem()).
-	                        hasArrowFor(quiver, event.result, event.entityPlayer, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver))){
-	        	canDrawBow = true;
+        // unless already denied, always check the following so ISpecialArrow may deny the nock event
+        if (canDrawBow != Result.DENY) {
+        	ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(event.result, event.entityPlayer);
+		if (quiverStack != null) {
+	        	IArrowContainer2 quiver = (IArrowContainer2) quiverStack.getItem();
+	        	ItemStack arrow = quiver.getStackInSlot(quiverStack, quiver.getSelectedSlot(quiverStack));
+	        	if (arrow != null && arrow.getItem() instanceof ISpecialArrow) {
+	        		canDrawBow = (((ISpecialArrow) arrow.getItem()).isUsableBy(arrow, event.result, event.entityPlayer) ? Result.ALLOW : Result.DENY);
+	        	} else if (quiver.hasArrowFor(quiverStack, event.result, event.entityPlayer, quiver.getSelectedSlot(quiverStack))) {
+	        		canDrawBow = Result.ALLOW;
+	        	}
 	        }
         }
-	    if(canDrawBow){
-            event.entityPlayer.setItemInUse(event.result, event.result.getItem().getMaxItemUseDuration(event.result)-EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId,event.result)*20000);
-            event.setCanceled(true);
-	    }
+        // only nock if allowed
+	if(canDrawBow == Result.ALLOW) {
+		event.entityPlayer.setItemInUse(event.result, event.result.getItem().getMaxItemUseDuration(event.result)-EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId,event.result)*20000);
+		event.setCanceled(true);
+	}
     }
 
     /**

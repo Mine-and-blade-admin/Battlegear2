@@ -107,7 +107,16 @@ public class QuiverArrowRegistry {
      */
     public static EntityArrow getArrowType(ItemStack arrow, World world, EntityPlayer player, float charge){
         EntityArrow result;
-        for(IArrowFireHandler handler:fireHandlers){
+        // allows customization of fire handler list for custom bows
+	ItemStack bow = player.getHeldItem();
+	List<IArrowFireHandler> handlers = fireHandlers;
+	if (bow != null && bow.getItem() instanceof ISpecialBow) {
+		handlers = ((ISpecialBow) bow.getItem()).getFireHandlers(arrow, bow, player);
+        	if (handlers == null) {
+        		handlers = fireHandlers;
+        	}
+        }
+        for(IArrowFireHandler handler : handlers){
             if(handler.canFireArrow(arrow, world, player, charge)){
                 result = handler.getFiredArrow(arrow, world, player, charge);
                 if(result!=null){
