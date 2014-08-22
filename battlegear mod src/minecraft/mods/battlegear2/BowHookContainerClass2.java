@@ -75,7 +75,7 @@ public class BowHookContainerClass2 {
 	        if(quiver != null &&
 	                ((IArrowContainer2)quiver.getItem()).
 	                        hasArrowFor(quiver, event.result, event.entityPlayer, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver))){
-	        	canDrawBow = true;
+	        	canDrawBow = Result.ALLOW;
 	        }
         }
         // only nock if allowed
