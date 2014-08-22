@@ -6,6 +6,7 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.IQuiverSelection;
+import mods.battlegear2.api.quiver.ISpecialArrow;
 import mods.battlegear2.api.quiver.ISpecialBow;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.enchantments.BaseEnchantment;
@@ -71,12 +72,17 @@ public class BowHookContainerClass2 {
     		|| event.entityPlayer.inventory.hasItem(Items.arrow))) {
         	canDrawBow = Result.ALLOW;
         }
-        if(canDrawBow == Result.DEFAULT){
-        	ItemStack quiver = QuiverArrowRegistry.getArrowContainer(event.result, event.entityPlayer);
-	        if(quiver != null &&
-	                ((IArrowContainer2)quiver.getItem()).
-	                        hasArrowFor(quiver, event.result, event.entityPlayer, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver))){
-	        	canDrawBow = Result.ALLOW;
+        // unless already denied, always check the following so ISpecialArrow may deny the nock event
+        if (canDrawBow != Result.DENY) {
+        	ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(event.result, event.entityPlayer);
+		if (quiverStack != null) {
+	        	IArrowContainer2 quiver = (IArrowContainer2) quiverStack.getItem();
+	        	ItemStack arrow = quiver.getStackInSlot(quiverStack, quiver.getSelectedSlot(quiverStack));
+	        	if (arrow != null && arrow.getItem() instanceof ISpecialArrow) {
+	        		canDrawBow = (((ISpecialArrow) arrow.getItem()).isUsableBy(arrow, event.result, event.entityPlayer) ? Result.ALLOW : Result.DENY);
+	        	} else if (quiver.hasArrowFor(quiverStack, event.result, event.entityPlayer, quiver.getSelectedSlot(quiverStack))) {
+	        		canDrawBow = Result.ALLOW;
+	        	}
 	        }
         }
         // only nock if allowed
