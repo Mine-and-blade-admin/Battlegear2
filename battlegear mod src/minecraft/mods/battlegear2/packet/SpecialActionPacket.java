@@ -26,50 +26,49 @@ public class SpecialActionPacket extends AbstractMBPacket{
     public void process(ByteBuf inputStream, EntityPlayer player) {
         this.player = player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
         if(this.player!=null){
+
             if(inputStream.readBoolean()){
-                entityHit = player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
+                entityHit = this.player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
             }else{
-                entityHit = player.worldObj.getEntityByID(inputStream.readInt());
+                entityHit = this.player.worldObj.getEntityByID(inputStream.readInt());
             }
 
-            ItemStack mainhand = this.player.getCurrentEquippedItem();
-            ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, player);
-
-            if(quiver != null){
-                ((IArrowContainer2)quiver.getItem()).setSelectedSlot(quiver,
-                        (((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver)+1) %
-                                ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver));
-                if(this.player instanceof EntityPlayerMP){
-                    Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(), (EntityPlayerMP)this.player);
-                }
-            } else if(entityHit != null && entityHit instanceof EntityLivingBase){
-
-                ItemStack offhand = ((InventoryPlayerBattle)this.player.inventory).getCurrentOffhandWeapon();
-                if(offhand != null && offhand.getItem() instanceof IShield){
-                    if(entityHit.canBePushed()){
+            if (entityHit instanceof EntityLivingBase) {
+                ItemStack offhand = ((InventoryPlayerBattle) this.player.inventory).getCurrentOffhandWeapon();
+                if (offhand != null && offhand.getItem() instanceof IShield) {
+                    if (entityHit.canBePushed()) {
                         double d0 = entityHit.posX - this.player.posX;
                         double d1;
 
-                        for (d1 = entityHit.posZ - this.player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D){
+                        for (d1 = entityHit.posZ - this.player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D) {
                             d0 = (Math.random() - Math.random()) * 0.01D;
                         }
-                        double pow = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower.effectId, offhand)*0.1D;
+                        double pow = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower.effectId, offhand) * 0.1D;
 
-                        ((EntityLivingBase) entityHit).knockBack(player, 0, -d0*(1+pow), -d1*(1+pow));
+                        ((EntityLivingBase) entityHit).knockBack(this.player, 0, -d0 * (1 + pow), -d1 * (1 + pow));
                     }
-                    if(entityHit.getDistanceToEntity(player)<2){
-                        float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage.effectId, offhand)*2F;
-                        if(dam>0) {
-                            entityHit.attackEntityFrom(DamageSource.causeThornsDamage(player), dam);
+                    if (entityHit.getDistanceToEntity(this.player) < 2) {
+                        float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage.effectId, offhand) * 2F;
+                        if (dam > 0) {
+                            entityHit.attackEntityFrom(DamageSource.causeThornsDamage(this.player), dam);
                             entityHit.playSound("damage.thorns", 0.5F, 1.0F);
                         }
                     }
-                    if(!player.worldObj.isRemote && entityHit instanceof EntityPlayerMP){
-                        Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(), (EntityPlayerMP)entityHit);
+                    if (!this.player.worldObj.isRemote && entityHit instanceof EntityPlayerMP) {
+                        Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(), (EntityPlayerMP) entityHit);
+                    }
+                }
+            }else{
+                ItemStack quiver = QuiverArrowRegistry.getArrowContainer(this.player.getCurrentEquippedItem(), this.player);
+                if(quiver != null){
+                    ((IArrowContainer2)quiver.getItem()).setSelectedSlot(quiver,
+                            (((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver)+1) %
+                                    ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver));
+                    if(this.player instanceof EntityPlayerMP){
+                        Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(), (EntityPlayerMP)this.player);
                     }
                 }
             }
-
         }
     }
 
@@ -96,8 +95,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
         if(isPlayer){
             ByteBufUtils.writeUTF8String(out, entityHit.getCommandSenderName());
         }else{
-            if(entityHit != null)
-                out.writeInt(entityHit.getEntityId());
+            out.writeInt(entityHit != null?entityHit.getEntityId():-1);
         }
 	}
 }

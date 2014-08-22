@@ -141,31 +141,22 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void doSpecialAction(EntityPlayer entityPlayer) {
-
-        if(entityPlayer.getCommandSenderName().equals(Minecraft.getMinecraft().thePlayer.getCommandSenderName())){
-            ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
-
-            MovingObjectPosition mop = null;
-
-            if(offhand != null && offhand.getItem() instanceof IShield){
-                mop = getMouseOver(1, 4);
-            }
-
-            FMLProxyPacket p;
-            if(mop != null && mop.entityHit != null && mop.entityHit instanceof EntityLivingBase){
-                p = new SpecialActionPacket(entityPlayer, mop.entityHit).generatePacket();
-                Battlegear.packetHandler.sendPacketToServer(p);
-
-                if(mop.entityHit instanceof EntityPlayerMP){
-                    Battlegear.packetHandler.sendPacketToPlayer(p, (EntityPlayerMP) mop.entityHit);
-                }
-
-            }else{
-                p = new SpecialActionPacket(entityPlayer, null).generatePacket();
-            }
-            Battlegear.packetHandler.sendPacketToServer(p);
+        ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
+        MovingObjectPosition mop = null;
+        if(offhand != null && offhand.getItem() instanceof IShield){
+            mop = getMouseOver(1, 4);
         }
 
+        FMLProxyPacket p;
+        if(mop != null && mop.entityHit instanceof EntityLivingBase){
+            p = new SpecialActionPacket(entityPlayer, mop.entityHit).generatePacket();
+            if(mop.entityHit instanceof EntityPlayerMP){
+                Battlegear.packetHandler.sendPacketToPlayer(p, (EntityPlayerMP) mop.entityHit);
+            }
+        }else{
+            p = new SpecialActionPacket(entityPlayer, null).generatePacket();
+        }
+        Battlegear.packetHandler.sendPacketToServer(p);
     }
 
     /**

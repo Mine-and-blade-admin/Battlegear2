@@ -3,8 +3,8 @@ package mods.battlegear2;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import mods.battlegear2.api.core.IBattlePlayer;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.IShield;
-import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,14 +55,17 @@ public class BattlegearTickHandeler {
         int timer = ((IBattlePlayer)entityPlayer).getSpecialActionTimer();
         if(timer > 0){
             ((IBattlePlayer)entityPlayer).setSpecialActionTimer(timer-1);
-            int targetTime = 0;
+            int targetTime = -1;
             ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
             if(offhand != null && offhand.getItem() instanceof IShield){
                 targetTime = ((IShield) offhand.getItem()).getBashTimer(offhand) / 2;
-            }else if (offhand != null && offhand.getItem() instanceof IArrowContainer2){
-                targetTime = 0;
+            }else{
+                ItemStack quiver = QuiverArrowRegistry.getArrowContainer(entityPlayer.getCurrentEquippedItem(), entityPlayer);
+                if(quiver != null) {
+                    targetTime = 0;
+                }
             }
-            if(((IBattlePlayer)entityPlayer).getSpecialActionTimer() == targetTime){
+            if(timer-1 == targetTime){
                 Battlegear.proxy.doSpecialAction(entityPlayer);
             }
         }
