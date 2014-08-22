@@ -3,6 +3,7 @@ package mods.battlegear2.packet;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.quiver.SwapArrowEvent;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
@@ -15,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.common.MinecraftForge;
 
 public class SpecialActionPacket extends AbstractMBPacket{
 
@@ -61,11 +63,12 @@ public class SpecialActionPacket extends AbstractMBPacket{
             }else{
                 ItemStack quiver = QuiverArrowRegistry.getArrowContainer(this.player.getCurrentEquippedItem(), this.player);
                 if(quiver != null){
-                    ((IArrowContainer2)quiver.getItem()).setSelectedSlot(quiver,
-                            (((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver)+1) %
-                                    ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver));
-                    if(this.player instanceof EntityPlayerMP){
-                        Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(), (EntityPlayerMP)this.player);
+                    SwapArrowEvent swapEvent = new SwapArrowEvent(this.player, quiver);
+                    if(!MinecraftForge.EVENT_BUS.post(swapEvent) && swapEvent.slotStep!=0) {
+                        ((IArrowContainer2) quiver.getItem()).setSelectedSlot(quiver, swapEvent.getNextSlot());
+                        if (this.player instanceof EntityPlayerMP) {
+                            Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(), (EntityPlayerMP) this.player);
+                        }
                     }
                 }
             }
