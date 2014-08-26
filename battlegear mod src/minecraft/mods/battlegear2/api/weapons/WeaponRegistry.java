@@ -3,17 +3,14 @@ package mods.battlegear2.api.weapons;
 import java.util.*;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import mods.battlegear2.api.ISensible;
 import mods.battlegear2.api.StackHolder;
 import mods.battlegear2.api.core.BattlegearUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * Registry for stacks which will be allowed in battle inventory,
@@ -26,7 +23,10 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class WeaponRegistry {
     private static Map<StackHolder, Wield> wielding = new HashMap<StackHolder, Wield>();
-    private static Set sensitivities = Sets.newHashSet(Sensitivity.ID, Sensitivity.DAMAGE, Sensitivity.NBT);
+    private static Set<ISensible<StackHolder>> sensitivities = Sets.newHashSetWithExpectedSize(3);
+    static{
+        Collections.addAll(sensitivities, Sensitivity.ID, Sensitivity.DAMAGE, Sensitivity.NBT);
+    }
 
     /**
      * Called by a {@link FMLInterModComms.IMCMessage} with key as type, and the {@link ItemStack} as value
@@ -70,14 +70,29 @@ public class WeaponRegistry {
         wielding.put(new StackHolder(stack), Wield.LEFT);
 	}
 
-    public static boolean addSensitivity(ISensible sensitivity){
+    /**
+     * Adds a way to compare two {@link StackHolder} in this registry
+     * @param sensitivity the comparison to add
+     * @return true if this new comparison could be added
+     */
+    public static boolean addSensitivity(ISensible<StackHolder> sensitivity){
         return sensitivities.add(sensitivity);
     }
 
-    public static boolean removeSensitivity(ISensible sensitivity){
+    /**
+     * Removes a way to compare two {@link StackHolder} in this registry
+     * @param sensitivity the comparison to remove
+     * @return true if this comparison has been removed
+     */
+    public static boolean removeSensitivity(ISensible<StackHolder> sensitivity){
         return sensitivities.remove(sensitivity);
     }
-	
+
+    /**
+     * Check if given {@link ItemStack} has been registered as any type of weapon
+     * @param stack the stack to check
+     * @return true if an equivalent stack as been found in this registry
+     */
 	public static boolean isWeapon(ItemStack stack) {
         StackHolder holder = new StackHolder(stack);
         if(sensitivities==null)
@@ -86,12 +101,22 @@ public class WeaponRegistry {
             return isWeapon(holder, sensitivities.iterator());
 	}
 
-    public static boolean isWeapon(StackHolder holder, Iterator<ISensible> itr){
-        final Predicate<StackHolder> filter = new StackFilter(holder, itr);
-        Map<StackHolder,Wield> tempMap = Maps.filterKeys(wielding, filter);
-        return !tempMap.isEmpty();
+    /**
+     * Check if given {@link StackHolder} has been registered as any type of weapon,
+     * depending on given {@link Iterator} of comparisons
+     * @param holder the stack wrapper to check
+     * @return true if a comparable stack wrapper as been found in this registry
+     */
+    public static boolean isWeapon(StackHolder holder, Iterator<ISensible<StackHolder>> itr){
+        final Predicate<StackHolder> filter = new ISensible.Filter<StackHolder>(holder, itr);
+        return Iterators.any(wielding.keySet().iterator(), filter);
     }
-	
+
+    /**
+     * Check if given {@link ItemStack} has been registered as a mainhand weapon
+     * @param stack the stack to check
+     * @return true if an equivalent mainhand-wieldable stack as been found in this registry
+     */
 	public static boolean isMainHand(ItemStack stack) {
         StackHolder holder = new StackHolder(stack);
         if(sensitivities==null) {
@@ -101,17 +126,27 @@ public class WeaponRegistry {
             return isMainHand(holder, sensitivities.iterator());
 	}
 
-    public static boolean isMainHand(StackHolder holder, Iterator<ISensible> itr){
-        final Predicate<StackHolder> filter = new StackFilter(holder, itr);
-        Map<StackHolder,Wield> tempMap = Maps.filterEntries(wielding, new Predicate<Map.Entry<StackHolder,Wield>>() {
-            @Override
-            public boolean apply(Map.Entry<StackHolder,Wield> input) {
-                return input.getValue().isMainhand() && filter.apply(input.getKey());
-            }
-        });
-        return !tempMap.isEmpty();
+    /**
+     * Check if given {@link StackHolder} has been registered as a mainhand weapon,
+     * depending on given {@link Iterator} of comparisons
+     * @param holder the stack wrapper to check
+     * @return true if a comparable mainhand-wieldable stack wrapper as been found in this registry
+     */
+    public static boolean isMainHand(StackHolder holder, Iterator<ISensible<StackHolder>> itr){
+        final Predicate<StackHolder> filter = new ISensible.Filter<StackHolder>(holder, itr);
+        return Iterators.any(wielding.entrySet().iterator(), new Predicate<Map.Entry<StackHolder,Wield>>() {
+                    @Override
+                    public boolean apply(Map.Entry<StackHolder,Wield> input) {
+                        return input.getValue().isMainhand() && filter.apply(input.getKey());
+                    }
+                });
     }
-	
+
+    /**
+     * Check if given {@link ItemStack} has been registered as an offhand weapon
+     * @param stack the stack to check
+     * @return true if an equivalent offhand-wieldable stack as been found in this registry
+     */
 	public static boolean isOffHand(ItemStack stack) {
         StackHolder holder = new StackHolder(stack);
         if(sensitivities==null) {
@@ -121,45 +156,53 @@ public class WeaponRegistry {
             return isOffHand(holder, sensitivities.iterator());
 	}
 
-    public static boolean isOffHand(StackHolder holder, Iterator<ISensible> itr){
-        final Predicate<StackHolder> filter = new StackFilter(holder, itr);
-        Map<StackHolder,Wield> tempMap = Maps.filterEntries(wielding, new Predicate<Map.Entry<StackHolder,Wield>>() {
+    /**
+     * Check if given {@link StackHolder} has been registered as an offhand weapon
+     * depending on given {@link Iterator} of comparisons
+     * @param holder the stack wrapper to check
+     * @return true if a comparable offhand-wieldable stack wrapper as been found in this registry
+     */
+    public static boolean isOffHand(StackHolder holder, Iterator<ISensible<StackHolder>> itr){
+        final Predicate<StackHolder> filter = new ISensible.Filter<StackHolder>(holder, itr);
+        return Iterators.any(wielding.entrySet().iterator(), new Predicate<Map.Entry<StackHolder,Wield>>() {
             @Override
             public boolean apply(Map.Entry<StackHolder,Wield> input) {
                 return input.getValue().isOffhand() && filter.apply(input.getKey());
             }
         });
-        return !tempMap.isEmpty();
     }
 
-    public enum Sensitivity implements ISensible{
+    /**
+     * Commonly used comparisons
+     */
+    public enum Sensitivity implements ISensible<StackHolder>{
         ORE{
             @Override
-            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
+            public boolean differenciate(StackHolder holder1, StackHolder holder2) {
                 return !Objects.deepEquals(OreDictionary.getOreIDs(holder1.stack), OreDictionary.getOreIDs(holder2.stack));
             }
         },
         TYPE{
             @Override
-            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
+            public boolean differenciate(StackHolder holder1, StackHolder holder2) {
                 return !holder1.stack.getItem().getClass().equals(holder2.stack.getItem().getClass());
             }
         },
         ID{
             @Override
-            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
+            public boolean differenciate(StackHolder holder1, StackHolder holder2) {
                 return holder1.stack.getItem() != holder2.stack.getItem();
             }
         },
         DAMAGE {
             @Override
-            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
+            public boolean differenciate(StackHolder holder1, StackHolder holder2) {
                 return holder1.stack.getItemDamage() != holder2.stack.getItemDamage();
             }
         },
         NBT {
             @Override
-            public boolean diffWith(StackHolder holder1, StackHolder holder2) {
+            public boolean differenciate(StackHolder holder1, StackHolder holder2) {
                 if(holder1.stack.hasTagCompound())
                     return !holder1.stack.getTagCompound().equals(holder2.stack.getTagCompound());
                 else if(holder1.stack.hasTagCompound())
@@ -203,33 +246,6 @@ public class WeaponRegistry {
                 return true;
             }
             return false;
-        }
-    }
-
-    static class StackFilter implements Predicate<StackHolder>{
-        private final Iterator<ISensible> senses;
-        private final StackHolder toCompare;
-        public StackFilter(StackHolder compare, Iterator<ISensible> sensitivities){
-            this.toCompare = compare;
-            this.senses = sensitivities;
-        }
-
-        @Override
-        public boolean apply(StackHolder input) {
-            while(senses.hasNext()){
-                if(senses.next().diffWith(input, toCompare)){
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        @Override
-        public boolean equals(Object object){
-            if(this == object){
-                return true;
-            }
-            return object!=null && object instanceof StackFilter && this.toCompare.equals(((StackFilter) object).toCompare) && this.senses.equals(((StackFilter) object).senses);
         }
     }
 }
