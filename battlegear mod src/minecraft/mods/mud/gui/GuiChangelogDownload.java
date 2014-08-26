@@ -1,7 +1,6 @@
 package mods.mud.gui;
 
 import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModContainer;
 import mods.mud.ModUpdateDetector;
 import mods.mud.UpdateChecker;
 import mods.mud.UpdateEntry;
@@ -120,14 +119,11 @@ public class GuiChangelogDownload extends GuiScreen
                         disable.displayString = StatCollector.translateToLocal("mud.disable")+":"+Boolean.toString(!ModUpdateDetector.enabled);
                         return;
                     case 4:
-                        ModContainer mc = selectedMod.getMc();
-                        String filename = String.format("[%s] %s - %s.jar",
-                                Loader.instance().getMCVersionString().replaceAll("Minecraft", "").trim(),
-                                mc.getName(),
-                                selectedMod.getLatest().getVersionString());
-                        File newFile = new File(mc.getSource().getParent(), filename);
+                        File mcSource = selectedMod.getMc().getSource();
+                        String filename = selectedMod.getFileName(Loader.instance().getMCVersionString().replaceAll("Minecraft", "").trim());
+                        File newFile = new File(mcSource.getParent(), filename);
                         Thread t = new Thread(new Downloader(selectedMod.getLatest().download,
-                                newFile, mc.getSource(), selectedMod.getLatest().md5
+                                newFile, mcSource, selectedMod.getLatest().md5
                         ));
                         t.start();
                         isDownloading = true;
@@ -347,9 +343,10 @@ public class GuiChangelogDownload extends GuiScreen
 
     private class ChangelogLoader implements Runnable{
 
-        URL changelogURL;
+        private final URL changelogURL;
 
         private ChangelogLoader(URL changelogURL) {
+            assert changelogURL!=null : "URL can't be null";
             this.changelogURL = changelogURL;
         }
 
@@ -359,14 +356,12 @@ public class GuiChangelogDownload extends GuiScreen
                 BufferedReader br = new BufferedReader(new InputStreamReader(changelogURL.openStream()));
                 String line = br.readLine();
                 ArrayList<String> lines = new ArrayList<String>(100);
-                if(line != null)
-                    lines.add(line);
                 while(line != null){
-                    line = br.readLine();
                     lines.add(line);
+                    line = br.readLine();
                 }
-
-                changelog = lines.toArray(new String[0]);
+                lines.trimToSize();
+                changelog = lines.toArray(new String[lines.size()]);
             } catch (IOException e) {
                 e.printStackTrace();
                 changelog = new String[]{StatCollector.translateToLocal("log.message.fail")};
@@ -377,17 +372,18 @@ public class GuiChangelogDownload extends GuiScreen
     private class Downloader implements Runnable{
 
         private String downloadUrl = "";
-        private File file = null;
-        private File orginial;
+        private File file;
+        private File original;
         private byte[] expectedMd5;
 
         public Downloader(String url, File location, File originalFile, String md5){
+            assert url!=null && location !=null : "Download url or new file location can't be null";
             this.downloadUrl = url;
             this.file = location;
-            this.orginial = originalFile;
+            this.original = originalFile;
             if(md5 != null){
                 try{
-                    this.expectedMd5 =  DatatypeConverter.parseHexBinary(md5.toUpperCase());
+                    this.expectedMd5 = DatatypeConverter.parseHexBinary(md5.toUpperCase());
                 }catch (Exception e){
                     e.printStackTrace();
                     this.expectedMd5 = null;
@@ -469,15 +465,12 @@ public class GuiChangelogDownload extends GuiScreen
                     message = StatCollector.translateToLocal("gui.restart");
                 }
 
-                if(downloadComplete &&
-                        orginial.exists() &&
-                        !orginial.getName().equals(file.getName()) &&
-                        !orginial.isDirectory()
-                        ){
-                    ModUpdateDetector.logger.trace("Deleting: "+orginial.getAbsolutePath());
-                    if(!orginial.delete()){
+                if(downloadComplete && original !=null && original.exists() &&
+                        !original.getName().equals(file.getName()) && !original.isDirectory()){
+                    ModUpdateDetector.logger.trace("Deleting: "+ original.getAbsolutePath());
+                    if(!original.delete()){
                         ModUpdateDetector.logger.trace("Deleting failed, spawning new process to delete");
-                        String cmd = "java -classpath \""+file.getAbsolutePath()+"\" mods.mud.utils.FileDeleter \""+orginial.getAbsolutePath()+"\"";
+                        String cmd = "java -classpath \""+file.getAbsolutePath()+"\" mods.mud.utils.FileDeleter \""+ original.getAbsolutePath()+"\"";
                         Runtime.getRuntime().exec(cmd);
                     }
                 }

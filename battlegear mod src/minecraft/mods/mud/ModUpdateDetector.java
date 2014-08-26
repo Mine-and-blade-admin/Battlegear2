@@ -42,11 +42,7 @@ public class ModUpdateDetector {
      * @param changelog An expected url for a file containing text to describe any changes, can be null
      */
     public static void registerMod(ModContainer mc, URL updateXML, URL changelog){
-        if(!hasInitialised){
-            initialise();
-            hasInitialised = true;
-        }
-        updateMap.put(mc.getModId(), new UpdateEntry(mc, updateXML, changelog));
+        registerMod(new UpdateEntry(mc, updateXML, changelog));
     }
 
     /**
@@ -69,6 +65,17 @@ public class ModUpdateDetector {
      */
     public static void registerMod(Object mod, String updateXML, String changelog) throws MalformedURLException {
         registerMod(FMLCommonHandler.instance().findContainerFor(mod), updateXML, changelog);
+    }
+
+    /**
+     * In-depth registration method for a mod, recommended with custom UpdateEntry instances
+     */
+    public static void registerMod(UpdateEntry entry){
+        if(!hasInitialised){
+            initialise();
+            hasInitialised = true;
+        }
+        updateMap.put(entry.getMc().getModId(), entry);
     }
 
     public static void runUpdateChecker(){

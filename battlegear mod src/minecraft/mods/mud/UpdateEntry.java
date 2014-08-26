@@ -11,11 +11,18 @@ public class UpdateEntry{
     private final URL updateXML;
     private final URL changelogURL;
     private Release latest = null;
+    private String fileName;
 
     public UpdateEntry(ModContainer mc, URL updateXML, URL changelogURL) {
+        assert mc!=null : "Mod wrapper can't be null";
         this.mc = mc;
         this.updateXML = updateXML;
         this.changelogURL = changelogURL;
+    }
+
+    public UpdateEntry(ModContainer mc, URL updateXML, URL changelogURL, String fileName){
+        this(mc, updateXML, changelogURL);
+        this.fileName = fileName;
     }
 
     public ModContainer getMc() {
@@ -36,6 +43,20 @@ public class UpdateEntry{
 
     public void setLatest(Release latest) {
         this.latest = latest;
+    }
+
+    public String getFileName(String mcVersion){
+        if(fileName==null)
+            return String.format("[%s] %s - %s.jar",
+                    mcVersion,
+                    getMc().getName(),
+                    getLatest().getVersionString());
+        else
+            return fileName;
+    }
+
+    public void setFileName(String newName){
+        this.fileName = newName;
     }
 
     public boolean isUpToDate() throws UnknownVersionFormatException, NullPointerException {
