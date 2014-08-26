@@ -11,6 +11,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 /**
@@ -30,6 +32,19 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 
     public EntityPiercingArrow(World par1World, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase, float par4, float par5) {
         super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5);
+    }
+
+    @Override
+    public void onUpdate() {
+        Vec3 a = Vec3.createVectorHelper(this.posX, this.posY, this.posZ);
+        Vec3 b = Vec3.createVectorHelper(this.posX + this.motionX*1.5, this.posY + this.motionY*1.5, this.posZ + this.motionZ*1.5);
+        MovingObjectPosition movingobjectposition = this.worldObj.func_147447_a(a, b, false, true, true);
+
+        if (ticksInGround == 0 && movingobjectposition != null && movingobjectposition.entityHit == null){
+            ticksInGround ++;
+            onHitGround(movingobjectposition.blockX, movingobjectposition.blockY, movingobjectposition.blockZ);
+        }
+        super.onUpdate();
     }
 
 	@Override
@@ -56,11 +71,12 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 
 	@Override
 	public void onHitGround(int x, int y, int z) {
+        boolean broken = false;
         if(canBreakBlocks()) {
             Block block = worldObj.getBlock(x, y, z);
             if (block.getMaterial() == Material.glass) {
                 worldObj.playAuxSFX(2001, x, y, z, Block.getIdFromBlock(block) + (worldObj.getBlockMetadata(x, y, z) << 12));
-                worldObj.setBlockToAir(x, y, z);
+                broken = worldObj.setBlockToAir(x, y, z);
             } else if (!worldObj.isRemote) {
                 if (block instanceof IShearable) {
                     IShearable target = (IShearable) block;
@@ -76,10 +92,15 @@ public class EntityPiercingArrow extends AbstractMBArrow{
                             entityitem.delayBeforeCanPickup = 10;
                             worldObj.spawnEntityInWorld(entityitem);
                         }
-                        worldObj.setBlockToAir(x, y, z);
+                        broken = worldObj.setBlockToAir(x, y, z);
                     }
                 }
             }
+        }
+        if(broken){
+            this.ticksInGround = 0;
+            this.field_145792_e = -1;
+            this.motionY += 0.05F;
         }
 	}
 
