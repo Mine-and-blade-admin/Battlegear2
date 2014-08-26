@@ -12,7 +12,7 @@ public class StackHolder{
     public final ItemStack stack;
     private int hash;
     public StackHolder(ItemStack stack){
-        assert stack!=null :"Stack can't be null";
+        assert stack!=null && stack.getItem()!=null :"Stack or item can't be null";
         this.stack = stack;
     }
 
