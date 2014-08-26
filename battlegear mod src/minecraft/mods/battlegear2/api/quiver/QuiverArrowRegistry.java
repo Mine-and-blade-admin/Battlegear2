@@ -2,6 +2,9 @@ package mods.battlegear2.api.quiver;
 
 import java.util.*;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterators;
+import mods.battlegear2.api.ISensible;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -24,18 +27,19 @@ public class QuiverArrowRegistry {
     /**
      * Adds an item to the known arrow lists, not metadata sensitive
      * @param itemId the item id
-     * @param entityArrow the class from which the arrow entity will be constructed
+     * @param entityArrow the class from which the arrow entity will be constructed by the default fire handler (can be null, if custom fire handler is desired)
      */
     public static void addArrowToRegistry(Item itemId, Class<? extends EntityArrow> entityArrow){
         itemToClasses.put(itemId, entityArrow);
-        classToStacks.put(entityArrow, new ItemStack(itemId));
+        if(entityArrow!=null)
+            classToStacks.put(entityArrow, new ItemStack(itemId));
     }
 
     /**
      * Adds an item to the known arrow lists
      * @param itemId the item id
      * @param itemMetadata the item damage value, as metadata
-     * @param entityArrow the class from which the arrow entity will be constructed
+     * @param entityArrow the class from which the arrow entity will be constructed by the default fire handler (can be null, if custom fire handler is desired)
      */
     public static void addArrowToRegistry(Item itemId, int itemMetadata, Class<? extends EntityArrow> entityArrow){
         ItemStack stack = new ItemStack(itemId, 1, itemMetadata);
@@ -47,13 +51,14 @@ public class QuiverArrowRegistry {
      * FMLInterModComms.sendMessage("battlegear2", "Arrow:"+classPath, itemStack);
      * where classPath is the full class path for the arrow class
      * @param stack
-     * @param entityArrow the class from which the arrow entity will be constructed
+     * @param entityArrow the class from which the arrow entity will be constructed by the default fire handler (can be null, if custom fire handler is desired)
      */
     public static void addArrowToRegistry(ItemStack stack, Class<? extends EntityArrow> entityArrow){
         ItemStack st = stack.copy();
         st.stackSize = 1;
         stackToClasses.put(st, entityArrow);
-        classToStacks.put(entityArrow, st);
+        if(entityArrow!=null)
+            classToStacks.put(entityArrow, st);
     }
 
     /**
@@ -65,7 +70,7 @@ public class QuiverArrowRegistry {
      * @return true if it could be added
      */
     public static boolean addQuiverSelection(IQuiverSelection handler){
-        return quiverSelectors.add(handler);
+        return handler != null && quiverSelectors.add(handler);
     }
 
     /**
@@ -77,7 +82,7 @@ public class QuiverArrowRegistry {
      * @return true if it could be added
      */
     public static boolean addArrowFireHandler(IArrowFireHandler handler){
-        return fireHandlers.add(handler);
+        return handler!=null && fireHandlers.add(handler);
     }
 
     /**
@@ -120,7 +125,7 @@ public class QuiverArrowRegistry {
 
     /**
      * @param stack
-     * @return the EntityArrow class attached to the given stack
+     * @return the EntityArrow class attached to the given stack, or null if none is found
      */
     public static Class<? extends EntityArrow> getArrowClass(ItemStack stack){
         Class<? extends EntityArrow> clazz = stackToClasses.get(stack);
@@ -144,12 +149,27 @@ public class QuiverArrowRegistry {
     }
 
     /**
-     *
+     * Check if the given ItemStack has been registered
      * @param test the ItemStack to check
-     * @return true if that ItemStack is attached to an EntityArrow class
+     * @return true if that ItemStack has been registered, with NBT or not
      */
     public static boolean isKnownArrow(ItemStack test){
-    	return test!=null && (stackToClasses.containsKey(test)||itemToClasses.containsKey(test.getItem()));
+    	return isKnownArrow(test,true)||isKnownArrow(test,false);
+    }
+
+    /**
+     * Check if the given ItemStack has been registered
+     * @param test the ItemStack to check
+     * @param compareFullStack if the full ItemStack should be checked, or only its Item
+     * @return true if that ItemStack has been registered
+     */
+    public static boolean isKnownArrow(ItemStack test, boolean compareFullStack){
+        return test!=null && (compareFullStack?stackToClasses.containsKey(test):itemToClasses.containsKey(test.getItem()));
+    }
+
+    public static boolean isKnownArrow(ItemStack test, Iterable<ISensible<ItemStack>> senses){
+        Predicate<ItemStack> predicate = new ISensible.Filter<ItemStack>(test, senses);
+        return Iterators.any(stackToClasses.keySet().iterator(), predicate);
     }
 
     /**
@@ -187,8 +207,8 @@ public class QuiverArrowRegistry {
 
     /**
      * Default implementation of a arrow firing handler, which uses this registry of arrows to build an EntityArrow
-     * with a constructor
-     * If the arrow is unknown, or the constructor isn't valid, defers to other firing handlers silently
+     * from registered class, with the (World, EntityLivingBase, float) constructor
+     * If the arrow is unknown, the registered class is null or the constructor isn't valid, defers to other firing handlers silently
      */
     static class DefaultArrowFire implements IArrowFireHandler{
 
