@@ -1,10 +1,7 @@
-package battlegear2.api.quiver;
+package mods.battlegear2.api.quiver;
 
 import java.util.List;
 
-import mods.battlegear2.api.quiver.IArrowContainer2;
-import mods.battlegear2.api.quiver.IArrowFireHandler;
-import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.common.eventhandler.Event.Result;
