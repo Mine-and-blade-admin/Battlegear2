@@ -56,26 +56,32 @@ public class BowHookContainerClass2 {
         }
     }
 
-    @SubscribeEvent
-    public void onBowUse(ArrowNockEvent event){
-    	boolean canDrawBow = false;
-        if(event.entityPlayer.capabilities.isCreativeMode
-                || event.entityPlayer.inventory.hasItem(Items.arrow)){
-        	canDrawBow = true;
-        }
-        if(!canDrawBow){
-        	ItemStack quiver = QuiverArrowRegistry.getArrowContainer(event.result, event.entityPlayer);
-	        if(quiver != null &&
-	                ((IArrowContainer2)quiver.getItem()).
-	                        hasArrowFor(quiver, event.result, event.entityPlayer, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver))){
-	        	canDrawBow = true;
-	        }
-        }
-	    if(canDrawBow){
-            event.entityPlayer.setItemInUse(event.result, event.result.getMaxItemUseDuration()-EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId,event.result)*20000);
-            event.setCanceled(true);
-	    }
-    }
+	@SubscribeEvent
+	public void onBowUse(ArrowNockEvent event){
+		// change to use Result: DENY (cannot fire), DEFAULT (attempt standard nocking algorithm), ALLOW (nock without further checks)
+		Result canDrawBow = Result.DEFAULT;
+		// insert special bow check here:
+		if (event.result.getItem() instanceof ISpecialBow) {
+			canDrawBow = ((ISpecialBow) event.result.getItem()).canDrawBow(event.result, event.entityPlayer);
+		}
+		// Special bow did not determine a result, so use standard algorithms instead:
+		if (canDrawBow == Result.DEFAULT && (event.entityPlayer.capabilities.isCreativeMode
+				|| event.entityPlayer.inventory.hasItem(Items.arrow))) {
+			canDrawBow = Result.ALLOW;
+		}
+		if (canDrawBow == Result.DEFAULT) {
+			ItemStack quiver = QuiverArrowRegistry.getArrowContainer(event.result, event.entityPlayer);
+			if (quiver != null && ((IArrowContainer2)quiver.getItem()).
+				hasArrowFor(quiver, event.result, event.entityPlayer, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver))) {
+				canDrawBow = Result.ALLOW;
+			}
+		}
+		// only nock if allowed
+		if (canDrawBow == Result.ALLOW) {
+			event.entityPlayer.setItemInUse(event.result, event.result.getItem().getMaxItemUseDuration(event.result)-EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId,event.result)*20000);
+			event.setCanceled(true);
+		}
+	}
 
     /**
      *
