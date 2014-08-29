@@ -68,40 +68,26 @@ public class ContainerBattle extends ContainerLocalPlayer {
             }
             else //we are in normal inventory
             {
-
-                if(itemStack.getItem() instanceof ItemArmor){
+                if (itemStack.getItem() instanceof ItemArmor){
                     int index =  ((ItemArmor)itemStack.getItem()).armorType ;
-                    if (!this.mergeItemStack(itemStack1, index, index + 1, false)){
-                        //return null;
-                    }
+                    this.mergeItemStack(itemStack1, index, index + 1, false);
                 }else{
-                    for(int index=40;index<this.inventorySlots.size();index++){//Search within WeaponSlot{
+                    for(int index=40;index<this.inventorySlots.size();index++){//Search within WeaponSlot
                         Slot destSlot = (Slot) this.inventorySlots.get(index);
-                        if ( !destSlot.getHasStack() && destSlot.isItemValid(itemStack1))
-                        {
-                            if (!this.mergeItemStack(itemStack1, index, index + 1, false)){
-                                //return null;
-                            }
+                        if (!destSlot.getHasStack() && destSlot.isItemValid(itemStack1)){
+                            this.mergeItemStack(itemStack1, index, index + 1, false);
                         }
                     }
                 }
             }
             if (itemStack1.stackSize == 0)
-            {
                 slot.putStack(null);
-            }
             else
-            {
                 slot.onSlotChanged();
-            }
             if (itemStack1.stackSize != itemStack.stackSize)
-            {
                 slot.onPickupFromSlot(player, itemStack1);
-            }
             else
-            {
                 return null;
-            }
         }
         return itemStack;
     }
@@ -115,49 +101,4 @@ public class ContainerBattle extends ContainerLocalPlayer {
                     (EntityPlayerMP)thePlayer);
         }
     }
-
-/*
-    public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
-
-        ItemStack itemstack = null;
-        Slot slot = (Slot)this.inventorySlots.get(slotIndex);
-
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
-            itemstack = itemstack1.copy();
-
-            if(slotIndex < 4){ //If in the armour bar
-                if (!this.mergeItemStack(itemstack1, 4, 39, false)){
-                    return null;
-                }
-            }else if (slotIndex >= 40){ //In weapon bar
-                if (!this.mergeItemStack(itemstack1, 4, 39, false)){
-                    return null;
-                }
-            }else{
-
-                if(itemstack.getItem() instanceof ItemArmor){
-                    if(!((Slot)this.inventorySlots.get(((ItemArmor)itemstack.getItem()).armorType)).getHasStack()){
-                        int armourSlot = 5 + ((ItemArmor)itemstack.getItem()).armorType;
-                        if (!this.mergeItemStack(itemstack1, armourSlot, armourSlot + 1, false)){
-                            return null;
-                        }
-                    }
-                }else{  //maybe need to test (itemstack.getItem() instanceof IBattlegearWeapon)
-                    for(int i = 40; i < this.inventorySlots.size(); i++){
-                        Slot tempSlot = this.getSlot(i);
-                        if(tempSlot.getHasStack() && tempSlot.isItemValid(itemstack)){
-                            if (!this.mergeItemStack(itemstack1, i, i + 1, false)){
-                                return null;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return itemstack;
-
-    }
-    */
 }

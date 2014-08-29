@@ -228,10 +228,10 @@ public class QuiverArrowRegistry {
 
         @Override
         public EntityArrow getFiredArrow(ItemStack arrow, World world, EntityPlayer player, float charge) {
-            Class clazz = getArrowClass(arrow);
+            Class<? extends EntityArrow> clazz = getArrowClass(arrow);
             if(clazz != null){
                 try {
-                    return (EntityArrow)clazz.getConstructor(World.class, EntityLivingBase.class, Float.TYPE)
+                    return clazz.getConstructor(World.class, EntityLivingBase.class, Float.TYPE)
                             .newInstance(player.worldObj, player, charge);
                 } catch (Exception ignored) {
                 }

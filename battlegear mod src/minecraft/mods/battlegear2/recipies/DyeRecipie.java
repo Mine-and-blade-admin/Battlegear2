@@ -17,7 +17,7 @@ public class DyeRecipie implements IRecipe
     public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World)
     {
         ItemStack dyableStack = null;
-        ArrayList arraylist = new ArrayList();
+        ArrayList<ItemStack> arraylist = new ArrayList<ItemStack>();
         boolean waterFound = false;
 
         for (int i = 0; i < par1InventoryCrafting.getSizeInventory(); ++i)

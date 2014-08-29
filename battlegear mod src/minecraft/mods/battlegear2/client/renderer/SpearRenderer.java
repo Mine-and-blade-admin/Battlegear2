@@ -36,7 +36,8 @@ public class SpearRenderer implements IItemRenderer {
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-
+        if(item == null)
+            return;
         GL11.glPushMatrix();
 
         if (mc == null) {
@@ -60,7 +61,7 @@ public class SpearRenderer implements IItemRenderer {
                     icon.getIconWidth(),
                     icon.getIconHeight(), 1F / 16F);
 
-            if (item != null && item.hasEffect(0)) {
+            if (item.hasEffect(0)) {
                 BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
             }
 
@@ -84,7 +85,7 @@ public class SpearRenderer implements IItemRenderer {
                     icon.getIconWidth(),
                     icon.getIconHeight(), 1F/16F);
 
-            if (item != null && item.hasEffect(0)) {
+            if (item.hasEffect(0)) {
                 BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
             }
         }

@@ -329,7 +329,7 @@ public class GuiChangelogDownload extends GuiScreen
                         download.enabled = true;
                         download.displayString = StatCollector.translateToLocal("button.download.latest");
                     }
-                } catch (Exception e) {
+                } catch (Exception ignored) {
 
                 }
             }
@@ -452,7 +452,7 @@ public class GuiChangelogDownload extends GuiScreen
                         if(dis != null){
                             try{
                                 dis.close();
-                            }catch (Exception ex){}
+                            }catch (Exception ignored){}
                         }
 
                         downloadFailed = true;

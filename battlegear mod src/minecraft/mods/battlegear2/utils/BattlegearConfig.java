@@ -99,7 +99,7 @@ public class BattlegearConfig {
             props.setRequiresMcRestart(true).setMaxValue(Enchantment.enchantmentsList.length-1);
         	enchantsId[i] = props.getInt();
             if(Enchantment.enchantmentsList[enchantsId[i]]!=null){
-                Battlegear.logger.warn("Found conflicting enchantment id for "+enchantsName[i]+ " with assigned id:"+enchantsId);
+                Battlegear.logger.warn("Found conflicting enchantment id for "+enchantsName[i]+ " with assigned id:"+enchantsId[i]);
                 for(int j = enchantsId[i]; j<Enchantment.enchantmentsList.length; j++) {
                     if (Enchantment.enchantmentsList[j] == null) {
                         enchantsId[i] = j;
@@ -226,7 +226,7 @@ public class BattlegearConfig {
                     }
                 }
             }
-        }catch(Exception e){
+        }catch(Exception ignored){
 
         }
 	}
@@ -433,7 +433,7 @@ public class BattlegearConfig {
                             }
                         }
                     }
-                }catch (Throwable t){}
+                }catch (Exception ignored){}
             }
         }
         if(mapping.name.contains(MODID+MODID+"flagpole")) {

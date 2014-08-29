@@ -49,7 +49,7 @@ public class ImageCache {
 
                             }
                     );
-    {
+    static {
         CacheBuilder.newBuilder().build();
     }
 

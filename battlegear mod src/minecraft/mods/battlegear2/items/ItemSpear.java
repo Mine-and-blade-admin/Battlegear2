@@ -16,8 +16,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 
-import java.util.List;
-
 public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,ISpecialEffect {
 
     //Will make it one more than a sword
@@ -66,12 +64,10 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
 
     @Override
     public boolean performEffects(EntityLivingBase entityHit, EntityLivingBase entityHitting) {
-        if(entityHitting.isRiding() || entityHitting.isSprinting())
-        {
+        if(entityHitting.isRiding() || entityHitting.isSprinting()){
             entityHit.attackEntityFrom(new EntityDamageSource(Battlegear.CUSTOM_DAMAGE_SOURCE+".mounted", entityHitting), mounted_extra_damage);
             return true;
-        }else{
-            return false;
         }
+        return false;
     }
 }

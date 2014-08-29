@@ -21,26 +21,27 @@ public class MobHookContainerClass {
         if(event.entity instanceof EntitySkeleton){
 
             EntitySkeleton skeleton = (EntitySkeleton) event.entity;
-
             try{
-                skeleton.getDataWatcher().addObject(Skell_Arrow_Datawatcher, Byte.valueOf((byte)-1));
-
+                skeleton.getDataWatcher().addObject(Skell_Arrow_Datawatcher, (byte) -1);
                 for(int i = 0; i < ItemMBArrow.names.length; i++){
                     if(skeleton.getRNG().nextFloat() < BattlegearConfig.skeletonArrowSpawnRate[i]){
-                        skeleton.getDataWatcher().updateObject(Skell_Arrow_Datawatcher, Byte.valueOf((byte) i));
+                        skeleton.getDataWatcher().updateObject(Skell_Arrow_Datawatcher, (byte) i);
                         break;
                     }
                 }
-
-            }catch (Exception e){}
-
+            }catch (Exception ignored){}
 
         }else if(event.entity.getClass() == EntityArrow.class){
             EntityArrow arrow = ((EntityArrow)event.entity);
             if(arrow.shootingEntity instanceof EntitySkeleton){
                 EntitySkeleton skeleton = (EntitySkeleton) arrow.shootingEntity;
 
-                int type = skeleton.getDataWatcher().getWatchableObjectByte(Skell_Arrow_Datawatcher);
+                int type;
+                try {
+                    type = skeleton.getDataWatcher().getWatchableObjectByte(Skell_Arrow_Datawatcher);
+                }catch (Exception handled){
+                    type = -1;
+                }
                 if(type > -1){
 
                     AbstractMBArrow mbArrow = AbstractMBArrow.generate(type, arrow, skeleton);

@@ -2,7 +2,6 @@ package mods.battlegear2.items.arrows;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 /**

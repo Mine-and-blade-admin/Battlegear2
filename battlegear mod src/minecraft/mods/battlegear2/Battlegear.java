@@ -134,7 +134,7 @@ public class Battlegear {
                                 success = true;
                             }
                         }
-                    } catch (Exception logged) {
+                    } catch (Exception ignored) {
                     }
                 }else if(message.isNBTMessage() && BattlegearConfig.initItemFromNBT(message.getNBTValue())){
                     success = true;

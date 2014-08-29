@@ -63,7 +63,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
 
     @Override
     public void readFromNBT(NBTTagCompound par1NBTTagCompound) {
-        super.readFromNBT(par1NBTTagCompound);;
+        super.readFromNBT(par1NBTTagCompound);
         side = par1NBTTagCompound.getInteger("orientation");
         flags = new ArrayList<ItemStack>(MAX_FLAGS);
         for(int i = 0; i < MAX_FLAGS; i++){

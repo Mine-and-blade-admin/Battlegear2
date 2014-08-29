@@ -1,8 +1,6 @@
 package mods.battlegear2.api.core;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.CharStreams;
-import com.google.common.io.InputSupplier;
 
 import cpw.mods.fml.common.asm.transformers.deobf.LZMAInputSupplier;
 import cpw.mods.fml.relauncher.FMLInjectionData;
@@ -11,7 +9,6 @@ import cpw.mods.fml.relauncher.IFMLCallHook;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -55,8 +52,7 @@ public class BattlegearTranslator implements IFMLCallHook {
     public static void setup(String deobFileName){
         try{
             LZMAInputSupplier zis = new LZMAInputSupplier(FMLInjectionData.class.getResourceAsStream(deobFileName));
-            InputSupplier<InputStreamReader> srgSupplier = CharStreams.newReaderSupplier(zis, Charsets.UTF_8);
-            List<String> srgList = CharStreams.readLines(srgSupplier);
+            List<String> srgList = zis.asCharSource(Charsets.UTF_8).readLines();
 
             for (String line : srgList) {
 

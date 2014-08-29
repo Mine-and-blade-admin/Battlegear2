@@ -76,12 +76,10 @@ public class BattlegearSigilGUI extends GuiContainer {
         patternToggleButtons = new GuiToggleButton[PAT_BUTTONS.length];
         
         int prevIndexSelected = 0;
-        if(patternToggleButtons != null){
-        	for(int i = 0; i < patternToggleButtons.length; i++){
-        		if(patternToggleButtons[i] != null && patternToggleButtons[i].getSelected()){
-        			prevIndexSelected = i;
-        		}
-        	}
+        for(int i = 0; i < patternToggleButtons.length; i++){
+            if(patternToggleButtons[i] != null && patternToggleButtons[i].getSelected()){
+                prevIndexSelected = i;
+            }
         }
         
         patternToggleButtons[0] = new GuiToggleButton(PAT_BUTTONS[0], (width+160)/2, 15, 65, 20, StatCollector.translateToLocal("gui.sigil.pattern"));

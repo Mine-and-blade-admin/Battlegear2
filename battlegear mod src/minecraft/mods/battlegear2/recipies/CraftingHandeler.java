@@ -88,11 +88,7 @@ public class CraftingHandeler {
                     	return;
                 }
             }
-            if(arrows.isEmpty())
-            {
-            	//remove arrows ?
-            }
-            else
+            if(!arrows.isEmpty())
             {
             	Iterator itr = arrows.iterator();
         		ItemStack drop = null;

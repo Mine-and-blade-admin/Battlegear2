@@ -76,7 +76,7 @@ public class CommandWeaponWield extends CommandBase{
                                 var1.addChatMessage(new ChatComponentText(sensitivities.toString()));
                                 return;
                             }
-                        } catch (IllegalArgumentException t) {
+                        } catch (IllegalArgumentException ignored) {
                         }
                     }else if(var2[1].equals(operations[1])){//remove
                         try {
@@ -86,7 +86,7 @@ public class CommandWeaponWield extends CommandBase{
                                 var1.addChatMessage(new ChatComponentText(sensitivities.toString()));
                                 return;
                             }
-                        }catch (IllegalArgumentException t){}
+                        }catch (IllegalArgumentException ignored){}
                     }
                 }
             }
