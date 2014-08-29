@@ -153,7 +153,8 @@ public class HeraldryData {
 		byteArray = null;
 	}
 
-	public HeraldryData clone() throws CloneNotSupportedException {
+    @Override
+	public HeraldryData clone() {
 		return new HeraldryData(storageIndex, pattern, patternColours[0], patternColours[1], patternColours[2], crests, extraData);
 	}
 }
