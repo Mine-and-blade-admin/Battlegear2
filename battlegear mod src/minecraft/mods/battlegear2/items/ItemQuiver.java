@@ -44,8 +44,9 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     }
     
     @Override
-    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-    	for(int i = 0; i<getSlotCount(stack);i++){
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float offX, float offY, float offZ) {
+    	boolean flag = false;
+        for(int i = 0; i<getSlotCount(stack);i++){
             ItemStack temp = getStackInSlot(stack, i);
             if(temp!=null){
                 EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
@@ -54,9 +55,10 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
                     entityitem.func_145797_a(player.getCommandSenderName());
                 }
                 setStackInSlot(stack, i, null);
+                flag = true;
             }
     	}
-        return stack;
+        return flag;
     }
 
     @Override
