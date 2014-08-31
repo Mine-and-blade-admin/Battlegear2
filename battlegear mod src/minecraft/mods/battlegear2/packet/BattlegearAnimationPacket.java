@@ -28,8 +28,13 @@ public class BattlegearAnimationPacket extends AbstractMBPacket {
     
 	@Override
     public void process(ByteBuf in,EntityPlayer player) {
-        animation = EnumBGAnimations.values()[in.readInt()];
-        username = ByteBufUtils.readUTF8String(in);
+        try {
+            animation = EnumBGAnimations.values()[in.readInt()];
+            username = ByteBufUtils.readUTF8String(in);
+        }catch (Exception e){
+            e.printStackTrace();
+            return;
+        }
         if (username != null && animation != null) {
             EntityPlayer entity = player.worldObj.getPlayerEntityByName(username);
             if(entity!=null){

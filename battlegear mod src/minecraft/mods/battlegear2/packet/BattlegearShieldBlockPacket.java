@@ -21,9 +21,13 @@ public class BattlegearShieldBlockPacket extends AbstractMBPacket {
 
 	@Override
 	public void process(ByteBuf in, EntityPlayer player) {
-        block = true;
-        block = in.readBoolean();
-        username = ByteBufUtils.readUTF8String(in);
+        try {
+            block = in.readBoolean();
+            username = ByteBufUtils.readUTF8String(in);
+        }catch (Exception e){
+            e.printStackTrace();
+            return;
+        }
         if (username != null) {
             EntityPlayer entity = player.worldObj.getPlayerEntityByName(username);
             if(entity!=null) {

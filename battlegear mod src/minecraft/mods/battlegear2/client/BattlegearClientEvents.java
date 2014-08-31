@@ -258,7 +258,7 @@ public class BattlegearClientEvents {
                         }
                         if (k >= 0 && k < MAIN_INV)
                         {
-                            Battlegear.packetHandler.sendPacketToServer(new PickBlockPacket(mc.thePlayer, stack, k).generatePacket());
+                            Battlegear.packetHandler.sendPacketToServer(new PickBlockPacket(stack, k).generatePacket());
                         }
                     }
                 }

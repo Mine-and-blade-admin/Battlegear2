@@ -36,7 +36,8 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
 
 	@Override
     public void process(ByteBuf inputStream, EntityPlayer player) {
-        this.player = player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
+        this.user = ByteBufUtils.readUTF8String(inputStream);
+        this.player = player.worldObj.getPlayerEntityByName(user);
         if(this.player!=null){
             this.player.inventory.currentItem = inputStream.readInt();
             BattlegearUtils.setPlayerCurrentItem(this.player, ByteBufUtils.readItemStack(inputStream));

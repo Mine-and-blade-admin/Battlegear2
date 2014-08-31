@@ -26,15 +26,19 @@ public class SpecialActionPacket extends AbstractMBPacket{
 
     @Override
     public void process(ByteBuf inputStream, EntityPlayer player) {
-        this.player = player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
-        if(this.player!=null){
-
-            if(inputStream.readBoolean()){
-                entityHit = this.player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
-            }else{
-                entityHit = this.player.worldObj.getEntityByID(inputStream.readInt());
+        try {
+            this.player = player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
+            if (inputStream.readBoolean()) {
+                entityHit = player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
+            } else {
+                entityHit = player.worldObj.getEntityByID(inputStream.readInt());
             }
+        }catch (Exception e){
+            e.printStackTrace();
+            return;
+        }
 
+        if(this.player!=null){
             if (entityHit instanceof EntityLivingBase) {
                 ItemStack offhand = ((InventoryPlayerBattle) this.player.inventory).getCurrentOffhandWeapon();
                 if (offhand != null && offhand.getItem() instanceof IShield) {

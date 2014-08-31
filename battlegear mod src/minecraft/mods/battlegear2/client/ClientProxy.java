@@ -70,19 +70,6 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void sendPlaceBlockPacket(EntityPlayer entityPlayer, int x, int y, int z, int face, Vec3 par8Vec3) {
-        if (entityPlayer instanceof EntityClientPlayerMP) {
-            ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
-                    new C08PacketPlayerBlockPlacement(x, y, z, face,
-                            ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon(),
-                            (float)par8Vec3.xCoord - (float)x,
-                            (float)par8Vec3.yCoord - (float)y,
-                            (float)par8Vec3.zCoord - (float)z)
-            );
-        }
-    }
-
-    @Override
     public void startFlash(EntityPlayer player, float damage) {
     	if(player.getCommandSenderName().equals(Minecraft.getMinecraft().thePlayer.getCommandSenderName())){
             BattlegearClientTickHandeler.resetFlash();
@@ -121,7 +108,7 @@ public class ClientProxy extends CommonProxy {
         }
         if(Battlegear.debug){
             Item it = null;
-            for(Iterator itr = GameData.itemRegistry.iterator(); itr.hasNext(); it = (Item) itr.next()){
+            for(Iterator itr = GameData.getItemRegistry().iterator(); itr.hasNext(); it = (Item) itr.next()){
             	if(it instanceof IHeraldryItem && ((IHeraldryItem)it).useDefaultRenderer()){
             		MinecraftForgeClient.registerItemRenderer(it, new HeraldryItemRenderer());
             	}

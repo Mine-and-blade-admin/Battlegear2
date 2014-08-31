@@ -21,11 +21,10 @@ public class BattlegearGUIPacket extends AbstractMBPacket {
 	public BattlegearGUIPacket() {
 	}
 
-	private int equipid;
+	private int equipid = -1;
 	
     @Override
     public void process(ByteBuf in, EntityPlayer player) {
-		equipid = -1;
 		equipid = in.readInt();
         if(equipid != -1){
             player.openGui(Battlegear.INSTANCE, equipid, player.worldObj, 0, 0, 0);

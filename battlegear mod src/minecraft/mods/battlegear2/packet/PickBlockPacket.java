@@ -11,12 +11,10 @@ import net.minecraft.item.ItemStack;
 
 public class PickBlockPacket extends AbstractMBPacket{
     public final static String packetName = "MB2|CreaPick";
-    private String user;
     private ItemStack stack;
     private int slot;
     public PickBlockPacket(){}
-    public PickBlockPacket(EntityPlayer user,ItemStack stack, int slot){
-        this.user = user.getCommandSenderName();
+    public PickBlockPacket(ItemStack stack, int slot){
         this.stack = stack;
         this.slot = slot;
     }
@@ -28,20 +26,22 @@ public class PickBlockPacket extends AbstractMBPacket{
 
     @Override
     public void write(ByteBuf out) {
-        ByteBufUtils.writeUTF8String(out, user);
         out.writeInt(slot);
         ByteBufUtils.writeItemStack(out, stack);
     }
 
     @Override
-    public void process(ByteBuf inputStream, EntityPlayer fake) {
-        user = ByteBufUtils.readUTF8String(inputStream);
-        EntityPlayer player = fake.worldObj.getPlayerEntityByName(user);
+    public void process(ByteBuf inputStream, EntityPlayer player) {
         if(player!=null && !((IBattlePlayer)player).isBattlemode()){
-            slot = inputStream.readInt();
+            try {
+                slot = inputStream.readInt();
+                stack = ByteBufUtils.readItemStack(inputStream);
+            }catch (Exception e){
+                e.printStackTrace();
+                return;
+            }
             if(slot>=0 && slot<9){
                 player.inventory.currentItem = slot;
-                stack = ByteBufUtils.readItemStack(inputStream);
                 if(player.capabilities.isCreativeMode && !ItemStack.areItemStacksEqual(stack, player.getCurrentEquippedItem())){
                     BattlegearUtils.setPlayerCurrentItem(player, stack);
                 }

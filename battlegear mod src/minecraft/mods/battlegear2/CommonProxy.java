@@ -35,9 +35,6 @@ public class CommonProxy {
     public void startFlash(EntityPlayer player, float damage) {
     }
 
-    public void sendPlaceBlockPacket(EntityPlayer entityPlayer, int x, int y, int z, int face, Vec3 par8Vec3){
-    }
-
     public void doSpecialAction(EntityPlayer entityPlayer) {}
 
 	public void tryUseTConstruct() {

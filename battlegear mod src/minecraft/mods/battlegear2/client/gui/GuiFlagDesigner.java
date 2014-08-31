@@ -472,7 +472,7 @@ public class GuiFlagDesigner extends GuiScreen {
                 ItemStack stack = player.getCurrentEquippedItem();
                 if(stack != null && stack.getItem() instanceof IHeraldryItem){
                     ((IHeraldryItem) stack.getItem()).setHeraldry(stack, new ImageData(imageBuffer[bufferPointer], ImageData.IMAGE_RES, ImageData.IMAGE_RES).getByteArray());
-                    Battlegear.packetHandler.sendPacketToServer(new BattlegearChangeHeraldryPacket(player.getCommandSenderName(), ((IHeraldryItem) stack.getItem()).getHeraldry(stack)).generatePacket());
+                    Battlegear.packetHandler.sendPacketToServer(new BattlegearChangeHeraldryPacket(((IHeraldryItem) stack.getItem()).getHeraldry(stack)).generatePacket());
                     this.keyTyped('c',1);
                 }
                 break;

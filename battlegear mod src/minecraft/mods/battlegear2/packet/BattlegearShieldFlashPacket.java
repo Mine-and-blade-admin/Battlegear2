@@ -21,8 +21,13 @@ public class BattlegearShieldFlashPacket extends AbstractMBPacket{
     
     @Override
     public void process(ByteBuf in,EntityPlayer player) {
-        username = ByteBufUtils.readUTF8String(in);
-        damage = in.readFloat();
+        try {
+            username = ByteBufUtils.readUTF8String(in);
+            damage = in.readFloat();
+        }catch (Exception e){
+            e.printStackTrace();
+            return;
+        }
         EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(username);
         if(targetPlayer!=null)
             Battlegear.proxy.startFlash(targetPlayer, damage);

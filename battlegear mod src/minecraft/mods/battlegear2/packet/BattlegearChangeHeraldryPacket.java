@@ -8,13 +8,11 @@ import net.minecraft.item.ItemStack;
 
 public class BattlegearChangeHeraldryPacket extends AbstractMBPacket{
     public static final String packetName = "MB2|Heraldry";
-    private String playerName;
     private byte[] data;
     public BattlegearChangeHeraldryPacket() {
     }
 
-    public BattlegearChangeHeraldryPacket(String user, byte[] dat){
-        playerName = user;
+    public BattlegearChangeHeraldryPacket(byte[] dat){
         data = dat;
     }
 
@@ -25,7 +23,6 @@ public class BattlegearChangeHeraldryPacket extends AbstractMBPacket{
 
     @Override
     public void write(ByteBuf out) {
-        ByteBufUtils.writeUTF8String(out, playerName);
         out.writeInt(data.length);
         out.writeBytes(data);
     }
@@ -33,22 +30,17 @@ public class BattlegearChangeHeraldryPacket extends AbstractMBPacket{
     @Override
     public void process(ByteBuf in, EntityPlayer player) {
         try{
-            playerName = ByteBufUtils.readUTF8String(in);
             data = new byte[in.readInt()];
             in.readBytes(data);
         }catch (Exception e){
             e.printStackTrace();
             return;
         }
-        if(playerName != null){
-            EntityPlayer target = player.worldObj.getPlayerEntityByName(playerName);
-            if(target != null){
-                ItemStack targetEquip = target.getCurrentEquippedItem();
-                if(targetEquip != null && targetEquip.getItem() instanceof IHeraldryItem){
-                    ((IHeraldryItem)targetEquip.getItem()).setHeraldry(targetEquip, data);
-                }
+        if(player != null){
+            ItemStack targetEquip = player.getCurrentEquippedItem();
+            if(targetEquip != null && targetEquip.getItem() instanceof IHeraldryItem){
+                ((IHeraldryItem)targetEquip.getItem()).setHeraldry(targetEquip, data);
             }
-
         }
     }
 }
