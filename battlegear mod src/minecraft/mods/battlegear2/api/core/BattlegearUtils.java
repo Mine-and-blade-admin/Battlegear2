@@ -7,6 +7,7 @@ import cpw.mods.fml.common.eventhandler.EventBus;
 import mods.battlegear2.api.IAllowItem;
 import mods.battlegear2.api.IOffhandDual;
 import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.ISpecialBow;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.api.weapons.WeaponRegistry;
@@ -56,6 +57,7 @@ public class BattlegearUtils {
                 new Class[]{ItemStack.class, EntityPlayer.class, World.class, int.class, int.class, int.class, int.class, float.class, float.class, float.class},
                 new Class[]{ItemStack.class, World.class, EntityPlayer.class}
     };
+    private static String genericAttack = SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName();
 
     public static boolean isBlockingWithShield(EntityPlayer player){
         //TODO: Use this ?
@@ -66,57 +68,94 @@ public class BattlegearUtils {
         return offhand != null && offhand.getItem() instanceof IShield;
     }
 
+    /**
+     * Helper method to check if player is in battlemode
+     * @param player
+     * @return true if in battlemode
+     */
     public static boolean isPlayerInBattlemode(EntityPlayer player) {
         return ((InventoryPlayerBattle) player.inventory).isBattlemode();
     }
 
+    /**
+     * Helper method to set a player item, offset from the current one
+     * @param player
+     * @param stack holding the item to set
+     * @param offset from the current item
+     */
     public static void setPlayerCurrentItem(EntityPlayer player, ItemStack stack, int offset) {
         ((InventoryPlayerBattle) (player.inventory)).setInventorySlotContents(player.inventory.currentItem + offset, stack, false);
     }
-
+    /*
+    * Helper method to set the mainhand item
+     */
     public static void setPlayerCurrentItem(EntityPlayer player, ItemStack stack) {
         setPlayerCurrentItem(player, stack, 0);
     }
 
+    /**
+     * Helper method to set the offhand item, if battlemode is activated
+     */
+    public static void setPlayerOffhandItem(EntityPlayer player, ItemStack stack){
+        if(isPlayerInBattlemode(player))
+            setPlayerCurrentItem(player, stack, InventoryPlayerBattle.WEAPON_SETS);
+    }
+
+    /**
+     * Defines a generic weapon
+     * @param main the item to check
+     * @return true if the item is a generic weapon
+     */
     public static boolean isWeapon(ItemStack main) {
-        if (main.getItem() instanceof IBattlegearWeapon)
+        if (main.getItem() instanceof IBattlegearWeapon)//Our generic weapon flag
             return true;
-        else if(main.getMaxStackSize()==1 && main.getMaxDamage()>0 && !main.getHasSubtypes())
-            return main.getItemUseAction() == EnumAction.bow || main.getAttributeModifiers().containsKey(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName());
-        else if(WeaponRegistry.isWeapon(main))
+        else if(main.getItem() instanceof ItemBlock)//Blocks aren't weapons,duh!
+            return false;
+        else if(main.getMaxStackSize()==1 && main.getMaxDamage()>0 && !main.getHasSubtypes())//Usual values for tools, sword, and bow
             return true;
-        else if(!checkForRightClickFunction(main)){//make sure there are no special functions for offhand/mainhand weapons
-            WeaponRegistry.addDualWeapon(main);
+        else if(WeaponRegistry.isWeapon(main))//Registered as such
+            return true;
+        else if(!checkForRightClickFunction(main)){//Make sure there are no special functions for offhand/mainhand weapons
+            WeaponRegistry.addDualWeapon(main);//register so as not to make that costly check again
             return true;
         }
         return false;
     }
 
+    /**
+     * Defines a combination of left hand/right hand items that is valid to wield
+     * @param main item to be in the right hand
+     * @param off item to be in the left hand
+     * @return true if the right hand item allows left hand item
+     */
     public static boolean isMainHand(ItemStack main, ItemStack off) {
         if(main == null)
             return true;
-    	else if(main.getItem() instanceof IAllowItem)
-            return ((IAllowItem) main.getItem()).allowOffhand(main, off);
-        else if(main.getItem() instanceof ItemBow)
-            return (off == null || off.getItem() instanceof IArrowContainer2);
-        else if(main.getItem() instanceof ItemSword || main.getItem() instanceof ItemTool)
-            return true;
-        else if(isWeapon(main))
-            return main.getItemUseAction() == EnumAction.bow || WeaponRegistry.isMainHand(main);
+    	else if(main.getItem() instanceof IAllowItem)//An item using the API
+            return ((IAllowItem) main.getItem()).allowOffhand(main, off);//defined by the item
+        else if(main.getItem() instanceof ItemBow || main.getItem() instanceof ISpecialBow)//A bow
+            return (off == null || off.getItem() instanceof IArrowContainer2);//with empty hand or quiver
+        else if(isWeapon(main))//A generic weapon
+            return main.getItemUseAction() == EnumAction.bow || main.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isMainHand(main);//With either bow or generic attack, or registered
         return false;
     }
 
+    /**
+     * Defines a item which can be wield in the left hand
+     * @param off the item to be wield in left hand
+     * @return true if the item is allowed in left hand
+     */
     public static boolean isOffHand(ItemStack off) {
         if(off == null)
             return true;
-    	else if(off.getItem() instanceof IOffhandDual)
-            return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);
-        else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || off.getItem() instanceof ItemBlock || off.getItem() instanceof ItemSword)
-            return true;
-        else if(off.getItem() instanceof ItemBow || off.getItem() instanceof ItemTool)
-            return false;
-        else if(isWeapon(off))
-            return off.getItemUseAction() != EnumAction.bow && WeaponRegistry.isOffHand(off);
+    	else if(off.getItem() instanceof IOffhandDual)//An item using the API
+            return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);//defined by the item
+        else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || off.getItem() instanceof ItemBlock)//Shield, Quiver, or Block
+            return true;//always
+        else if(off.getItem() instanceof ItemBow || off.getItem() instanceof ISpecialBow || off.getItem() instanceof ItemTool)//A bow or tool
+            return false;//never
+        else if(isWeapon(off))//A generic weapon
+            return off.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isOffHand(off);//with a generic attack or registered
         return false;
     }
 
