@@ -3,6 +3,7 @@ package mods.battlegear2;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.core.InventoryExceptionEvent;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
@@ -18,6 +19,7 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.api.core.BattlegearUtils;
+import mods.battlegear2.packet.OffhandPlaceBlockPacket;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -94,7 +96,6 @@ public class BattlemodeHookContainerClass {
         }else if(((IBattlePlayer) event.entityPlayer).isBattlemode()) {
             ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = ((InventoryPlayerBattle)event.entityPlayer.inventory).getCurrentOffhandWeapon();
-
             switch (event.action) {
                 case LEFT_CLICK_BLOCK:
                     break;
@@ -102,26 +103,29 @@ public class BattlemodeHookContainerClass {
                     sendOffSwingEvent(event, mainHandItem, offhandItem);
                     break;
                 case RIGHT_CLICK_AIR:
-                    if (mainHandItem == null || BattlegearUtils.isMainHand(mainHandItem, offhandItem)) {
+                    if (BattlegearUtils.isMainHand(mainHandItem, offhandItem)) {
                         event.setCanceled(true);
                         sendOffSwingEvent(event, mainHandItem, offhandItem);
                     }
                     break;
             }
-        }else if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && !event.entityPlayer.worldObj.isRemote) {
+        }else if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             TileEntity tile = event.entityPlayer.worldObj.getTileEntity(event.x, event.y, event.z);
             if(tile != null && tile instanceof IFlagHolder) {
                 ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
                 if (mainHandItem == null) {
-                    List<ItemStack> flags = ((IFlagHolder) tile).getFlags();
-                    if(flags.size()>0){
-                        ItemStack flag = flags.remove(flags.size() - 1);
-                        event.entityPlayer.inventory.setInventorySlotContents(event.entityPlayer.inventory.currentItem, flag);
-                        event.entityPlayer.worldObj.markBlockForUpdate(event.x, event.y, event.z);
-                        event.setCanceled(true);
+                    if(!event.entityPlayer.worldObj.isRemote) {
+                        List<ItemStack> flags = ((IFlagHolder) tile).getFlags();
+                        if(flags.size()>0){
+                            ItemStack flag = flags.remove(flags.size() - 1);
+                            event.entityPlayer.inventory.setInventorySlotContents(event.entityPlayer.inventory.currentItem, flag);
+                            event.entityPlayer.worldObj.markBlockForUpdate(event.x, event.y, event.z);
+                        }
                     }
                 } else if (mainHandItem.getItem() instanceof IHeraldryItem) {
-                    if(((IFlagHolder) tile).addFlag(mainHandItem)){
+                    if(event.entityPlayer.worldObj.isRemote) {
+                        event.useItem = Event.Result.DENY;
+                    }else if(((IFlagHolder) tile).addFlag(mainHandItem)){
                         if(!event.entityPlayer.capabilities.isCreativeMode){
                             event.entityPlayer.inventory.decrStackSize(event.entityPlayer.inventory.currentItem, 1);
                         }
@@ -130,6 +134,46 @@ public class BattlemodeHookContainerClass {
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Attempts to right-click-use an item by the given EntityPlayer
+     */
+    public static boolean tryUseItem(EntityPlayer entityPlayer, ItemStack itemStack, Side side)
+    {
+        if(side.isClient()){
+            Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(-1, -1, -1, 255, itemStack, 0.0F, 0.0F, 0.0F).generatePacket());
+        }
+        final int i = itemStack.stackSize;
+        final int j = itemStack.getItemDamage();
+        ItemStack itemstack1 = itemStack.useItemRightClick(entityPlayer.getEntityWorld(), entityPlayer);
+
+        if (itemstack1 == itemStack && itemstack1.stackSize == i && itemstack1.getMaxItemUseDuration() <= 0 && itemstack1.getItemDamage() == j)
+        {
+            return false;
+        }
+        else
+        {
+            BattlegearUtils.setPlayerOffhandItem(entityPlayer, itemstack1);
+            if (side.isServer() && ((EntityPlayerMP)entityPlayer).theItemInWorldManager.isCreative())
+            {
+                itemstack1.stackSize = i;
+                if (itemstack1.isItemStackDamageable())
+                {
+                    itemstack1.setItemDamage(j);
+                }
+            }
+            if (itemstack1.stackSize == 0)
+            {
+                BattlegearUtils.setPlayerOffhandItem(entityPlayer, null);
+                MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(entityPlayer, itemstack1));
+            }
+            if (side.isServer() && !entityPlayer.isUsingItem())
+            {
+                ((EntityPlayerMP)entityPlayer).sendContainerToPlayer(entityPlayer.inventoryContainer);
+            }
+            return true;
         }
     }
 
@@ -185,7 +229,6 @@ public class BattlemodeHookContainerClass {
                     }
                     if (offAttackEvent.cancelParent) {
                         event.setCanceled(true);
-                        event.setResult(Event.Result.DENY);
                     }
                 }
             }

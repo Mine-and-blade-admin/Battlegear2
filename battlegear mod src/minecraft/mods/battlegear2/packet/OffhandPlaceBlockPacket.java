@@ -3,7 +3,12 @@ package mods.battlegear2.packet;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
+import mods.battlegear2.Battlegear;
+import mods.battlegear2.BattlemodeHookContainerClass;
+import mods.battlegear2.api.core.BattlegearUtils;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -12,7 +17,7 @@ import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.WorldServer;
+import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -21,24 +26,19 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
     private int xPosition;
     private int yPosition;
     private int zPosition;
-
     /** The offset to use for block/item placement. */
     private int direction;
     private ItemStack itemStack;
-
     /** The offset from xPosition where the actual click took place */
     private float xOffset;
-
     /** The offset from yPosition where the actual click took place */
     private float yOffset;
-
     /** The offset from zPosition where the actual click took place */
     private float zOffset;
 
     public OffhandPlaceBlockPacket() {}
 
-    public OffhandPlaceBlockPacket(int par1, int par2, int par3, int par4, ItemStack par5ItemStack, float par6, float par7, float par8)
-    {
+    public OffhandPlaceBlockPacket(int par1, int par2, int par3, int par4, ItemStack par5ItemStack, float par6, float par7, float par8){
         this.xPosition = par1;
         this.yPosition = par2;
         this.zPosition = par3;
@@ -80,41 +80,40 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
         }catch(Exception io){
             return;
         }
-        MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
-        WorldServer worldserver = mcServer.worldServerForDimension(player.dimension);
+        if(player == null || !(player instanceof EntityPlayerMP))
+            return;
+        ItemStack offhandWeapon = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
         boolean flag = true;
         int i = xPosition;
         int j = yPosition;
         int k = zPosition;
         int l = direction;
         ((EntityPlayerMP)player).func_143004_u();
-
         if (direction == 255){
-            if (itemStack == null){
+            if (offhandWeapon == null)
                 return;
-            }
-
-            PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, worldserver);
+            PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.getEntityWorld());
             if (event.useItem != Event.Result.DENY){
-                ((EntityPlayerMP)player).theItemInWorldManager.tryUseItem(player, worldserver, itemStack);
+                BattlemodeHookContainerClass.tryUseItem(player, offhandWeapon, Side.SERVER);
             }
             flag = false;
         }
-        else if (yPosition >= mcServer.getBuildLimit() - 1 && (direction == 1 || yPosition >= mcServer.getBuildLimit())){
-            ChatComponentTranslation chat = new ChatComponentTranslation("build.tooHigh", mcServer.getBuildLimit());
-            chat.getChatStyle().setColor(EnumChatFormatting.RED);
-            ((EntityPlayerMP)player).playerNetServerHandler.sendPacket(new S02PacketChat(chat));
-        }
-        else{
-            double dist = ((EntityPlayerMP)player).theItemInWorldManager.getBlockReachDistance() + 1;
-            dist *= dist;
-            if (player.getDistanceSq((double)i + 0.5D, (double)j + 0.5D, (double)k + 0.5D) < dist && !mcServer.isBlockProtected(worldserver, i, j, k, player))
-            {
-                ((EntityPlayerMP)player).theItemInWorldManager.activateBlockOrUseItem(player, worldserver, itemStack, i, j, k, l, xOffset, yOffset, zOffset);
+        else {
+            MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
+            if (yPosition >= mcServer.getBuildLimit() - 1 && (direction == 1 || yPosition >= mcServer.getBuildLimit())) {
+                ChatComponentTranslation chat = new ChatComponentTranslation("build.tooHigh", mcServer.getBuildLimit());
+                chat.getChatStyle().setColor(EnumChatFormatting.RED);
+                ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S02PacketChat(chat));
+            } else {
+                double dist = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance() + 1;
+                dist *= dist;
+                if (((EntityPlayerMP) player).playerNetServerHandler.hasMoved && player.getDistanceSq((double) i + 0.5D, (double) j + 0.5D, (double) k + 0.5D) < dist && !mcServer.isBlockProtected(player.getEntityWorld(), i, j, k, player)) {
+                    activateBlockOrUseItem((EntityPlayerMP) player, offhandWeapon, i, j, k, l, xOffset, yOffset, zOffset);
+                }
             }
         }
         if (flag){
-            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(i, j, k, worldserver));
+            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(i, j, k, player.getEntityWorld()));
             if (l == 0){
                 --j;
             }
@@ -133,13 +132,78 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
             if (l == 5){
                 ++i;
             }
-            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(i, j, k, worldserver));
+            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(i, j, k, player.getEntityWorld()));
         }
+        offhandWeapon = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
 
-        if (itemStack != null && itemStack.stackSize <= 0){
-            ForgeEventFactory.onPlayerDestroyItem(player, itemStack);
-            player.inventory.setInventorySlotContents(player.inventory.currentItem+ 3, null);
-            itemStack = null;
+        if (offhandWeapon != null && offhandWeapon.stackSize <= 0){
+            BattlegearUtils.setPlayerOffhandItem(player, null);
+            offhandWeapon = null;
+        }
+        if (offhandWeapon == null || offhandWeapon.getMaxItemUseDuration() == 0)
+        {
+            ((EntityPlayerMP) player).isChangingQuantityOnly = true;
+            BattlegearUtils.setPlayerOffhandItem(player, ItemStack.copyItemStack(((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon()));
+            player.openContainer.detectAndSendChanges();
+            ((EntityPlayerMP) player).isChangingQuantityOnly = false;
+
+            if (!ItemStack.areItemStacksEqual(((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon(), this.itemStack))
+            {
+                Battlegear.packetHandler.sendPacketToPlayer(new BattlegearSyncItemPacket(player).generatePacket(), (EntityPlayerMP) player);
+            }
         }
     }
+
+    /**
+     * From ItemInWorldManager:
+     * Activate the clicked on block, or use the given itemStack.
+     */
+    public boolean activateBlockOrUseItem(EntityPlayerMP playerMP, ItemStack itemStack, int x, int y, int z, int side, float xOffset, float yOffset, float zOffset)
+    {
+        World theWorld = playerMP.getEntityWorld();
+        PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(playerMP, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, theWorld);
+        if (event.isCanceled())
+        {
+            playerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));
+            return false;
+        }
+
+        if (itemStack != null && itemStack.getItem().onItemUseFirst(itemStack, playerMP, theWorld, x, y, z, side, xOffset, yOffset, zOffset))
+        {
+            if (itemStack.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(playerMP, itemStack);
+            return true;
+        }
+
+        boolean useBlock = !playerMP.isSneaking() || ((InventoryPlayerBattle)playerMP.inventory).getCurrentOffhandWeapon() == null;
+        if (!useBlock) useBlock = ((InventoryPlayerBattle)playerMP.inventory).getCurrentOffhandWeapon().getItem().doesSneakBypassUse(theWorld, x, y, z, playerMP);
+        boolean result = false;
+
+        if (useBlock)
+        {
+            if (event.useBlock != Event.Result.DENY)
+            {
+                result = theWorld.getBlock(x, y, z).onBlockActivated(theWorld, x, y, z, playerMP, side, xOffset, yOffset, zOffset);
+            }
+            else
+            {
+                playerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));
+                result = event.useItem != Event.Result.ALLOW;
+            }
+        }
+
+        if (itemStack != null && !result && event.useItem != Event.Result.DENY)
+        {
+            final int meta = itemStack.getItemDamage();
+            final int size = itemStack.stackSize;
+            result = itemStack.tryPlaceItemIntoWorld(playerMP, theWorld, x, y, z, side, xOffset, yOffset, zOffset);
+            if (playerMP.theItemInWorldManager.isCreative())
+            {
+                itemStack.setItemDamage(meta);
+                itemStack.stackSize = size;
+            }
+            if (itemStack.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(playerMP, itemStack);
+        }
+        return result;
+    }
+
 }
