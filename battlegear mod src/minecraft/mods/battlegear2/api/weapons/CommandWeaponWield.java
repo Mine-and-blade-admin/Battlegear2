@@ -2,6 +2,7 @@ package mods.battlegear2.api.weapons;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayer;
@@ -112,8 +113,10 @@ public class CommandWeaponWield extends CommandBase{
                 return getListOfStringsMatchingLastWord(par2ArrayOfStr, operations);
         }
         else if(par2ArrayOfStr.length == 3) {
-            if (par2ArrayOfStr[0].equals(searchModes[0]))
+            if (par2ArrayOfStr[0].equals(searchModes[0]))//current
                 return getListOfStringsMatchingLastWord(par2ArrayOfStr, MinecraftServer.getServer().getAllUsernames());
+            else if(par2ArrayOfStr[0].equals(searchModes[1]))//name
+                return getListOfStringsFromIterableMatchingLastWord(par2ArrayOfStr, GameData.getItemRegistry().getKeys());
             else if (par2ArrayOfStr[0].equals(searchModes[2])) {//sensitivity
                 if(par2ArrayOfStr[1].equals(operations[0]))//add
                     return getListOfStringsFromIterableMatchingLastWord(par2ArrayOfStr, Sets.difference(ImmutableSet.copyOf(getNames(WeaponRegistry.Sensitivity.values(), false)), sensitivities));
