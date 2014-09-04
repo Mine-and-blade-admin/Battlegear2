@@ -2,13 +2,14 @@
             {
             "modid": "battlegear2",
             "name": "$name",
-            "description": "A WIP, opensource combat mod, focusing on groundbreaking features and balanced combat",
+            "description": "A WIP, open-source combat mod, focusing on groundbreaking features and balanced combat",
             "version": "$version",
             "mcversion": "$mcversion",
             "logoFile": "bg-logo.png",
-            "url": "http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/",
+            "url": "http://www.curse.com/mc-mods/minecraft/mb-battlegear-2",
             "updateUrl": "",
-            "authorList": ["nerd-boy", "GotoLink"],
-            "credits": "By nerd-boy & GotoLink, with help from coolAlias"}
+            "authorList": ["nerd-boy", "GotoLink", "coolAlias"],
+            "credits": "By nerd-boy & GotoLink, with help from coolAlias"
+            }
             ]
         
