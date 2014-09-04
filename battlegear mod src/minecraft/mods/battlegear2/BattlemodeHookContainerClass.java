@@ -167,7 +167,7 @@ public class BattlemodeHookContainerClass {
             if (itemstack1.stackSize == 0)
             {
                 BattlegearUtils.setPlayerOffhandItem(entityPlayer, null);
-                MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(entityPlayer, itemstack1));
+                ForgeEventFactory.onPlayerDestroyItem(entityPlayer, itemstack1);
             }
             if (side.isServer() && !entityPlayer.isUsingItem())
             {
@@ -188,7 +188,6 @@ public class BattlemodeHookContainerClass {
     public void onOffhandSwing(PlayerEventChild.OffhandSwingEvent event){
         if(event.offHand != null && event.parent.getClass().equals(PlayerInteractEvent.class)){
             if (event.offHand.getItem() instanceof IShield){
-                ((PlayerInteractEvent)event.parent).useItem = Event.Result.DENY;
                 event.setCanceled(true);
             }else if(event.offHand.getItem() instanceof IOffhandDual){
                 boolean shouldSwing = true;

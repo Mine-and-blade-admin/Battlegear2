@@ -9,7 +9,9 @@ import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.RenderItemBarEvent;
+import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.IBattlePlayer;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.weapons.IBackStabbable;
@@ -233,32 +235,33 @@ public class BattlegearClientEvents {
      */
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replacePickBlock(MouseEvent event){
-        if(event.buttonstate && event.button-100==Minecraft.getMinecraft().gameSettings.keyBindPickBlock.getKeyCode()){
+        if(event.buttonstate){
             Minecraft mc = FMLClientHandler.instance().getClient();
-            if(mc.thePlayer!=null && mc.theWorld!=null){
-                event.setCanceled(true);
-                if(!((IBattlePlayer)mc.thePlayer).isBattlemode()){
-                    boolean isCreative = mc.thePlayer.capabilities.isCreativeMode;
-                    ItemStack stack = getItemFromPointedAt(Minecraft.getMinecraft().objectMouseOver, mc.theWorld, isCreative);
-                    if(stack!=null){
-                        int k = -1;
-                        ItemStack temp;
-                        for(int slot=0; slot<MAIN_INV;slot++){
-                            temp = mc.thePlayer.inventory.getStackInSlot(slot);
-                            if(temp!=null && stack.isItemEqual(temp) && ItemStack.areItemStackTagsEqual(stack, temp)){
-                                k = slot;
-                                break;
+            if (mc.thePlayer != null) {
+                if(event.button-100 == mc.gameSettings.keyBindPickBlock.getKeyCode()){
+                    event.setCanceled(true);
+                    if (!((IBattlePlayer) mc.thePlayer).isBattlemode()) {
+                        boolean isCreative = mc.thePlayer.capabilities.isCreativeMode;
+                        ItemStack stack = getItemFromPointedAt(mc.objectMouseOver, mc.theWorld, isCreative);
+                        if (stack != null) {
+                            int k = -1;
+                            ItemStack temp;
+                            for (int slot = 0; slot < MAIN_INV; slot++) {
+                                temp = mc.thePlayer.inventory.getStackInSlot(slot);
+                                if (temp != null && stack.isItemEqual(temp) && ItemStack.areItemStackTagsEqual(stack, temp)) {
+                                    k = slot;
+                                    break;
+                                }
                             }
-                        }
-                        if(isCreative && k==-1){
-                            k = mc.thePlayer.inventory.getFirstEmptyStack();
-                            if(k < 0 || k >= MAIN_INV){
-                                k = mc.thePlayer.inventory.currentItem;
+                            if (isCreative && k == -1) {
+                                k = mc.thePlayer.inventory.getFirstEmptyStack();
+                                if (k < 0 || k >= MAIN_INV) {
+                                    k = mc.thePlayer.inventory.currentItem;
+                                }
                             }
-                        }
-                        if (k >= 0 && k < MAIN_INV)
-                        {
-                            Battlegear.packetHandler.sendPacketToServer(new PickBlockPacket(stack, k).generatePacket());
+                            if (k >= 0 && k < MAIN_INV) {
+                                Battlegear.packetHandler.sendPacketToServer(new PickBlockPacket(stack, k).generatePacket());
+                            }
                         }
                     }
                 }
