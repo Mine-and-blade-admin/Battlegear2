@@ -5,6 +5,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.ISpecialBow;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
@@ -67,7 +68,6 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
         super.registerIcons(par1IconRegister);
         quiverDetails = par1IconRegister.registerIcon("battlegear2:quiver/quiver-details");
         quiverArrows = par1IconRegister.registerIcon("battlegear2:quiver/quiver-arrows");
-
     }
 
     @Override
@@ -110,7 +110,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
 
     @Override
     public boolean hasArrowFor(ItemStack stack, ItemStack bow, EntityPlayer player, int slot) {
-        return bow != null && bow.getItem() instanceof ItemBow && ((IArrowContainer2)stack.getItem()).getStackInSlot(stack, slot) != null;
+        return bow != null && (bow.getItem() instanceof ItemBow || bow.getItem() instanceof ISpecialBow) && ((IArrowContainer2)stack.getItem()).getStackInSlot(stack, slot) != null;
     }
 
     @Override
