@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BattlemodeHookContainerClass;
+import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,6 +19,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
@@ -92,7 +94,8 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
         if (direction == 255){
             if (offhandWeapon == null)
                 return;
-            PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.getEntityWorld());
+            PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.getEntityWorld());
+            MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, offhandWeapon));
             if (event.useItem != Event.Result.DENY){
                 BattlemodeHookContainerClass.tryUseItem(player, offhandWeapon, Side.SERVER);
             }
@@ -161,7 +164,8 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
     public boolean activateBlockOrUseItem(EntityPlayerMP playerMP, ItemStack itemStack, int x, int y, int z, int side, float xOffset, float yOffset, float zOffset)
     {
         World theWorld = playerMP.getEntityWorld();
-        PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(playerMP, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, theWorld);
+        PlayerInteractEvent event = new PlayerInteractEvent(playerMP, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, theWorld);
+        MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, itemStack));
         if (event.isCanceled())
         {
             playerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));

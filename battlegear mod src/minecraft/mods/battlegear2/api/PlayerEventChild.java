@@ -41,7 +41,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
     }
     
 	/**
-	 * Event fired when a shield successfully blocks an attack (in @link LivingHurtEvent)
+	 * Event fired when a shield successfully blocks an attack (in {@link LivingHurtEvent})
 	 */
 	 public static class ShieldBlockEvent extends PlayerEventChild {
 	 	public final ItemStack shield;
@@ -113,6 +113,28 @@ public abstract class PlayerEventChild extends PlayerEvent{
 
         public Entity getTarget() {
             return event.target;
+        }
+    }
+
+    /**
+     * This event replicates the event usage of {@link PlayerInteractEvent} for the item in left hand on right click,
+     * allowing support for other mods that use such event to customize item usage
+     * {@link Item#onItemUseFirst}, {@link Item#onItemRightClick}and {@link Item#onItemUse} will then get called the same way as with the item in the player right hand for PlayerInteractEvent
+     */
+    @Cancelable
+    public static class UseOffhandItemEvent extends PlayerEventChild{
+        /**
+         * The {@link ItemStack} held in left hand
+         */
+        public final ItemStack offhand;
+        /**
+         * The equivalent {@link PlayerInteractEvent} that would have been triggered if the offhand item was held in right hand and right click was pressed
+         */
+        public PlayerInteractEvent event;
+        public UseOffhandItemEvent(PlayerInteractEvent event, ItemStack offhand){
+            super(event);
+            this.event = event;
+            this.offhand = offhand;
         }
     }
 
