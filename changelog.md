@@ -1,4 +1,4 @@
-== Soon ==
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.5.7 ==
 * Allowed more items in battle slots: compass, clock, and more...
 * Expanded Quiver API for custom bows
 * Made Piercing Arrow to pierce multiple layers of blocks
