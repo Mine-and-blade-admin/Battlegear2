@@ -15,13 +15,7 @@ public class BaseEnchantment extends Enchantment {
 	private int max;
 	private int enchantCoeff;
 	private int range;
-	public static final Enchantment bashWeight = new BaseEnchantment(BattlegearConfig.enchantsId[0], 5, 3, 15, 30).setName("bash.weightless");
-	public static final Enchantment bashPower = new BaseEnchantment(BattlegearConfig.enchantsId[1], 10, 5, 10, 40).setName("bash.power");
-	public static final Enchantment bashDamage = new BaseEnchantment(BattlegearConfig.enchantsId[2], 1, 3, 15, 50).setName("bash.damage");
-	public static final Enchantment shieldUsage = new BaseEnchantment(BattlegearConfig.enchantsId[3], 2, 5, 5, 30).setName("shield.usage");
-	public static final Enchantment shieldRecover = new BaseEnchantment(BattlegearConfig.enchantsId[4], 3, 4, 20, 20).setName("shield.recover");
-	public static final Enchantment bowLoot = new BaseEnchantment(BattlegearConfig.enchantsId[5], 2, EnumEnchantmentType.bow, 10, 50).setName("bow.loot");
-	public static final Enchantment bowCharge = new BaseEnchantment(BattlegearConfig.enchantsId[6], 1, EnumEnchantmentType.bow, 20, 20).setName("bow.charge");
+	public static Enchantment bashWeight, bashPower, bashDamage, shieldUsage, shieldRecover, bowLoot, bowCharge;
 	
 	public BaseEnchantment(int id, int weight, int limit, int progress,	int range) {
 		super(id, weight, EnumEnchantmentType.all);
@@ -37,8 +31,6 @@ public class BaseEnchantment extends Enchantment {
 			this.range = range;
 		else
 			this.range = 0;
-		enchants.add(this);
-		addToBookList(this);
 	}
 	
 	public BaseEnchantment(int id, int weight, EnumEnchantmentType type, int coeff, int rng){
@@ -52,8 +44,6 @@ public class BaseEnchantment extends Enchantment {
 			this.range = rng;
 		else
 			this.range = 0;
-		enchants.add(this);
-		addToBookList(this);
 	}
 
 	@Override
@@ -97,4 +87,22 @@ public class BaseEnchantment extends Enchantment {
 	public static List<Enchantment> getEnchants() {
 		return enchants;
 	}
+
+    public static void initBase(){
+        bashWeight = new BaseEnchantment(BattlegearConfig.enchantsId[0], 5, 3, 15, 30).setName("bash.weightless");
+        bashPower = new BaseEnchantment(BattlegearConfig.enchantsId[1], 10, 5, 10, 40).setName("bash.power");
+        bashDamage = new BaseEnchantment(BattlegearConfig.enchantsId[2], 1, 3, 15, 50).setName("bash.damage");
+        shieldUsage = new BaseEnchantment(BattlegearConfig.enchantsId[3], 2, 5, 5, 30).setName("shield.usage");
+        shieldRecover = new BaseEnchantment(BattlegearConfig.enchantsId[4], 3, 4, 20, 20).setName("shield.recover");
+        bowLoot = new BaseEnchantment(BattlegearConfig.enchantsId[5], 2, EnumEnchantmentType.bow, 10, 50).setName("bow.loot");
+        bowCharge = new BaseEnchantment(BattlegearConfig.enchantsId[6], 1, EnumEnchantmentType.bow, 20, 20).setName("bow.charge");
+    }
+
+    @Override
+    public Enchantment setName(String name){
+        super.setName(name);
+        enchants.add(this);
+        addToBookList(this);
+        return this;
+    }
 }

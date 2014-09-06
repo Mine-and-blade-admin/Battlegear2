@@ -4,6 +4,7 @@ import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.ShieldType;
+import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.ItemBlockFlagPole;
 import mods.battlegear2.heraldry.KnightArmourRecipie;
@@ -102,6 +103,13 @@ public class BattlegearConfig {
                 Battlegear.logger.warn("Found conflicting enchantment id for "+enchantsName[i]+ " with assigned id:"+enchantsId[i]);
                 for(int j = enchantsId[i]; j<Enchantment.enchantmentsList.length; j++) {
                     if (Enchantment.enchantmentsList[j] == null) {
+                        boolean conflict = false;
+                        for(int k = i; k<enchantsName.length; k++ ){
+                            if(j == enchantsId[k])
+                                conflict = true;
+                        }
+                        if(conflict)
+                            continue;
                         enchantsId[i] = j;
                         props.set(j);
                         Battlegear.logger.warn("Assigned new id for "+enchantsName[i]+ ":" + j);
@@ -110,6 +118,7 @@ public class BattlegearConfig {
                 }
             }
         }
+        BaseEnchantment.initBase();
         config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.").setRequiresMcRestart(true);
         
         if(Arrays.binarySearch(disabledItems, itemNames[2]) < 0){
