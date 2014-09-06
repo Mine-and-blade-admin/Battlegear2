@@ -44,7 +44,7 @@ public class BattlegearSyncItemPacket extends AbstractMBPacket {
 
             for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
                 ItemStack stack = ByteBufUtils.readItemStack(inputStream);
-                this.player.inventory.setInventorySlotContents(InventoryPlayerBattle.OFFSET + i, stack);
+                ((InventoryPlayerBattle)this.player.inventory).setInventorySlotContents(InventoryPlayerBattle.OFFSET + i, stack, false);
             }
             ((IBattlePlayer) this.player).setSpecialActionTimer(0);
             if(!player.worldObj.isRemote){//Using data sent only by client
