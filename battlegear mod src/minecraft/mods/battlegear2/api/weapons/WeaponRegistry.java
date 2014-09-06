@@ -13,11 +13,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 /**
- * Registry for stacks which will be allowed in battle inventory,
- * accessible through {@link FMLInterModComms} messages.
+ * Registry for stacks which will be allowed in battle inventory, accessible through {@link FMLInterModComms} messages.
  * Use only if your item is not recognized by default.
  * Use of {@link IBattlegearWeapon} is preferred over this method.
- * {@link NBTTagCompound} are supported.
+ * {@link NBTTagCompound} are supported by default, though can be bypassed through /weaponwield sensitivity command by server op
  * @author GotoLink
  *
  */
@@ -50,7 +49,7 @@ public class WeaponRegistry {
     }
 
 	/**
-	 * Helper method to set an {@link ItemStack} as dual-wieldable, bypassing right-click method check
+	 * Helper method to set an {@link ItemStack} as dual-wieldable
 	 */
 	public static void addDualWeapon(ItemStack stack) {
         wielding.put(new StackHolder(stack), Wield.BOTH);
@@ -64,7 +63,7 @@ public class WeaponRegistry {
 	}
 
 	/**
-	 * Helper method to set an {@link ItemStack} as wieldable only in offhand, bypassing right-click method check
+	 * Helper method to set an {@link ItemStack} as wieldable only in offhand
 	 */
 	public static void addOffhandWeapon(ItemStack stack) {
         wielding.put(new StackHolder(stack), Wield.LEFT);
@@ -212,14 +211,12 @@ public class WeaponRegistry {
         };
     }
 
+    /**
+     * The way an item is wield
+     */
     public enum Wield{
         BOTH,
         RIGHT{
-            @Override
-            public boolean setWeapon(ItemStack stack){
-                wielding.put(new StackHolder(stack), this);
-                return true;
-            }
             @Override
             public boolean isOffhand(){
                 return false;
@@ -241,11 +238,8 @@ public class WeaponRegistry {
         }
 
         public boolean setWeapon(ItemStack stack){
-            if(!BattlegearUtils.checkForRightClickFunction(stack)){
-                wielding.put(new StackHolder(stack), this);
-                return true;
-            }
-            return false;
+            wielding.put(new StackHolder(stack), this);
+            return true;
         }
     }
 }
