@@ -72,13 +72,13 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
     public void process(ByteBuf in, EntityPlayer player) {
         try{
             this.xPosition = in.readInt();
-            this.yPosition = in.readByte();
+            this.yPosition = in.readUnsignedByte();
             this.zPosition = in.readInt();
-            this.direction = in.readByte();
+            this.direction = in.readUnsignedByte();
             this.itemStack = ByteBufUtils.readItemStack(in);
-            this.xOffset = (float)in.readByte() / 16.0F;
-            this.yOffset = (float)in.readByte() / 16.0F;
-            this.zOffset = (float)in.readByte() / 16.0F;
+            this.xOffset = (float)in.readUnsignedByte() / 16.0F;
+            this.yOffset = (float)in.readUnsignedByte() / 16.0F;
+            this.zOffset = (float)in.readUnsignedByte() / 16.0F;
         }catch(Exception io){
             return;
         }
