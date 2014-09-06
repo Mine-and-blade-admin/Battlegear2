@@ -1,13 +1,19 @@
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.7 ==
 * Allowed more items in battle slots: compass, clock, and more...
-* Expanded Quiver API for custom bows
+* Expanded Quiver API for custom bows (thanks coolAlias)
 * Made Piercing Arrow to pierce multiple layers of blocks
 * Added support for custom saved file name in M.U.D
-* Allowed making of custom weapons from other mods IMCMessage-s
+* Allowed making of custom weapons from other mods by IMCMessage-s
 * Added enchantment id conflict automated fixer (fixing previous known issue)
 ** beware if you add new mods, old world saves could break
 * Added a sensibility parameter for /weaponwield
 * Fixed block being "stolen"/shield usage between players in battlemode on server
+* Added hoe, potion and food usage in left hand
+* Added API for item usage in left hand
+* Allowed /weaponwield to set items with right click use as wieldable
+
+**Warning**
+May not be compatible with older versions on dedicated servers, please update both server and client
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.6 ==
 * Update for 1.7.10
