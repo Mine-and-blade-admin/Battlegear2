@@ -1,15 +1,27 @@
 package mods.battlegear2.client.utils;
 
+import mods.battlegear2.api.core.BattlegearUtils;
+import mods.battlegear2.api.core.IBattlePlayer;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.item.ItemStack;
 
 public class BattlegearClientUtils {
-
+    /**
+     * Patch over EntityOtherPlayerMP#onUpdate() to update isItemInUse field
+     * @param player the player whose #onUpdate method is triggered
+     * @param isItemInUse the old value for isItemInUse field
+     * @return the new value for isItemInUse field
+     */
     public static boolean entityOtherPlayerIsItemInUseHook(EntityOtherPlayerMP player, boolean isItemInUse){
-        ItemStack mainhand = player.getCurrentEquippedItem();
-        if (!isItemInUse && player.isEating() && mainhand != null){
-            //ItemStack itemstack = player.inventory.mainInventory[player.inventory.currentItem];
-            player.setItemInUse(mainhand, mainhand.getMaxItemUseDuration());
+        ItemStack itemStack = player.getCurrentEquippedItem();
+        if(BattlegearUtils.isPlayerInBattlemode(player)){
+            ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+            if(offhand!=null && BattlegearUtils.usagePriorAttack(offhand))
+                itemStack = offhand;
+        }
+        if (!isItemInUse && player.isEating() && itemStack != null){
+            player.setItemInUse(itemStack, itemStack.getMaxItemUseDuration());
             return true;
         }
         else if (isItemInUse && !player.isEating()){

@@ -20,13 +20,7 @@ import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemBow;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,6 +31,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -74,7 +69,7 @@ public class BattlegearUtils {
      * @return true if in battlemode
      */
     public static boolean isPlayerInBattlemode(EntityPlayer player) {
-        return ((InventoryPlayerBattle) player.inventory).isBattlemode();
+        return ((IBattlePlayer) player).isBattlemode();
     }
 
     /**
@@ -150,13 +145,22 @@ public class BattlegearUtils {
             return true;
     	else if(off.getItem() instanceof IOffhandDual)//An item using the API
             return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);//defined by the item
-        else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || off.getItem() instanceof ItemBlock)//Shield, Quiver, or Block
+        else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || usagePriorAttack(off))//Shield, Quiver, or "usable"
             return true;//always
-        else if(off.getItem() instanceof ItemBow || off.getItem() instanceof ISpecialBow || off.getItem() instanceof ItemTool)//A bow or tool
+        else if(off.getItem() instanceof ItemBow || off.getItem() instanceof ISpecialBow)//A bow
             return false;//never
         else if(isWeapon(off))//A generic weapon
             return off.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isOffHand(off);//with a generic attack or registered
         return false;
+    }
+
+    /**
+     * Defines a item which "use" (effect on right click) should have priority over its "attack" (effect on left click)
+     * @param itemStack the item which will be "used", instead of attacking
+     * @return true if such item prefer being "used"
+     */
+    public static boolean usagePriorAttack(ItemStack itemStack){
+        return itemStack.getItem() instanceof ItemBlock||itemStack.getItem() instanceof ItemHoe||itemStack.getItem() instanceof ItemPotion||itemStack.getItem() instanceof ItemFood;
     }
 
     @Deprecated//See method below
@@ -443,4 +447,52 @@ public class BattlegearUtils {
         }
     }
 
+    /**
+     * Patch over the PlayerUseItemEvent.Finish in EntityPlayer#onItemUseFinish() to pass the previous stacksize
+     * @param entityPlayer the {@link EntityPlayer} who finished using the itemInUse
+     * @param itemInUse the {@link ItemStack} which finished being used
+     * @param itemInUseCount the {@link EntityPlayer} item use count
+     * @param previousStackSize the itemInUse {@link ItemStack#stackSize} before {@link ItemStack#onFoodEaten(World, EntityPlayer)}
+     * @param result from itemInUse#onFoodEaten(entityPlayer.worldObj, entityPlayer)
+     * @return the final resulting {@link ItemStack}
+     */
+    public static ItemStack beforeFinishUseEvent(EntityPlayer entityPlayer, ItemStack itemInUse, int itemInUseCount, ItemStack result, int previousStackSize) {
+        result = ForgeEventFactory.onItemUseFinish(entityPlayer, itemInUse, itemInUseCount, result);
+        if(isPlayerInBattlemode(entityPlayer)) {
+            if (result != itemInUse || (result != null && result.stackSize != previousStackSize)) {
+                //Compare with either hands content
+                if (itemInUse == entityPlayer.getCurrentEquippedItem()) {
+                    if (result != null && result.stackSize == 0) {
+                        setPlayerCurrentItem(entityPlayer, null);
+                    } else {
+                        setPlayerCurrentItem(entityPlayer, result);
+                    }
+                } else if (itemInUse == ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon()) {
+                    if (result != null && result.stackSize == 0) {
+                        setPlayerOffhandItem(entityPlayer, null);
+                    } else {
+                        setPlayerOffhandItem(entityPlayer, result);
+                    }
+                }
+            }
+            //Reset stuff so that vanilla doesn't do anything
+            entityPlayer.clearItemInUse();
+            return null;
+        }
+        return result;
+    }
+
+    /**
+     * Patch in EntityPlayer#onUpdate() to support hotswap of itemInUse
+     * @param entityPlayer
+     * @param itemInUse
+     * @return
+     */
+    public static ItemStack getCurrentItemOnUpdate(EntityPlayer entityPlayer, ItemStack itemInUse) {
+        ItemStack itemStack = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
+        if(itemInUse == itemStack) {
+            return itemStack;
+        }
+        return entityPlayer.getCurrentEquippedItem();
+    }
 }

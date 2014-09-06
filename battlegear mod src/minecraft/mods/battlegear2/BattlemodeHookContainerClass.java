@@ -149,7 +149,7 @@ public class BattlemodeHookContainerClass {
         final int j = itemStack.getItemDamage();
         ItemStack itemstack1 = itemStack.useItemRightClick(entityPlayer.getEntityWorld(), entityPlayer);
 
-        if (itemstack1 == itemStack && itemstack1.stackSize == i && itemstack1.getMaxItemUseDuration() <= 0 && itemstack1.getItemDamage() == j)
+        if (itemstack1 == itemStack && (itemstack1 == null || itemstack1.stackSize == i && (side.isServer()?(itemstack1.getMaxItemUseDuration() <= 0 && itemstack1.getItemDamage() == j):true)))
         {
             return false;
         }
@@ -164,7 +164,7 @@ public class BattlemodeHookContainerClass {
                     itemstack1.setItemDamage(j);
                 }
             }
-            if (itemstack1.stackSize == 0)
+            if (itemstack1.stackSize <= 0)
             {
                 BattlegearUtils.setPlayerOffhandItem(entityPlayer, null);
                 ForgeEventFactory.onPlayerDestroyItem(entityPlayer, itemstack1);
@@ -187,7 +187,7 @@ public class BattlemodeHookContainerClass {
     @SubscribeEvent(priority=EventPriority.HIGHEST)
     public void onOffhandSwing(PlayerEventChild.OffhandSwingEvent event){
         if(event.offHand != null && event.parent.getClass().equals(PlayerInteractEvent.class)){
-            if (event.offHand.getItem() instanceof IShield){
+            if (event.offHand.getItem() instanceof IShield || BattlegearUtils.usagePriorAttack(event.offHand)){
                 event.setCanceled(true);
             }else if(event.offHand.getItem() instanceof IOffhandDual){
                 boolean shouldSwing = true;

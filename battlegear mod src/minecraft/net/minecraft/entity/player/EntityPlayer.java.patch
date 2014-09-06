@@ -1,21 +1,9 @@
-@@ -14,6 +14,10 @@
- import java.util.UUID;
- import java.util.Map.Entry;
+@@ -54,7 +54,19 @@
  
-+import mods.battlegear2.api.core.BattlegearUtils;
-+import mods.battlegear2.api.core.IBattlePlayer;
-+import mods.battlegear2.api.core.InventoryPlayerBattle;
-+import mods.battlegear2.api.shield.IShield;
- import net.minecraft.block.Block;
- import net.minecraft.block.BlockBed;
- import net.minecraft.block.material.Material;
-@@ -93,8 +97,20 @@
- import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
- import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+ import java.util.*;
  
--public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
-+public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender, IBattlePlayer
- {
+-public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender {
++public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender, mods.battlegear2.api.core.IBattlePlayer {
 +    /*
 +	 * Mine & Blade: Notes Edits made by: nerd-boy
 +	 *
@@ -31,78 +19,76 @@
      public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
      private HashMap<Integer, ChunkCoordinates> spawnChunkMap = new HashMap<Integer, ChunkCoordinates>();
      private HashMap<Integer, Boolean> spawnForcedMap = new HashMap<Integer, Boolean>();
-@@ -102,7 +118,7 @@
+@@ -62,7 +74,7 @@
      /**
       * Inventory of the player
       */
 -    public InventoryPlayer inventory = new InventoryPlayer(this);
-+    public InventoryPlayer inventory = new InventoryPlayerBattle(this);
++    public InventoryPlayer inventory = new mods.battlegear2.api.core.InventoryPlayerBattle(this);
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
      /**
       * The Container for the player's inventory (which opens when they press E)
-@@ -220,6 +236,7 @@
-         this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
+@@ -177,6 +189,7 @@
+         this.dataWatcher.addObject(16, Byte.valueOf((byte) 0));
          this.dataWatcher.addObject(17, Float.valueOf(0.0F));
          this.dataWatcher.addObject(18, Integer.valueOf(0));
-+        this.dataWatcher.addObject(25, (byte)0);//-----MB-Edited-----
++        this.dataWatcher.addObject(25, Byte.valueOf((byte)0));//-----MB-Edited-----
      }
  
      /**
-@@ -506,11 +523,11 @@
+@@ -238,8 +251,7 @@
+     public void onUpdate() {
+         FMLCommonHandler.instance().onPlayerPreTick(this);
+         if (this.itemInUse != null) {
+-            ItemStack itemstack = this.inventory.getCurrentItem();
+-
++            ItemStack itemstack = mods.battlegear2.api.core.BattlegearUtils.getCurrentItemOnUpdate(this, this.itemInUse);
+             if (itemstack == this.itemInUse) {
+                 itemInUseCount = ForgeEventFactory.onItemUseTick(this, itemInUse, itemInUseCount);
+                 if (itemInUseCount <= 0) {
+@@ -407,9 +419,8 @@
+             this.updateItemUse(this.itemInUse, 16);
+             int i = this.itemInUse.stackSize;
+             ItemStack itemstack = this.itemInUse.onFoodEaten(this.worldObj, this);
++            itemstack = mods.battlegear2.api.core.BattlegearUtils.beforeFinishUseEvent(this, itemInUse, itemInUseCount, itemstack, i);//---MB-Edited---
  
-             if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
-             {
--                this.inventory.mainInventory[this.inventory.currentItem] = itemstack;
-+                BattlegearUtils.setPlayerCurrentItem(this, itemstack);//-----MB-Edited-----
+-            itemstack = ForgeEventFactory.onItemUseFinish(this, itemInUse, itemInUseCount, itemstack);
+-
+             if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i) {
+                 this.inventory.mainInventory[this.inventory.currentItem] = itemstack;
  
-                 if (itemstack != null && itemstack.stackSize == 0)
-                 {
--                    this.inventory.mainInventory[this.inventory.currentItem] = null;
-+                    BattlegearUtils.setPlayerCurrentItem(this, null);//-----MB-Edited-----
-                 }
-             }
- 
-@@ -2384,7 +2401,7 @@
-     {
-         if (par1 == 0)
-         {
--            this.inventory.mainInventory[this.inventory.currentItem] = par2ItemStack;
-+            BattlegearUtils.setPlayerCurrentItem(this, par2ItemStack);//-----MB-Edited-----
+@@ -2004,7 +2015,7 @@
+      */
+     public void setCurrentItemOrArmor(int p_70062_1_, ItemStack p_70062_2_) {
+         if (p_70062_1_ == 0) {
+-            this.inventory.mainInventory[this.inventory.currentItem] = p_70062_2_;
++            mods.battlegear2.api.core.BattlegearUtils.setPlayerCurrentItem(this, p_70062_2_);//-----MB-Edited-----
+         } else {
+             this.inventory.armorInventory[p_70062_1_ - 1] = p_70062_2_;
          }
-         else
-         {
-@@ -2644,6 +2661,98 @@
-                 EntityPlayer.EnumChatVisibility var3 = var0[var2];
-                 field_151432_d[var3.chatVisibility] = var3;
-             }
-+        }
+@@ -2229,5 +2240,79 @@
+         NOT_SAFE;
+ 
+         private static final String __OBFID = "CL_00001712";
 +    }
-+
-+
 +    /* ===================================== Battlegear2 START =====================================*/
-+
 +    // -----MB-addFields-----
 +    public float offHandSwingProgress = 0.0F;
 +    public float prevOffHandSwingProgress = 0.0F;
 +    public int offHandSwingProgressInt = 0;
 +    public boolean isOffHandSwingInProgress = false;
 +    public int specialActionTimer = 0;
-+
 +    // -----MB-AddMethod-----
 +    public void attackTargetEntityWithCurrentOffItem(Entity target) {
-+        BattlegearUtils.attackTargetEntityWithCurrentOffItem(this, target);
++        mods.battlegear2.api.core.BattlegearUtils.attackTargetEntityWithCurrentOffItem(this, target);
 +    }
-+
 +    // -----MB-AddMethod-----
 +    public void swingOffItem() {
-+        if (!this.isOffHandSwingInProgress || this.offHandSwingProgressInt >= this
-+                .getArmSwingAnimationEndCopy() / 2
-+                || this.offHandSwingProgressInt < 0) {
++        if (!this.isOffHandSwingInProgress || this.offHandSwingProgressInt >= this.getArmSwingAnimationEndCopy() / 2 || this.offHandSwingProgressInt < 0) {
 +            this.offHandSwingProgressInt = -1;
 +            this.isOffHandSwingInProgress = true;
 +        }
 +    }
-+
 +    // -----MB-AddMethod-----
 +    public float getOffSwingProgress(float frame) {
 +        float diff = this.offHandSwingProgress - this.prevOffHandSwingProgress;
@@ -111,16 +97,10 @@
 +        }
 +        return this.prevOffHandSwingProgress + diff * frame;
 +    }
-+
 +    // -----MB-AddMethod-----
 +    private int getArmSwingAnimationEndCopy() {
-+        return this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this
-+                .getActivePotionEffect(Potion.digSpeed).getAmplifier())
-+                : (this.isPotionActive(Potion.digSlowdown) ? 6 + (1 + this
-+                .getActivePotionEffect(Potion.digSlowdown)
-+                .getAmplifier()) * 2 : 6);
++        return this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) : (this.isPotionActive(Potion.digSlowdown) ? 6 + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : 6);
 +    }
-+
 +    // -----MB-AddMethod----- (Overridden)
 +    @Override
 +    protected void updateArmSwingProgress() {
@@ -146,27 +126,23 @@
 +            this.swingProgressInt = 0;
 +        }
 +    }
-+
 +    // -----MB-AddMethod-----
 +    public boolean isBattlemode() {
-+        return ((InventoryPlayerBattle) inventory).isBattlemode();
++        return ((mods.battlegear2.api.core.InventoryPlayerBattle) inventory).isBattlemode();
 +    }
-+
 +    //-----MB-AddMethod-----
 +    public boolean isBlockingWithShield(){
-+        if(((InventoryPlayerBattle)inventory).getCurrentOffhandWeapon() != null &&
-+                ((InventoryPlayerBattle)inventory).getCurrentOffhandWeapon().getItem() instanceof IShield){
++        if(((mods.battlegear2.api.core.InventoryPlayerBattle)inventory).getCurrentOffhandWeapon() != null && ((mods.battlegear2.api.core.InventoryPlayerBattle)inventory).getCurrentOffhandWeapon().getItem() instanceof mods.battlegear2.api.shield.IShield){
 +            return dataWatcher.getWatchableObjectByte(25) > 0;
 +        }else
 +            return false;
 +    }
 +    //-----MB-AddMethod-----
 +    public void setBlockingWithShield(boolean block){
-+        if(block && ((InventoryPlayerBattle)inventory).getCurrentOffhandWeapon() != null &&
-+                ((InventoryPlayerBattle)inventory).getCurrentOffhandWeapon().getItem() instanceof IShield){
++        if(block && ((mods.battlegear2.api.core.InventoryPlayerBattle)inventory).getCurrentOffhandWeapon() != null && ((mods.battlegear2.api.core.InventoryPlayerBattle)inventory).getCurrentOffhandWeapon().getItem() instanceof mods.battlegear2.api.shield.IShield){
 +            dataWatcher.updateObject(25, (byte)1);
 +        }else{
 +            dataWatcher.updateObject(25, (byte)0);
-         }
++        }
      }
-
+ }

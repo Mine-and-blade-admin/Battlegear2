@@ -32,12 +32,14 @@ public class EntityPlayerTransformer extends TransformerBase {
     private String potionDigSpeedField;
     private String potionDigSlowField;
     private String playerDataWatcherField;
-
+    private String playerItemInUseField;
 
     private String onItemFinishMethodName;
     private String onItemFinishMethodDesc;
     private String setCurrentItemArmourMethodName;
     private String setCurrentItemArmourMethodDesc;
+    private String onUpdateMethodName;
+    private String onUpdateMethodDesc;
     private String playerPotionActiveMethodName;
     private String playerPotionActiveMethodDesc;
     private String playerGetActivePotionMethodName;
@@ -93,20 +95,46 @@ public class EntityPlayerTransformer extends TransformerBase {
                     }
                 }
                 found++;
-            } else if (mn.name.equals(onItemFinishMethodName) &&
-                    mn.desc.equals(onItemFinishMethodDesc)) {
-
+            } else if (mn.name.equals(onItemFinishMethodName) && mn.desc.equals(onItemFinishMethodDesc)) {
                 sendPatchLog("onItemUseFinish");
-                replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
-                found++;
-            } else if (mn.name.equals(setCurrentItemArmourMethodName) &&
-                    mn.desc.equals(setCurrentItemArmourMethodDesc)) {
+                InsnList newList = new InsnList();
+                ListIterator<AbstractInsnNode> it = mn.instructions.iterator();
+                while (it.hasNext()) {
+                    AbstractInsnNode next = it.next();
+                    if (next instanceof MethodInsnNode && ((MethodInsnNode) next).owner.equals("net/minecraftforge/event/ForgeEventFactory")) {
+                        found++;
+                        int index = ((MethodInsnNode) next).desc.indexOf(")");
+                        String newDesc = ((MethodInsnNode) next).desc.substring(0, index) + "I" + ((MethodInsnNode) next).desc.substring(index);
+                        newList.add(new VarInsnNode(ILOAD, 1));
+                        newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "beforeFinishUseEvent", newDesc));
+                    } else {
+                        newList.add(next);
+                    }
+                }
+                mn.instructions = newList;
+            } else if(mn.name.equals(onUpdateMethodName) && mn.desc.equals(onUpdateMethodDesc)){
+                sendPatchLog("onUpdate");
+                InsnList newList = new InsnList();
+                ListIterator<AbstractInsnNode> it = mn.instructions.iterator();
+                while (it.hasNext()) {
+                    AbstractInsnNode next = it.next();
+                    if(next instanceof FieldInsnNode && ((FieldInsnNode) next).owner.equals(entityPlayerClassName) && ((FieldInsnNode) next).name.equals(playerInventoryFieldName)){
+                        found++;
+                        newList.add(new VarInsnNode(ALOAD, 0));
+                        newList.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerItemInUseField, "L"+itemStackClassName+";"));
+                        newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "getCurrentItemOnUpdate", "(L"+entityPlayerClassName+";L"+itemStackClassName+";)L"+itemStackClassName+";"));
+                        next = it.next();
+                    }else{
+                        newList.add(next);
+                    }
+                }
+                mn.instructions = newList;
+            } else if (mn.name.equals(setCurrentItemArmourMethodName) && mn.desc.equals(setCurrentItemArmourMethodDesc)) {
 
                 sendPatchLog("setCurrentItemOrArmor");
                 replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, mn.maxStack, mn.maxLocals);
                 found++;
-            } else if(mn.name.equals(playerInitMethodName) &&
-                    mn.desc.equals(playerInitMethodDesc)) {
+            } else if(mn.name.equals(playerInitMethodName) && mn.desc.equals(playerInitMethodDesc)) {
 
             	sendPatchLog("entityInit");
 
@@ -116,6 +144,7 @@ public class EntityPlayerTransformer extends TransformerBase {
                     AbstractInsnNode next = it.next();
 
                     if(next instanceof InsnNode && next.getOpcode() == RETURN){
+                        found++;
                         newList.add(new VarInsnNode(ALOAD, 0));
                         newList.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerDataWatcherField, "L"+dataWatcherClassName+";"));
                         newList.add(new VarInsnNode(BIPUSH, 25));
@@ -128,7 +157,6 @@ public class EntityPlayerTransformer extends TransformerBase {
                 }
 
                 mn.instructions = newList;
-                found++;
             }
         }
 
@@ -143,7 +171,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         methods.add(methods.size(), generateSetBlockingWithShield());
         methods.add(methods.size(), generateGetter(entityPlayerClassName, "getSpecialActionTimer", "specialActionTimer", "I"));
         methods.add(methods.size(), generateSetter(entityPlayerClassName, "setSpecialActionTimer", "specialActionTimer", "I"));
-        return found == 4;
+        return found == 5;
     }
 
     private MethodNode generateIsBlockingWithShield() {
@@ -509,7 +537,7 @@ public class EntityPlayerTransformer extends TransformerBase {
                 BattlegearTranslator.getMapedFieldName("Potion", "field_76419_f", "digSlowdown");
         playerDataWatcherField =
                 BattlegearTranslator.getMapedFieldName("Entity", "field_70180_af", "dataWatcher");
-
+        playerItemInUseField = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71074_e", "itemInUse");
 
         onItemFinishMethodName =
                 BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71036_o", "onItemUseFinish");
@@ -519,6 +547,8 @@ public class EntityPlayerTransformer extends TransformerBase {
                 BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70062_b", "setCurrentItemOrArmor");
         setCurrentItemArmourMethodDesc =
                 BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70062_b", "(IL"+itemStackClassName+";)V");
+        onUpdateMethodName = BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70071_h_", "onUpdate");
+        onUpdateMethodDesc = BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70071_h_", "()V");
         playerPotionActiveMethodName =
                 BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70644_a", "isPotionActive");
         playerPotionActiveMethodDesc =
