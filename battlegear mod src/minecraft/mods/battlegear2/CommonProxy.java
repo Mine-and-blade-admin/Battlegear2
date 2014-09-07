@@ -20,7 +20,6 @@ public class CommonProxy {
         MinecraftForge.EVENT_BUS.register(new WeaponHookContainerClass());
         MinecraftForge.EVENT_BUS.register(new BowHookContainerClass2());
         MinecraftForge.EVENT_BUS.register(new MobHookContainerClass());
-        new MCPCFixHelper();
     }
 
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {}
