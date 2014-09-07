@@ -37,7 +37,7 @@ public class BattlegearConfig {
     private static Configuration file;
 	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
 	public static boolean forceBackSheath = false, arrowForceRendered = true, enableSkeletonQuiver = true;
-	public static boolean enableGUIKeys = false, enableGuiButtons = true;
+	public static boolean enableGUIKeys = false, enableGuiButtons = true, forceHUD = false;
 	public static final String[] itemNames = {"heraldric","chain","quiver","dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow", "flagpole"};
 	public static final String[] renderNames = {"spear", "shield", "bow", "quiver", "flagpole"};
     public static final String[] toolTypes = {"wood", "stone", "iron", "diamond", "gold"};
@@ -92,8 +92,8 @@ public class BattlegearConfig {
         if(Arrays.binarySearch(disabledItems, itemNames[1]) < 0){
         	chain = new Item().setUnlocalizedName(MODID+itemNames[1]).setTextureName(MODID+itemNames[1]).setCreativeTab(customTab);
         }
-        enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", false).getBoolean(false);
-        enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", true).getBoolean(true);
+        enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
+        enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
         
         for(int i = 0; i<enchantsName.length; i++){
             Property props = config.get("EnchantmentsID", enchantsName[i], enchantsId[i]);
@@ -135,7 +135,7 @@ public class BattlegearConfig {
 
         //default 10% for everything but ender (which is 0%)
         for(int i = 0; i < ItemMBArrow.names.length; i++){
-            skeletonArrowSpawnRate[i] = config.get(category, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0, "", 0, 1).setRequiresMcRestart(true).getDouble(i!=1?0.1F:0);
+            skeletonArrowSpawnRate[i] = config.get(category, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0, "", 0, 1).setRequiresMcRestart(true).getDouble();
         }
         
         sb = new StringBuffer();
@@ -197,9 +197,10 @@ public class BattlegearConfig {
             battleBarOffset[i] = config.get(category, "Offhand hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
             battleBarOffset[i+2] = config.get(category, "Mainhand hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
         }
-        arrowForceRendered = config.get(category, "Render arrow with bow uncharged", true).getBoolean(true);
-        forceBackSheath=config.get(category, "Force Back Sheath", false).getBoolean(false);
-        enableSkeletonQuiver=config.get(category, "Render quiver on skeleton back", true).getBoolean(true);
+        arrowForceRendered = config.get(category, "Render arrow with bow uncharged", arrowForceRendered).getBoolean();
+        forceBackSheath=config.get(category, "Force Back Sheath", forceBackSheath).getBoolean();
+        enableSkeletonQuiver=config.get(category, "Render quiver on skeleton back", enableSkeletonQuiver).getBoolean();
+        forceHUD=config.get(category, "Force screen components rendering", forceHUD).getBoolean();
 
         ShieldType[] types = {ShieldType.WOOD, ShieldType.HIDE, ShieldType.IRON, ShieldType.DIAMOND, ShieldType.GOLD};
         for(int i = 0; i < 5; i++){
@@ -388,6 +389,7 @@ public class BattlegearConfig {
             file.get("Rendering", "Render arrow with bow uncharged", true).set(arrowForceRendered);
             file.get("Rendering", "Force Back Sheath", false).set(forceBackSheath);
             file.get("Rendering", "Render quiver on skeleton back", true).set(enableSkeletonQuiver);
+            file.get("Rendering", "Force screen components rendering", false).set(forceHUD);
             file.get(file.CATEGORY_GENERAL, "Enable GUI Keys", false).set(enableGUIKeys);
             file.get(file.CATEGORY_GENERAL, "Enable GUI Buttons", true).set(enableGuiButtons);
             file.save();

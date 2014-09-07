@@ -99,9 +99,9 @@ public class BattlegearClientEvents {
     /**
      * Render all the Battlegear HUD elements
      */
-	@SubscribeEvent
+	@SubscribeEvent(receiveCanceled = true)
 	public void postRenderOverlay(RenderGameOverlayEvent.Post event) {
-		if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR) {
+		if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR && (BattlegearConfig.forceHUD || !event.isCanceled())) {
 			inGameGUI.renderGameOverlay(event.partialTicks, event.mouseX, event.mouseY);
 		}
 	}
