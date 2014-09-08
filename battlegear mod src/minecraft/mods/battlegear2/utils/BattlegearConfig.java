@@ -473,7 +473,7 @@ public class BattlegearConfig {
             if(type.equals("")||name.equals(""))
                 return false;
             try {
-                Item.ToolMaterial material = Item.ToolMaterial.valueOf(nbtValue.getString("Material").toUpperCase());
+                Item.ToolMaterial material = Item.ToolMaterial.valueOf(nbtValue.getString("Material"));
                 Item item = null;
                 if(type.equalsIgnoreCase("Dagger")){
                     float hitTime = nbtValue.getFloat("Time");
