@@ -94,7 +94,7 @@ public class BowRenderer implements IItemRenderer {
             GL11.glPopMatrix();
         }
 
-        if(item.isItemEnchanted())
+        if(item.hasEffect(0))
             BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
     }
 }

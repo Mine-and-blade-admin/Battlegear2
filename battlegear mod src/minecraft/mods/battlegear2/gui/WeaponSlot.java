@@ -25,7 +25,7 @@ public class WeaponSlot extends Slot {
     public IIcon getBackgroundIconIndex(){
     //MOJANG derp fixes:
         GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glEnable(GL11.GL_BLEND);
+        //GL11.glEnable(GL11.GL_BLEND);
         return Battlegear.proxy.getSlotIcon(mainHand ? 0 : 1);
     }
 

@@ -20,13 +20,11 @@ import org.lwjgl.opengl.GL11;
  * TODO: Add discription
  */
 public class SpearRenderer implements IItemRenderer {
-
-    private Minecraft mc;
     private RenderItem itemRenderer;
 
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return type == ItemRenderType.INVENTORY || type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON;
+        return item!=null && item.getItem() instanceof ItemSpear && (type == ItemRenderType.INVENTORY || type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON);
     }
 
     @Override
@@ -36,15 +34,11 @@ public class SpearRenderer implements IItemRenderer {
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-        if(item == null)
-            return;
         GL11.glPushMatrix();
 
-        if (mc == null) {
-            mc = FMLClientHandler.instance().getClient();
+        if (itemRenderer == null) {
             itemRenderer = new RenderItem();
         }
-        this.mc.renderEngine.bindTexture(TextureMap.locationItemsTexture);
         Tessellator tessellator = Tessellator.instance;
 
         if (type == ItemRenderType.EQUIPPED) {
@@ -61,17 +55,13 @@ public class SpearRenderer implements IItemRenderer {
                     icon.getIconWidth(),
                     icon.getIconHeight(), 1F / 16F);
 
-            if (item.hasEffect(0)) {
-                BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
-            }
-
         }else if (type == ItemRenderType.INVENTORY) {
 
             GL11.glColor4f(1F, 1F, 1F, 1F);
             //GL11.glRotatef(90, 0, 0, 1);
             //MOJANG derp fixes:
                 GL11.glEnable(GL11.GL_ALPHA_TEST);
-                GL11.glEnable(GL11.GL_BLEND);
+            //    GL11.glEnable(GL11.GL_BLEND);
             itemRenderer.renderIcon(0, 0, item.getIconIndex(), 16, 16);
 
         }else if (type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
@@ -85,9 +75,9 @@ public class SpearRenderer implements IItemRenderer {
                     icon.getIconWidth(),
                     icon.getIconHeight(), 1F/16F);
 
-            if (item.hasEffect(0)) {
-                BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
-            }
+        }
+        if (item.hasEffect(0)) {
+            BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
         }
         GL11.glPopMatrix();
     }

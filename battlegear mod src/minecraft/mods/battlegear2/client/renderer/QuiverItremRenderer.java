@@ -15,8 +15,6 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.client.FMLClientHandler;
 
 public class QuiverItremRenderer implements IItemRenderer{
-
-    private Minecraft mc;
     private RenderItem itemRenderer;
 
     @Override
@@ -33,12 +31,9 @@ public class QuiverItremRenderer implements IItemRenderer{
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
 
-        if (mc == null) {
-            mc = FMLClientHandler.instance().getClient();
+        if (itemRenderer == null) {
             itemRenderer = new RenderItem();
         }
-
-        this.mc.renderEngine.bindTexture(TextureMap.locationItemsTexture);
 
         ItemQuiver quiver = (ItemQuiver)item.getItem();
         int col = quiver.getColor(item);
@@ -59,7 +54,7 @@ public class QuiverItremRenderer implements IItemRenderer{
                 GL11.glColor3f(red,green,blue);
                 //MOJANG derp fixes:
                     GL11.glEnable(GL11.GL_ALPHA_TEST);
-                    GL11.glEnable(GL11.GL_BLEND);
+                //    GL11.glEnable(GL11.GL_BLEND);
                 itemRenderer.renderIcon(0, 0, icon, 16, 16);
                 GL11.glColor3f(1, 1, 1);
                 icon = quiver.quiverDetails;
