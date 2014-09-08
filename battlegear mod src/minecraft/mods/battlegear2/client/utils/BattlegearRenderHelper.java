@@ -761,17 +761,15 @@ public class BattlegearRenderHelper {
 
         double f2 = 12F/32F * depth;
         double f3 = 0D;
-        byte b0 = 0;
-        double f4 = (0 + b0 * 10) / 32.0F;
-        double f5 = (5 + b0 * 10) / 32.0F;
+        double f5 = 5 / 32.0F;
         Tessellator tessellator = Tessellator.instance;
         for (int i = 0; i < 2; ++i)
         {
             GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
             GL11.glNormal3f(0.0F, 0.0F, f10);
             tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, f2, f4);
-            tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, f3, f4);
+            tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, f2, f3);
+            tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, f3, f3);
             tessellator.addVertexWithUV(16.0D * depth, 2.0D, 0.0D, f3, f5);
             tessellator.addVertexWithUV(0.0D * depth, 2.0D, 0.0D, f2, f5);
             tessellator.draw();
@@ -779,11 +777,21 @@ public class BattlegearRenderHelper {
             tessellator.startDrawingQuads();
             tessellator.addVertexWithUV(0.0D * depth, 2.0D, 0.0D, f2, f5);
             tessellator.addVertexWithUV(16.0D * depth, 2.0D, 0.0D, f3, f5);
-            tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, f3, f4);
-            tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, f2, f4);
+            tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, f3, f3);
+            tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, f2, f3);
             tessellator.draw();
         }
         GL11.glPopMatrix();
     }
 
+    public static void renderTexturedQuad(int x, int y, float z, int width, int height)
+    {
+        Tessellator tessellator = Tessellator.instance;
+        tessellator.startDrawingQuads();
+        tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)z, 0D, 1D);
+        tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)z, 1D, 1D);
+        tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)z, 1D, 0D);
+        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)z, 0D, 0D);
+        tessellator.draw();
+    }
 }

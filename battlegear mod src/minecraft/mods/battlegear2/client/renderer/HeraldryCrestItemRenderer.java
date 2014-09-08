@@ -4,6 +4,7 @@ import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.HeraldryTextureSmall;
 import mods.battlegear2.api.heraldry.RefreshableTexture;
+import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -94,7 +95,7 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
     private void doInventoryRendering(ItemStack item, HeraldryData heraldryData, IHeraldryItem heraldryItem) {
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(map_overlay);
-        renderTexturedQuad(0, 0, itemRenderer.zLevel, 16, 16);
+        BattlegearRenderHelper.renderTexturedQuad(0, 0, itemRenderer.zLevel, 16, 16);
 
 
         IIcon icon =  heraldryItem.getBaseIcon(item);
@@ -111,7 +112,7 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
         Minecraft.getMinecraft().getTextureManager().bindTexture(crestLocation);
 
 
-        renderTexturedQuad(2, 2, itemRenderer.zLevel, 12, 12);
+        BattlegearRenderHelper.renderTexturedQuad(2, 2, itemRenderer.zLevel, 12, 12);
 
 
 
@@ -119,20 +120,5 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
 
 
         itemRenderer.zLevel -=100;
-
-
-
-    }
-
-
-    public void renderTexturedQuad(int x, int y, float z, int width, int height)
-    {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)z, 0D, 1D);
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)z, 1D, 1D);
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)z, 1D, 0D);
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)z, 0D, 0D);
-        tessellator.draw();
     }
 }

@@ -4,6 +4,7 @@ import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.HeraldryTextureSmall;
 import mods.battlegear2.api.heraldry.RefreshableTexture;
+import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
@@ -69,7 +70,7 @@ public class HeraldryItemRenderer implements IItemRenderer{
             glDepthFunc(GL11.GL_EQUAL);
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            renderTexturedQuad(0, 0, itemRenderer.zLevel, 16, 16);
+            BattlegearRenderHelper.renderTexturedQuad(0, 0, itemRenderer.zLevel, 16, 16);
 
             glDisable(GL_BLEND);
             GL11.glDepthFunc(GL11.GL_LEQUAL);
@@ -86,16 +87,5 @@ public class HeraldryItemRenderer implements IItemRenderer{
             glPopMatrix();
         }
         itemRenderer.zLevel -=100;
-    }
-
-    public void renderTexturedQuad(int x, int y, float z, int width, int height)
-    {
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)z, 0D, 1D);
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)z, 1D, 1D);
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)z, 1D, 0D);
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)z, 0D, 0D);
-        tessellator.draw();
     }
 }
