@@ -1,9 +1,10 @@
-package mods.battlegear2.api.weapons;
+package mods.battlegear2;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.common.registry.GameData;
 import cpw.mods.fml.common.registry.GameRegistry;
+import mods.battlegear2.api.weapons.WeaponRegistry;
 import net.minecraft.command.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;

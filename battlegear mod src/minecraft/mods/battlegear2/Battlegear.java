@@ -8,7 +8,6 @@ import cpw.mods.fml.common.network.FMLEventChannel;
 import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
-import mods.battlegear2.api.weapons.CommandWeaponWield;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.api.core.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
