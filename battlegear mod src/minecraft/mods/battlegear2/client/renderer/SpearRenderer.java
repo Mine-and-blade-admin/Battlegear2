@@ -34,19 +34,20 @@ public class SpearRenderer implements IItemRenderer {
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-        GL11.glPushMatrix();
 
         if (itemRenderer == null) {
             itemRenderer = new RenderItem();
         }
-        Tessellator tessellator = Tessellator.instance;
+        GL11.glPushMatrix();
 
-        if (type == ItemRenderType.EQUIPPED) {
-
-            GL11.glTranslatef(-0.5F, -0.5F, 0);
-            GL11.glScalef(2,2,1);
-            IIcon icon = ((ItemSpear)item.getItem()).bigIcon;
-
+        if (type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
+            IIcon icon = item.getIconIndex();
+            if(type == ItemRenderType.EQUIPPED) {
+                GL11.glTranslatef(-0.5F, -0.5F, 0);
+                GL11.glScalef(2, 2, 1);
+                icon = ((ItemSpear) item.getItem()).bigIcon;
+            }
+            Tessellator tessellator = Tessellator.instance;
             ItemRenderer.renderItemIn2D(tessellator,
                     icon.getMaxU(),
                     icon.getMinV(),
@@ -54,6 +55,9 @@ public class SpearRenderer implements IItemRenderer {
                     icon.getMaxV(),
                     icon.getIconWidth(),
                     icon.getIconHeight(), 1F / 16F);
+            if (item.hasEffect(0)) {
+                BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
+            }
 
         }else if (type == ItemRenderType.INVENTORY) {
 
@@ -63,21 +67,12 @@ public class SpearRenderer implements IItemRenderer {
                 GL11.glEnable(GL11.GL_ALPHA_TEST);
             //    GL11.glEnable(GL11.GL_BLEND);
             itemRenderer.renderIcon(0, 0, item.getIconIndex(), 16, 16);
+            GL11.glEnable(GL11.GL_LIGHTING);
+            GL11.glDisable(GL11.GL_ALPHA_TEST);
+            GL11.glDisable(GL11.GL_BLEND);
+            if(item.hasEffect(0))
+                itemRenderer.renderEffect(Minecraft.getMinecraft().getTextureManager(), 0, 0);
 
-        }else if (type == ItemRenderType.EQUIPPED_FIRST_PERSON) {
-            IIcon icon = item.getIconIndex();
-
-            ItemRenderer.renderItemIn2D(tessellator,
-            		icon.getMaxU(),
-                    icon.getMinV(),
-                    icon.getMinU(),
-                    icon.getMaxV(),
-                    icon.getIconWidth(),
-                    icon.getIconHeight(), 1F/16F);
-
-        }
-        if (item.hasEffect(0)) {
-            BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
         }
         GL11.glPopMatrix();
     }

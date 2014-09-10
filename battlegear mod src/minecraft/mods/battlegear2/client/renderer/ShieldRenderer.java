@@ -82,6 +82,8 @@ public class ShieldRenderer implements IItemRenderer{
                         icon.getMaxV(),
                         icon.getIconWidth(),
                         icon.getIconHeight(), (8F+16F)/256F);
+                if(item.hasEffect(0))
+                    BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
 
                 break;
             case EQUIPPED:
@@ -121,11 +123,12 @@ public class ShieldRenderer implements IItemRenderer{
                         icon.getMaxV(),
                         icon.getIconWidth(),
                         icon.getIconHeight(), (8F+16F)/256F);
+                if(item.hasEffect(0))
+                    BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
 
                 break;
             case INVENTORY:
 
-                GL11.glPushMatrix();
                 GL11.glColor3f(red, green, blue);
                 //MOJANG derp fixes:
                     GL11.glEnable(GL11.GL_ALPHA_TEST);
@@ -134,12 +137,13 @@ public class ShieldRenderer implements IItemRenderer{
                 GL11.glColor3f(1, 1, 1);
                 icon = shield.getTrimIcon();
                 itemRenderer.renderIcon(0, 0, icon, 16, 16);
-                GL11.glPopMatrix();
-
+                GL11.glEnable(GL11.GL_LIGHTING);
+                GL11.glDisable(GL11.GL_ALPHA_TEST);
+                GL11.glDisable(GL11.GL_BLEND);
+                if(item.hasEffect(0))
+                    itemRenderer.renderEffect(Minecraft.getMinecraft().getTextureManager(), 0, 0);
                 break;
         }
-        if(item.hasEffect(0))
-            BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
         BattlegearRenderHelper.renderArrows(item, type == ItemRenderType.ENTITY);
 
         GL11.glPopMatrix();
