@@ -52,7 +52,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
                     temp = new ItemStack[mainInventory.length + 1];
                     System.arraycopy(mainInventory, 0, temp, 0, mainInventory.length);
                     mainInventory = temp;
-                    return mainInventory.length;//Between 36 and 99
+                    return mainInventory.length - 1;//Between 36 and 99
                 }
                 break;
             case ARMOR:
@@ -60,18 +60,23 @@ public class InventoryPlayerBattle extends InventoryPlayer {
                     temp = new ItemStack[armorInventory.length + 1];
                     System.arraycopy(armorInventory, 0, temp, 0, armorInventory.length);
                     armorInventory = temp;
-                    return ARMOR_OFFSET + armorInventory.length;//Between 104 and 149
+                    return ARMOR_OFFSET + armorInventory.length - 1;//Between 104 and 149
                 }
                 break;
             case BATTLE:
                 temp = new ItemStack[extraItems.length+1];
                 System.arraycopy(extraItems, 0, temp, 0, extraItems.length);
                 extraItems = temp;
-                return OFFSET + extraItems.length;
+                return OFFSET + extraItems.length - 1;
         }
         return Integer.MIN_VALUE;//Impossible because of byte cast in inventory NBT
     }
 
+    /**
+     * Patch used for "set current slot" vanilla packets
+     * @param id the value to test for currentItem setting
+     * @return true if it is possible for currentItem to be set with this value
+     */
     public static boolean isValidSwitch(int id) {
         return (id >= 0 && id < getHotbarSize()) || (id >= OFFSET && id < OFFSET + EXTRA_ITEMS);
     }
@@ -98,18 +103,33 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         return -1;
     }
 
+    /**
+     * Allows the item switching in "battlemode", delegates to parent method if in normal mode
+     * @return the currently selected {@link ItemStack}
+     */
     @Override
     public ItemStack getCurrentItem() {
         return isBattlemode() ? extraItems[currentItem - OFFSET] : super.getCurrentItem();
     }
 
+    /**
+     * Changes currentItem and currentItemStack based on a given target
+     * @param targetItem the newly selected item
+     * @param targetDamage the newly selected item damage
+     * @param compareWithDamage if item damage should matter when searching for the target in the inventory
+     * @param forceInEmptySlots if the newly selected item should be forced in empty slots if it couldn't be found as-is
+     */
     @Override
     @SideOnly(Side.CLIENT)
-    public void func_146030_a(Item par1, int par2, boolean par3, boolean par4) {
+    public void func_146030_a(Item targetItem, int targetDamage, boolean compareWithDamage, boolean forceInEmptySlots) {
         if (!isBattlemode())
-            super.func_146030_a(par1, par2, par3, par4);
+            super.func_146030_a(targetItem, targetDamage, compareWithDamage, forceInEmptySlots);
     }
 
+    /**
+     * Scroll the currentItem possible values
+     * @param direction if >0: in the natural order, if <0: in the opposite order
+     */
     @Override
     @SideOnly(Side.CLIENT)
     public void changeCurrentItem(int direction) {
@@ -136,6 +156,12 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
+    /**
+     * Clears all slots that contain the target item with given damage
+     * @param targetId if null, not specific
+     * @param targetDamage if <0, not specific
+     * @return the total number of items cleared
+     */
     @Override
     public int clearInventory(Item targetId, int targetDamage) {
         hasChanged = true;
@@ -168,9 +194,8 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
-
     /**
-     * removed one item of specified itemID from inventory (if it is in a stack, the stack size will reduce with 1)
+     * Removed one item of specified itemID from inventory (if it is in a stack, the stack size will reduce with 1)
      */
     @Override
     public boolean consumeInventoryItem(Item par1) {
@@ -188,9 +213,9 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
-
     /**
      * Get if a specified item id is inside the inventory.
+     * @param par1 the item to search for
      */
     @Override
     public boolean hasItem(Item par1) {
@@ -204,12 +229,19 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
     /**
      * Adds the item stack to the inventory, returns false if it is impossible.
+     * @param par1ItemStack the item stack to add
      */
     @Override
     public boolean addItemStackToInventory(ItemStack par1ItemStack) {
         return super.addItemStackToInventory(par1ItemStack);
     }
 
+    /**
+     * Removes from an inventory slot up to a specified number of items and returns them in a new stack.
+     * @param slot to remove from
+     * @param amount to remove in the item stack
+     * @return the removed items in a item stack, if any
+     */
     @Override
     public ItemStack decrStackSize(int slot, int amount) {
         hasChanged = true;
@@ -217,20 +249,14 @@ public class InventoryPlayerBattle extends InventoryPlayer {
             ItemStack targetStack = extraItems[slot - OFFSET];
 
             if (targetStack != null) {
-
                 if (targetStack.stackSize <= amount) {
-
                     extraItems[slot - OFFSET] = null;
                     return targetStack;
-
                 } else {
-
                     targetStack = extraItems[slot - OFFSET].splitStack(amount);
-
                     if (extraItems[slot - OFFSET].stackSize == 0) {
                         extraItems[slot - OFFSET] = null;
                     }
-
                     return targetStack;
                 }
             }
@@ -242,6 +268,11 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
+    /**
+     * Get the stack in given slot, when closing the container
+     * @param slot to get the content from
+     * @return the stack that is stored in given slot
+     */
     @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
         if (slot >= OFFSET) {
@@ -251,7 +282,11 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
-
+    /**
+     * Sets the given item stack to the specified slot in the inventory
+     * @param slot whose content will change
+     * @param itemStack to put in the slot
+     */
     @Override
     public void setInventorySlotContents(int slot, ItemStack itemStack) {
         setInventorySlotContents(slot, itemStack, true);
@@ -266,6 +301,12 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
+    /**
+     * UNUSED
+     * Get the current item "action value" against a block
+     * @param block that the player is acting against
+     * @return some action value of the current item against given block
+     */
     @Override
     public float func_146023_a(Block block) {
         if (isBattlemode()) {
@@ -277,6 +318,10 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
+    /**
+     * Writes the inventory out as a list of compound tags. This is where the slot indices are used (+100 for armor, +150
+     * for battle slots).
+     */
     @Override
     public NBTTagList writeToNBT(NBTTagList par1nbtTagList) {
         NBTTagList nbtList = super.writeToNBT(par1nbtTagList);
@@ -294,12 +339,31 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         return nbtList;
     }
 
+    /**
+     * Reads from the given tag list, resize each arrays to maximum required and fills the slots in the inventory with the correct items.
+     */
     @Override
     public void readFromNBT(NBTTagList nbtTagList) {
-        this.mainInventory = new ItemStack[mainInventory.length];
-        this.armorInventory = new ItemStack[armorInventory.length];
-        this.extraItems = new ItemStack[extraItems.length];
-
+        int highestMain = mainInventory.length, highestArmor = armorInventory.length, highestExtra = extraItems.length;
+        for (int i = 0; i < nbtTagList.tagCount(); ++i) {
+            NBTTagCompound nbttagcompound = nbtTagList.getCompoundTagAt(i);
+            int j = nbttagcompound.getByte("Slot") & 255;
+            if (j >= 0 && j < ARMOR_OFFSET) {
+                if(j >= highestMain)
+                    highestMain = j + 1;
+            }
+            else if (j >= ARMOR_OFFSET && j < OFFSET) {
+                if(j - ARMOR_OFFSET >= highestArmor)
+                    highestArmor = j + 1 - ARMOR_OFFSET;
+            }
+            else if (j >= OFFSET && j < 255) {
+                if(j - OFFSET >= highestExtra)
+                    highestExtra = j + 1 - OFFSET;
+            }
+        }
+        this.mainInventory = new ItemStack[highestMain];
+        this.armorInventory = new ItemStack[highestArmor];
+        this.extraItems = new ItemStack[highestExtra];
         for (int i = 0; i < nbtTagList.tagCount(); ++i) {
             NBTTagCompound nbttagcompound = nbtTagList.getCompoundTagAt(i);
             int j = nbttagcompound.getByte("Slot") & 255;
@@ -322,6 +386,11 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
+    /**
+     *
+     * @param slot to get the content from
+     * @return the content of the given slot
+     */
     @Override
     public ItemStack getStackInSlot(int slot) {
         if (slot >= OFFSET) {
@@ -331,11 +400,18 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
+    /**
+     *
+     * @return the usual number of slots for vanilla inventory (not hardcoded)
+     */
     @Override
     public int getSizeInventory() {
         return this.mainInventory.length + this.armorInventory.length;
     }
 
+    /**
+     * Drop all slots content, and clear them
+     */
     @Override
     public void dropAllItems() {
     	super.dropAllItems();
@@ -347,23 +423,38 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         }
     }
 
+    /**
+     * UNUSED in vanilla for players, but let's pretend
+     * Mark the inventory content as dirty to be send to the client
+     */
     @Override
     public void markDirty() {
         super.markDirty();
         hasChanged = true;
     }
 
+    /**
+     * Copy the slots content from another instance, usually for changing dimensions
+     * @param par1InventoryPlayer the instance to copy from
+     */
     @Override
     public void copyInventory(InventoryPlayer par1InventoryPlayer) {
         hasChanged = true;
+        this.mainInventory = new ItemStack[par1InventoryPlayer.mainInventory.length];
+        this.armorInventory = new ItemStack[par1InventoryPlayer.armorInventory.length];
         super.copyInventory(par1InventoryPlayer);
         if (par1InventoryPlayer instanceof InventoryPlayerBattle) {
+            this.extraItems = new ItemStack[((InventoryPlayerBattle) par1InventoryPlayer).extraItems.length];
             for (int i = 0; i < extraItems.length; i++) {
-                this.extraItems[i] = par1InventoryPlayer.getStackInSlot(i + OFFSET);
+                this.extraItems[i] = ItemStack.copyItemStack(par1InventoryPlayer.getStackInSlot(i + OFFSET));
             }
         }
     }
 
+    /**
+     * Get the offset item (for the left hand)
+     * @return the item held in left hand, if any
+     */
     public ItemStack getCurrentOffhandWeapon(){
         if(isBattlemode()){
             return getStackInSlot(currentItem+WEAPON_SETS);
