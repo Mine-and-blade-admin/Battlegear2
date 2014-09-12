@@ -3,6 +3,8 @@ package mods.battlegear2.client.gui.controls;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 
+import java.util.Locale;
+
 /**
  * User: nerd-boy
  * Date: 13/08/13
@@ -28,7 +30,7 @@ public class GuiTextFieldAlt extends GuiTextField {
     private String removeInvalidChars(String string){
 
         StringBuffer sb = new StringBuffer();
-        string = string.toUpperCase();
+        string = string.toUpperCase(Locale.ENGLISH);
         for(int i = 0; i < string.length(); i++){
             char next = string.charAt(i);
             if(Character.isDigit(next) || (next >= 'A' && next <= 'F'))

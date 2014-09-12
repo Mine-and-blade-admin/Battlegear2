@@ -41,7 +41,7 @@ public class WeaponRegistry {
             return Wield.LEFT.setWeapon(stack);
         }else{
             try{
-                return Wield.valueOf(type.toUpperCase()).setWeapon(stack);
+                return Wield.valueOf(type.toUpperCase(Locale.ENGLISH)).setWeapon(stack);
             }catch (IllegalArgumentException ignored){
                 return false;
             }

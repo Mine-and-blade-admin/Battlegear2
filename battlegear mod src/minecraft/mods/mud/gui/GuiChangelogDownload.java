@@ -383,7 +383,7 @@ public class GuiChangelogDownload extends GuiScreen
             this.original = originalFile;
             if(md5 != null){
                 try{
-                    this.expectedMd5 = DatatypeConverter.parseHexBinary(md5.toUpperCase());
+                    this.expectedMd5 = DatatypeConverter.parseHexBinary(md5.toUpperCase(Locale.ENGLISH));
                 }catch (Exception e){
                     e.printStackTrace();
                     this.expectedMd5 = null;
