@@ -33,6 +33,7 @@ public class ModUpdateDetector {
     private static Configuration config;
     private static Property check;
     public static boolean enabled = true, verbose = false;
+    private static boolean deleteOld, deleteFailed;
     private static ICommandSender sender = null;
 
     /**
@@ -111,7 +112,9 @@ public class ModUpdateDetector {
 	        Timer = config.get(Configuration.CATEGORY_GENERAL, "Update Time", 60, "The time in minutes between update checks").getInt() * 60 * 20;
             check = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates");
 	        verbose = config.get(Configuration.CATEGORY_GENERAL, "Chat stats", false, "Should MUD print in chat its status").getBoolean();
-            enabled = check.getBoolean(true);
+            enabled = check.getBoolean();
+            deleteOld = config.get(Configuration.CATEGORY_GENERAL, "Remove old file", true, "Should MUD try to remove old file when download is complete").getBoolean();
+            deleteFailed = config.get(Configuration.CATEGORY_GENERAL, "Remove failed download", true, "Should MUD try to remove the new file created if download is failed").getBoolean();
 	        if(config.hasChanged()){
 	            config.save();
 	        }
@@ -121,6 +124,14 @@ public class ModUpdateDetector {
 
         FMLCommonHandler.instance().bus().register(new ModUpdateDetectorTickHandeler(Timer));
         ClientCommandHandler.instance.registerCommand(new MudCommands());
+    }
+
+    public static boolean deleteOnComplete(){
+        return deleteOld;
+    }
+
+    public static boolean deleteOnFailure(){
+        return deleteFailed;
     }
 
     public static void toggleState(){
@@ -135,7 +146,6 @@ public class ModUpdateDetector {
         }
         return sender;
     }
-
 
     public static void notifyUpdateDone(){
         ICommandSender sender = getSender();
