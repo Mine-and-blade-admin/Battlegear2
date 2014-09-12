@@ -94,12 +94,11 @@ public class BattlegearConfig {
         }
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
         enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
-        
+        config.addCustomCategoryComment("EnchantmentsID", "Values should be between 0 and "+(Enchantment.enchantmentsList.length-1)+", or the enchantment will be disabled");
         for(int i = 0; i<enchantsName.length; i++){
-            Property props = config.get("EnchantmentsID", enchantsName[i], enchantsId[i]);
-            props.setRequiresMcRestart(true).setMaxValue(Enchantment.enchantmentsList.length-1);
+            Property props = config.get("EnchantmentsID", enchantsName[i], enchantsId[i]).setRequiresMcRestart(true);
         	enchantsId[i] = props.getInt();
-            if(Enchantment.enchantmentsList[enchantsId[i]]!=null){
+            if(enchantsId[i]>=0 && enchantsId[i]<Enchantment.enchantmentsList.length && Enchantment.enchantmentsList[enchantsId[i]]!=null){
                 Battlegear.logger.warn("Found conflicting enchantment id for "+enchantsName[i]+ " with assigned id:"+enchantsId[i]);
                 for(int j = enchantsId[i]; j<Enchantment.enchantmentsList.length; j++) {
                     if (Enchantment.enchantmentsList[j] == null) {

@@ -214,17 +214,18 @@ public class BattlegearClientEvents {
      */
     @SubscribeEvent
     public void onBowFOV(FOVUpdateEvent event){
-        ItemStack stack = event.entity.getItemInUse();
-        if (stack!=null && stack.getItem() instanceof ItemBow && EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId, stack)>0){
-            int i = event.entity.getItemInUseDuration();
-            float f1 = (float)i / 20.0F;
-            if (f1 > 1.0F){
-                f1 = 1.0F;
+        if(BaseEnchantment.bowCharge != null) {
+            ItemStack stack = event.entity.getItemInUse();
+            if (stack != null && stack.getItem() instanceof ItemBow && EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId, stack) > 0) {
+                int i = event.entity.getItemInUseDuration();
+                float f1 = (float) i / 20.0F;
+                if (f1 > 1.0F) {
+                    f1 = 1.0F;
+                } else {
+                    f1 *= f1;
+                }
+                event.newfov /= 1.0F - f1 * 0.15F;
             }
-            else{
-                f1 *= f1;
-            }
-            event.newfov /= 1.0F - f1 * 0.15F;
         }
     }
 

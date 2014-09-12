@@ -102,13 +102,13 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     @Override
     public float getDecayRate(ItemStack shield) {
-    	int use = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.shieldUsage.effectId, shield);
+    	int use = BaseEnchantment.shieldUsage == null ? 0 : EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.shieldUsage.effectId, shield);
         return enumShield.getDecayRate()*(1-use*0.1F);
     }
     
     @Override
     public float getRecoveryRate(ItemStack shield){
-    	int recover = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.shieldRecover.effectId, shield);
+    	int recover = BaseEnchantment.shieldRecover == null ? 0 : EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.shieldRecover.effectId, shield);
     	return 0.01F*(1+recover*0.2F);//should take 5 seconds to fully recover without enchantment
     }
 

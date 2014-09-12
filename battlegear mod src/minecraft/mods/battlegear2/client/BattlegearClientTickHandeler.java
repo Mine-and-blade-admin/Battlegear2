@@ -86,7 +86,7 @@ public class BattlegearClientTickHandeler {
                             ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
 
                             if (offhand != null && offhand.getItem() instanceof IShield) {
-                                float shieldBashPenalty = 0.33F - 0.06F * EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashWeight.effectId, offhand);
+                                float shieldBashPenalty = BaseEnchantment.bashWeight==null ? 0.33F : 0.33F - 0.06F * EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashWeight.effectId, offhand);
 
                                 if (BattlegearClientTickHandeler.blockBar >= shieldBashPenalty) {
                                     FMLProxyPacket p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player).generatePacket();

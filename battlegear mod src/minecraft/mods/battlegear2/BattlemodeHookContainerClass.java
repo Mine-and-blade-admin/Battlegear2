@@ -328,7 +328,7 @@ public class BattlemodeHookContainerClass {
 
     @SubscribeEvent
     public void onDrop(LivingDropsEvent event){
-    	if(event.source.getEntity() instanceof EntityLivingBase){
+    	if(BaseEnchantment.bowLoot != null && event.source.getEntity() instanceof EntityLivingBase){
     		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getEquipmentInSlot(0);
     		if(stack!=null && stack.getItem() instanceof ItemBow){
     			int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot.effectId, stack);

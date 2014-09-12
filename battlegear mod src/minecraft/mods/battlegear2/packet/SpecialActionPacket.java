@@ -49,11 +49,11 @@ public class SpecialActionPacket extends AbstractMBPacket{
                         for (d1 = entityHit.posZ - this.player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D) {
                             d0 = (Math.random() - Math.random()) * 0.01D;
                         }
-                        double pow = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower.effectId, offhand) * 0.1D;
+                        double pow = BaseEnchantment.bashPower==null ? 0 : EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower.effectId, offhand) * 0.1D;
 
                         ((EntityLivingBase) entityHit).knockBack(this.player, 0, -d0 * (1 + pow), -d1 * (1 + pow));
                     }
-                    if (entityHit.getDistanceToEntity(this.player) < 2) {
+                    if (BaseEnchantment.bashDamage != null && entityHit.getDistanceToEntity(this.player) < 2) {
                         float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage.effectId, offhand) * 2F;
                         if (dam > 0) {
                             entityHit.attackEntityFrom(DamageSource.causeThornsDamage(this.player), dam);
