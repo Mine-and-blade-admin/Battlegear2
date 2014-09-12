@@ -15,11 +15,10 @@ import org.lwjgl.opengl.GL11;
 
 import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
-import java.io.*;
-import java.net.HttpURLConnection;
+import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.List;
@@ -147,10 +146,8 @@ public class GuiChangelogDownload extends GuiScreen
                         if(selectedMod != null && selectedMod.getLatest() != null && selectedMod.getLatest().url != null){
                             try {
                                 Desktop.getDesktop().browse(new URI(selectedMod.getLatest().url));
-                            } catch (IOException e) {
-                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                            }catch (URISyntaxException e) {
-                                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
                         }
                         return;
@@ -353,7 +350,7 @@ public class GuiChangelogDownload extends GuiScreen
         @Override
         public void run() {
             try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(changelogURL.openStream()));
+                java.io.BufferedReader br = new java.io.BufferedReader(new java.io.InputStreamReader(changelogURL.openStream()));
                 String line = br.readLine();
                 ArrayList<String> lines = new ArrayList<String>(100);
                 while(line != null){
@@ -362,7 +359,7 @@ public class GuiChangelogDownload extends GuiScreen
                 }
                 lines.trimToSize();
                 changelog = lines.toArray(new String[lines.size()]);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 changelog = new String[]{StatCollector.translateToLocal("log.message.fail")};
             }
@@ -375,12 +372,14 @@ public class GuiChangelogDownload extends GuiScreen
         private File file;
         private File original;
         private byte[] expectedMd5;
+        private final boolean sameName;
 
         public Downloader(String url, File location, File originalFile, String md5){
-            assert url!=null && location !=null : "Download url or new file location can't be null";
+            assert url!=null && location !=null && originalFile!=null: "Download url or file locations can't be null";
             this.downloadUrl = url;
             this.file = location;
             this.original = originalFile;
+            this.sameName = location.getName().equals(originalFile.getName());
             if(md5 != null){
                 try{
                     this.expectedMd5 = DatatypeConverter.parseHexBinary(md5.toUpperCase(Locale.ENGLISH));
@@ -401,14 +400,12 @@ public class GuiChangelogDownload extends GuiScreen
                     file.delete();
                 file.createNewFile();
 
-                URL url=new URL(downloadUrl);
-                HttpURLConnection connection =
-                        (HttpURLConnection) url.openConnection();
+                URLConnection connection = new URL(downloadUrl).openConnection();
                 int filesize = connection.getContentLength();
                 float totalDataRead=0;
                 java.io.BufferedInputStream in = new java.io.BufferedInputStream(connection.getInputStream());
                 java.io.FileOutputStream fos = new java.io.FileOutputStream(file);
-                java.io.BufferedOutputStream bout = new BufferedOutputStream(fos,1024);
+                java.io.BufferedOutputStream bout = new java.io.BufferedOutputStream(fos,1024);
                 byte[] data = new byte[1024];
                 int i;
                 while((i=in.read(data,0,1024))>=0)
@@ -421,11 +418,11 @@ public class GuiChangelogDownload extends GuiScreen
                 in.close();
 
                 if(expectedMd5 != null){
-                    DataInputStream dis = null;
+                    java.io.DataInputStream dis = null;
                     try {
                         MessageDigest md = MessageDigest.getInstance("MD5");
                         byte [] fileData = new byte[(int)file.length()];
-                        dis = new DataInputStream((new FileInputStream(file)));
+                        dis = new java.io.DataInputStream(new java.io.FileInputStream(file));
                         dis.readFully(fileData);
                         dis.close();
                         byte[] md5 = md.digest(fileData);
@@ -442,9 +439,6 @@ public class GuiChangelogDownload extends GuiScreen
                             downloadFailed = true;
                             ok.enabled = true;
                             message = StatCollector.translateToLocal("gui.md5.fail");
-
-                            //file.delete();
-
                         }
 
                     } catch (Exception e) {
@@ -465,17 +459,15 @@ public class GuiChangelogDownload extends GuiScreen
                     message = StatCollector.translateToLocal("gui.restart");
                 }
 
-                if(downloadComplete && original !=null && original.exists() &&
-                        !original.getName().equals(file.getName()) && !original.isDirectory()){
-                    ModUpdateDetector.logger.trace("Deleting: "+ original.getAbsolutePath());
-                    if(!original.delete()){
-                        ModUpdateDetector.logger.trace("Deleting failed, spawning new process to delete");
-                        String cmd = "java -classpath \""+file.getAbsolutePath()+"\" mods.mud.utils.FileDeleter \""+ original.getAbsolutePath()+"\"";
-                        Runtime.getRuntime().exec(cmd);
-                    }
+                if(downloadComplete && ModUpdateDetector.deleteOnComplete()){
+                    forceDeleting(original, file.getAbsolutePath());
                 }
 
-            } catch (IOException e) {
+                if(downloadFailed && ModUpdateDetector.deleteOnFailure()){
+                    forceDeleting(file, original.getAbsolutePath());
+                }
+
+            } catch (Exception e) {
                 e.printStackTrace();
                 message = StatCollector.translateToLocal(e.getLocalizedMessage());
                 downloadFailed = true;
@@ -483,7 +475,50 @@ public class GuiChangelogDownload extends GuiScreen
             }
         }
 
+        private void forceDeleting(File fileToDelete, String classPath){
+            if(fileToDelete !=null && fileToDelete.exists() && !sameName && !fileToDelete.isDirectory()) {
+                ModUpdateDetector.logger.trace("Deleting: " + fileToDelete.getAbsolutePath());
+                if (!fileToDelete.delete()) {
+                    ModUpdateDetector.logger.trace("Deleting failed, spawning new process to delete");
+                    String[] cmd = {"java", "-classpath", classPath, "mods.mud.utils.FileDeleter", fileToDelete.getAbsolutePath()};
+                    try {
+                        Process proc = new ProcessBuilder(cmd).redirectErrorStream(true).start();
+                        new Thread(new StreamDrain(proc.getInputStream())).start();
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+    }
 
+    /**
+     * Help exhaust error stream from buffer, preventing deadlock
+     */
+    private class StreamDrain implements Runnable{
+        private final java.io.InputStream stream;
+        StreamDrain(java.io.InputStream stream){
+            this.stream = stream;
+        }
+
+        @Override
+        public void run() {
+            java.io.BufferedReader br = null;
+            try {
+                br = new java.io.BufferedReader(new java.io.InputStreamReader(stream));
+                String line = "";
+                while ((line = br.readLine()) != null) {
+                    System.out.println(line);
+                }
+            } catch (Exception e) {
+                System.out.println(e.getLocalizedMessage());
+            } finally {
+                if(br!=null)
+                try {
+                    br.close();
+                } catch (Exception ignored) {
+                }
+            }
+        }
     }
 
     String bytArrayToHex(byte[] a) {
