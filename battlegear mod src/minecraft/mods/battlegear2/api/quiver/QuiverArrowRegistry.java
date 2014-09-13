@@ -219,7 +219,7 @@ public class QuiverArrowRegistry {
      * from registered class, with the (World, EntityLivingBase, float) constructor
      * If the arrow is unknown, the registered class is null or the constructor isn't valid, defers to other firing handlers silently
      */
-    static class DefaultArrowFire implements IArrowFireHandler{
+    public static class DefaultArrowFire implements IArrowFireHandler {
 
         @Override
         public boolean canFireArrow(ItemStack arrow, World world, EntityPlayer player, float charge) {
