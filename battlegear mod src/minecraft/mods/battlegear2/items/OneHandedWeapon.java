@@ -5,7 +5,7 @@ import mods.battlegear2.api.PlayerEventChild;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public abstract class OneHandedWeapon extends ItemWeapon{
+public class OneHandedWeapon extends ItemWeapon{
 
 	public OneHandedWeapon(ToolMaterial material, String named) {
 		super(material, named);

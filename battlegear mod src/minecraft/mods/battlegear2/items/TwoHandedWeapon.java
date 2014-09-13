@@ -6,7 +6,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public abstract class TwoHandedWeapon extends ItemWeapon{
+public class TwoHandedWeapon extends ItemWeapon{
 
 	public TwoHandedWeapon(ToolMaterial material, String named) {
 		super(material, named);
@@ -20,7 +20,7 @@ public abstract class TwoHandedWeapon extends ItemWeapon{
 	
 	@Override
 	public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
-		return false;
+		return offhand == null;
 	}
 
 	@Override
