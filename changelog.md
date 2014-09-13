@@ -1,3 +1,10 @@
+== Soon ==
+* Added option to force HUD elements to render
+* Fixed enchantments rendering effect on shields and spears
+* Fixed item rendering in gui when placed after vanilla damaged items
+* Made shield and bow custom enchantments optional, with comments in configuration file
+* Added file deletion options in M.U.D
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.7 ==
 * Allowed more items in battle slots: compass, clock, and more...
 * Expanded Quiver API for custom bows (thanks coolAlias)
