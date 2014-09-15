@@ -94,20 +94,14 @@ public class BattlemodeHookContainerClass {
             event.setCanceled(true);
             event.entityPlayer.isSwingInProgress = false;
         }else if(((IBattlePlayer) event.entityPlayer).isBattlemode()) {
-            ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
-            ItemStack offhandItem = ((InventoryPlayerBattle)event.entityPlayer.inventory).getCurrentOffhandWeapon();
-            switch (event.action) {
-                case LEFT_CLICK_BLOCK:
-                    break;
-                case RIGHT_CLICK_BLOCK:
-                    sendOffSwingEvent(event, mainHandItem, offhandItem);
-                    break;
-                case RIGHT_CLICK_AIR:
-                    if (BattlegearUtils.isMainHand(mainHandItem, offhandItem)) {
+            if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+                ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
+                if(mainHandItem == null || !BattlegearUtils.usagePriorAttack(mainHandItem)) {
+                    ItemStack offhandItem = ((InventoryPlayerBattle) event.entityPlayer.inventory).getCurrentOffhandWeapon();
+                    if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
                         event.setCanceled(true);
-                        sendOffSwingEvent(event, mainHandItem, offhandItem);
-                    }
-                    break;
+                    sendOffSwingEvent(event, mainHandItem, offhandItem);
+                }
             }
         }else if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
             TileEntity tile = event.entityPlayer.worldObj.getTileEntity(event.x, event.y, event.z);
@@ -215,9 +209,9 @@ public class BattlemodeHookContainerClass {
             event.setResult(Event.Result.DENY);
             event.entityPlayer.isSwingInProgress = false;
         } else if (((IBattlePlayer) event.entityPlayer).isBattlemode()) {
-            ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
             ItemStack offhandItem = ((InventoryPlayerBattle)event.entityPlayer.inventory).getCurrentOffhandWeapon();
-            if(BattlegearUtils.isMainHand(mainHandItem, offhandItem)){
+            if(offhandItem == null || !BattlegearUtils.usagePriorAttack(offhandItem)){
+                ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
                 PlayerEventChild.OffhandAttackEvent offAttackEvent = new PlayerEventChild.OffhandAttackEvent(event, mainHandItem, offhandItem);
                 if(!MinecraftForge.EVENT_BUS.post(offAttackEvent)){
                     if (offAttackEvent.swingOffhand){

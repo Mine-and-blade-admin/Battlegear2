@@ -85,6 +85,8 @@ public class OffhandPlaceBlockPacket extends AbstractMBPacket{
         if(player == null || !(player instanceof EntityPlayerMP))
             return;
         ItemStack offhandWeapon = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
+        if(offhandWeapon!=null && !BattlegearUtils.usagePriorAttack(offhandWeapon))
+            return;
         boolean flag = true;
         int i = xPosition;
         int j = yPosition;

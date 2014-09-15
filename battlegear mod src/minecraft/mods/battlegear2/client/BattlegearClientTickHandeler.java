@@ -178,7 +178,7 @@ public class BattlegearClientTickHandeler {
                             blockBar = 1;
                         }
                     }
-                }else if(BattlegearUtils.usagePriorAttack(offhand)){
+                }else if(mc.gameSettings.keyBindUseItem.getIsKeyPressed() && mc.rightClickDelayTimer == 4 && !player.isUsingItem()){
                     tryCheckUseItem(offhand, player);
                 }
             }
@@ -186,7 +186,7 @@ public class BattlegearClientTickHandeler {
     }
 
     public void tryCheckUseItem(ItemStack offhand, EntityPlayer player){
-        if(mc.gameSettings.keyBindUseItem.getIsKeyPressed() && mc.rightClickDelayTimer == 4 && !player.isUsingItem()){
+        if(BattlegearUtils.usagePriorAttack(offhand)){
             MovingObjectPosition mouseOver = mc.objectMouseOver;
             boolean flag = true;
             if (mouseOver != null)

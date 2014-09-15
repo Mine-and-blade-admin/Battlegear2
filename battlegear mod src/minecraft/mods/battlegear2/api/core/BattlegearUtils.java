@@ -6,6 +6,7 @@ import java.io.IOException;
 import cpw.mods.fml.common.eventhandler.EventBus;
 import mods.battlegear2.api.IAllowItem;
 import mods.battlegear2.api.IOffhandDual;
+import mods.battlegear2.api.IUsableItem;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.ISpecialBow;
 import mods.battlegear2.api.shield.IShield;
@@ -104,8 +105,6 @@ public class BattlegearUtils {
     public static boolean isWeapon(ItemStack main) {
         if (main.getItem() instanceof IBattlegearWeapon)//Our generic weapon flag
             return true;
-        else if(main.getItem() instanceof ItemBlock)//Blocks aren't weapons,duh!
-            return false;
         else if(main.getMaxStackSize()==1 && main.getMaxDamage()>0 && !main.getHasSubtypes())//Usual values for tools, sword, and bow
             return true;
         else if(WeaponRegistry.isWeapon(main))//Registered as such
@@ -130,6 +129,8 @@ public class BattlegearUtils {
             return ((IAllowItem) main.getItem()).allowOffhand(main, off);//defined by the item
         else if(main.getItem() instanceof ItemBow || main.getItem() instanceof ISpecialBow)//A bow
             return (off == null || off.getItem() instanceof IArrowContainer2);//with empty hand or quiver
+        else if(usagePriorAttack(main))//"Usable" item
+            return off == null || !usagePriorAttack(off);//With empty hand or non "usable item"
         else if(isWeapon(main))//A generic weapon
             return main.getItemUseAction() == EnumAction.bow || main.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isMainHand(main);//With either bow or generic attack, or registered
         return false;
@@ -160,7 +161,7 @@ public class BattlegearUtils {
      * @return true if such item prefer being "used"
      */
     public static boolean usagePriorAttack(ItemStack itemStack){
-        return itemStack.getItem() instanceof ItemBlock||itemStack.getItem() instanceof ItemHoe||itemStack.getItem() instanceof ItemPotion||itemStack.getItem() instanceof ItemFood;
+        return itemStack.getItem() instanceof ItemBlock||itemStack.getItem() instanceof ItemHoe||itemStack.getItem() instanceof ItemPotion||itemStack.getItem() instanceof ItemFood||(itemStack.getItem() instanceof IUsableItem && ((IUsableItem) itemStack.getItem()).isUsedOverAttack(itemStack));
     }
 
     @Deprecated//See method below
