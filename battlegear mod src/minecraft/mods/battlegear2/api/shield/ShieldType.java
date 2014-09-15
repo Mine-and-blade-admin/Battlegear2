@@ -1,5 +1,11 @@
 package mods.battlegear2.api.shield;
 
+import net.minecraft.nbt.NBTTagCompound;
+
+/**
+ * Defines a shield "material", since not necessarily a tool
+ * Roughly covers the data asked for by {@link IShield}
+ */
 public class ShieldType {
 
     public static final ShieldType WOOD = new ShieldType("wood", 1F/1F/20F, 1F/20F, 40, 15, 0xFFbc9862); // 1 second block
@@ -46,5 +52,13 @@ public class ShieldType {
 
     public int getDefaultRGB() {
         return defaultRGB;
+    }
+
+    public static ShieldType fromNBT(NBTTagCompound compound){
+        String name = compound.getString("Name");
+        if(name.equals(""))
+            return null;
+        else
+            return new ShieldType(name, compound.getFloat("DecayRate"), compound.getFloat("DamageDecay"), compound.getInteger("MaxDamage"), compound.getInteger("Enchantability"), compound.getInteger("RGB"));
     }
 }

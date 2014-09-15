@@ -472,22 +472,30 @@ public class BattlegearConfig {
             if(type.equals("")||name.equals(""))
                 return false;
             try {
-                Item.ToolMaterial material = Item.ToolMaterial.valueOf(nbtValue.getString("Material"));
                 Item item = null;
-                if(type.equalsIgnoreCase("Dagger")){
-                    float hitTime = nbtValue.getFloat("Time");
-                    float reach = nbtValue.getFloat("Reach");
-                    item = new ItemDagger(material, name, hitTime, reach);
-                }else if(type.equalsIgnoreCase("Mace")){
-                    float stun = nbtValue.getFloat("Stun");
-                    item = new ItemMace(material, name, stun);
-                }else if(type.equalsIgnoreCase("Spear")){
-                    int mount = nbtValue.getInteger("Mount");
-                    float reach = nbtValue.getFloat("Reach");
-                    item = new ItemSpear(material, name, mount, reach);
-                }else if(type.equalsIgnoreCase("Waraxe")){
-                    int penetrate = nbtValue.getInteger("Penetration");
-                    item = new ItemWaraxe(material, name, penetrate);
+                if(type.equalsIgnoreCase("Shield")){
+                    ShieldType shieldType = ShieldType.fromNBT(nbtValue.getCompoundTag("Material"));
+                    if(shieldType!=null)
+                        item = new ItemShield(shieldType);
+                    else
+                        return false;
+                } else {
+                    Item.ToolMaterial material = Item.ToolMaterial.valueOf(nbtValue.getString("Material"));
+                    if (type.equalsIgnoreCase("Dagger")) {
+                        float hitTime = nbtValue.getFloat("Time");
+                        float reach = nbtValue.getFloat("Reach");
+                        item = new ItemDagger(material, name, hitTime, reach);
+                    } else if (type.equalsIgnoreCase("Mace")) {
+                        float stun = nbtValue.getFloat("Stun");
+                        item = new ItemMace(material, name, stun);
+                    } else if (type.equalsIgnoreCase("Spear")) {
+                        int mount = nbtValue.getInteger("Mount");
+                        float reach = nbtValue.getFloat("Reach");
+                        item = new ItemSpear(material, name, mount, reach);
+                    } else if (type.equalsIgnoreCase("Waraxe")) {
+                        int penetrate = nbtValue.getInteger("Penetration");
+                        item = new ItemWaraxe(material, name, penetrate);
+                    }
                 }
                 if(item!=null) {//Optional tags for additional variations
                     if (nbtValue.hasKey("UnlocalizedName")) {
