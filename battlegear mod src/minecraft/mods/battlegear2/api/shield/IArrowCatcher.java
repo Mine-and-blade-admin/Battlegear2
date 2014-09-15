@@ -4,10 +4,9 @@ import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 /**
- * Defines an item that can catch IProjectile
- * Used by ItemShield to block arrows
+ * Defines an {@link Item} that can catch {@link IProjectile}
+ * Used by {@link ItemShield} to block arrows
  * @author GotoLink
- *
  */
 public interface IArrowCatcher {
     /**

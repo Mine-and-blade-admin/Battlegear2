@@ -4,6 +4,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
+/**
+ * Defines a common shield:
+ * can be held and used in left hand, has a special movement, reduce or block incoming damage, consume a battlegear defined "stamina" value
+ */
 public interface IShield {
 
     /**
@@ -61,7 +65,7 @@ public interface IShield {
     public int getBashTimer(ItemStack shield);
 
     /**
-     * Called after a successful block, if {@link PlayerEventShield.ShieldBlockEvent] allowed additional blocking animation
+     * Called after a successful block, if {@link mods.battlegear2.api.PlayerEventChild.ShieldBlockEvent] allowed additional blocking animation
      * A common additional animation might include a sound, particle effects, etc.
      * @param player
      * @param amount
@@ -69,7 +73,7 @@ public interface IShield {
     public void blockAnimation(EntityPlayer player, float amount);
 
     /**
-     * Called after a successful block, if {@link PlayerEventShield.ShieldBlockEvent] allowed damage to be done
+     * Called after a successful block, if {@link mods.battlegear2.api.PlayerEventChild.ShieldBlockEvent] allowed damage to be done
      * and the player isn't in creative mode
      * @param shield The {@link ItemStack} representing the shield
      * @param source The {@link DamageSource} representing the current damage

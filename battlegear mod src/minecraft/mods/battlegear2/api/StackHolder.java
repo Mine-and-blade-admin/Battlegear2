@@ -5,8 +5,9 @@ import net.minecraft.item.ItemStack;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
- * Wrapper for {@link net.minecraft.item.ItemStack}
- * with valid #hashCode() and #equals(Object) overrides.
+ * Wrapper for {@link ItemStack} with valid {@link Object#hashCode()} and {@link Object#equals(Object)} overrides.
+ * Hash is lazily initiated and equals compare using the helper {@link ItemStack#areItemStacksEqual(ItemStack, ItemStack)}
+ * Note: Doesn't allow null values
  */
 public class StackHolder{
     public final ItemStack stack;

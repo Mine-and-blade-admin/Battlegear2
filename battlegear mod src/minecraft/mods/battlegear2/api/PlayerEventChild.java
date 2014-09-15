@@ -130,7 +130,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
         /**
          * The equivalent {@link PlayerInteractEvent} that would have been triggered if the offhand item was held in right hand and right click was pressed
          */
-        public PlayerInteractEvent event;
+        public final PlayerInteractEvent event;
         public UseOffhandItemEvent(PlayerInteractEvent event, ItemStack offhand){
             super(event);
             this.event = event;
