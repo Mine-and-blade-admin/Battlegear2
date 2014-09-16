@@ -5,6 +5,7 @@ import java.util.*;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import mods.battlegear2.api.ISensible;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -83,6 +84,22 @@ public class QuiverArrowRegistry {
      */
     public static boolean addArrowFireHandler(IArrowFireHandler handler){
         return handler!=null && fireHandlers.add(handler);
+    }
+
+    /**
+     * Search for an ItemStack whose item is an {@link IArrowContainer2}, to be used either by a compatible mainhand bow or offhand bow
+     * @param entityPlayer the player being searched for an arrow container
+     * @return the first non-null itemstack found through the quiver selection algorithms
+     */
+    public static ItemStack getArrowContainer(EntityPlayer entityPlayer) {
+        ItemStack bow = entityPlayer.getCurrentEquippedItem();
+        if(bow!=null){
+            ItemStack temp = getArrowContainer(bow, entityPlayer);
+            if(temp!=null)
+                return temp;
+        }
+        bow = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
+        return bow!=null ? getArrowContainer(bow, entityPlayer) : null;
     }
 
     /**

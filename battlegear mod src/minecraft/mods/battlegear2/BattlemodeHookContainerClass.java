@@ -29,7 +29,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,6 +39,7 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BattlemodeHookContainerClass {
@@ -196,7 +196,7 @@ public class BattlemodeHookContainerClass {
                 }
             }
         }
-        if(event.mainHand !=null && event.mainHand.getItem() instanceof ItemBow && event.parent.getClass().equals(PlayerInteractEvent.class)){
+        if(event.mainHand !=null && BattlegearUtils.isBow(event.mainHand.getItem()) && event.parent.getClass().equals(PlayerInteractEvent.class)){
             event.setCanceled(true);
             event.setCancelParentEvent(false);
         }
@@ -234,14 +234,14 @@ public class BattlemodeHookContainerClass {
         if(event.offHand!=null){
             if(event.offHand.getItem() instanceof IOffhandDual){
                 event.swingOffhand =((IOffhandDual) event.offHand.getItem()).offhandAttackEntity(event, event.mainHand, event.offHand);
-            }else if(event.offHand.getItem() instanceof IShield){
+            }else if(event.offHand.getItem() instanceof IShield || BattlegearUtils.isBow(event.offHand.getItem())){
                 event.swingOffhand = false;
                 event.shouldAttack = false;
             }else if(event.offHand.getItem() instanceof IArrowContainer2){
                 event.shouldAttack = false;
             }
         }
-        if(event.mainHand !=null && event.mainHand.getItem() instanceof ItemBow){
+        if(event.mainHand !=null && BattlegearUtils.isBow(event.mainHand.getItem())){
             event.swingOffhand = false;
             event.shouldAttack = false;
         }
@@ -323,21 +323,29 @@ public class BattlemodeHookContainerClass {
     @SubscribeEvent
     public void onDrop(LivingDropsEvent event){
     	if(BaseEnchantment.bowLoot != null && event.source.getEntity() instanceof EntityLivingBase){
-    		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getEquipmentInSlot(0);
-    		if(stack!=null && stack.getItem() instanceof ItemBow){
-    			int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot.effectId, stack);
-    			if(lvl>0){
-    				ItemStack drop;
-    				for(EntityItem items:event.drops){
-    					drop = items.getEntityItem();
-    					if(drop!=null && drop.getMaxStackSize()<drop.stackSize+lvl){
-    						drop.stackSize+=lvl;
-    						items.setEntityItemStack(drop);
-    					}
-    				}
-    			}
-    		}
+    		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getHeldItem();
+    		if(stack!=null && BattlegearUtils.isBow(stack.getItem())){
+                addLootFromEnchant(stack, event.drops);
+    		}else if(event.source.getEntity() instanceof EntityPlayer){
+                stack = ((InventoryPlayerBattle)((EntityPlayer) event.source.getEntity()).inventory).getCurrentOffhandWeapon();
+                if(stack!=null && BattlegearUtils.isBow(stack.getItem()))
+                    addLootFromEnchant(stack, event.drops);
+            }
     	}
+    }
+
+    private void addLootFromEnchant(ItemStack bow, ArrayList<EntityItem> drops){
+        int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot.effectId, bow);
+        if(lvl>0){
+            ItemStack drop;
+            for(EntityItem items:drops){
+                drop = items.getEntityItem();
+                if(drop!=null && drop.getMaxStackSize()<drop.stackSize+lvl){
+                    drop.stackSize+=lvl;
+                    items.setEntityItemStack(drop);
+                }
+            }
+        }
     }
 
 }

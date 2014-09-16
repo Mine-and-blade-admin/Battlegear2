@@ -8,12 +8,19 @@ import cpw.mods.fml.common.eventhandler.Event.Result;
 
 /**
  *
- * This interface gives custom ItemBows greater control over the default Battlegear2 ItemQuiver behavior;
- * specifically, it allows bows to determine whether they may be drawn during the ArrowNockEvent and to
- * return custom lists of IArrowFireHandler during {@link QuiverArrowRegistry#getArrowType}.
+ * This interface gives custom {@link ItemBow}s greater control over the default Battlegear2 {@link ItemQuiver} behavior;
+ * specifically, it allows bows to determine whether they may be drawn during the {@link ArrowNockEvent} and to
+ * return custom lists of {@link IArrowFireHandler} during {@link QuiverArrowRegistry#getArrowType}.
  *
- * The purpose is solely for customizing behavior using the default ItemQuiver: custom
- * quiver implementations may or may not call these interface methods.
+ * Those methods are solely for customizing behavior using the default ItemQuiver: custom
+ * quiver implementations may or may not call these.
+ *
+ * Note: Can also serve as a flag for a custom {@link Item} to have a "bow" behavior, without extending {@link ItemBow},
+ * that is,
+ * -being detected by default {@link ItemQuiver}
+ * -being rendered back-sheathed, though {@link ISheathed} can change this
+ * -work with bow {@link BaseEnchantment} though {@link IEnchantable} can change this
+ * -is used in priority, instead of attacking, though {@link IUsableItem} can change this
  *
  * @author coolAlias
  *
@@ -35,7 +42,7 @@ public interface ISpecialBow {
   public List<IArrowFireHandler> getFireHandlers(ItemStack arrow, ItemStack bow, EntityPlayer player);
 
   /**
-   * Allows the custom bow to determine if it may be nocked or not during the ArrowNockEvent.
+   * Allows the custom bow to determine if it may be nocked or not during the {@link ArrowNockEvent}.
    * This is almost entirely cosmetic, as a player using a quiver may hot-swap to any arrow,
    * but allows modders to signal immediately that the bow may not be fired in its current state.
    *

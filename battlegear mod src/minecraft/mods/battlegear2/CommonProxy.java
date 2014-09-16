@@ -34,7 +34,7 @@ public class CommonProxy {
     public void startFlash(EntityPlayer player, float damage) {
     }
 
-    public void doSpecialAction(EntityPlayer entityPlayer) {}
+    public void doSpecialAction(EntityPlayer entityPlayer, ItemStack item) {}
 
 	public void tryUseTConstruct() {
 	}

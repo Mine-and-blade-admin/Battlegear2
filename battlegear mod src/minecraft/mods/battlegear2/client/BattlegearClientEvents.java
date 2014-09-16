@@ -38,7 +38,6 @@ import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -115,38 +114,35 @@ public class BattlegearClientEvents {
 		ModelBiped biped = (ModelBiped) event.renderer.mainModel;
 		BattlegearRenderHelper.renderItemIn3rdPerson(event.entityPlayer, biped, event.partialRenderTick);
 
-		ItemStack mainhand = event.entityPlayer.getHeldItem();
-		if (mainhand != null) {
-			ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(mainhand, event.entityPlayer);
-			if (quiverStack != null && ((IArrowContainer2) quiverStack.getItem()).renderDefaultQuiverModel(quiverStack)) {
+		ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(event.entityPlayer);
+        if (quiverStack != null && ((IArrowContainer2) quiverStack.getItem()).renderDefaultQuiverModel(quiverStack)) {
 
-                IArrowContainer2 quiver = (IArrowContainer2) quiverStack.getItem();
-				int maxStack = quiver.getSlotCount(quiverStack);
-				int arrowCount = 0;
-				for (int i = 0; i < maxStack; i++) {
-					arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0 : 1;
-				}
-				GL11.glColor3f(1, 1, 1);
-				Minecraft.getMinecraft().renderEngine.bindTexture(quiverDetails);
-				GL11.glPushMatrix();
-				biped.bipedBody.postRender(0.0625F);
-				GL11.glScalef(1.05F, 1.05F, 1.05F);
-				quiverModel.render(arrowCount, 0.0625F);
+            IArrowContainer2 quiver = (IArrowContainer2) quiverStack.getItem();
+            int maxStack = quiver.getSlotCount(quiverStack);
+            int arrowCount = 0;
+            for (int i = 0; i < maxStack; i++) {
+                arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0 : 1;
+            }
+            GL11.glColor3f(1, 1, 1);
+            Minecraft.getMinecraft().renderEngine.bindTexture(quiverDetails);
+            GL11.glPushMatrix();
+            biped.bipedBody.postRender(0.0625F);
+            GL11.glScalef(1.05F, 1.05F, 1.05F);
+            quiverModel.render(arrowCount, 0.0625F);
 
-				Minecraft.getMinecraft().renderEngine.bindTexture(quiverBase);
-                if(quiverStack.getItem() instanceof IDyable){
-                    int col = ((IDyable)quiver).getColor(quiverStack);
-                    float red = (float) (col >> 16 & 255) / 255.0F;
-                    float green = (float) (col >> 8 & 255) / 255.0F;
-                    float blue = (float) (col & 255) / 255.0F;
-                    GL11.glColor3f(red, green, blue);
-                }
-				quiverModel.render(0, 0.0625F);
-				GL11.glColor3f(1, 1, 1);
+            Minecraft.getMinecraft().renderEngine.bindTexture(quiverBase);
+            if(quiverStack.getItem() instanceof IDyable){
+                int col = ((IDyable)quiver).getColor(quiverStack);
+                float red = (float) (col >> 16 & 255) / 255.0F;
+                float green = (float) (col >> 8 & 255) / 255.0F;
+                float blue = (float) (col & 255) / 255.0F;
+                GL11.glColor3f(red, green, blue);
+            }
+            quiverModel.render(0, 0.0625F);
+            GL11.glColor3f(1, 1, 1);
 
-				GL11.glPopMatrix();
-			}
-		}
+            GL11.glPopMatrix();
+        }
 	}
 
     private static final int SKELETON_ARROW = 5;
@@ -216,7 +212,7 @@ public class BattlegearClientEvents {
     public void onBowFOV(FOVUpdateEvent event){
         if(BaseEnchantment.bowCharge != null) {
             ItemStack stack = event.entity.getItemInUse();
-            if (stack != null && stack.getItem() instanceof ItemBow && EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId, stack) > 0) {
+            if (stack != null && BattlegearUtils.isBow(stack.getItem()) && EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.effectId, stack) > 0) {
                 int i = event.entity.getItemInUseDuration();
                 float f1 = (float) i / 20.0F;
                 if (f1 > 1.0F) {

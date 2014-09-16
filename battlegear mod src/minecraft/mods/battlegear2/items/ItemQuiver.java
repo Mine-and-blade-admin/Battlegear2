@@ -4,6 +4,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.PlayerEventChild;
+import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.ISpecialBow;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
@@ -14,7 +15,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
@@ -110,7 +110,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
 
     @Override
     public boolean hasArrowFor(ItemStack stack, ItemStack bow, EntityPlayer player, int slot) {
-        return bow != null && (bow.getItem() instanceof ItemBow || bow.getItem() instanceof ISpecialBow) && ((IArrowContainer2)stack.getItem()).getStackInSlot(stack, slot) != null;
+        return bow != null && BattlegearUtils.isBow(bow.getItem()) && ((IArrowContainer2)stack.getItem()).getStackInSlot(stack, slot) != null;
     }
 
     @Override

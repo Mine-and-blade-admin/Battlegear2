@@ -76,7 +76,7 @@ public class BattlegearClientTickHandeler {
                 EntityClientPlayerMP player = mc.thePlayer;
                 if(event.phase == TickEvent.Phase.START) {
                     if (!specialDone && special.getIsKeyPressed() && ((IBattlePlayer) player).getSpecialActionTimer() == 0) {
-                        ItemStack quiver = QuiverArrowRegistry.getArrowContainer(player.getCurrentEquippedItem(), player);
+                        ItemStack quiver = QuiverArrowRegistry.getArrowContainer(player);
 
                         if (quiver != null) {
                             FMLProxyPacket p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player).generatePacket();

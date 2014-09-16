@@ -127,10 +127,9 @@ public class ClientProxy extends CommonProxy {
     }
 
     @Override
-    public void doSpecialAction(EntityPlayer entityPlayer) {
-        ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
+    public void doSpecialAction(EntityPlayer entityPlayer, ItemStack itemStack) {
         MovingObjectPosition mop = null;
-        if(offhand != null && offhand.getItem() instanceof IShield){
+        if(itemStack != null && itemStack.getItem() instanceof IShield){
             mop = getMouseOver(1, 4);
         }
 

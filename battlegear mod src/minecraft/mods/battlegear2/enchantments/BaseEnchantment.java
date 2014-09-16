@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mods.battlegear2.api.IEnchantable;
+import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
@@ -48,11 +49,13 @@ public class BaseEnchantment extends Enchantment {
 
 	@Override
 	public boolean canApply(ItemStack stack) {
-		if(type == EnumEnchantmentType.all){
-			if (stack.getItem() instanceof IEnchantable) {
-				return ((IEnchantable) stack.getItem()).isEnchantable(this, stack);
-			}
-		}else{
+        if (stack.getItem() instanceof IEnchantable) {
+            return ((IEnchantable) stack.getItem()).isEnchantable(this, stack);
+        }
+        if(type == EnumEnchantmentType.bow && BattlegearUtils.isBow(stack.getItem())){
+            return true;
+        }
+		if(type != EnumEnchantmentType.all){
 			return super.canApply(stack);
 		}
 		return false;

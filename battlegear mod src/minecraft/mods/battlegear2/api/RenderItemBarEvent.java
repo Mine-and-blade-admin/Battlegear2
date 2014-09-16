@@ -44,7 +44,7 @@ public abstract class RenderItemBarEvent extends RenderGameOverlayEvent{
 	@Cancelable
 	public static class QuiverSlots extends RenderItemBarEvent{
         /**
-         * The stack containing the compatible bow held by the player in his mainhand
+         * The stack containing the compatible bow held by the player (can be in either hand)
          */
 		public final ItemStack mainhand;
         /**

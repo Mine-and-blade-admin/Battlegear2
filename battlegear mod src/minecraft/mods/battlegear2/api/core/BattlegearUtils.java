@@ -127,8 +127,8 @@ public class BattlegearUtils {
             return true;
     	else if(main.getItem() instanceof IAllowItem)//An item using the API
             return ((IAllowItem) main.getItem()).allowOffhand(main, off);//defined by the item
-        else if(main.getItem() instanceof ItemBow || main.getItem() instanceof ISpecialBow)//A bow
-            return (off == null || off.getItem() instanceof IArrowContainer2);//with empty hand or quiver
+        else if(main.getItem() instanceof IArrowContainer2)//A quiver
+            return true;//anything ?
         else if(usagePriorAttack(main))//"Usable" item
             return off == null || !usagePriorAttack(off);//With empty hand or non "usable item"
         else if(isWeapon(main))//A generic weapon
@@ -148,8 +148,6 @@ public class BattlegearUtils {
             return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);//defined by the item
         else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || usagePriorAttack(off))//Shield, Quiver, or "usable"
             return true;//always
-        else if(off.getItem() instanceof ItemBow || off.getItem() instanceof ISpecialBow)//A bow
-            return false;//never
         else if(isWeapon(off))//A generic weapon
             return off.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isOffHand(off);//with a generic attack or registered
         return false;
@@ -161,7 +159,27 @@ public class BattlegearUtils {
      * @return true if such item prefer being "used"
      */
     public static boolean usagePriorAttack(ItemStack itemStack){
-        return itemStack.getItem() instanceof ItemBlock||itemStack.getItem() instanceof ItemHoe||itemStack.getItem() instanceof ItemPotion||itemStack.getItem() instanceof ItemFood||(itemStack.getItem() instanceof IUsableItem && ((IUsableItem) itemStack.getItem()).isUsedOverAttack(itemStack));
+        if(itemStack.getItem() instanceof IUsableItem)
+            return ((IUsableItem) itemStack.getItem()).isUsedOverAttack(itemStack);
+        return isCommonlyUsable(itemStack.getItem());
+    }
+
+    /**
+     * Defines items that are usually usable (the vanilla instances do, at least)
+     * @param item the instance to consider for usability
+     * @return true if it is commonly usable
+     */
+    public static boolean isCommonlyUsable(Item item){
+        return isBow(item) || item instanceof ItemBlock || item instanceof ItemHoe || item instanceof ItemPotion || item instanceof ItemFood;
+    }
+
+    /**
+     * Defines a bow
+     * @param item the instance
+     * @return true if it is considered a generic enough bow
+     */
+    public static boolean isBow(Item item){
+        return item instanceof ItemBow || item instanceof ISpecialBow;
     }
 
     @Deprecated//See method below

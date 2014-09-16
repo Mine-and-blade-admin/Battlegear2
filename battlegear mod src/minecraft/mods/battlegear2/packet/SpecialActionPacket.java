@@ -65,7 +65,7 @@ public class SpecialActionPacket extends AbstractMBPacket{
                     }
                 }
             }else{
-                ItemStack quiver = QuiverArrowRegistry.getArrowContainer(this.player.getCurrentEquippedItem(), this.player);
+                ItemStack quiver = QuiverArrowRegistry.getArrowContainer(this.player);
                 if(quiver != null){
                     SwapArrowEvent swapEvent = new SwapArrowEvent(this.player, quiver);
                     if(!MinecraftForge.EVENT_BUS.post(swapEvent) && swapEvent.slotStep!=0) {

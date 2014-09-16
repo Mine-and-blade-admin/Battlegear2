@@ -60,13 +60,13 @@ public class BattlegearTickHandeler {
             if(offhand != null && offhand.getItem() instanceof IShield){
                 targetTime = ((IShield) offhand.getItem()).getBashTimer(offhand) / 2;
             }else{
-                ItemStack quiver = QuiverArrowRegistry.getArrowContainer(entityPlayer.getCurrentEquippedItem(), entityPlayer);
-                if(quiver != null) {
+                offhand = QuiverArrowRegistry.getArrowContainer(entityPlayer);
+                if(offhand != null) {
                     targetTime = 0;
                 }
             }
             if(timer-1 == targetTime){
-                Battlegear.proxy.doSpecialAction(entityPlayer);
+                Battlegear.proxy.doSpecialAction(entityPlayer, offhand);
             }
         }
     }

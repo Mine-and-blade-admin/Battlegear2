@@ -84,15 +84,27 @@ public class BattlegearInGameGUI extends Gui {
                 }
 
                 ItemStack mainhand = mc.thePlayer.getCurrentEquippedItem();
+                boolean quiverFound = false;
                 if(mainhand != null){
                     ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, mc.thePlayer);
                     if(quiver != null){
                         event = new RenderItemBarEvent.QuiverSlots(renderEvent, mainhand, quiver);
                         if(!MinecraftForge.EVENT_BUS.post(event))
                             renderQuiverBar(quiver, frame, event.xOffset+width/2, event.yOffset);
+                        quiverFound = true;
                     }
                 }
-
+                if(!quiverFound) {
+                    mainhand = ((InventoryPlayerBattle) mc.thePlayer.inventory).getCurrentOffhandWeapon();
+                    if (mainhand != null) {
+                        ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, mc.thePlayer);
+                        if (quiver != null) {
+                            event = new RenderItemBarEvent.QuiverSlots(renderEvent, mainhand, quiver);
+                            if (!MinecraftForge.EVENT_BUS.post(event))
+                                renderQuiverBar(quiver, frame, event.xOffset + width / 2, event.yOffset);
+                        }
+                    }
+                }
             }
         }
     }

@@ -30,13 +30,20 @@ public class BowHookContainerClass2 {
         QuiverArrowRegistry.addQuiverSelection(new MainQuiverSelection());
     }
 
-    //Check for IArrowContainer in player offhand
+    //Check for IArrowContainer in player opposite hand
     public static class OffhandQuiverSelection implements IQuiverSelection{
 
         @Override
         public ItemStack getQuiverFor(ItemStack bow, EntityPlayer player) {
             ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
-            return isLoadedContainer(offhand, bow, player)?offhand:null;
+            if(bow!=offhand)
+                return isLoadedContainer(offhand, bow, player)?offhand:null;
+            else{
+                offhand = player.getCurrentEquippedItem();
+                if(bow!=offhand)
+                    return isLoadedContainer(offhand, bow, player)?offhand:null;
+            }
+            return null;
         }
     }
 
@@ -46,11 +53,8 @@ public class BowHookContainerClass2 {
         @Override
         public ItemStack getQuiverFor(ItemStack bow, EntityPlayer player) {
             ItemStack temp;
-            for(int i=0;i<player.inventory.getSizeInventory(); i++){
+            for(int i=0;i<player.inventory.mainInventory.length; i++){
                 temp = player.inventory.getStackInSlot(i);
-                if(temp==null){
-                    continue;
-                }
                 if(isLoadedContainer(temp, bow, player))
                     return temp;
             }
