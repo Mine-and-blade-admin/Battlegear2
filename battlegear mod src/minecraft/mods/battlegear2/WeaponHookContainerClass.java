@@ -20,7 +20,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
  * Date: 30/07/13
  * Time: 12:36 PM
  * Events registered with MinecraftForge event bus on default priority: 
- * LivingAttackEvent, to perform weapons custom effects
+ * {@link LivingAttackEvent}, to perform weapons custom effects
  */
 public class WeaponHookContainerClass {
 

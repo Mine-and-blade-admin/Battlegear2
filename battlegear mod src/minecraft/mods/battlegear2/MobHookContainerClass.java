@@ -14,8 +14,17 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
 public class MobHookContainerClass {
 
+    /**
+     * The key used when registering/loading the arrow data (as byte) into/from the {@link EntitySkeleton}s {@link net.minecraft.entity.DataWatcher}
+     */
     public static final int Skell_Arrow_Datawatcher = 25;
 
+    /**
+     * Listen to {@link EntityJoinWorldEvent} :
+     * Adds random special {@link EntityArrow}s data to {@link EntitySkeleton}s {@link net.minecraft.entity.DataWatcher} (for display)
+     * Replace the vanilla fired {@link EntityArrow} with the custom {@link AbstractMBArrow} (for actual action)
+     * Note: Fails silently
+     */
     @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event){
         if(event.entity instanceof EntitySkeleton){
