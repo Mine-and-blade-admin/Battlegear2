@@ -5,6 +5,8 @@ import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.network.FMLEventChannel;
+import cpw.mods.fml.common.network.NetworkCheckHandler;
+import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
@@ -23,18 +25,20 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
 import java.net.URL;
+import java.util.Map;
 
-@Mod(modid = "battlegear2", useMetadata = true, guiFactory = "mods.battlegear2.gui.BattlegearGuiFactory")
+@Mod(modid = Battlegear.MODID, useMetadata = true, guiFactory = "mods.battlegear2.gui.BattlegearGuiFactory")
 public class Battlegear {
 
-    @Mod.Instance("battlegear2")
-    public static Battlegear INSTANCE;
+    public static final String MODID = "battlegear2";
+    public static final String imageFolder = MODID+":textures/";
+    public static final String CUSTOM_DAMAGE_SOURCE = "battlegearExtra";
 
-    @SidedProxy(modId="battlegear2", clientSide = "mods.battlegear2.client.ClientProxy", serverSide = "mods.battlegear2.CommonProxy")
+    @Mod.Instance(MODID)
+    public static Battlegear INSTANCE;
+    @SidedProxy(modId=MODID, clientSide = "mods.battlegear2.client.ClientProxy", serverSide = "mods.battlegear2.CommonProxy")
     public static CommonProxy proxy;
 
-    public static final String imageFolder = "battlegear2:textures/";
-    public static final String CUSTOM_DAMAGE_SOURCE = "battlegearExtra";
     public static ItemArmor.ArmorMaterial knightArmourMaterial;
 
     public static boolean battlegearEnabled = true;
@@ -46,7 +50,6 @@ public class Battlegear {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         //Set up the Translator
-
         BattlegearTranslator.setup("/deobfuscation_data-" + FMLInjectionData.data()[4] + ".lzma");
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
@@ -153,5 +156,29 @@ public class Battlegear {
             if(BattlegearConfig.remap(mapping))
                 logger.warn("ReMapped: " + mapping.name);
         }
+    }
+
+    /**
+     * Basic version checker, support having different build number on each side
+     * @param mods the data sent from FML handshake packet
+     * @param remoteParty the side that sent this data
+     * @return true if we allow this to run
+     */
+    @NetworkCheckHandler
+    public boolean checkRemote(Map<String,String> mods, Side remoteParty){
+        if(mods.containsKey(MODID)){
+            String remoteVersion = mods.get(MODID);
+            if(remoteVersion!=null) {
+                String internalVersion = FMLCommonHandler.instance().findContainerFor(this).getVersion();
+                if(remoteVersion.equals(internalVersion))
+                    return true;
+                else{
+                    internalVersion = internalVersion.substring(0, internalVersion.lastIndexOf("."));
+                    remoteVersion = remoteVersion.substring(0, internalVersion.lastIndexOf("."));
+                    return remoteVersion.equals(internalVersion);
+                }
+            }
+        }
+        return false;
     }
 }
