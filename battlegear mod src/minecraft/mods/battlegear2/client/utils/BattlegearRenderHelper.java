@@ -28,7 +28,9 @@ import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
@@ -150,7 +152,7 @@ public class BattlegearRenderHelper {
                     BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()));
 	        		GL11.glPopMatrix();
 
-	        	}else if(!(offhandRender.getItemToRender().getItem() instanceof IArrowContainer2)){
+	        	}else{
                     GL11.glPushMatrix();
                     var7 = 0.8F;
 
@@ -316,7 +318,7 @@ public class BattlegearRenderHelper {
         ItemStack var2 = ((IBattlePlayer)var1).isBattlemode() && offhandRender.getEquippedItemSlot() > 0 ?
                 var1.inventory.getStackInSlot(offhandRender.getEquippedItemSlot()) : dummyStack;
 
-        boolean var3 = offhandRender.getEquippedItemSlot() == var1.inventory.currentItem + 3 && var2 == offhandRender.getItemToRender();
+        boolean var3 = offhandRender.getEquippedItemSlot() == var1.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS && var2 == offhandRender.getItemToRender();
 
         if (offhandRender.getItemToRender() == null && var2 == null) {
             var3 = true;
@@ -330,10 +332,10 @@ public class BattlegearRenderHelper {
         }
 
 
-        ItemStack offhand = ((IBattlePlayer)var1).isBattlemode() ? var1.inventory.getStackInSlot(var1.inventory.currentItem + 3) : dummyStack;
+        ItemStack offhand = ((IBattlePlayer)var1).isBattlemode() ? var1.inventory.getStackInSlot(var1.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS) : dummyStack;
 
         offhand = (BattlegearUtils.isMainHand(mainhandToRender, offhand)) ? offhand : dummyStack;
-        var3 = var3 & (offhandRender.getEquippedItemSlot() == var1.inventory.currentItem + 3 && offhand == offhandRender.getItemToRender());
+        var3 = var3 & (offhandRender.getEquippedItemSlot() == var1.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS && offhand == offhandRender.getItemToRender());
 
         float var4 = 0.4F;
         float var5 = var3 ? 1.0F : 0.0F;
@@ -351,7 +353,7 @@ public class BattlegearRenderHelper {
 
         if (offhandRender.getEquippedProgress() < 0.1F) {
             offhandRender.setItemToRender(var2);
-            offhandRender.setEquippedItemSlot(var1.inventory.currentItem + 3);
+            offhandRender.setEquippedItemSlot(var1.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS);
         }
     }
 
@@ -462,7 +464,7 @@ public class BattlegearRenderHelper {
 	                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
 	                }
                 }
-            }else if(!(var21.getItem() instanceof IArrowContainer2)){
+            }else{
 
                 if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.getBlockFromItem(var21.getItem()).getRenderType()))) {
                     var7 = 0.5F;
@@ -471,7 +473,7 @@ public class BattlegearRenderHelper {
                     GL11.glRotatef(20.0F, 1.0F, 0.0F, 0.0F);
                     GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
                     GL11.glScalef(-var7, -var7, var7);
-                } else if (var21.getItem() instanceof ItemBow) {
+                } else if (BattlegearUtils.isBow(var21.getItem())) {
                     var7 = 0.625F;
                     GL11.glTranslatef(0.0F, 0.125F, 0.3125F);
                     GL11.glRotatef(-20.0F, 0.0F, 1.0F, 0.0F);
@@ -564,12 +566,12 @@ public class BattlegearRenderHelper {
         RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
         RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
         
-        if(mainhandSheathed != null){
+        if(mainhandSheathed != null && !(mainhandSheathed.getItem() instanceof ItemBlock)){
 
             boolean onBack = BattlegearConfig.forceBackSheath;
             if(mainhandSheathed.getItem() instanceof ISheathed){
                 onBack = ((ISheathed) mainhandSheathed.getItem()).sheatheOnBack(mainhandSheathed);
-            }else if (mainhandSheathed.getItem() instanceof ItemBow){
+            }else if (BattlegearUtils.isBow(mainhandSheathed.getItem())){
                 onBack = true;
             }
 
@@ -629,10 +631,12 @@ public class BattlegearRenderHelper {
             GL11.glPopMatrix();
         }
 
-        if(offhandSheathed != null && !(offhandSheathed.getItem() instanceof ItemBlock || offhandSheathed.getItem() instanceof IArrowContainer2)){
+        if(offhandSheathed != null && !(offhandSheathed.getItem() instanceof ItemBlock)){
             boolean onBack = BattlegearConfig.forceBackSheath;
             if(offhandSheathed.getItem() instanceof ISheathed){
                 onBack = ((ISheathed) offhandSheathed.getItem()).sheatheOnBack(offhandSheathed);
+            }else if (BattlegearUtils.isBow(offhandSheathed.getItem())){
+                onBack = true;
             }
 
             ModelBiped target = modelBipedMain;
