@@ -138,7 +138,7 @@ public class Battlegear {
                         }
                     } catch (Exception ignored) {
                     }
-                }else if(message.isNBTMessage() && BattlegearConfig.initItemFromNBT(message.getNBTValue())){
+                }else if(message.isNBTMessage() && Loader.instance().hasReachedState(LoaderState.PREINITIALIZATION)&& !Loader.instance().hasReachedState(LoaderState.INITIALIZATION) && BattlegearConfig.initItemFromNBT(message.getNBTValue())){
                     success = true;
                 }
                 if(success){
