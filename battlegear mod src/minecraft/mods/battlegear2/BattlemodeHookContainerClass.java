@@ -39,7 +39,6 @@ import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BattlemodeHookContainerClass {
@@ -324,17 +323,17 @@ public class BattlemodeHookContainerClass {
     public void onDrop(LivingDropsEvent event){
     	if(BaseEnchantment.bowLoot != null && event.source.getEntity() instanceof EntityLivingBase){
     		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getHeldItem();
-    		if(stack!=null && BattlegearUtils.isBow(stack.getItem())){
+    		if(stack!=null && BaseEnchantment.bowLoot.canApply(stack)){
                 addLootFromEnchant(stack, event.drops);
     		}else if(event.source.getEntity() instanceof EntityPlayer){
                 stack = ((InventoryPlayerBattle)((EntityPlayer) event.source.getEntity()).inventory).getCurrentOffhandWeapon();
-                if(stack!=null && BattlegearUtils.isBow(stack.getItem()))
+                if(stack!=null && BaseEnchantment.bowLoot.canApply(stack))
                     addLootFromEnchant(stack, event.drops);
             }
     	}
     }
 
-    private void addLootFromEnchant(ItemStack bow, ArrayList<EntityItem> drops){
+    private void addLootFromEnchant(ItemStack bow, List<EntityItem> drops){
         int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot.effectId, bow);
         if(lvl>0){
             ItemStack drop;
