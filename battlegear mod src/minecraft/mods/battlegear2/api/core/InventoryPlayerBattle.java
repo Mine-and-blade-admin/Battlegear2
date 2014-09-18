@@ -189,7 +189,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     	super.decrementAnimations();
         for (int i = 0; i < this.extraItems.length; ++i) {
             if (this.extraItems[i] != null) {
-                this.extraItems[i].updateAnimation(this.player.worldObj, this.player, i, this.currentItem + OFFSET == i);
+                this.extraItems[i].updateAnimation(this.player.worldObj, this.player, i + OFFSET, this.currentItem == i + OFFSET);
             }
         }
     }

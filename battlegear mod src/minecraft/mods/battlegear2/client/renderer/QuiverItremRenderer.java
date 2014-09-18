@@ -71,15 +71,17 @@ public class QuiverItremRenderer implements IItemRenderer{
         		GL11.glTranslatef(-0.5F, -0.25F, 0);
             case EQUIPPED:
             case EQUIPPED_FIRST_PERSON:
-                EntityLivingBase livingBase = (EntityLivingBase) data[1];
-                if (livingBase == null || livingBase.equals(BattlegearRenderHelper.dummyEntity)) {
-                    //Doesn't render sheathed
-                    GL11.glPopMatrix();
-                    return;
-                }else if(livingBase instanceof IBattlePlayer && ((IBattlePlayer) livingBase).isBattlemode()){
-                    //Doesn't render in battlemode
-                    GL11.glPopMatrix();
-                    return;
+                if(data.length>1 && data[1] instanceof EntityLivingBase) {
+                    EntityLivingBase livingBase = (EntityLivingBase) data[1];
+                    if (livingBase == null || livingBase.equals(BattlegearRenderHelper.dummyEntity)) {
+                        //Doesn't render sheathed
+                        GL11.glPopMatrix();
+                        return;
+                    } else if (livingBase instanceof IBattlePlayer && ((IBattlePlayer) livingBase).isBattlemode()) {
+                        //Doesn't render in battlemode
+                        GL11.glPopMatrix();
+                        return;
+                    }
                 }
                 GL11.glColor3f(red, green, blue);
                 ItemRenderer.renderItemIn2D(tessellator,
