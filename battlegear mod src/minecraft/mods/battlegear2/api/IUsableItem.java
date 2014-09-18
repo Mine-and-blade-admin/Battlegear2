@@ -4,14 +4,14 @@ import net.minecraft.item.ItemStack;
 
 /**
  * Created by GotoLink on 15/09/2014.
- * The basic signature for {@link net.minecraft.item.Item}s to be used (with GameSettings.keyBindUseItem), basically a counterpart of weapons
+ * The basic signature for {@link net.minecraft.item.Item}s to be used (with GameSettings#keyBindUseItem), basically a counterpart of weapons
  * By default can be hold in either hands of the player, but doesn't allow another usable item on the opposite hand.
  * See {@link IAllowItem} to change this behavior at your discretion.
  *
  * {@link net.minecraft.item.Item#onItemUseFirst(ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int, int, float, float, float)}
  * {@link net.minecraft.item.Item#onItemUse(ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, int, int, int, int, float, float, float)}
  * {@link net.minecraft.item.Item#onItemRightClick(ItemStack, net.minecraft.world.World, net.minecraft.entity.player.EntityPlayer)}
- * will be called when player press {@link net.minecraft.client.settings.GameSettings.keyBindUseItem}, no matter what hand wield the {@link ItemStack}
+ * will be called when player press {@link net.minecraft.client.settings.GameSettings#keyBindUseItem}, no matter what hand wield the {@link ItemStack}
  * exactly as if (or sufficiently close) done by vanilla Minecraft
  *
  * Note: {@link net.minecraft.entity.player.EntityPlayer#getCurrentEquippedItem()} and {@link net.minecraft.entity.player.EntityPlayer#getHeldItem()} will still return the {@link ItemStack} held in right hand,
@@ -20,7 +20,7 @@ import net.minecraft.item.ItemStack;
  * Note: ItemBow, ItemBlock, ItemHoe, ItemPotion and ItemFood instances are already considered usable, though this implementation has priority
  *
  * Note: For more flexibility over your item usage in left hand, see
- * {@link mods.battlegear2.api.PlayerEventChild.UseOffhandItemEvent}
+ * {@link mods.battlegear2.api.PlayerEventChild.UseOffhandItemEvent} and {@link mods.battlegear2.api.PlayerEventChild.OffhandAttackEvent}
  */
 public interface IUsableItem {
     /**

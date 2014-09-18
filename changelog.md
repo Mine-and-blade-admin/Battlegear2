@@ -4,6 +4,8 @@
 * Fixed item rendering in gui when placed after vanilla damaged items
 * Made shield and bow custom enchantments optional, with comments in configuration file
 * Added file deletion options in M.U.D
+* Added support for different mod-subversions on client-server connection
+* Added bow usage on left hand, with optional quiver on right
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.7 ==
 * Allowed more items in battle slots: compass, clock, and more...

@@ -66,7 +66,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
     /**
      * Called when a player right clicks in battlemode
      * The parent event can be either {@link PlayerInteractEvent} or {@link EntityInteractEvent} if the OffhandAttackEvent allowed swinging
-     * Both ItemStack can be null
+     * Both {@link ItemStack} can be null
      * If cancelled, no offhand swinging will be performed
      */
     @Cancelable
@@ -82,7 +82,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
 
     /**
      * Called when a player right clicks an entity in battlemode
-     * Both ItemStack can be null
+     * Both {@link ItemStack} can be null
      * Cancelling will prevent any further processing and prevails over the boolean fields
      */
     @Cancelable
