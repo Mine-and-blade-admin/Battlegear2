@@ -38,6 +38,7 @@ import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
@@ -104,6 +105,37 @@ public class BattlegearClientEvents {
 			inGameGUI.renderGameOverlay(event.partialTicks, event.mouseX, event.mouseY);
 		}
 	}
+
+    /**
+     * Bend the models when the item in left hand is used
+     */
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void renderPlayerLeftItemUsage(RenderPlayerEvent.Pre event){
+        ItemStack itemstack = ((InventoryPlayerBattle)event.entityPlayer.inventory).getCurrentOffhandWeapon();
+        event.renderer.modelArmorChestplate.heldItemLeft = event.renderer.modelArmor.heldItemLeft = event.renderer.modelBipedMain.heldItemLeft = itemstack != null ? 1 : 0;
+
+        if (itemstack != null && event.entityPlayer.getItemInUseCount() > 0 && event.entityPlayer.getItemInUse() == itemstack)
+        {
+            EnumAction enumaction = itemstack.getItemUseAction();
+
+            if (enumaction == EnumAction.block)
+            {
+                event.renderer.modelArmorChestplate.heldItemLeft = event.renderer.modelArmor.heldItemLeft = event.renderer.modelBipedMain.heldItemLeft = 3;
+            }
+            else if (enumaction == EnumAction.bow)
+            {
+                event.renderer.modelArmorChestplate.aimedBow = event.renderer.modelArmor.aimedBow = event.renderer.modelBipedMain.aimedBow = true;
+            }
+        }
+    }
+
+    /**
+     * Reset models to default values
+     */
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void resetPlayerLeftHand(RenderPlayerEvent.Post event){
+        event.renderer.modelArmorChestplate.heldItemLeft = event.renderer.modelArmor.heldItemLeft = event.renderer.modelBipedMain.heldItemLeft = 0;
+    }
 
     /**
      * Render a player left hand item, or sheathed items, and quiver on player back
