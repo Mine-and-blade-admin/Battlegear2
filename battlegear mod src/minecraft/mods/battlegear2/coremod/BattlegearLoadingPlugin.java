@@ -24,7 +24,6 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
     public static final String EntityAIControlledTransformer = "mods.battlegear2.coremod.transformers.EntityAIControlledByPlayerTransformer";
     public static final String EntityOtherPlayerMPTransformer = "mods.battlegear2.coremod.transformers.EntityOtherPlayerMPTransformer";
     public static final String AccessTransformer = "mods.battlegear2.coremod.transformers.BattlegearAccessTransformer";
-    public static final String EntityTrackerTransformer = "mods.battlegear2.coremod.transformers.EntityTrackerTransformer";
     public static File debugOutputLocation;
 
     public static final String[] transformers = 
@@ -40,7 +39,6 @@ public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 		        ItemInWorldTransformer,
 		        EntityAIControlledTransformer,
 		        EntityOtherPlayerMPTransformer,
-		        EntityTrackerTransformer
    			};
 
     @Override

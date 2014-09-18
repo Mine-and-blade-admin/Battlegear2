@@ -347,4 +347,10 @@ public class BattlemodeHookContainerClass {
         }
     }
 
+    @SubscribeEvent
+    public void addTracking(PlayerEvent.StartTracking event){
+        if(event.target instanceof EntityPlayer){
+            ((EntityPlayerMP)event.entityPlayer).playerNetServerHandler.sendPacket(new BattlegearSyncItemPacket((EntityPlayer) event.target).generatePacket());
+        }
+    }
 }
