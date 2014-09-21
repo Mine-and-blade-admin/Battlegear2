@@ -42,7 +42,9 @@ import net.minecraftforge.event.entity.player.*;
 import java.util.List;
 
 public class BattlemodeHookContainerClass {
-
+    private boolean isFake(Entity entity){
+        return entity instanceof FakePlayer;
+    }
     /**
      * Crash the game if our inventory has been replaced by something else, or the coremod failed
      * Also synchronize battle inventory
@@ -50,7 +52,7 @@ public class BattlemodeHookContainerClass {
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onEntityJoin(EntityJoinWorldEvent event){
-        if (event.entity instanceof EntityPlayer && !(event.entity instanceof FakePlayer)) {
+        if (event.entity instanceof EntityPlayer && !(isFake(event.entity))) {
             if (!(((EntityPlayer) event.entity).inventory instanceof InventoryPlayerBattle) && !MinecraftForge.EVENT_BUS.post(new InventoryExceptionEvent((EntityPlayer)event.entity))) {
                 throw new RuntimeException("Player inventory has been replaced with " + ((EntityPlayer) event.entity).inventory.getClass());
             }
@@ -65,6 +67,7 @@ public class BattlemodeHookContainerClass {
 
     /**
      * Cancel the attack if the player reach is lowered by some types of items, or if barehanded
+     * Note: Applies to either hands, since item is hotswap before this event for offhand weapons
      * @param event for the player attacking an entity
      */
     @SubscribeEvent
@@ -89,6 +92,8 @@ public class BattlemodeHookContainerClass {
 
     @SubscribeEvent
     public void playerInteract(PlayerInteractEvent event) {
+        if(isFake(event.entityPlayer))
+            return;
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
             event.entityPlayer.isSwingInProgress = false;
@@ -203,6 +208,8 @@ public class BattlemodeHookContainerClass {
 
     @SubscribeEvent
     public void playerIntereactEntity(EntityInteractEvent event) {
+        if(isFake(event.entityPlayer))
+            return;
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
             event.setResult(Event.Result.DENY);
@@ -248,7 +255,8 @@ public class BattlemodeHookContainerClass {
 
     @SubscribeEvent
     public void shieldHook(LivingHurtEvent event){
-
+        if(isFake(event.entity))
+            return;
         if(event.entity instanceof IBattlePlayer){
             EntityPlayer player = (EntityPlayer)event.entity;
             if(((IBattlePlayer) player).getSpecialActionTimer() > 0){
@@ -325,7 +333,7 @@ public class BattlemodeHookContainerClass {
     		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getHeldItem();
     		if(stack!=null && BaseEnchantment.bowLoot.canApply(stack)){
                 addLootFromEnchant(stack, event.drops);
-    		}else if(event.source.getEntity() instanceof EntityPlayer){
+    		}else if(event.source.getEntity() instanceof EntityPlayer && !isFake(event.source.getEntity())){
                 stack = ((InventoryPlayerBattle)((EntityPlayer) event.source.getEntity()).inventory).getCurrentOffhandWeapon();
                 if(stack!=null && BaseEnchantment.bowLoot.canApply(stack))
                     addLootFromEnchant(stack, event.drops);
@@ -349,7 +357,7 @@ public class BattlemodeHookContainerClass {
 
     @SubscribeEvent
     public void addTracking(PlayerEvent.StartTracking event){
-        if(event.target instanceof EntityPlayer){
+        if(event.target instanceof EntityPlayer && !isFake(event.target)){
             ((EntityPlayerMP)event.entityPlayer).playerNetServerHandler.sendPacket(new BattlegearSyncItemPacket((EntityPlayer) event.target).generatePacket());
         }
     }
