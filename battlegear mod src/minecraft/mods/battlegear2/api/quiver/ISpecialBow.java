@@ -36,7 +36,7 @@ public interface ISpecialBow {
    * @param bow     The stack containing the instance of ISpecialBow being used to fire the arrow
    * @param player  The player firing the bow
    * @return A list of fire handlers to be used by {@link QuiverArrowRegistry#getArrowType} to be iterated through in the order of entry (FIFO)
-   *  Returning null will cause the default fire handlers are used.
+   *  Returning null will cause the default fire handlers to be used.
    *  Returning an empty list will prevent any fire handlers from processing, effectively rendering the bow useless.
    */
   public List<IArrowFireHandler> getFireHandlers(ItemStack arrow, ItemStack bow, EntityPlayer player);

@@ -7,7 +7,6 @@ import java.util.Map;
 
 public interface IPotionEffect {
 
-
     /**
      * Returns a map containing the potion effects to apply to an entity hit by the weapon. Each effect
      * has a float value associated with the chance of applying the effect. Note that the "dice roll" only

@@ -35,6 +35,9 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         extraItems = new ItemStack[EXTRA_INV_SIZE];
     }
 
+    /**
+     * @return true if the current item value is offset in the battle slot range
+     */
     public boolean isBattlemode() {
         return this.currentItem >= OFFSET && this.currentItem < OFFSET + EXTRA_ITEMS;
     }
@@ -182,7 +185,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     /**
-     *  Called by EntityPlayer#onLivingUpdate(), usually to animate the item being picked up
+     *  Called by EntityPlayer#onLivingUpdate(), to animate the item being picked up and tick it
      */
     @Override
     public void decrementAnimations() {
@@ -292,6 +295,12 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         setInventorySlotContents(slot, itemStack, true);
     }
 
+    /**
+     * Sets the given item stack to the specified slot in the inventory, mark as dirty according to the boolean argument
+     * @param slot whose content will change
+     * @param itemStack to put in the slot
+     * @param changed if the inventory packet should be sent next tick
+     */
     public void setInventorySlotContents(int slot, ItemStack itemStack, boolean changed) {
         hasChanged = changed;
         if (slot >= OFFSET) {

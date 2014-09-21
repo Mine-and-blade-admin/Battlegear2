@@ -94,14 +94,25 @@ public abstract class PlayerEventChild extends PlayerEvent{
         public boolean swingOffhand = true;
         /**
          * If we should perform an attack on the entity with the offhand item
+         * Note: Will post {@link AttackEntityEvent} and {@link Item#onLeftClickEntity(ItemStack, EntityPlayer, Entity)}
+         * with {@link InventoryPlayer#currentItem} offset to the offhand
          */
         public boolean shouldAttack = true;
         /**
          * If we should cancel the base entity interaction event
          */
         public boolean cancelParent = true;
+        /**
+         * The base entity interaction event
+         */
         public final EntityInteractEvent event;
+        /**
+         * Content of the main hand slot
+         */
         public final ItemStack mainHand;
+        /**
+         * Content of the off hand slot
+         */
         public final ItemStack offHand;
 
         public OffhandAttackEvent(EntityInteractEvent parent, ItemStack mainHand, ItemStack offHand) {

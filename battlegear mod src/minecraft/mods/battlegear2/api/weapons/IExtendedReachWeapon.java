@@ -4,7 +4,8 @@ import net.minecraft.item.ItemStack;
 
 public interface IExtendedReachWeapon {
 	/**
-	 * The distance the weapon will hit (note this will ONLY work for main hand weapons)
+	 * The distance the weapon will hit
+     * Note: a positive value, ie more reach, will <strong>only</strong> work for main hand weapons
 	 * @param stack
 	 * @return
 	 */

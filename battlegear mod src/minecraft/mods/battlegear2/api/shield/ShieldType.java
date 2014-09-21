@@ -30,10 +30,16 @@ public class ShieldType {
         defaultRGB = defaultColour;
     }
 
+    /**
+     * See {@link IShield#getDecayRate(net.minecraft.item.ItemStack)}
+     */
     public float getDecayRate() {
         return decayRate;
     }
 
+    /**
+     * See {@link IShield#getDamageDecayRate(net.minecraft.item.ItemStack, float)}
+     */
     public float getDamageDecay() {
         return damageDecay;
     }
@@ -42,10 +48,16 @@ public class ShieldType {
         return name;
     }
 
+    /**
+     * See {@link Item#getItemEnchantability(net.minecraft.item.ItemStack)}
+     */
     public int getEnchantability() {
         return enchantability;
     }
 
+    /**
+     * See {@link Item#getMaxDamage(net.minecraft.item.ItemStack)}
+     */
     public int getMaxDamage() {
         return maxDamage;
     }
@@ -54,6 +66,12 @@ public class ShieldType {
         return defaultRGB;
     }
 
+    /**
+     * Make a new instance based on the compressed data
+     * Note: Only a valid name is required
+     * @param compound data to read from
+     * @return the new type, or null if name is not readable
+     */
     public static ShieldType fromNBT(NBTTagCompound compound){
         String name = compound.getString("Name");
         if(name.equals(""))

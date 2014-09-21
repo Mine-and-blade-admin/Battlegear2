@@ -38,25 +38,37 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 
+/**
+ * Store commonly used method, mostly for the {@link EntityPlayer} {@link ItemStack}s management
+ */
 public class BattlegearUtils {
 
     /**
      * Event bus to which {@link mods.battlegear2.api.RenderPlayerEventChild} events are post to
      */
     public static final EventBus RENDER_BUS = new EventBus();
-
+    /**
+     * Method names that are not allowed in {@link Item} subclasses for common wielding
+     */
     private static String[] itemBlackListMethodNames = {
             BattlegearTranslator.getMapedMethodName("Item", "func_77648_a", "onItemUse"),
             BattlegearTranslator.getMapedMethodName("Item", "func_77659_a", "onItemRightClick")
     };
+    /**
+     * Method arguments classes that are not allowed in {@link Item} subclasses for common wielding
+     */
     private static Class[][] itemBlackListMethodParams = {
                 new Class[]{ItemStack.class, EntityPlayer.class, World.class, int.class, int.class, int.class, int.class, float.class, float.class, float.class},
                 new Class[]{ItemStack.class, World.class, EntityPlayer.class}
     };
+    /**
+     * The generic attack damage key for {@link ItemStack#getAttributeModifiers()}
+     */
     private static String genericAttack = SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName();
 
+    //TODO: Use this ?
+    @SuppressWarnings("unused")
     public static boolean isBlockingWithShield(EntityPlayer player){
-        //TODO: Use this ?
     	if(!player.isSneaking()){
     		return false;
     	}
@@ -66,7 +78,7 @@ public class BattlegearUtils {
 
     /**
      * Helper method to check if player is in battlemode
-     * @param player
+     * @param player the target player entity
      * @return true if in battlemode
      */
     public static boolean isPlayerInBattlemode(EntityPlayer player) {
@@ -75,13 +87,14 @@ public class BattlegearUtils {
 
     /**
      * Helper method to set a player item, offset from the current one
-     * @param player
+     * @param player the target player entity
      * @param stack holding the item to set
      * @param offset from the current item
      */
     public static void setPlayerCurrentItem(EntityPlayer player, ItemStack stack, int offset) {
         ((InventoryPlayerBattle) (player.inventory)).setInventorySlotContents(player.inventory.currentItem + offset, stack, false);
     }
+
     /*
     * Helper method to set the mainhand item
      */
@@ -222,7 +235,9 @@ public class BattlegearUtils {
         }
     }
 
-
+    /**
+     * Reads a {@link ItemStack} from the InputStream
+     */
     public static ItemStack readItemStack(ByteArrayDataInput par0DataInputStream) throws IOException {
         ItemStack itemstack = null;
         int short1 = par0DataInputStream.readInt();
@@ -238,7 +253,7 @@ public class BattlegearUtils {
     }
 
     /**
-     * Reads a compressed NBTTagCompound from the InputStream
+     * Reads a compressed {@link NBTTagCompound} from the InputStream
      */
     public static NBTTagCompound readNBTTagCompound(ByteArrayDataInput par0DataInputStream) throws IOException {
         short short1 = par0DataInputStream.readShort();
@@ -253,6 +268,12 @@ public class BattlegearUtils {
         }
     }
 
+    /**
+     * Writes a {@link ItemStack} to the OutputStream
+     * @param par1DataOutputStream the output stream
+     * @param par0ItemStack to write
+     * @throws IOException
+     */
     public static void writeItemStack(ByteArrayDataOutput par1DataOutputStream, ItemStack par0ItemStack) throws IOException {
 
         if (par0ItemStack == null) {
@@ -269,9 +290,14 @@ public class BattlegearUtils {
 
             writeNBTTagCompound(nbttagcompound, par1DataOutputStream);
         }
-
     }
 
+    /**
+     * Writes a compressed {@link NBTTagCompound} to the output
+     * @param par0NBTTagCompound
+     * @param par1DataOutputStream
+     * @throws IOException
+     */
     protected static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, ByteArrayDataOutput par1DataOutputStream) throws IOException {
         if (par0NBTTagCompound == null) {
             par1DataOutputStream.writeShort(-1);
@@ -282,6 +308,11 @@ public class BattlegearUtils {
         }
     }
 
+    /**
+     * Helper to recreate a player battle inventory from reflection with minimal effort
+     * @param entityPlayer the target player
+     * @return the new InventoryPlayerBattle instance
+     */
     public static InventoryPlayer replaceInventory(EntityPlayer entityPlayer) {
         return new InventoryPlayerBattle(entityPlayer);
     }
@@ -456,6 +487,10 @@ public class BattlegearUtils {
             attributeMap.applyAttributeModifiers(currentItem.getAttributeModifiers());
     }
 
+    /**
+     * Helper to close a stream fail-safely by printing the error stack trace
+     * @param c the stream to close
+     */
     public static void closeStream(Closeable c){
         try{
             if(c != null){
