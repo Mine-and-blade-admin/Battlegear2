@@ -34,9 +34,11 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.monster.EntitySkeleton;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
@@ -108,23 +110,26 @@ public class BattlegearClientEvents {
 
     /**
      * Bend the models when the item in left hand is used
+     * And stop the right hand inappropriate bending
      */
     @SubscribeEvent(priority = EventPriority.LOW)
-    public void renderPlayerLeftItemUsage(RenderPlayerEvent.Pre event){
-        ItemStack itemstack = ((InventoryPlayerBattle)event.entityPlayer.inventory).getCurrentOffhandWeapon();
-        event.renderer.modelArmorChestplate.heldItemLeft = event.renderer.modelArmor.heldItemLeft = event.renderer.modelBipedMain.heldItemLeft = itemstack != null ? 1 : 0;
-
-        if (itemstack != null && event.entityPlayer.getItemInUseCount() > 0 && event.entityPlayer.getItemInUse() == itemstack)
-        {
-            EnumAction enumaction = itemstack.getItemUseAction();
-
-            if (enumaction == EnumAction.block)
-            {
-                event.renderer.modelArmorChestplate.heldItemLeft = event.renderer.modelArmor.heldItemLeft = event.renderer.modelBipedMain.heldItemLeft = 3;
-            }
-            else if (enumaction == EnumAction.bow)
-            {
-                event.renderer.modelArmorChestplate.aimedBow = event.renderer.modelArmor.aimedBow = event.renderer.modelBipedMain.aimedBow = true;
+    public void renderPlayerLeftItemUsage(RenderLivingEvent.Pre event){
+        if(event.entity instanceof EntityPlayer) {
+            EntityPlayer entityPlayer = (EntityPlayer) event.entity;
+            ItemStack offhand = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
+            if (offhand != null && event.renderer instanceof RenderPlayer) {
+                RenderPlayer renderer = ((RenderPlayer) event.renderer);
+                renderer.modelArmorChestplate.heldItemLeft = renderer.modelArmor.heldItemLeft = renderer.modelBipedMain.heldItemLeft = 1;
+                if (entityPlayer.getItemInUseCount() > 0 && entityPlayer.getItemInUse() == offhand) {
+                    EnumAction enumaction = offhand.getItemUseAction();
+                    if (enumaction == EnumAction.block) {
+                        renderer.modelArmorChestplate.heldItemLeft = renderer.modelArmor.heldItemLeft = renderer.modelBipedMain.heldItemLeft = 3;
+                    } else if (enumaction == EnumAction.bow) {
+                        renderer.modelArmorChestplate.aimedBow = renderer.modelArmor.aimedBow = renderer.modelBipedMain.aimedBow = true;
+                    }
+                    ItemStack mainhand = entityPlayer.inventory.getCurrentItem();
+                    renderer.modelArmorChestplate.heldItemRight = renderer.modelArmor.heldItemRight = renderer.modelBipedMain.heldItemRight = mainhand != null ? 1 : 0;
+                }
             }
         }
     }
