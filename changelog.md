@@ -1,11 +1,14 @@
-== Soon ==
-* Added option to force HUD elements to render
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.6.0 ==
+* Added option to force HUD elements to render (counter obnoxious HUD mods)
 * Fixed enchantments rendering effect on shields and spears
-* Fixed item rendering in gui when placed after vanilla damaged items
+* Fixed item rendering in gui when placed after vanilla damaged items (thanks Forge)
 * Made shield and bow custom enchantments optional, with comments in configuration file
-* Added file deletion options in M.U.D
+* Added file deletion config options in M.U.D
 * Added support for different mod-subversions on client-server connection
-* Added bow usage on left hand, with optional quiver on right
+* Added bow/custom bow usage on left hand, with optional quiver on right
+* Allowed making of custom shields from other mods by IMCMessage-s
+* Fixed Pneumaticraft drone crashing
+* Replaced a coremod patch by event (11 coremod patches left)
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.5.7 ==
 * Allowed more items in battle slots: compass, clock, and more...

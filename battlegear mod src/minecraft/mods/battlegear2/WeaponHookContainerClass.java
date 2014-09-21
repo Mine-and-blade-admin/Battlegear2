@@ -72,9 +72,10 @@ public class WeaponHookContainerClass {
                     }
                     if(stack.getItem() instanceof IHitTimeModifier)
                     {
+                        int timeModifier = ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit);
                         //If the hurt resistance time is under the modified hurt resistance time, set it to the modified hurt resistance time
-                        if(entityHit.hurtResistantTime < (float)(entityHit.maxHurtResistantTime) * (0.5) + ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit)){
-                            entityHit.hurtResistantTime += ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit);
+                        if(entityHit.hurtResistantTime < (float)(entityHit.maxHurtResistantTime) * (0.5) + timeModifier){
+                            entityHit.hurtResistantTime += timeModifier;
                         }else{ //if not cancel the attack
                             event.setCanceled(true);
                         }
@@ -90,7 +91,7 @@ public class WeaponHookContainerClass {
         }
     }
 
-    protected static boolean performBackStab(Item item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
+    protected boolean performBackStab(Item item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
         //Get victim and murderer vector views at hit time
         double[] victimView = new double[]{entityHit.getLookVec().xCoord,entityHit.getLookVec().zCoord};
         double[] murdererView = new double[]{entityHitting.getLookVec().xCoord,entityHitting.getLookVec().zCoord};
@@ -104,7 +105,7 @@ public class WeaponHookContainerClass {
         return false;
     }
 
-    protected static void performEffects(Map<PotionEffect, Float> map, EntityLivingBase entityHit) {
+    protected void performEffects(Map<PotionEffect, Float> map, EntityLivingBase entityHit) {
         double roll = Math.random();
         for(PotionEffect effect:map.keySet()){
             //add effects if they aren't already applied, with corresponding chance factor
