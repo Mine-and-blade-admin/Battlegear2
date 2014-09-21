@@ -104,7 +104,7 @@ public class QuiverArrowRegistry {
 
     /**
      * Search for an ItemStack whose item is an {@link IArrowContainer2}
-     * @param bow the bow in use
+     * @param bow the "bow" in use, not necessarily a {@link ItemBow}
      * @param entityPlayer the player using it
      * @return the first non-null itemstack found through the quiver selection algorithms
      */
@@ -129,15 +129,7 @@ public class QuiverArrowRegistry {
      */
     public static EntityArrow getArrowType(ItemStack arrow, World world, EntityPlayer player, float charge){
         EntityArrow result;
-        // allows customization of fire handler list for custom bows
-        ItemStack bow = player.getHeldItem();
-        List<IArrowFireHandler> handlers = fireHandlers;
-        if (bow != null && bow.getItem() instanceof ISpecialBow) {
-            handlers = ((ISpecialBow) bow.getItem()).getFireHandlers(arrow, bow, player);
-            if (handlers == null) {
-                handlers = fireHandlers;
-            }
-        }
+        List<IArrowFireHandler> handlers = getFireHandlers(getSpecialBow(player), arrow, player);
         for (IArrowFireHandler handler : handlers) {
             if(handler.canFireArrow(arrow, world, player, charge)){
                 result = handler.getFiredArrow(arrow, world, player, charge);
@@ -149,6 +141,25 @@ public class QuiverArrowRegistry {
         return null;
     }
 
+    //Get first available special bow
+    private static ItemStack getSpecialBow(EntityPlayer player){
+        ItemStack bow = player.getHeldItem();
+        if (bow != null && bow.getItem() instanceof ISpecialBow) {
+            return bow;
+        }
+        return ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+    }
+
+    //Allows customization of fire handler list for custom bows
+    public static List<IArrowFireHandler> getFireHandlers(ItemStack bow, ItemStack arrow, EntityPlayer player){
+        if (bow != null && bow.getItem() instanceof ISpecialBow) {
+            List<IArrowFireHandler> handlers = ((ISpecialBow) bow.getItem()).getFireHandlers(arrow, bow, player);
+            if (handlers != null) {
+                return handlers;
+            }
+        }
+        return fireHandlers;
+    }
     /**
      * @param stack
      * @return the EntityArrow class attached to the given stack, or null if none is found
@@ -163,7 +174,7 @@ public class QuiverArrowRegistry {
 
     /**
      * @param clazz
-     * @return the ItemStack attached to the given EntityArrow class
+     * @return an ItemStack attached to the given EntityArrow class, defaults to vanilla arrow
      */
     public static ItemStack getItem(Class<? extends EntityArrow> clazz){
     	ItemStack temp = classToStacks.get(clazz);
@@ -193,6 +204,12 @@ public class QuiverArrowRegistry {
         return test!=null && (compareFullStack?stackToClasses.containsKey(test):itemToClasses.containsKey(test.getItem()));
     }
 
+    /**
+     * Check if the given ItemStack has been registered
+     * @param test the ItemStack to check
+     * @param senses defines the meaningful ItemStack differences for the identification
+     * @return true if a known similarity has been found
+     */
     public static boolean isKnownArrow(ItemStack test, Iterable<ISensible<ItemStack>> senses){
         Predicate<ItemStack> predicate = new ISensible.Filter<ItemStack>(test, senses);
         return Iterators.any(stackToClasses.keySet().iterator(), predicate);
