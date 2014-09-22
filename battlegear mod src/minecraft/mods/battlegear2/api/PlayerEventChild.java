@@ -47,6 +47,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
 	 	public final ItemStack shield;
 	 	public final DamageSource source;
 	 	public final float ammount; // use same name as other Forge events
+	 	public float ammountRemaining = 0.0F; // damage remaining after shield block event, if any
         /**
          * If the {@link IShield#blockAnimation(EntityPlayer, float)} should be called
          */
