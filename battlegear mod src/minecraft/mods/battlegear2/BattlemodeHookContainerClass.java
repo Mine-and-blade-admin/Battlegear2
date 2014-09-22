@@ -292,9 +292,13 @@ public class BattlemodeHookContainerClass {
                     }
 
                     if(shouldBlock){
-                        event.setCanceled(true);
                         PlayerEventChild.ShieldBlockEvent blockEvent = new PlayerEventChild.ShieldBlockEvent(new PlayerEvent(player), shield, event.source, dmg);
                         MinecraftForge.EVENT_BUS.post(blockEvent);
+                        if (blockEvent.ammountRemaining > 0.0F) {
+                            event.ammount = blockEvent.ammountRemaining;
+                        } else {
+                            event.setCanceled(true);
+                        }
 
                         if(blockEvent.performAnimation){
                             Battlegear.packetHandler.sendPacketAround(player, 32, new BattlegearShieldFlashPacket(player, dmg).generatePacket());
