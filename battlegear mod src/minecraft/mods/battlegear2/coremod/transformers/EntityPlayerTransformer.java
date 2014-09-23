@@ -177,47 +177,11 @@ public class EntityPlayerTransformer extends TransformerBase {
     private MethodNode generateIsBlockingWithShield() {
         MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, "isBlockingWithShield", "()Z", null, null);
 
-        LabelNode L1 = new LabelNode();
-        LabelNode L3 = new LabelNode();
-        LabelNode L4 = new LabelNode();
-
-        //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand  != null)
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
-        mn.instructions.add(new JumpInsnNode(IFNULL, L1));
-
-        //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand().getItem() instanceof IShield)
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, itemStackClassName, itemStackGetItemMethodName, itemStackGetItemMethodDesc));
-        mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/shield/IShield"));
-        mn.instructions.add(new JumpInsnNode(IFEQ, L1));
-
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerDataWatcherField, "L"+dataWatcherClassName+";"));
-        mn.instructions.add(new VarInsnNode(BIPUSH, 25));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, dataWatcherClassName, dataWatcherGetByteMethodName, dataWatcherGetByteMethodDesc));
-        mn.instructions.add(new JumpInsnNode(IFLE, L3));
-        mn.instructions.add(new InsnNode(ICONST_1));
-        mn.instructions.add(new JumpInsnNode(GOTO, L4));
-
-        mn.instructions.add(L3);
-        mn.instructions.add(new FrameNode(F_SAME, 0, null, 0, null));
-        mn.instructions.add(new InsnNode(ICONST_0));
-        mn.instructions.add(L4);
-        mn.instructions.add(new FrameNode(F_SAME1, 0, null, 1, new Object[] {INTEGER}));
-        mn.instructions.add(new InsnNode(IRETURN));
-        
-        mn.instructions.add(L1);
-        mn.instructions.add(new FrameNode(F_SAME, 0, null, 0, null));
-        mn.instructions.add(new InsnNode(ICONST_0));
+        mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "isBlockingWithShield", "(L"+entityPlayerClassName+";)Z"));
         mn.instructions.add(new InsnNode(IRETURN));
 
-        mn.maxStack = 2;
+        mn.maxStack = 1;
         mn.maxLocals = 1;
 
         return mn;
@@ -233,20 +197,9 @@ public class EntityPlayerTransformer extends TransformerBase {
         mn.instructions.add(new VarInsnNode(ILOAD, 1));
         mn.instructions.add(new JumpInsnNode(IFEQ, L1));
 
-        //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand  != null)
+        //if( BattlegearUtils.canBlockWithShield(this))
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
-        mn.instructions.add(new JumpInsnNode(IFNULL, L1));
-
-        //if( ((InventoryPlayerBattle)player.inventory).getCurrentOffhand().getItem() instanceof IShield)
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L"+inventoryClassName+";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "getCurrentOffhandWeapon", "()L"+itemStackClassName+";"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, itemStackClassName, itemStackGetItemMethodName, itemStackGetItemMethodDesc));
-        mn.instructions.add(new TypeInsnNode(INSTANCEOF, "mods/battlegear2/api/shield/IShield"));
+        mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "canBlockWithShield", "(L"+entityPlayerClassName+";)Z"));
         mn.instructions.add(new JumpInsnNode(IFEQ, L1));
 
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
@@ -288,7 +241,7 @@ public class EntityPlayerTransformer extends TransformerBase {
                 "attackTargetEntityWithCurrentOffItem", "(L" + entityPlayerClassName + ";L" + entityClassName + ";)V"));
         mn.instructions.add(new InsnNode(RETURN));
 
-        mn.maxStack = 3;
+        mn.maxStack = 2;
         mn.maxLocals = 2;
 
         return mn;
@@ -507,11 +460,8 @@ public class EntityPlayerTransformer extends TransformerBase {
     private MethodNode generateIsBattleMode() {
         MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, "isBattlemode", "()Z", null, null);
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerInventoryFieldName, "L" + inventoryClassName + ";"));
-        mn.instructions.add(new TypeInsnNode(CHECKCAST, "mods/battlegear2/api/core/InventoryPlayerBattle"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, "mods/battlegear2/api/core/InventoryPlayerBattle", "isBattlemode", "()Z"));
+        mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "isPlayerInBattlemode", "(L"+entityPlayerClassName+";)Z"));
         mn.instructions.add(new InsnNode(IRETURN));
-
         mn.maxStack = 1;
         mn.maxLocals = 1;
 

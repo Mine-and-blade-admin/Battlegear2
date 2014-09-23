@@ -66,14 +66,22 @@ public class BattlegearUtils {
      */
     private static String genericAttack = SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName();
 
-    //TODO: Use this ?
-    @SuppressWarnings("unused")
-    public static boolean isBlockingWithShield(EntityPlayer player){
-    	if(!player.isSneaking()){
-    		return false;
-    	}
-    	ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+    /**
+     * Helper method to check if player can use {@link IShield}
+     */
+    public static boolean canBlockWithShield(EntityPlayer player){
+        if(!(player.inventory instanceof InventoryPlayerBattle)){
+            return false;
+        }
+        ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
         return offhand != null && offhand.getItem() instanceof IShield;
+    }
+
+    /**
+     * Helper method to check if player is using {@link IShield}
+     */
+    public static boolean isBlockingWithShield(EntityPlayer player){
+    	return canBlockWithShield(player) && player.getDataWatcher().getWatchableObjectByte(25)>0;
     }
 
     /**
@@ -82,7 +90,7 @@ public class BattlegearUtils {
      * @return true if in battlemode
      */
     public static boolean isPlayerInBattlemode(EntityPlayer player) {
-        return ((IBattlePlayer) player).isBattlemode();
+        return player.inventory instanceof InventoryPlayerBattle && ((InventoryPlayerBattle) player.inventory).isBattlemode();
     }
 
     /**
@@ -543,9 +551,11 @@ public class BattlegearUtils {
      * @return
      */
     public static ItemStack getCurrentItemOnUpdate(EntityPlayer entityPlayer, ItemStack itemInUse) {
-        ItemStack itemStack = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
-        if(itemInUse == itemStack) {
-            return itemStack;
+        if(isPlayerInBattlemode(entityPlayer)) {
+            ItemStack itemStack = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
+            if (itemInUse == itemStack) {
+                return itemStack;
+            }
         }
         return entityPlayer.getCurrentEquippedItem();
     }
