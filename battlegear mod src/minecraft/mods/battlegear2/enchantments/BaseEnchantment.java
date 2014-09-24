@@ -3,6 +3,7 @@ package mods.battlegear2.enchantments;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Optional;
 import mods.battlegear2.api.IEnchantable;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -16,7 +17,7 @@ public class BaseEnchantment extends Enchantment {
 	private int max;
 	private int enchantCoeff;
 	private int range;
-	public static Enchantment bashWeight, bashPower, bashDamage, shieldUsage, shieldRecover, bowLoot, bowCharge;
+	public static Optional<Enchantment> bashWeight, bashPower, bashDamage, shieldUsage, shieldRecover, bowLoot, bowCharge;
 	
 	public BaseEnchantment(int id, int weight, int limit, int progress,	int range) {
 		super(id, weight, EnumEnchantmentType.all);
@@ -73,8 +74,7 @@ public class BaseEnchantment extends Enchantment {
 
 	@Override
 	public boolean canApplyTogether(Enchantment par1Enchantment) {
-		return super.canApplyTogether(par1Enchantment)
-				&& par1Enchantment.effectId != this.effectId;
+		return super.canApplyTogether(par1Enchantment) && par1Enchantment.effectId != this.effectId;
 	}
 
 	@Override
@@ -92,20 +92,13 @@ public class BaseEnchantment extends Enchantment {
 	}
 
     public static void initBase(){
-        if(BattlegearConfig.enchantsId[0]>=0 && BattlegearConfig.enchantsId[0]<Enchantment.enchantmentsList.length)
-            bashWeight = new BaseEnchantment(BattlegearConfig.enchantsId[0], 5, 3, 15, 30).setName("bash.weightless");
-        if(BattlegearConfig.enchantsId[1]>=0 && BattlegearConfig.enchantsId[1]<Enchantment.enchantmentsList.length)
-            bashPower = new BaseEnchantment(BattlegearConfig.enchantsId[1], 10, 5, 10, 40).setName("bash.power");
-        if(BattlegearConfig.enchantsId[2]>=0 && BattlegearConfig.enchantsId[2]<Enchantment.enchantmentsList.length)
-            bashDamage = new BaseEnchantment(BattlegearConfig.enchantsId[2], 1, 3, 15, 50).setName("bash.damage");
-        if(BattlegearConfig.enchantsId[3]>=0 && BattlegearConfig.enchantsId[3]<Enchantment.enchantmentsList.length)
-            shieldUsage = new BaseEnchantment(BattlegearConfig.enchantsId[3], 2, 5, 5, 30).setName("shield.usage");
-        if(BattlegearConfig.enchantsId[4]>=0 && BattlegearConfig.enchantsId[4]<Enchantment.enchantmentsList.length)
-            shieldRecover = new BaseEnchantment(BattlegearConfig.enchantsId[4], 3, 4, 20, 20).setName("shield.recover");
-        if(BattlegearConfig.enchantsId[5]>=0 && BattlegearConfig.enchantsId[5]<Enchantment.enchantmentsList.length)
-            bowLoot = new BaseEnchantment(BattlegearConfig.enchantsId[5], 2, EnumEnchantmentType.bow, 10, 50).setName("bow.loot");
-        if(BattlegearConfig.enchantsId[6]>=0 && BattlegearConfig.enchantsId[6]<Enchantment.enchantmentsList.length)
-            bowCharge = new BaseEnchantment(BattlegearConfig.enchantsId[6], 1, EnumEnchantmentType.bow, 20, 20).setName("bow.charge");
+        bashWeight = Optional.fromNullable((BattlegearConfig.enchantsId[0]>=0 && BattlegearConfig.enchantsId[0]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[0], 5, 3, 15, 30).setName("bash.weightless"):null);
+        bashPower = Optional.fromNullable((BattlegearConfig.enchantsId[1]>=0 && BattlegearConfig.enchantsId[1]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[1], 10, 5, 10, 40).setName("bash.power"):null);
+        bashDamage = Optional.fromNullable((BattlegearConfig.enchantsId[2]>=0 && BattlegearConfig.enchantsId[2]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[2], 1, 3, 15, 50).setName("bash.damage"):null);
+        shieldUsage = Optional.fromNullable((BattlegearConfig.enchantsId[3]>=0 && BattlegearConfig.enchantsId[3]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[3], 2, 5, 5, 30).setName("shield.usage"):null);
+        shieldRecover = Optional.fromNullable((BattlegearConfig.enchantsId[4]>=0 && BattlegearConfig.enchantsId[4]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[4], 3, 4, 20, 20).setName("shield.recover"):null);
+        bowLoot = Optional.fromNullable((BattlegearConfig.enchantsId[5]>=0 && BattlegearConfig.enchantsId[5]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[5], 2, EnumEnchantmentType.bow, 10, 50).setName("bow.loot"):null);
+        bowCharge = Optional.fromNullable((BattlegearConfig.enchantsId[6]>=0 && BattlegearConfig.enchantsId[6]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[6], 1, EnumEnchantmentType.bow, 20, 20).setName("bow.charge"):null);
     }
 
     @Override

@@ -333,20 +333,17 @@ public class BattlemodeHookContainerClass {
 
     @SubscribeEvent
     public void onDrop(LivingDropsEvent event){
-    	if(BaseEnchantment.bowLoot != null && event.source.getEntity() instanceof EntityLivingBase){
+    	if(BaseEnchantment.bowLoot.isPresent() && event.source.getEntity() instanceof EntityLivingBase){
     		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getHeldItem();
-    		if(stack!=null && BaseEnchantment.bowLoot.canApply(stack)){
-                addLootFromEnchant(stack, event.drops);
-    		}else if(event.source.getEntity() instanceof EntityPlayer && !isFake(event.source.getEntity())){
+    		if(!addLootFromEnchant(stack, event.drops) && event.source.getEntity() instanceof EntityPlayer && !isFake(event.source.getEntity())){
                 stack = ((InventoryPlayerBattle)((EntityPlayer) event.source.getEntity()).inventory).getCurrentOffhandWeapon();
-                if(stack!=null && BaseEnchantment.bowLoot.canApply(stack))
-                    addLootFromEnchant(stack, event.drops);
+                addLootFromEnchant(stack, event.drops);
             }
     	}
     }
 
-    private void addLootFromEnchant(ItemStack bow, List<EntityItem> drops){
-        int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot.effectId, bow);
+    private boolean addLootFromEnchant(ItemStack bow, List<EntityItem> drops){
+        int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot.get().effectId, bow);
         if(lvl>0){
             ItemStack drop;
             for(EntityItem items:drops){
@@ -356,7 +353,9 @@ public class BattlemodeHookContainerClass {
                     items.setEntityItemStack(drop);
                 }
             }
+            return true;
         }
+        return false;
     }
 
     @SubscribeEvent

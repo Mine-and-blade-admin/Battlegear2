@@ -94,30 +94,6 @@ public class BattlegearConfig {
         }
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
         enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
-        config.addCustomCategoryComment("EnchantmentsID", "Values should be between 0 and "+(Enchantment.enchantmentsList.length-1)+", or the enchantment will be disabled");
-        for(int i = 0; i<enchantsName.length; i++){
-            Property props = config.get("EnchantmentsID", enchantsName[i], enchantsId[i]).setRequiresMcRestart(true);
-        	enchantsId[i] = props.getInt();
-            if(enchantsId[i]>=0 && enchantsId[i]<Enchantment.enchantmentsList.length && Enchantment.enchantmentsList[enchantsId[i]]!=null){
-                Battlegear.logger.warn("Found conflicting enchantment id for "+enchantsName[i]+ " with assigned id:"+enchantsId[i]);
-                for(int j = enchantsId[i]; j<Enchantment.enchantmentsList.length; j++) {
-                    if (Enchantment.enchantmentsList[j] == null) {
-                        boolean conflict = false;
-                        for(int k = i; k<enchantsName.length; k++ ){
-                            if(j == enchantsId[k])
-                                conflict = true;
-                        }
-                        if(conflict)
-                            continue;
-                        enchantsId[i] = j;
-                        props.set(j);
-                        Battlegear.logger.warn("Assigned new id for "+enchantsName[i]+ ":" + j);
-                        break;
-                    }
-                }
-            }
-        }
-        BaseEnchantment.initBase();
         config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.").setRequiresMcRestart(true);
         
         if(Arrays.binarySearch(disabledItems, itemNames[2]) < 0){
@@ -223,9 +199,6 @@ public class BattlegearConfig {
                 knightArmor[i] = new ItemKnightArmour(i);
             }
         }
-        if (config.hasChanged()){        
-        	config.save();     	
-        }
         try{
             for(Field f: BattlegearConfig.class.getFields()){
                 if(Item.class.isAssignableFrom(f.getType())){
@@ -241,14 +214,41 @@ public class BattlegearConfig {
 	}
 
 	public static void registerRecipes() {
+        file.addCustomCategoryComment("EnchantmentsID", "Values should be between 0 and "+(Enchantment.enchantmentsList.length-1)+", or the enchantment will be disabled");
+        for(int i = 0; i<enchantsName.length; i++){
+            Property props = file.get("EnchantmentsID", enchantsName[i], enchantsId[i]).setRequiresMcRestart(true);
+            enchantsId[i] = props.getInt();
+            if(enchantsId[i]>=0 && enchantsId[i]<Enchantment.enchantmentsList.length && Enchantment.enchantmentsList[enchantsId[i]]!=null){
+                Battlegear.logger.warn("Found conflicting enchantment id for "+enchantsName[i]+ " with assigned id:"+enchantsId[i]);
+                for(int j = enchantsId[i]; j<Enchantment.enchantmentsList.length; j++) {
+                    if (Enchantment.enchantmentsList[j] == null) {
+                        boolean conflict = false;
+                        for(int k = i+1; k<enchantsName.length; k++ ){
+                            if(j == enchantsId[k])
+                                conflict = true;
+                        }
+                        if(conflict)
+                            continue;
+                        enchantsId[i] = j;
+                        props.set(j);
+                        Battlegear.logger.warn("Assigned new id for "+enchantsName[i]+ ":" + j);
+                        break;
+                    }
+                }
+            }
+        }
+        if (file.hasChanged()){
+            file.save();
+        }
+        BaseEnchantment.initBase();
 		
 		//2 Iron ingots = 3 chain. This is because the chain armour has increased in damage resistance
 
 		if(chain!=null){
 	        if(Arrays.binarySearch(disabledRecipies, itemNames[1]) < 0)
-	            GameRegistry.addShapedRecipe(new ItemStack(chain, 3),
-	                "I", "I", 'I', Items.iron_ingot
-	            );
+	            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(chain, 3),
+                        "I", "I", 'I', "ingotIron"
+                ));
 	        if(Arrays.binarySearch(disabledRecipies, "chain.armour") < 0){
 	            //Chain armor recipes
 	            GameRegistry.addRecipe(new ItemStack(Items.chainmail_helmet),
@@ -318,15 +318,15 @@ public class BattlegearConfig {
             //Iron Shield
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[2]), "I I","IWI", " I ",
                             'W', woodStack,
-                            'I', Items.iron_ingot));
+                            'I', "ingotIron"));
             //Diamond Shield
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[3]), "I I","IWI", " I ",
                             'W', woodStack,
-                            'I', Items.diamond));
+                            'I', "gemDiamond"));
             //Gold Shield
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[4]), "I I","IWI", " I ",
                             'W', woodStack,
-                            'I', Items.gold_ingot));
+                            'I', "ingotGold"));
             RecipeSorter.register("battlegear:shieldarrowtaking", ShieldRemoveArrowRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
             GameRegistry.addRecipe(new ShieldRemoveArrowRecipie());
         }
@@ -352,8 +352,8 @@ public class BattlegearConfig {
 
         if(banner!=null){
             for(int i = 0; i < 7; i++){
-                Object temp = i < 4 ? new ItemStack(Blocks.log, 1, i):i==4?Items.iron_ingot:new ItemStack(Blocks.log2, 1, i-5);
-                GameRegistry.addRecipe(new ItemStack(banner, 4, i), "W", "W", "W", 'W', temp);
+                Object temp = i < 4 ? new ItemStack(Blocks.log, 1, i):i==4?"ingotIron":new ItemStack(Blocks.log2, 1, i-5);
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(banner, 4, i), "W", "W", "W", 'W', temp));
             }
         }
         /*
