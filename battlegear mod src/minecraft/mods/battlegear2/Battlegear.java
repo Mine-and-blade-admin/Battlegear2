@@ -24,7 +24,6 @@ import net.minecraftforge.common.util.EnumHelper;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 
-import java.net.URL;
 import java.util.Map;
 
 @Mod(modid = Battlegear.MODID, useMetadata = true, guiFactory = "mods.battlegear2.gui.BattlegearGuiFactory")
@@ -56,10 +55,10 @@ public class Battlegear {
 
         if((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient()){
             try {
-                Class.forName("mods.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, URL.class, URL.class).invoke(null,
+                Class.forName("mods.mud.ModUpdateDetector").getDeclaredMethod("registerMod", ModContainer.class, String.class, String.class).invoke(null,
                         FMLCommonHandler.instance().findContainerFor(this),
-                        new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml"),
-                        new URL("https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/changelog.md")
+                        "https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/battlegear_update.xml",
+                        "https://raw.github.com/Mine-and-blade-admin/Battlegear2/master/changelog.md"
                 );
             } catch (Throwable e) {
                 e.printStackTrace();
