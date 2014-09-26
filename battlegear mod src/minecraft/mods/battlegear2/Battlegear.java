@@ -110,14 +110,18 @@ public class Battlegear {
                     if(stack!=null){
                         if(WeaponRegistry.setWeapon(message.key, stack)){
                             success = true;
-                        }else if(message.key.startsWith("Arrow:")){
+                        }else if(message.key.startsWith("Arrow")){
                             Class<?> clazz = null;
                             try {
-                                clazz = Class.forName(message.key.split(":")[1]);//Complete key should look like Arrow:class-path
+                                if(message.key.indexOf(":")>0)
+                                    clazz = Class.forName(message.key.split(":")[1]);//Complete key should look like Arrow:class-path
                             } catch (Exception ignored) {
                             }
                             if(clazz!=null && EntityArrow.class.isAssignableFrom(clazz)){//The arrow entity should use EntityArrow, at least as a superclass
                                 QuiverArrowRegistry.addArrowToRegistry(stack, (Class<? extends EntityArrow>) clazz);
+                                success = true;
+                            }else{//Register with no default handling
+                                QuiverArrowRegistry.addArrowToRegistry(stack);
                                 success = true;
                             }
                         }

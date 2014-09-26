@@ -49,10 +49,22 @@ public class QuiverArrowRegistry {
 
     /**
      * NBT sensitive version, can be called through
+     * FMLInterModComms.sendMessage("battlegear2", "Arrow", itemStack);
+     * Will not fire from a quiver by {@link DefaultArrowFire}
+     * @see #addArrowFireHandler(IArrowFireHandler) to enable the arrow firing from a quiver
+     * @param stack holding the arrow
+     */
+    public static void addArrowToRegistry(ItemStack stack){
+        addArrowToRegistry(stack, null);
+    }
+
+    /**
+     * NBT sensitive version, can be called through
      * FMLInterModComms.sendMessage("battlegear2", "Arrow:"+classPath, itemStack);
      * where classPath is the full class path for the arrow class
-     * @param stack
-     * @param entityArrow the class from which the arrow entity will be constructed by the default fire handler (can be null, if custom fire handler is desired)
+     * will defer to {@link #addArrowToRegistry(ItemStack)} in case of error
+     * @param stack holding the arrow
+     * @param entityArrow the class from which the arrow entity will be constructed by {@link DefaultArrowFire} (can be null, if custom fire handler is desired)
      */
     public static void addArrowToRegistry(ItemStack stack, Class<? extends EntityArrow> entityArrow){
         ItemStack st = stack.copy();
@@ -120,7 +132,7 @@ public class QuiverArrowRegistry {
     }
 
     /**
-     * Search for an EntityArrow to be spawned, used by the default ItemQuiver
+     * Search for an {@link EntityArrow} to be spawned, used by the default {@link ItemQuiver}
      * @param arrow the stack which should define the arrow as item
      * @param world
      * @param player player using a bow to fire an arrow
