@@ -42,7 +42,7 @@ public class ClientProxy extends CommonProxy {
     public static boolean tconstructEnabled = false;
     public static Method updateTab, addTabs;
     public static Object dynLightPlayerMod;
-    public static Method dynLightFromItemStack;
+    public static Method dynLightFromItemStack, refresh;
     public static ItemStack heldCache;
     public static IIcon[] backgroundIcon;
     public static IIcon[] bowIcons;
@@ -242,18 +242,19 @@ public class ClientProxy extends CommonProxy {
                 if(dynLightPlayerMod!=null) {
                     dynLightFromItemStack = dynLightPlayerMod.getClass().getDeclaredMethod("getLightFromItemStack", ItemStack.class);
                     dynLightFromItemStack.setAccessible(true);
+                    refresh = Class.forName("mods.battlegear2.client.utils.DualHeldLight").getMethod("refresh", EntityPlayer.class, int.class, int.class);
                 }
             }catch (Exception e){
                 return;
             }
         }
-        if(dynLightFromItemStack!=null && dynLightPlayerMod!=null){
+        if(dynLightFromItemStack!=null && refresh!=null){
             if(!ItemStack.areItemStacksEqual(stack, heldCache)) {
                 try {
                     int lightNew = Integer.class.cast(dynLightFromItemStack.invoke(dynLightPlayerMod, stack));
                     int lightOld = Integer.class.cast(dynLightFromItemStack.invoke(dynLightPlayerMod, heldCache));
                     if (lightNew != lightOld) {
-                        Class.forName("mods.battlegear2.client.utils.DualHeldLight").getMethod("refresh", EntityPlayer.class, int.class, int.class).invoke(null, player, lightNew, lightOld);
+                        refresh.invoke(null, player, lightNew, lightOld);
                     }
                 }catch (Exception e){
                     return;
