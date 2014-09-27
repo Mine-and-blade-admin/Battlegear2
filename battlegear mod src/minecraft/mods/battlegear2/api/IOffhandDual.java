@@ -14,7 +14,7 @@ public interface IOffhandDual {
     /**
      * Perform any function when this item is held in the offhand and the user right clicks an entity.
      * This is generally used to attack an entity with the offhand item.
-     * If this is the case the {@link PlayerEventChild.OffhandAttackEvent#event} field should
+     * If this is the case the {@link PlayerEventChild.OffhandAttackEvent#parent} field should
      * be canceled (or {@link PlayerEventChild.OffhandAttackEvent#cancelParent} field left at true, to prevent any default right clicking events (Eg Villager Trading)
      *
      * @param event        the OffhandAttackEvent that was generated

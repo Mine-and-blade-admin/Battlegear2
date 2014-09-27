@@ -39,6 +39,10 @@ public abstract class PlayerEventChild extends PlayerEvent{
         super.setResult(value);
         parent.setResult(value);
     }
+
+    public EntityPlayer getPlayer(){
+        return parent.entityPlayer;
+    }
     
 	/**
 	 * Event fired when a shield successfully blocks an attack (in {@link LivingHurtEvent})
@@ -124,14 +128,14 @@ public abstract class PlayerEventChild extends PlayerEvent{
         }
 
         public Entity getTarget() {
-            return event.target;
+            return ((EntityInteractEvent)parent).target;
         }
     }
 
     /**
      * This event replicates the event usage of {@link PlayerInteractEvent} for the item in left hand on right click,
      * allowing support for other mods that use such event to customize item usage
-     * {@link Item#onItemUseFirst}, {@link Item#onItemRightClick}and {@link Item#onItemUse} will then get called the same way as with the item in the player right hand for PlayerInteractEvent
+     * {@link Item#onItemUseFirst}, {@link Item#onItemRightClick} and {@link Item#onItemUse} will then get called the same way as with the item in the player right hand for PlayerInteractEvent
      */
     @Cancelable
     public static class UseOffhandItemEvent extends PlayerEventChild{
@@ -164,7 +168,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
          * @return the player using the bow
          */
         public EntityPlayer getArcher(){
-            return event.entityPlayer;
+            return getPlayer();
         }
 
         /**
