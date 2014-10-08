@@ -8,7 +8,7 @@
 +{/*
 +	 * Mine & Blade: Notes Edits made by: nerd-boy
 +	 *
-+	 * Edits: 5 Added Methods: 8 Added Fields: 5
++	 * Edits: 5 Added Methods: 7 Added Fields: 5
 +	 *
 +	 * Adding methods and fields is relatively easy. Some of the methods
 +	 * provided are not needed, they do however provide more simple access.
@@ -23,9 +23,9 @@
 -    public InventoryPlayer inventory = new InventoryPlayer(this);
 +    public InventoryPlayer inventory = new mods.battlegear2.api.core.InventoryPlayerBattle(this);
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
-     /**
-      * The Container for the player's inventory (which opens when they press E)
-@@ -201,6 +210,7 @@
+     /** The Container for the player's inventory (which opens when they press E) */
+     public Container inventoryContainer;
+@@ -187,6 +196,7 @@
          this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
          this.dataWatcher.addObject(17, Float.valueOf(0.0F));
          this.dataWatcher.addObject(18, Integer.valueOf(0));
@@ -33,7 +33,7 @@
      }
  
      /**
-@@ -273,7 +283,7 @@
+@@ -259,7 +269,7 @@
          FMLCommonHandler.instance().onPlayerPreTick(this);
          if (this.itemInUse != null)
          {
@@ -42,7 +42,7 @@
  
              if (itemstack == this.itemInUse)
              {
-@@ -483,7 +493,7 @@
+@@ -469,7 +479,7 @@
              int i = this.itemInUse.stackSize;
              ItemStack itemstack = this.itemInUse.onFoodEaten(this.worldObj, this);
  
@@ -51,7 +51,7 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
-@@ -2376,7 +2386,7 @@
+@@ -2362,7 +2372,7 @@
      {
          if (p_70062_1_ == 0)
          {
@@ -60,7 +60,7 @@
          }
          else
          {
-@@ -2639,5 +2649,76 @@
+@@ -2625,5 +2635,72 @@
          NOT_SAFE;
  
          private static final String __OBFID = "CL_00001712";
@@ -78,7 +78,7 @@
 +    }
 +    // -----MB-AddMethod-----
 +    public void swingOffItem() {
-+        if (!this.isOffHandSwingInProgress || this.offHandSwingProgressInt >= this.getArmSwingAnimationEndCopy() / 2 || this.offHandSwingProgressInt < 0) {
++        if (!this.isOffHandSwingInProgress || this.offHandSwingProgressInt >= this.getArmSwingAnimationEnd() / 2 || this.offHandSwingProgressInt < 0) {
 +            this.offHandSwingProgressInt = -1;
 +            this.isOffHandSwingInProgress = true;
 +        }
@@ -91,16 +91,12 @@
 +        }
 +        return this.prevOffHandSwingProgress + diff * frame;
 +    }
-+    // -----MB-AddMethod-----
-+    private int getArmSwingAnimationEndCopy() {
-+        return this.isPotionActive(Potion.digSpeed) ? 6 - (1 + this.getActivePotionEffect(Potion.digSpeed).getAmplifier()) : (this.isPotionActive(Potion.digSlowdown) ? 6 + (1 + this.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 : 6);
-+    }
 +    // -----MB-AddMethod----- (Overridden)
 +    @Override
 +    protected void updateArmSwingProgress() {
 +        super.updateArmSwingProgress();
 +        this.prevOffHandSwingProgress = this.offHandSwingProgress;
-+        int var1 = this.getArmSwingAnimationEndCopy();
++        int var1 = this.getArmSwingAnimationEnd();
 +        if (this.isOffHandSwingInProgress) {
 +            ++this.offHandSwingProgressInt;
 +            if (this.offHandSwingProgressInt >= var1) {
@@ -136,6 +132,4 @@
 +            dataWatcher.updateObject(25, (byte)0);
 +        }
      }
--}
-\ No newline at end of file
-+}
+ }

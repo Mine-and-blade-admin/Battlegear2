@@ -13,7 +13,7 @@ import java.util.ListIterator;
 import static org.objectweb.asm.Opcodes.*;
 
 public class EntityPlayerTransformer extends TransformerBase {
-
+    public static final int DATAWATCHER_SHIELD = 25;
     public EntityPlayerTransformer() {
 		super("net.minecraft.entity.player.EntityPlayer");
 	}
@@ -22,15 +22,11 @@ public class EntityPlayerTransformer extends TransformerBase {
     private String inventoryClassName;
     private String itemStackClassName;
     private String entityClassName;
-    private String potionClassName;
-    private String potionEffectClassName;
     private String entityLivingClassName;
     private String dataWatcherClassName;
 
 
     private String playerInventoryFieldName;
-    private String potionDigSpeedField;
-    private String potionDigSlowField;
     private String playerDataWatcherField;
     private String playerItemInUseField;
 
@@ -40,20 +36,12 @@ public class EntityPlayerTransformer extends TransformerBase {
     private String setCurrentItemArmourMethodDesc;
     private String onUpdateMethodName;
     private String onUpdateMethodDesc;
-    private String playerPotionActiveMethodName;
-    private String playerPotionActiveMethodDesc;
-    private String playerGetActivePotionMethodName;
-    private String playerGetActivePotionMethodDesc;
-    private String potionEffectGetAmpMethodName;
     private String playerUpdateArmSwingMethodName;
+    private String getArmSwingEndMethodName;
     private String dataWatcherAddObjectMethodName;
     private String dataWatcherAddObjectMethodDesc;
     private String playerInitMethodName;
     private String playerInitMethodDesc;
-    private String itemStackGetItemMethodName;
-    private String itemStackGetItemMethodDesc;
-    private String dataWatcherGetByteMethodName;
-    private String dataWatcherGetByteMethodDesc;
     private String dataWatcherUpdateObjectMethodName;
     private String dataWatcherUpdateObjectMethodDesc;
     
@@ -147,7 +135,7 @@ public class EntityPlayerTransformer extends TransformerBase {
                         found++;
                         newList.add(new VarInsnNode(ALOAD, 0));
                         newList.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerDataWatcherField, "L"+dataWatcherClassName+";"));
-                        newList.add(new VarInsnNode(BIPUSH, 25));
+                        newList.add(new VarInsnNode(BIPUSH, DATAWATCHER_SHIELD));
                         newList.add(new InsnNode(ICONST_0));
                         newList.add(new MethodInsnNode(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;"));
                         newList.add(new MethodInsnNode(INVOKEVIRTUAL, dataWatcherClassName, dataWatcherAddObjectMethodName, dataWatcherAddObjectMethodDesc));
@@ -164,7 +152,6 @@ public class EntityPlayerTransformer extends TransformerBase {
         methods.add(methods.size(), generateAttackOffhandMethod());
         methods.add(methods.size(), generateSwingOffhand());
         methods.add(methods.size(), generateGetOffSwingMethod());
-        methods.add(methods.size(), generateSwingAnimationEnd2());
         methods.add(methods.size(), generateUpdateSwingArm());
         methods.add(methods.size(), generateIsBattleMode());
         methods.add(methods.size(), generateIsBlockingWithShield());
@@ -204,7 +191,7 @@ public class EntityPlayerTransformer extends TransformerBase {
 
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerDataWatcherField, "L"+dataWatcherClassName+";"));
-        mn.instructions.add(new VarInsnNode(BIPUSH, 25));
+        mn.instructions.add(new VarInsnNode(BIPUSH, DATAWATCHER_SHIELD));
         mn.instructions.add(new InsnNode(ICONST_1));
         mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;"));
 
@@ -215,7 +202,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         mn.instructions.add(new FrameNode(F_SAME, 0, null, 0, null));
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, playerDataWatcherField, "L"+dataWatcherClassName+";"));
-        mn.instructions.add(new VarInsnNode(BIPUSH, 25));
+        mn.instructions.add(new VarInsnNode(BIPUSH, DATAWATCHER_SHIELD));
         mn.instructions.add(new InsnNode(ICONST_0));
         mn.instructions.add(new MethodInsnNode(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;"));
         mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, dataWatcherClassName, dataWatcherUpdateObjectMethodName, dataWatcherUpdateObjectMethodDesc));
@@ -257,7 +244,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
         mn.instructions.add(new FieldInsnNode(GETFIELD, entityPlayerClassName, "offHandSwingProgressInt", "I"));
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new MethodInsnNode(INVOKESPECIAL, entityPlayerClassName, "getArmSwingAnimationEndCopy", "()I"));
+        mn.instructions.add(new MethodInsnNode(INVOKESPECIAL, entityPlayerClassName, getArmSwingEndMethodName, "()I"));
         mn.instructions.add(new InsnNode(ICONST_2));
         mn.instructions.add(new InsnNode(IDIV));
         mn.instructions.add(new JumpInsnNode(IF_ICMPGE, l0));
@@ -323,67 +310,6 @@ public class EntityPlayerTransformer extends TransformerBase {
         return mn;
     }
 
-
-    private MethodNode generateSwingAnimationEnd2() {
-
-        MethodNode mn = new MethodNode(ASM4, ACC_PRIVATE, "getArmSwingAnimationEndCopy", "()I", null, null);
-
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETSTATIC, potionClassName, potionDigSpeedField, "L" + potionClassName + ";"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, playerPotionActiveMethodName, playerPotionActiveMethodDesc));
-        LabelNode l0 = new LabelNode();
-        mn.instructions.add(new JumpInsnNode(IFEQ, l0));
-
-        mn.instructions.add(new IntInsnNode(BIPUSH, 6));
-        mn.instructions.add(new InsnNode(ICONST_1));
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETSTATIC, potionClassName, potionDigSpeedField, "L" + potionClassName + ";"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, playerGetActivePotionMethodName, playerGetActivePotionMethodDesc));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, potionEffectClassName, potionEffectGetAmpMethodName, "()I"));
-        mn.instructions.add(new InsnNode(IADD));
-        mn.instructions.add(new InsnNode(ICONST_1));
-        mn.instructions.add(new InsnNode(IMUL));
-        mn.instructions.add(new InsnNode(ISUB));
-        LabelNode l1 = new LabelNode();
-        mn.instructions.add(new JumpInsnNode(GOTO, l1));
-
-        mn.instructions.add(l0);
-        mn.instructions.add(new FrameNode(F_SAME, 0, null, 0, null));
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-
-        mn.instructions.add(new FieldInsnNode(GETSTATIC, potionClassName, potionDigSlowField, "L" + potionClassName + ";"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, playerPotionActiveMethodName, "(L" + potionClassName + ";)Z"));
-        LabelNode l2 = new LabelNode();
-        mn.instructions.add(new JumpInsnNode(IFEQ, l2));
-
-        mn.instructions.add(new IntInsnNode(BIPUSH, 6));
-        mn.instructions.add(new InsnNode(ICONST_1));
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETSTATIC, potionClassName, potionDigSlowField, "L" + potionClassName + ";"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, entityPlayerClassName, playerGetActivePotionMethodName, "(L" + potionClassName + ";)L" + potionEffectClassName + ";"));
-        mn.instructions.add(new MethodInsnNode(INVOKEVIRTUAL, potionEffectClassName, potionEffectGetAmpMethodName, "()I"));
-        mn.instructions.add(new InsnNode(IADD));
-        mn.instructions.add(new InsnNode(ICONST_2));
-        mn.instructions.add(new InsnNode(IMUL));
-        mn.instructions.add(new InsnNode(IADD));
-        mn.instructions.add(new JumpInsnNode(GOTO, l1));
-
-
-        mn.instructions.add(l2);
-        mn.instructions.add(new FrameNode(F_SAME, 0, null, 0, null));
-        mn.instructions.add(new IntInsnNode(BIPUSH, 6));
-
-        mn.instructions.add(l1);
-        mn.instructions.add(new FrameNode(F_SAME1, 0, null, 1, new Object[]{INTEGER}));
-        mn.instructions.add(new InsnNode(IRETURN));
-
-        mn.maxStack = 4;
-        mn.maxLocals = 1;
-
-        return mn;
-    }
-
-
     private MethodNode generateUpdateSwingArm() {
 
         MethodNode mn = new MethodNode(ASM4, ACC_PROTECTED, playerUpdateArmSwingMethodName, "()V", null, null);
@@ -398,7 +324,7 @@ public class EntityPlayerTransformer extends TransformerBase {
         mn.instructions.add(new FieldInsnNode(PUTFIELD, entityPlayerClassName, "prevOffHandSwingProgress", "F"));
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
 
-        mn.instructions.add(new MethodInsnNode(INVOKESPECIAL, entityPlayerClassName, "getArmSwingAnimationEndCopy", "()I"));
+        mn.instructions.add(new MethodInsnNode(INVOKESPECIAL, entityPlayerClassName, getArmSwingEndMethodName, "()I"));
         mn.instructions.add(new VarInsnNode(ISTORE, 1));
         mn.instructions.add(new VarInsnNode(ALOAD, 0));
 
@@ -474,17 +400,11 @@ public class EntityPlayerTransformer extends TransformerBase {
         inventoryClassName = BattlegearTranslator.getMapedClassName("entity.player.InventoryPlayer");
         itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
         entityClassName = BattlegearTranslator.getMapedClassName("entity.Entity");
-        potionClassName = BattlegearTranslator.getMapedClassName("potion.Potion");
-        potionEffectClassName = BattlegearTranslator.getMapedClassName("potion.PotionEffect");
         entityLivingClassName = BattlegearTranslator.getMapedClassName("entity.EntityLivingBase");
         dataWatcherClassName = BattlegearTranslator.getMapedClassName("entity.DataWatcher");
 
         playerInventoryFieldName =
                 BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
-        potionDigSpeedField =
-                BattlegearTranslator.getMapedFieldName("Potion", "field_76422_e", "digSpeed");
-        potionDigSlowField =
-                BattlegearTranslator.getMapedFieldName("Potion", "field_76419_f", "digSlowdown");
         playerDataWatcherField =
                 BattlegearTranslator.getMapedFieldName("Entity", "field_70180_af", "dataWatcher");
         playerItemInUseField = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71074_e", "itemInUse");
@@ -499,18 +419,10 @@ public class EntityPlayerTransformer extends TransformerBase {
                 BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70062_b", "(IL"+itemStackClassName+";)V");
         onUpdateMethodName = BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70071_h_", "onUpdate");
         onUpdateMethodDesc = BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70071_h_", "()V");
-        playerPotionActiveMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70644_a", "isPotionActive");
-        playerPotionActiveMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70644_a", "(L"+potionClassName+";)Z");
-        playerGetActivePotionMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_70660_b", "getActivePotionEffect");
-        playerGetActivePotionMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityLivingBase", "func_70660_b", "(L"+potionClassName+";)L"+potionEffectClassName+";");
-        potionEffectGetAmpMethodName =
-                BattlegearTranslator.getMapedMethodName("PotionEffect", "func_76458_c", "getAmplifier");
         playerUpdateArmSwingMethodName =
                 BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_82168_bl", "updateArmSwingProgress");
+        getArmSwingEndMethodName =
+                BattlegearTranslator.getMapedMethodName("EntityLivingBase", "func_82166_i", "getArmSwingAnimationEnd");
         dataWatcherAddObjectMethodName =
                 BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75682_a", "addObject");
         dataWatcherAddObjectMethodDesc =
@@ -519,14 +431,6 @@ public class EntityPlayerTransformer extends TransformerBase {
                 BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_70088_a", "entityInit");
         playerInitMethodDesc =
                 BattlegearTranslator.getMapedMethodDesc("EntityPlayer", "func_70088_a", "()V");
-        itemStackGetItemMethodName =
-                BattlegearTranslator.getMapedMethodName("ItemStack", "func_77973_b", "getItem");
-        itemStackGetItemMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("ItemStack", "func_77973_b", "()Lnet/minecraft/item/Item;");
-        dataWatcherGetByteMethodName =
-                BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75683_a", "getWatchableObjectByte");
-        dataWatcherGetByteMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("DataWatcher", "func_75683_a", "(I)B");
         dataWatcherUpdateObjectMethodName =
                 BattlegearTranslator.getMapedMethodName("DataWatcher", "func_75692_b", "updateObject");
         dataWatcherUpdateObjectMethodDesc =
