@@ -4,6 +4,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
+import mods.battlegear2.api.IHandListener;
 import mods.battlegear2.api.core.InventoryExceptionEvent;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
@@ -23,6 +24,7 @@ import mods.battlegear2.packet.OffhandPlaceBlockPacket;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
@@ -98,13 +100,28 @@ public class BattlemodeHookContainerClass {
             event.setCanceled(true);
             event.entityPlayer.isSwingInProgress = false;
         }else if(((IBattlePlayer) event.entityPlayer).isBattlemode()) {
-            if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
+            if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {//Right click
                 ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
                 if(mainHandItem == null || !BattlegearUtils.usagePriorAttack(mainHandItem)) {
                     ItemStack offhandItem = ((InventoryPlayerBattle) event.entityPlayer.inventory).getCurrentOffhandWeapon();
                     if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
                         event.setCanceled(true);
                     sendOffSwingEvent(event, mainHandItem, offhandItem);
+                }
+            }else {//Left click
+                ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
+                if(mainHandItem!=null && mainHandItem.getItem() instanceof IHandListener){
+                    //TODO Test the following
+                    /*event.useItem = Event.Result.DENY;
+                    PlayerInteractEvent copy = new PlayerInteractEvent(event.entityPlayer, event.action, event.x, event.y, event.z, event.face, event.world);
+                    Event.Result swing = ((IHandListener) mainHandItem.getItem()).onClickBlock(copy, mainHandItem, ((InventoryPlayerBattle) event.entityPlayer.inventory).getCurrentOffhandWeapon(), false);
+                    if(swing != Event.Result.DEFAULT){
+                        event.entityPlayer.isSwingInProgress = false;
+                    }
+                    if(swing == Event.Result.DENY){
+                        event.setCanceled(true);
+                        event.useBlock = copy.useBlock;
+                    }*/
                 }
             }
         }else if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
@@ -237,7 +254,7 @@ public class BattlemodeHookContainerClass {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onOffhandAttack(PlayerEventChild.OffhandAttackEvent event){
-        if(event.offHand!=null){
+        if(event.offHand != null){
             if(event.offHand.getItem() instanceof IOffhandDual){
                 event.swingOffhand =((IOffhandDual) event.offHand.getItem()).offhandAttackEntity(event, event.mainHand, event.offHand);
             }else if(event.offHand.getItem() instanceof IShield || BattlegearUtils.isBow(event.offHand.getItem())){
@@ -245,12 +262,47 @@ public class BattlemodeHookContainerClass {
                 event.shouldAttack = false;
             }else if(event.offHand.getItem() instanceof IArrowContainer2){
                 event.shouldAttack = false;
+            }else if(hasEntityInteraction(event.getPlayer().capabilities.isCreativeMode?event.offHand.copy():event.offHand, event.getTarget(), event.getPlayer(), false)){
+                event.setCanceled(true);
+                if(event.offHand.stackSize<=0 && !event.getPlayer().capabilities.isCreativeMode){
+                    ItemStack orig = event.offHand;
+                    BattlegearUtils.setPlayerOffhandItem(event.getPlayer(), null);
+                    MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(event.getPlayer(), orig));
+                }
+                return;
             }
         }
-        if(event.mainHand !=null && BattlegearUtils.isBow(event.mainHand.getItem())){
-            event.swingOffhand = false;
-            event.shouldAttack = false;
+        if(event.mainHand != null) {
+            if (BattlegearUtils.isBow(event.mainHand.getItem())) {
+                event.swingOffhand = false;
+                event.shouldAttack = false;
+            } else if (hasEntityInteraction(event.mainHand, event.getTarget(), event.getPlayer(), true)) {
+                event.setCanceled(true);
+                event.setCancelParentEvent(false);
+            }
         }
+    }
+
+    /**
+     * Check if a stack has a specific interaction with an entity
+     * with a call to {@link net.minecraft.item.Item#itemInteractionForEntity(ItemStack, EntityPlayer, EntityLivingBase)}
+     * @param itemStack to check for interaction
+     * @param entity to interact with
+     * @param entityPlayer holding the stack
+     * @param asTest if data should be cloned before testing
+     * @return true if a specific interaction exist (and has been done if asTest is false)
+     */
+    private boolean hasEntityInteraction(ItemStack itemStack, Entity entity, EntityPlayer entityPlayer, boolean asTest){
+        if (asTest) {
+            Entity clone = EntityList.createEntityByName(EntityList.getEntityString(entity), entity.worldObj);
+            if (clone != null) {
+                clone.copyDataFrom(entity, true);
+                return !clone.interactFirst(entityPlayer) && clone instanceof EntityLivingBase && itemStack.getItem().itemInteractionForEntity(itemStack.copy(), entityPlayer, (EntityLivingBase) clone);
+            }
+        } else if(!entity.interactFirst(entityPlayer) && entity instanceof EntityLivingBase){
+            return itemStack.getItem().itemInteractionForEntity(itemStack, entityPlayer, (EntityLivingBase) entity);
+        }
+        return false;
     }
 
     @SubscribeEvent
