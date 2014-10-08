@@ -23,6 +23,7 @@ public class NetServerHandlerTransformer extends TransformerBase {
     private String netServiceHandelerClassName;
     private String inventoryPlayerClassName;
     private String itemStackClassName;
+    private String slotClassName;
 
     private String playerInventoryFieldName;
     private String getItemSwitchId;
@@ -43,18 +44,18 @@ public class NetServerHandlerTransformer extends TransformerBase {
         for (MethodNode mn : methods) {
             if (mn.name.equals(handleBlockSwitchMethodName) &&
                     mn.desc.equals(handleBlockSwitchMethodDesc)) {
-                processSwitchBlockMethod(mn);
-                found++;
+                if(processSwitchBlockMethod(mn))
+                    found++;
             } else if (mn.name.equals(handlePlaceMethodName) &&
                     mn.desc.equals(handlePlaceMethodDesc)) {
-                processPlaceMethod(mn);
-                found++;
+                if(processPlaceMethod(mn))
+                    found++;
             }
         }
         return found == 2;
     }
 
-    private void processPlaceMethod(MethodNode mn) {
+    private boolean processPlaceMethod(MethodNode mn) {
         sendPatchLog("processPlayerBlockPlacement");
         InsnList newList = new InsnList();
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
@@ -89,7 +90,7 @@ public class NetServerHandlerTransformer extends TransformerBase {
                         nextNode = it.next();
                     }
 
-//BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
+    //BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
                     newList.add(new VarInsnNode(ALOAD, 0));
                     newList.add(new FieldInsnNode(GETFIELD, netServiceHandelerClassName, netServiceHandelerPlayerField, "L" + entityPlayerMPClassName + ";"));
                     newList.add(new FieldInsnNode(GETFIELD, entityPlayerMPClassName, playerInventoryFieldName, "L" + inventoryPlayerClassName + ";"));
@@ -100,12 +101,29 @@ public class NetServerHandlerTransformer extends TransformerBase {
                             "setPlayerCurrentItem", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
                     
                     if(!FMLCommonHandler.instance().getModName().contains("mcpc")){//MCPC already adds a fix for this
-	                    while(it.hasNext() && ! (nextNode instanceof JumpInsnNode && nextNode.getOpcode()==IFNE)){
+	                    int slotIndex = 0;
+                        while(it.hasNext()){
 	                    	nextNode = it.next();
 	                    	newList.add(nextNode);
+                            if(nextNode instanceof VarInsnNode && nextNode.getOpcode()==ASTORE)
+                                slotIndex = ((VarInsnNode) nextNode).var;
+                            if(nextNode instanceof FieldInsnNode && nextNode.getOpcode()==PUTFIELD)
+                                break;
 	                    }
-	                    newList.add(new VarInsnNode(ALOAD, 9));
-	                    newList.add(new JumpInsnNode(IFNULL, ((JumpInsnNode) nextNode).label));
+                        newList.add(it.next());
+                        nextNode = it.next();
+                        newList.add(nextNode);
+                        if(nextNode instanceof LineNumberNode && slotIndex!=0) {
+                            int line = ((LineNumberNode) nextNode).line;
+                            LabelNode L0 = new LabelNode();
+                            newList.add(new VarInsnNode(ALOAD, slotIndex));
+                            newList.add(new JumpInsnNode(IFNONNULL, L0));
+                            newList.add(new InsnNode(RETURN));
+                            newList.add(L0);
+                            newList.add(new LineNumberNode(line + 1, L0));
+                            newList.add(new FrameNode(F_APPEND, 1, new Object[]{slotClassName}, 0, null));
+                        }else
+                            return false;
                     }
 
                 } else {
@@ -118,44 +136,38 @@ public class NetServerHandlerTransformer extends TransformerBase {
         }
 
         mn.instructions = newList;
+        return fieldCount>4;
     }
 
 
-    private void processSwitchBlockMethod(MethodNode mn) {
+    private boolean processSwitchBlockMethod(MethodNode mn) {
         sendPatchLog("processHeldItemChange");
         InsnList newList = new InsnList();
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
-
+        boolean done = false;
         while (it.hasNext()) {
             AbstractInsnNode nextInsn = it.next();
             newList.add(nextInsn);
-            if (nextInsn instanceof MethodInsnNode &&
+            if (!done && nextInsn instanceof MethodInsnNode &&
                     nextInsn.getOpcode() == INVOKEVIRTUAL &&
                     ((MethodInsnNode) nextInsn).owner.equals(packet16BlockItemSwitchClassName) &&
                     ((MethodInsnNode) nextInsn).name.equals(getItemSwitchId)) {
 
                 newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "isValidSwitch", "(I)Z"));
 
-                nextInsn = it.next();
-                while (it.hasNext() &&
-                        (!(nextInsn instanceof JumpInsnNode)
-                                || !(nextInsn.getOpcode() == IF_ICMPGE))) {//"if int greater than or equal to" branch
-
+                while (it.hasNext()){
+                    if(nextInsn instanceof JumpInsnNode && nextInsn.getOpcode() == IF_ICMPGE) {//"if int greater than or equal to" branch
+                        newList.add(new JumpInsnNode(IFEQ, ((JumpInsnNode) nextInsn).label));//make "if equal" branch
+                        done = true;
+                        break;
+                    }
                     nextInsn = it.next();
-
                 }
-                newList.add(new JumpInsnNode(IFEQ, ((JumpInsnNode) nextInsn).label));//make "if equal" branch
-
-                while (it.hasNext()) {
-                    nextInsn = it.next();
-                    newList.add(nextInsn);
-                }
-
             }
         }
 
         mn.instructions = newList;
-
+        return done;
     }
 
 	@Override
@@ -171,6 +183,7 @@ public class NetServerHandlerTransformer extends TransformerBase {
         inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.InventoryPlayer");
         itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
         entityPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer");
+        slotClassName = BattlegearTranslator.getMapedClassName("inventory.Slot");
 
         playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
         netServiceHandelerPlayerField = BattlegearTranslator.getMapedFieldName("NetHandlerPlayServer", "field_147369_b", "playerEntity");

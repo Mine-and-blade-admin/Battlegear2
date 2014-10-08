@@ -50,6 +50,7 @@ public class NetClientHandlerTransformer extends TransformerBase {
                         newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "isValidSwitch", "(I)Z"));
                         newList.add(new JumpInsnNode(IFEQ, label));//"if equal" branch
 
+                        found++;
                         nextNode = insn.next();
                         while(insn.hasNext() && !(nextNode instanceof JumpInsnNode) && nextNode.getOpcode() != IF_ICMPGE){
                             nextNode = insn.next();//continue till "if int greater than or equal to" branch
@@ -62,7 +63,6 @@ public class NetClientHandlerTransformer extends TransformerBase {
                 }
 
                 method.instructions = newList;
-                found++;
             }
         }
         return found == 2;
