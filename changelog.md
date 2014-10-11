@@ -1,3 +1,10 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.6.1 ==
+* Fixed compatibility with newer Forge versions
+* Allowed custom shields to partially block damage
+* Improved coremod patch stability
+* Improved enchantments id handling
+* Added Entity interaction support
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.6.0 ==
 * Added option to force HUD elements to render (counter obnoxious HUD mods)
 * Fixed enchantments rendering effect on shields and spears
