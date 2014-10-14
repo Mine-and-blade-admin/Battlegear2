@@ -1,7 +1,6 @@
 package mods.battlegear2.client.gui;
 
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.client.BattlegearClientEvents;
 import mods.battlegear2.client.ClientProxy;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.gui.ContainerBattle;
@@ -40,7 +39,6 @@ public class BattleEquipGUI extends InventoryEffectRenderer {
     public void initGui ()
     {
         super.initGui();
-        BattlegearClientEvents.onOpenGui(this.buttonList, guiLeft-30, guiTop);
         if(ClientProxy.tconstructEnabled){
             this.buttonList.clear();
             try{

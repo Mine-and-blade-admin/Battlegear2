@@ -35,7 +35,6 @@ public class BattlegearInGameGUI extends Gui {
     public static final RenderItem itemRenderer = new RenderItem();
     public static final ResourceLocation resourceLocation = new ResourceLocation("textures/gui/widgets.png");
     public static final ResourceLocation resourceLocationShield = new ResourceLocation("battlegear2", "textures/gui/Shield Bar.png");
-    private Class<?> previousGui;
     private Minecraft mc;
 
     public BattlegearInGameGUI() {
@@ -45,27 +44,14 @@ public class BattlegearInGameGUI extends Gui {
 
     public void renderGameOverlay(float frame, int mouseX, int mouseY) {
 
-        if(Battlegear.battlegearEnabled){
-            ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-            int width = scaledresolution.getScaledWidth();
-            int height = scaledresolution.getScaledHeight();
-            RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution, mouseX, mouseY);
+        if(Battlegear.battlegearEnabled && !this.mc.playerController.enableEverythingIsScrewedUpMode()){
 
-            if (!this.mc.playerController.enableEverythingIsScrewedUpMode()) {
+                ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+                int width = scaledresolution.getScaledWidth();
+                int height = scaledresolution.getScaledHeight();
+                RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution, mouseX, mouseY);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 zLevel = -90.0F;
-                if(!ClientProxy.tconstructEnabled || mc.thePlayer.capabilities.isCreativeMode){
-	                if(mc.currentScreen==null) {
-                        if(previousGui!=null)
-	                	    previousGui=null;
-	                }else{
-                        Class<?> currentGui = mc.currentScreen.getClass();
-                        if(currentGui!=previousGui && (currentGui.equals(GuiContainerCreative.class) || currentGui.equals(GuiInventory.class))){
-                            BattlegearClientEvents.onOpenGui(mc.currentScreen.buttonList, ((GuiContainer) mc.currentScreen).guiLeft-30, ((GuiContainer)mc.currentScreen).guiTop);
-                            previousGui = currentGui;
-                        }
-                    }
-                }
 
                 RenderItemBarEvent event = new RenderItemBarEvent.BattleSlots(renderEvent, true);
                 if(!MinecraftForge.EVENT_BUS.post(event)){
@@ -105,7 +91,6 @@ public class BattlegearInGameGUI extends Gui {
                         }
                     }
                 }
-            }
         }
     }
 

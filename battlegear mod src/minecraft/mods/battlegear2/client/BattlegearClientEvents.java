@@ -1,6 +1,5 @@
 package mods.battlegear2.client;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cpw.mods.fml.client.FMLClientHandler;
@@ -33,10 +32,11 @@ import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
-import net.minecraft.enchantment.EnchantmentHelper;
+import mods.battlegear2.api.EnchantmentHelper;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -53,18 +53,11 @@ public class BattlegearClientEvents {
 
 	private final BattlegearInGameGUI inGameGUI = new BattlegearInGameGUI();
 	private final QuiverModel quiverModel = new QuiverModel();
-
-	private final ResourceLocation quiverDetails = new ResourceLocation(
-			"battlegear2", "textures/armours/quiver/QuiverDetails.png");
-	private final ResourceLocation quiverBase = new ResourceLocation(
-			"battlegear2", "textures/armours/quiver/QuiverBase.png");
-    public static final ResourceLocation patterns = new ResourceLocation("battlegear2", "textures/heraldry/Patterns-small.png");
-    public static int storageIndex;
-	public static List<GuiPlaceableButton> tabsList = new ArrayList<GuiPlaceableButton>();
-	static {
-		tabsList.add(new GuiBGInventoryButton(0, 10, 10));
-		tabsList.add(new GuiSigilButton(1, 20, 20));
-	}
+	private final ResourceLocation quiverDetails = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverDetails.png");
+	private final ResourceLocation quiverBase = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverBase.png");
+    //public static final ResourceLocation patterns = new ResourceLocation("battlegear2", "textures/heraldry/Patterns-small.png");
+    //public static int storageIndex;
+	public static GuiPlaceableButton[] tabsList = { new GuiBGInventoryButton(0, 10, 10), new GuiSigilButton(1, 20, 20)};
 
     /**
      * Offset battle slots rendering according to config values
@@ -161,13 +154,13 @@ public class BattlegearClientEvents {
                 arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0 : 1;
             }
             GL11.glColor3f(1, 1, 1);
-            Minecraft.getMinecraft().renderEngine.bindTexture(quiverDetails);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(quiverDetails);
             GL11.glPushMatrix();
             biped.bipedBody.postRender(0.0625F);
             GL11.glScalef(1.05F, 1.05F, 1.05F);
             quiverModel.render(arrowCount, 0.0625F);
 
-            Minecraft.getMinecraft().renderEngine.bindTexture(quiverBase);
+            Minecraft.getMinecraft().getTextureManager().bindTexture(quiverBase);
             if(quiverStack.getItem() instanceof IDyable){
                 int col = ((IDyable)quiver).getColor(quiverStack);
                 float red = (float) (col >> 16 & 255) / 255.0F;
@@ -196,7 +189,7 @@ public class BattlegearClientEvents {
 			GL11.glDisable(GL11.GL_CULL_FACE);
 
 			GL11.glColor3f(1, 1, 1);
-			Minecraft.getMinecraft().renderEngine.bindTexture(quiverDetails);
+			Minecraft.getMinecraft().getTextureManager().bindTexture(quiverDetails);
 
 			double d0 = (((EntitySkeleton) event.entity).lastTickPosX + ((((EntitySkeleton) event.entity).posX - ((EntitySkeleton) event.entity).lastTickPosX) * BattlegearClientTickHandeler.partialTick));
 			double d1 = (((EntitySkeleton) event.entity).lastTickPosY + ((((EntitySkeleton) event.entity).posY - ((EntitySkeleton) event.entity).lastTickPosY) * BattlegearClientTickHandeler.partialTick));
@@ -232,7 +225,7 @@ public class BattlegearClientEvents {
 			GL11.glScalef(1.05F, 1.05F, 1.05F);
 			quiverModel.render(SKELETON_ARROW, 0.0625F);
 
-			Minecraft.getMinecraft().renderEngine.bindTexture(quiverBase);
+			Minecraft.getMinecraft().getTextureManager().bindTexture(quiverBase);
 			GL11.glColor3f(0.10F, 0.10F, 0.10F);
 			quiverModel.render(0, 0.0625F);
 			GL11.glColor3f(1, 1, 1);
@@ -247,18 +240,16 @@ public class BattlegearClientEvents {
      */
     @SubscribeEvent
     public void onBowFOV(FOVUpdateEvent event){
-        if(BaseEnchantment.bowCharge.isPresent()) {
-            ItemStack stack = event.entity.getItemInUse();
-            if (EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.get().effectId, stack) > 0) {
-                int i = event.entity.getItemInUseDuration();
-                float f1 = (float) i / 20.0F;
-                if (f1 > 1.0F) {
-                    f1 = 1.0F;
-                } else {
-                    f1 *= f1;
-                }
-                event.newfov /= 1.0F - f1 * 0.15F;
+        ItemStack stack = event.entity.getItemInUse();
+        if (EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge, stack) > 0) {
+            int i = event.entity.getItemInUseDuration();
+            float f1 = (float) i / 20.0F;
+            if (f1 > 1.0F) {
+                f1 = 1.0F;
+            } else {
+                f1 *= f1;
             }
+            event.newfov /= 1.0F - f1 * 0.15F;
         }
     }
 
@@ -363,21 +354,14 @@ public class BattlegearClientEvents {
 	@SubscribeEvent
 	public void preStitch(TextureStitchEvent.Pre event) {
 		if (event.map.getTextureType() == 1) {
-			ClientProxy.backgroundIcon = new IIcon[2];
-			ClientProxy.backgroundIcon[0] = event.map
-					.registerIcon("battlegear2:slots/mainhand");
-			ClientProxy.backgroundIcon[1] = event.map
-					.registerIcon("battlegear2:slots/offhand");
+			ClientProxy.backgroundIcon = new IIcon[]{event.map.registerIcon("battlegear2:slots/mainhand"),event.map.registerIcon("battlegear2:slots/offhand")};
 
 			ClientProxy.bowIcons = new IIcon[3];
-			ClientProxy.bowIcons[0] = event.map
-					.registerIcon("battlegear2:bow_pulling_0");
-			ClientProxy.bowIcons[1] = event.map
-					.registerIcon("battlegear2:bow_pulling_1");
-			ClientProxy.bowIcons[2] = event.map
-					.registerIcon("battlegear2:bow_pulling_2");
+            for(int i = 0; i < ClientProxy.bowIcons.length; i++) {
+                ClientProxy.bowIcons[i] = event.map.registerIcon("battlegear2:bow_pulling_"+i);
+            }
 
-            storageIndex = PatternStore.DEFAULT.buildPatternAndStore(patterns);
+            //storageIndex = PatternStore.DEFAULT.buildPatternAndStore(patterns);
             /*CrestImages.initialise(Minecraft.getMinecraft().getResourceManager());
             for (HeraldryPattern pattern : HeraldryPattern.patterns) {
                 pattern.registerIcon(event.map);
@@ -397,6 +381,15 @@ public class BattlegearClientEvents {
         }
         if(event.itemStack.getItem() instanceof IBackStabbable){
             event.toolTip.add(EnumChatFormatting.GOLD + StatCollector.translateToLocal("attribute.name.weapon.backstab"));
+        }
+    }
+
+    @SubscribeEvent
+    public void postInitGui(GuiScreenEvent.InitGuiEvent.Post event){
+        if (Battlegear.battlegearEnabled && event.gui instanceof InventoryEffectRenderer) {
+            if(!ClientProxy.tconstructEnabled || FMLClientHandler.instance().getClientPlayerEntity().capabilities.isCreativeMode) {
+                onOpenGui(event.buttonList, ((InventoryEffectRenderer) event.gui).guiLeft-30, ((InventoryEffectRenderer) event.gui).guiTop);
+            }
         }
     }
 
