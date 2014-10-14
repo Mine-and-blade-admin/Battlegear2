@@ -9,7 +9,7 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
-import net.minecraft.enchantment.EnchantmentHelper;
+import mods.battlegear2.api.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,12 +49,12 @@ public class SpecialActionPacket extends AbstractMBPacket{
                         for (d1 = entityHit.posZ - this.player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D) {
                             d0 = (Math.random() - Math.random()) * 0.01D;
                         }
-                        double pow = !BaseEnchantment.bashPower.isPresent() ? 0 : EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower.get().effectId, offhand) * 0.1D;
+                        double pow = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower, offhand) * 0.1D;
 
                         ((EntityLivingBase) entityHit).knockBack(this.player, 0, -d0 * (1 + pow), -d1 * (1 + pow));
                     }
-                    if (BaseEnchantment.bashDamage.isPresent() && entityHit.getDistanceToEntity(this.player) < 2) {
-                        float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage.get().effectId, offhand) * 2F;
+                    if (entityHit.getDistanceToEntity(this.player) < 2) {
+                        float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage, offhand) * 2F;
                         if (dam > 0) {
                             entityHit.attackEntityFrom(DamageSource.causeThornsDamage(this.player), dam);
                             entityHit.playSound("damage.thorns", 0.5F, 1.0F);

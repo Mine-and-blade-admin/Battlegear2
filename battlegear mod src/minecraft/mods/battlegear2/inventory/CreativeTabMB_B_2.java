@@ -2,12 +2,10 @@ package mods.battlegear2.inventory;
 
 import java.util.List;
 
+import mods.battlegear2.api.EnchantmentHelper;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentData;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.util.StatCollector;
 import cpw.mods.fml.relauncher.Side;
@@ -36,12 +34,6 @@ public class CreativeTabMB_B_2 extends CreativeTabs{
 	@SideOnly(Side.CLIENT)
 	public void displayAllReleventItems(List list){
         super.displayAllReleventItems(list);
-        this.addEnchantmentBooksToList(list, BaseEnchantment.getEnchants());
+        list.addAll(BaseEnchantment.helper.getEnchantmentBooks());
     }
-	
-	private void addEnchantmentBooksToList(List list, List<Enchantment> enchants) {
-		for(Enchantment enchantment:enchants){
-			list.add(Items.enchanted_book.getEnchantedItemStack(new EnchantmentData(enchantment, enchantment.getMaxLevel())));
-		}
-	}
 }

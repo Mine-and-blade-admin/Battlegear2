@@ -22,7 +22,7 @@ import mods.battlegear2.packet.BattlegearSyncItemPacket;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.packet.OffhandPlaceBlockPacket;
 import mods.battlegear2.utils.EnumBGAnimations;
-import net.minecraft.enchantment.EnchantmentHelper;
+import mods.battlegear2.api.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -395,7 +395,7 @@ public class BattlemodeHookContainerClass {
     }
 
     private boolean addLootFromEnchant(ItemStack bow, List<EntityItem> drops){
-        int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot.get().effectId, bow);
+        int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot, bow);
         if(lvl>0){
             ItemStack drop;
             for(EntityItem items:drops){

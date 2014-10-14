@@ -1,23 +1,21 @@
 package mods.battlegear2.enchantments;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.Optional;
+import mods.battlegear2.api.EnchantmentHelper;
 import mods.battlegear2.api.IEnchantable;
 import mods.battlegear2.api.core.BattlegearUtils;
-import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.config.Property;
 
 public class BaseEnchantment extends Enchantment {
 
-	private static List<Enchantment> enchants = new ArrayList<Enchantment>();
 	private int max;
 	private int enchantCoeff;
 	private int range;
 	public static Optional<Enchantment> bashWeight, bashPower, bashDamage, shieldUsage, shieldRecover, bowLoot, bowCharge;
+    public static EnchantmentHelper helper = new EnchantmentHelper();
 	
 	public BaseEnchantment(int id, int weight, int limit, int progress,	int range) {
 		super(id, weight, EnumEnchantmentType.all);
@@ -56,11 +54,8 @@ public class BaseEnchantment extends Enchantment {
         if(type == EnumEnchantmentType.bow && BattlegearUtils.isBow(stack.getItem())){
             return true;
         }
-		if(type != EnumEnchantmentType.all){
-			return super.canApply(stack);
-		}
-		return false;
-	}
+        return type != EnumEnchantmentType.all && super.canApply(stack);
+    }
 
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack) {
@@ -87,25 +82,21 @@ public class BaseEnchantment extends Enchantment {
 		return this.getMinEnchantability(par1) + range;
 	}
 
-	public static List<Enchantment> getEnchants() {
-		return enchants;
-	}
-
-    public static void initBase(){
-        bashWeight = Optional.fromNullable((BattlegearConfig.enchantsId[0]>=0 && BattlegearConfig.enchantsId[0]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[0], 5, 3, 15, 30).setName("bash.weightless"):null);
-        bashPower = Optional.fromNullable((BattlegearConfig.enchantsId[1]>=0 && BattlegearConfig.enchantsId[1]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[1], 10, 5, 10, 40).setName("bash.power"):null);
-        bashDamage = Optional.fromNullable((BattlegearConfig.enchantsId[2]>=0 && BattlegearConfig.enchantsId[2]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[2], 1, 3, 15, 50).setName("bash.damage"):null);
-        shieldUsage = Optional.fromNullable((BattlegearConfig.enchantsId[3]>=0 && BattlegearConfig.enchantsId[3]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[3], 2, 5, 5, 30).setName("shield.usage"):null);
-        shieldRecover = Optional.fromNullable((BattlegearConfig.enchantsId[4]>=0 && BattlegearConfig.enchantsId[4]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[4], 3, 4, 20, 20).setName("shield.recover"):null);
-        bowLoot = Optional.fromNullable((BattlegearConfig.enchantsId[5]>=0 && BattlegearConfig.enchantsId[5]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[5], 2, EnumEnchantmentType.bow, 10, 50).setName("bow.loot"):null);
-        bowCharge = Optional.fromNullable((BattlegearConfig.enchantsId[6]>=0 && BattlegearConfig.enchantsId[6]<Enchantment.enchantmentsList.length)?new BaseEnchantment(BattlegearConfig.enchantsId[6], 1, EnumEnchantmentType.bow, 20, 20).setName("bow.charge"):null);
+    public static void initBase(Property...props){
+        bashWeight = EnchantmentHelper.build(props[0], "bash.weightless", BaseEnchantment.class, 5, 3, 15, 30);
+        bashPower = EnchantmentHelper.build(props[1], "bash.power", BaseEnchantment.class, 10, 5, 10, 40);
+        bashDamage = EnchantmentHelper.build(props[2], "bash.damage", BaseEnchantment.class, 1, 3, 15, 50);
+        shieldUsage = EnchantmentHelper.build(props[3], "shield.usage", BaseEnchantment.class, 2, 5, 5, 30);
+        shieldRecover = EnchantmentHelper.build(props[4], "shield.recover", BaseEnchantment.class, 3, 4, 20, 20);
+        bowLoot = EnchantmentHelper.build(props[5], "bow.loot", BaseEnchantment.class, 2, EnumEnchantmentType.bow, 10, 50);
+        bowCharge = EnchantmentHelper.build(props[6], "bow.charge", BaseEnchantment.class, 1, EnumEnchantmentType.bow, 20, 20);
     }
 
     @Override
     public Enchantment setName(String name){
         super.setName(name);
-        enchants.add(this);
-        addToBookList(this);
+        if(helper.addEnchantment(this))
+            addToBookList(this);
         return this;
     }
 }

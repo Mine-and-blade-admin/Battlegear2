@@ -30,6 +30,7 @@ import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BattlegearConfig {
@@ -44,7 +45,6 @@ public class BattlegearConfig {
     public static final String[] shieldTypes = {"wood", "hide", "iron", "diamond", "gold"};
 	public static final String[] armourTypes = {"helmet", "plate", "legs", "boots"};
 	public static final String[] enchantsName = {"BashWeight", "BashPower", "BashDamage", "ShieldUsage", "ShieldRecovery", "BowLoot", "BowCharge"};
-	public static int[] enchantsId = {125, 126, 127, 128, 129, 130, 131};
 	public static ItemWeapon[] dagger=new ItemWeapon[toolTypes.length],warAxe=new ItemWeapon[toolTypes.length],mace=new ItemWeapon[toolTypes.length],spear=new ItemWeapon[toolTypes.length];
     public static ItemShield[] shield=new ItemShield[shieldTypes.length];
 	public static Item chain,quiver,heradricItem,MbArrows;
@@ -143,10 +143,7 @@ public class BattlegearConfig {
             }
         }
 
-        int last_comma = sb.lastIndexOf(",");
-        if(last_comma > 0){
-            sb.deleteCharAt(last_comma);
-        }
+        sb.append("chain.armour");
         comments[1] = sb.toString();
         disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], comments[1]).setRequiresMcRestart(true).getStringList();
         Arrays.sort(disabledRecipies);
@@ -215,32 +212,14 @@ public class BattlegearConfig {
 
 	public static void registerRecipes() {
         file.addCustomCategoryComment("EnchantmentsID", "Values should be between 0 and "+(Enchantment.enchantmentsList.length-1)+", or the enchantment will be disabled");
-        for(int i = 0; i<enchantsName.length; i++){
-            Property props = file.get("EnchantmentsID", enchantsName[i], enchantsId[i]).setRequiresMcRestart(true);
-            enchantsId[i] = props.getInt();
-            if(enchantsId[i]>=0 && enchantsId[i]<Enchantment.enchantmentsList.length && Enchantment.enchantmentsList[enchantsId[i]]!=null){
-                Battlegear.logger.warn("Found conflicting enchantment id for "+enchantsName[i]+ " with assigned id:"+enchantsId[i]);
-                for(int j = enchantsId[i]; j<Enchantment.enchantmentsList.length; j++) {
-                    if (Enchantment.enchantmentsList[j] == null) {
-                        boolean conflict = false;
-                        for(int k = i+1; k<enchantsName.length; k++ ){
-                            if(j == enchantsId[k])
-                                conflict = true;
-                        }
-                        if(conflict)
-                            continue;
-                        enchantsId[i] = j;
-                        props.set(j);
-                        Battlegear.logger.warn("Assigned new id for "+enchantsName[i]+ ":" + j);
-                        break;
-                    }
-                }
-            }
+        Property[] props = new Property[enchantsName.length];
+        for(int i = 0; i< enchantsName.length; i++){
+            props[i] = file.get("EnchantmentsID", enchantsName[i], 125 + i).setRequiresMcRestart(true);
         }
+        BaseEnchantment.initBase(props);
         if (file.hasChanged()){
             file.save();
         }
-        BaseEnchantment.initBase();
 		
 		//2 Iron ingots = 3 chain. This is because the chain armour has increased in damage resistance
 
@@ -279,6 +258,11 @@ public class BattlegearConfig {
 		String woodStack = "plankWood";
 		for(int i = 0; i < 5; i++){
 			Item craftingMaterial = ToolMaterial.values()[i].func_150995_f();
+            if(dagger[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[3])  < 0){
+                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dagger[i]), "L","S",
+                        'S', "stickWood",
+                        'L', i!=0?craftingMaterial:woodStack));
+            }
             if(warAxe[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[4])  < 0){
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(warAxe[i]), "L L","LSL"," S ",
                             'S', "stickWood",
@@ -289,12 +273,6 @@ public class BattlegearConfig {
                                 'S', "stickWood",
                                 'L', i!=0?craftingMaterial:woodStack));
             }
-            if(dagger[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[3])  < 0){
-                GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dagger[i]), "L","S",
-                                'S', "stickWood",
-                                'L', i!=0?craftingMaterial:woodStack));
-            }
-
             if(spear[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[6])  < 0){
                 if(i == 0){
                     GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(spear[i]), "  S"," S ","S  ",
@@ -331,6 +309,13 @@ public class BattlegearConfig {
             GameRegistry.addRecipe(new ShieldRemoveArrowRecipie());
         }
 
+        if(Arrays.binarySearch(disabledItems, itemNames[8]) < 0 && Arrays.binarySearch(disabledRecipies, itemNames[8]) < 0) {
+            RecipeSorter.register("battlegear:knightarmor", KnightArmourRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+            for (int i = 0; i < 4; i++) {
+                GameRegistry.addRecipe(new KnightArmourRecipie(i));
+            }
+        }
+
         if(MbArrows!=null){
 	        for(int i=0;i<ItemMBArrow.component.length;i++){
 		        if(Arrays.binarySearch(disabledRecipies, itemNames[9]+"."+ItemMBArrow.names[i]) < 0){
@@ -345,12 +330,7 @@ public class BattlegearConfig {
 	        }
         }
 
-        RecipeSorter.register("battlegear:knightarmor", KnightArmourRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-		for(int i = 0; i < 4; i++){
-			GameRegistry.addRecipe(new KnightArmourRecipie(i));
-		}
-
-        if(banner!=null){
+        if(banner!=null && Arrays.binarySearch(disabledRecipies, itemNames[10]) < 0){
             for(int i = 0; i < 7; i++){
                 Object temp = i < 4 ? new ItemStack(Blocks.log, 1, i):i==4?"ingotIron":new ItemStack(Blocks.log2, 1, i-5);
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(banner, 4, i), "W", "W", "W", 'W', temp));

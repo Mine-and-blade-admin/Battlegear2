@@ -84,7 +84,7 @@ public class BowHookContainerClass2 {
 		}
 		// only nock if allowed
 		if (canDrawBow == Result.ALLOW) {
-            int usage = !BaseEnchantment.bowCharge.isPresent() ? 0 : EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge.get().effectId,event.result)*20000;
+            int usage = mods.battlegear2.api.EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge,event.result)*20000;
 			event.entityPlayer.setItemInUse(event.result, event.result.getMaxItemUseDuration()-usage);
 			event.setCanceled(true);
 		}
