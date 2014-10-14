@@ -13,7 +13,9 @@ public class StackHolder{
     public final ItemStack stack;
     private int hash;
     public StackHolder(ItemStack stack){
-        assert stack!=null && stack.getItem()!=null :"Stack or item can't be null";
+        if(stack==null || stack.getItem()==null){
+            throw new IllegalArgumentException("StackHolder doesn't accept null");
+        }
         this.stack = stack;
     }
 
@@ -22,6 +24,7 @@ public class StackHolder{
         if(hash==0) {
             int init = 17, mult = 37;
             hash = new HashCodeBuilder(init, mult).append(Item.getIdFromItem(stack.getItem())).append(stack.getItemDamage()).append(stack.getTagCompound()).toHashCode();
+            assert hash!=0:"Hashcode builder failed to follow its contract";
         }
         return hash;
     }
