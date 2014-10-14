@@ -19,7 +19,7 @@ import net.minecraftforge.common.ForgeHooks;
  *
  */
 public class EntityLoveArrow extends AbstractMBArrow{
-
+    public static int AGE_TIMER = -24000, PICKUP_TIME = 10;
 	public EntityLoveArrow(World world) {
 		super(world);
 	}
@@ -36,13 +36,15 @@ public class EntityLoveArrow extends AbstractMBArrow{
 	public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
         if(entityHit!=shootingEntity){
             if(entityHit instanceof EntityAgeable){
-                EntityAgeable child = ((EntityAgeable) entityHit).createChild((EntityAgeable) entityHit);
-                if (child != null && !this.worldObj.isRemote){
-                    child.setGrowingAge(-24000);
-                    child.setLocationAndAngles(this.posX, this.posY, this.posZ, 0.0F, 0.0F);
-                    this.worldObj.spawnEntityInWorld(child);
+                if(!((EntityAgeable) entityHit).isChild()) {
+                    EntityAgeable child = ((EntityAgeable) entityHit).createChild((EntityAgeable) entityHit);
+                    if (child != null && !this.worldObj.isRemote) {
+                        child.setGrowingAge(AGE_TIMER);
+                        child.setLocationAndAngles(this.posX, this.posY, this.posZ, 0.0F, 0.0F);
+                        this.worldObj.spawnEntityInWorld(child);
+                    }
                 }
-                ((EntityAgeable) entityHit).setGrowingAge(-24000);
+                ((EntityAgeable) entityHit).setGrowingAge(AGE_TIMER);
                 setDead();
                 return true;
             }else if(entityHit instanceof EntityCreature){
@@ -55,7 +57,7 @@ public class EntityLoveArrow extends AbstractMBArrow{
             }else if(entityHit instanceof EntityPlayer){
                 EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) entityHit, ((EntityPlayer) entityHit).getCurrentEquippedItem(), true);
                 if(entityitem!=null){
-                    entityitem.delayBeforeCanPickup = 0;
+                    entityitem.delayBeforeCanPickup = PICKUP_TIME;
                     entityitem.func_145797_a(entityHit.getCommandSenderName());
                 }
                 if(!((IBattlePlayer)entityHit).isBattlemode())
