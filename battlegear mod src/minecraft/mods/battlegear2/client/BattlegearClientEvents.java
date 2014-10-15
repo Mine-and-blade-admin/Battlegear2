@@ -122,6 +122,8 @@ public class BattlegearClientEvents {
                     }
                     ItemStack mainhand = entityPlayer.inventory.getCurrentItem();
                     renderer.modelArmorChestplate.heldItemRight = renderer.modelArmor.heldItemRight = renderer.modelBipedMain.heldItemRight = mainhand != null ? 1 : 0;
+                }else if(((IBattlePlayer)entityPlayer).isBlockingWithShield()){
+                    renderer.modelArmorChestplate.heldItemLeft = renderer.modelArmor.heldItemLeft = renderer.modelBipedMain.heldItemLeft = 3;
                 }
             }
         }

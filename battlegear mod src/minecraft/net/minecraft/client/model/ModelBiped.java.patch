@@ -1,42 +1,24 @@
-@@ -2,6 +2,7 @@
+@@ -8,7 +8,12 @@
  
- import cpw.mods.fml.relauncher.Side;
- import cpw.mods.fml.relauncher.SideOnly;
-+import mods.battlegear2.client.utils.BattlegearRenderHelper;
- import net.minecraft.entity.Entity;
- import net.minecraft.util.MathHelper;
- import org.lwjgl.opengl.GL11;
-@@ -9,6 +10,16 @@
  @SideOnly(Side.CLIENT)
  public class ModelBiped extends ModelBase
- {
-+    /*
+-{
++{/*
 +	 * Mine & Blade: Notes
-+	 * Edits made by: nerd-boy
++	 * Edits made by nerd-boy : 1
 +	 *
-+	 * Edits: 1
-+	 * Added Methods: 0
-+	 * Added Fields: 1
-+	 *
-+	 * Like the ItemRenderer and PlayerRenderer this class will differ the changes required to another class
++	 * Like the ItemRenderer and PlayerRenderer the edit will differ the changes required to another class
 +	 */
      public ModelRenderer bipedHead;
      public ModelRenderer bipedHeadwear;
      public ModelRenderer bipedBody;
-@@ -31,6 +42,8 @@
-      * Records whether the model should be rendered aiming a bow.
-      */
-     public boolean aimedBow;
-+    //-----MB-AddField-----
-+    public float onGroundOffhand;
-     private static final String __OBFID = "CL_00000840";
- 
-     public ModelBiped()
-@@ -82,6 +95,7 @@
-     public void render(Entity par1Entity, float par2, float par3, float par4, float par5, float par6, float par7)
+@@ -76,7 +81,7 @@
+     public void render(Entity p_78088_1_, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float p_78088_7_)
      {
-         this.setRotationAngles(par2, par3, par4, par5, par6, par7, par1Entity);
-+        BattlegearRenderHelper.moveOffHandArm(par1Entity, this, par7);//-----MB-Edited-----
+         this.setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, p_78088_7_, p_78088_1_);
+-
++        mods.battlegear2.client.utils.BattlegearRenderHelper.moveOffHandArm(p_78088_1_, this, p_78088_7_);//-----MB-Edited-----
          if (this.isChild)
          {
              float f6 = 2.0F;
+\ No newline at end of file

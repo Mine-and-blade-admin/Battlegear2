@@ -43,7 +43,7 @@ import org.lwjgl.opengl.GL12;
 public class BattlegearRenderHelper {
 
     private static final ItemStack dummyStack = new ItemStack(Blocks.flowing_lava);
-
+    public static float PROGRESS_INCREMENT_LIMIT = 0.4F;
     public static EntityLivingBase dummyEntity;
 
     private static final ResourceLocation ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
@@ -80,7 +80,7 @@ public class BattlegearRenderHelper {
 
         IOffhandRender offhandRender = (IOffhandRender)itemRenderer;
 
-        if (offhandRender.getItemToRender() != dummyStack && BattlegearUtils.isOffHand(offhandRender.getItemToRender())) {
+        if (offhandRender.getItemToRender() != dummyStack) {
             float progress = offhandRender.getPrevEquippedProgress() + (offhandRender.getEquippedProgress() - offhandRender.getPrevEquippedProgress()) * frame;
 
             EntityClientPlayerMP player = mc.thePlayer;
@@ -277,17 +277,14 @@ public class BattlegearRenderHelper {
                 var21 = MathHelper.sin(var20 * (float) Math.PI);
                 var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI);
                 GL11.glTranslatef(-var10 * 0.3F, MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI * 2.0F) * 0.4F, -var21 * 0.4F);
-                GL11.glTranslatef(0.8F * var7, -0.75F * var7 - (1.0F - progress) * 0.6F, -0.9F * var7);
+                GL11.glTranslatef(var7 * var7, -0.75F * var7 - (1.0F - progress) * 0.6F, -0.9F * var7);
 
                 GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
 
                 GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-                var20 = ((IBattlePlayer)player).getOffSwingProgress(frame);
                 var21 = MathHelper.sin(var20 * var20 * (float) Math.PI);
-                var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI);
                 GL11.glRotatef(var10 * 70.0F, 0.0F, 1.0F, 0.0F);
                 GL11.glRotatef(var21 * 20.0F, 0.0F, 0.0F, 1.0F);
-
 
                 mc.getTextureManager().bindTexture(player.getLocationSkin());
                 GL11.glTranslatef(-1.0F, 3.6F, 3.5F);
@@ -297,10 +294,10 @@ public class BattlegearRenderHelper {
 
                 GL11.glScalef(1.0F, 1.0F, -1.0F);
                 GL11.glTranslatef(5.6F, 0.0F, 0.0F);
-                var13 = 1.0F;
-                GL11.glScalef(var13, var13, var13);
-                if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.Offhand, null)))
-                	var26.renderFirstPersonArm(mc.thePlayer);
+                GL11.glScalef(1.0F, 1.0F, 1.0F);
+                if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.Offhand, null))) {
+                    var26.renderFirstPersonArm(mc.thePlayer);
+                }
                 BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.Offhand, null));
 	        		
                 GL11.glPopMatrix();
@@ -311,14 +308,15 @@ public class BattlegearRenderHelper {
         }
     }
 
-    public static void updateEquippedItem(ItemRenderer itemRenderer, Minecraft mc, ItemStack mainhandToRender) {
+    public static void updateEquippedItem(ItemRenderer itemRenderer, Minecraft mc) {
         IOffhandRender offhandRender = (IOffhandRender)itemRenderer;
         offhandRender.setPrevEquippedProgress(offhandRender.getEquippedProgress());
-        EntityClientPlayerMP var1 = mc.thePlayer;
+        int slot = mc.thePlayer.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS;
+        EntityPlayer var1 = mc.thePlayer;
         ItemStack var2 = ((IBattlePlayer)var1).isBattlemode() && offhandRender.getEquippedItemSlot() > 0 ?
                 var1.inventory.getStackInSlot(offhandRender.getEquippedItemSlot()) : dummyStack;
 
-        boolean var3 = offhandRender.getEquippedItemSlot() == var1.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS && var2 == offhandRender.getItemToRender();
+        boolean var3 = offhandRender.getEquippedItemSlot() == slot && var2 == offhandRender.getItemToRender();
 
         if (offhandRender.getItemToRender() == null && var2 == null) {
             var3 = true;
@@ -331,73 +329,64 @@ public class BattlegearRenderHelper {
             var3 = true;
         }
 
-
-        ItemStack offhand = ((IBattlePlayer)var1).isBattlemode() ? var1.inventory.getStackInSlot(var1.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS) : dummyStack;
-
-        offhand = (BattlegearUtils.isMainHand(mainhandToRender, offhand)) ? offhand : dummyStack;
-        var3 = var3 & (offhandRender.getEquippedItemSlot() == var1.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS && offhand == offhandRender.getItemToRender());
-
-        float var4 = 0.4F;
-        float var5 = var3 ? 1.0F : 0.0F;
-        float var6 = var5 - offhandRender.getEquippedProgress();
-
-        if (var6 < -var4) {
-            var6 = -var4;
+        if(var3) {
+            ItemStack offhand = ((IBattlePlayer) var1).isBattlemode() ? var1.inventory.getStackInSlot(slot) : dummyStack;
+            var3 = (offhandRender.getEquippedItemSlot() == slot && offhand == offhandRender.getItemToRender());
         }
 
-        if (var6 > var4) {
-            var6 = var4;
+        float increment = (var3 ? 1.0F : 0.0F) - offhandRender.getEquippedProgress();
+
+        if (increment < -PROGRESS_INCREMENT_LIMIT) {
+            increment = -PROGRESS_INCREMENT_LIMIT;
         }
 
-        offhandRender.setEquippedProgress(offhandRender.getEquippedProgress()+var6);
+        if (increment > PROGRESS_INCREMENT_LIMIT) {
+            increment = PROGRESS_INCREMENT_LIMIT;
+        }
+
+        offhandRender.setEquippedProgress(offhandRender.getEquippedProgress()+increment);
 
         if (offhandRender.getEquippedProgress() < 0.1F) {
             offhandRender.setItemToRender(var2);
-            offhandRender.setEquippedItemSlot(var1.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS);
+            offhandRender.setEquippedItemSlot(slot);
         }
     }
 
     public static void moveOffHandArm(Entity entity, ModelBiped biped, float frame) {
         if (entity instanceof IBattlePlayer) {
             IBattlePlayer player = (IBattlePlayer) entity;
-            float offhandSwing = player.getOffSwingProgress(frame);
+            float offhandSwing = 0.0F;
 
             if(player.isBattlemode()){
                 ItemStack offhand = ((InventoryPlayerBattle)((EntityPlayer) entity).inventory).getCurrentOffhandWeapon();
                 if(offhand != null && offhand.getItem() instanceof IShield){
                     offhandSwing = (float)player.getSpecialActionTimer() / (float)((IShield)offhand.getItem()).getBashTimer(offhand);
+                }else{
+                    offhandSwing = player.getOffSwingProgress(frame);
                 }
-
-                boolean isBlockWithShield = player.isBlockingWithShield();
-                //biped.heldItemLeft = isBlockWithShield?3:1;
-
-                if(offhand != null)
-                    biped.bipedLeftArm.rotateAngleX = biped.bipedLeftArm.rotateAngleX * 0.5F - ((float)Math.PI / 10F) * (isBlockWithShield?3:1);
-
-            }else{
-                //biped.heldItemLeft = 0;
             }
 
             if (offhandSwing > 0.0F) {
+                if(biped.bipedBody.rotateAngleY!=0.0F){
+                    biped.bipedLeftArm.rotateAngleY -= biped.bipedBody.rotateAngleY;
+                    biped.bipedLeftArm.rotateAngleX -= biped.bipedBody.rotateAngleY;
+                }
                 biped.bipedBody.rotateAngleY = -MathHelper.sin(MathHelper.sqrt_float(offhandSwing) * (float)Math.PI * 2.0F) * 0.2F;
 
-                biped.bipedRightArm.rotationPointZ = MathHelper.sin(biped.bipedBody.rotateAngleY) * 5F;
-                biped.bipedRightArm.rotationPointX = -MathHelper.cos(biped.bipedBody.rotateAngleY) * 5F;
+                //biped.bipedRightArm.rotationPointZ = MathHelper.sin(biped.bipedBody.rotateAngleY) * 5.0F;
+                //biped.bipedRightArm.rotationPointX = -MathHelper.cos(biped.bipedBody.rotateAngleY) * 5.0F;
 
-                biped.bipedLeftArm.rotationPointZ = -MathHelper.sin(biped.bipedBody.rotateAngleY) * 5F;
-                biped.bipedLeftArm.rotationPointX = MathHelper.cos(biped.bipedBody.rotateAngleY) * 5F;
+                biped.bipedLeftArm.rotationPointZ = -MathHelper.sin(biped.bipedBody.rotateAngleY) * 5.0F;
+                biped.bipedLeftArm.rotationPointX = MathHelper.cos(biped.bipedBody.rotateAngleY) * 5.0F;
 
-                biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY;
-                biped.bipedRightArm.rotateAngleY += biped.bipedBody.rotateAngleY;
-                biped.bipedRightArm.rotateAngleX += biped.bipedBody.rotateAngleY;
+                //biped.bipedRightArm.rotateAngleY += biped.bipedBody.rotateAngleY;
+                //biped.bipedRightArm.rotateAngleX += biped.bipedBody.rotateAngleY;
                 float f6 = 1.0F - offhandSwing;
-                f6 *= f6;
-                f6 *= f6;
-                f6 = 1.0F - f6;
-                float f8 = MathHelper.sin(f6 * (float)Math.PI);
-                float f10 = MathHelper.sin(offhandSwing * (float)Math.PI) * -(biped.bipedHead.rotateAngleX - 0.7F) * 0.75F;
-                biped.bipedLeftArm.rotateAngleX -= (double) f8 * 1.2D + (double) f10;
-                biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY * 2.0F;
+                f6 = 1.0F - f6*f6*f6;
+                double f8 = MathHelper.sin(f6 * (float)Math.PI) * 1.2D;
+                double f10 = MathHelper.sin(offhandSwing * (float)Math.PI) * -(biped.bipedHead.rotateAngleX - 0.7F) * 0.75F;
+                biped.bipedLeftArm.rotateAngleX -= f8 + f10;
+                biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY * 3.0F;
                 biped.bipedLeftArm.rotateAngleZ = MathHelper.sin(offhandSwing * (float)Math.PI) * -0.4F;
             }
         }

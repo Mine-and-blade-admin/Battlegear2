@@ -3,7 +3,6 @@ package mods.battlegear2.coremod.transformers;
 import static org.objectweb.asm.Opcodes.*;
 
 import java.util.Iterator;
-import java.util.List;
 
 import mods.battlegear2.api.core.BattlegearTranslator;
 
@@ -12,14 +11,12 @@ import org.objectweb.asm.tree.*;
 public class ModelBipedTransformer extends TransformerMethodProcess {
 
     public ModelBipedTransformer() {
-		super("net.minecraft.client.model.ModelBiped","func_78088_a",new String[]{"render", "(Lnet/minecraft/entity/Entity;FFFFFF)V"});
+		super("net.minecraft.client.model.ModelBiped","func_78087_a",new String[]{"setRotationAngles", "(FFFFFFLnet/minecraft/entity/Entity;)V"});
 	}
 
 	private String modelBipedClassName;
     private String entityClassName;
-
-    private String setRotationAngleMethodName;
-    private String setRotationAngleMethodDesc;
+    private String isSneakFieldName;
 
     @Override
     void setupMappings() {
@@ -27,41 +24,29 @@ public class ModelBipedTransformer extends TransformerMethodProcess {
         modelBipedClassName = BattlegearTranslator.getMapedClassName("client.model.ModelBiped");
         entityClassName = BattlegearTranslator.getMapedClassName("entity.Entity");
 
-        setRotationAngleMethodName = BattlegearTranslator.getMapedMethodName("ModelBiped", "func_78087_a", "setRotationAngles");
-        setRotationAngleMethodDesc = BattlegearTranslator.getMapedMethodDesc("ModelBiped", "func_78087_a", "(FFFFFFL"+entityClassName+";)V");
+        isSneakFieldName = BattlegearTranslator.getMapedFieldName("ModelBiped", "field_78117_n", "isSneak");
 	}
-    
-    @Override
-    boolean processFields(List<FieldNode> fields){
-        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "onGroundOffhand", "F", null, null));
-        return true;
-    }
     
     @Override
     void processMethod(MethodNode method){
 
-        sendPatchLog("render");
+        sendPatchLog("setRotationAngles");
         Iterator<AbstractInsnNode> it = method.instructions.iterator();
-
-        InsnList newInsn = new InsnList();
-
         while (it.hasNext()) {
             AbstractInsnNode nextInsn = it.next();
-
-            if(nextInsn.getOpcode() == INVOKEVIRTUAL &&
-                    ((MethodInsnNode)nextInsn).name.equals(setRotationAngleMethodName) &&
-                    ((MethodInsnNode)nextInsn).desc.equals(setRotationAngleMethodDesc)){
-                newInsn.add(nextInsn);
-
-                newInsn.add(new VarInsnNode(ALOAD, 1));
-                newInsn.add(new VarInsnNode(ALOAD, 0));
-                newInsn.add(new VarInsnNode(FLOAD, 7));
-
-                newInsn.add(new MethodInsnNode(INVOKESTATIC,
-                        "mods/battlegear2/client/utils/BattlegearRenderHelper",
-                        "moveOffHandArm", "(L" + entityClassName+";L"+modelBipedClassName + ";F)V"));
-            }else{
-                newInsn.add(nextInsn);
+            if(nextInsn.getOpcode() == ALOAD && ((VarInsnNode) nextInsn).var == 0){
+                AbstractInsnNode follow = nextInsn.getNext();
+                if(follow.getOpcode() == GETFIELD && ((FieldInsnNode) follow).desc.equals("Z") && ((FieldInsnNode) follow).name.equals(isSneakFieldName)) {
+                    InsnList newInsn = new InsnList();
+                    newInsn.add(new VarInsnNode(ALOAD, 7));
+                    newInsn.add(new VarInsnNode(ALOAD, 0));
+                    newInsn.add(new VarInsnNode(FLOAD, 6));
+                    newInsn.add(new MethodInsnNode(INVOKESTATIC,
+                            "mods/battlegear2/client/utils/BattlegearRenderHelper",
+                            "moveOffHandArm", "(L" + entityClassName + ";L" + modelBipedClassName + ";F)V"));
+                    method.instructions.insertBefore(nextInsn, newInsn);
+                    break;
+                }
             }
         }
     }

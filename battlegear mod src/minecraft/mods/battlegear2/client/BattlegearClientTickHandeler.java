@@ -11,6 +11,7 @@ import mods.battlegear2.BattlemodeHookContainerClass;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.IBattlePlayer;
+import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
@@ -219,7 +220,7 @@ public class BattlegearClientTickHandeler {
                         }
                         else if (offhand.stackSize != size || mc.playerController.isInCreativeMode())
                         {
-                            mc.entityRenderer.itemRenderer.resetEquippedProgress();
+                            ((IOffhandRender)mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
                         }
                     }
                 }
@@ -230,7 +231,7 @@ public class BattlegearClientTickHandeler {
                 PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.worldObj), offhand);
                 if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent) && BattlemodeHookContainerClass.tryUseItem(player, offhand, Side.CLIENT))
                 {
-                    mc.entityRenderer.itemRenderer.resetEquippedProgress2();
+                    ((IOffhandRender)mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
                 }
             }
         }

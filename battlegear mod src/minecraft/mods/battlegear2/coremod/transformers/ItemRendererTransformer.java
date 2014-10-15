@@ -47,10 +47,8 @@ public class ItemRendererTransformer extends TransformerBase {
                 newList.add(new VarInsnNode(ALOAD, 0));
                 newList.add(new VarInsnNode(ALOAD, 0));
                 newList.add(new FieldInsnNode(GETFIELD, itemRendererClass, itemRendererMinecraftField, "L" + minecraftClass + ";"));
-                newList.add(new VarInsnNode(ALOAD, 0));
-                newList.add(new FieldInsnNode(GETFIELD, itemRendererClass, itemRendereriteToRenderField, "L" + itemStackClass + ";"));
                 newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearRenderHelper", "updateEquippedItem"
-                        , "(L" + itemRendererClass + ";L" + minecraftClass + ";L" + itemStackClass + ";)V"));
+                        , "(L" + itemRendererClass + ";L" + minecraftClass + ";)V"));
             }
 
             newList.add(insn);
@@ -111,10 +109,10 @@ public class ItemRendererTransformer extends TransformerBase {
 	@Override
 	boolean processFields(List<FieldNode> fields) {
         logger.log(Level.INFO, "\tAdding new fields to ItemRenderer");
-        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "offHandItemToRender", "L" + itemStackClass + ";", null, null));
-        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "equippedItemOffhandSlot", "I", null, 0));
-        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "equippedOffHandProgress", "F", null, 0F));
-        fields.add(fields.size(), new FieldNode(ACC_PUBLIC, "prevEquippedOffHandProgress", "F", null, 0F));
+        fields.add(fields.size(), new FieldNode(ACC_PRIVATE, "offHandItemToRender", "L" + itemStackClass + ";", null, null));
+        fields.add(fields.size(), new FieldNode(ACC_PRIVATE, "equippedItemOffhandSlot", "I", null, -1));
+        fields.add(fields.size(), new FieldNode(ACC_PRIVATE, "equippedOffHandProgress", "F", null, 0F));
+        fields.add(fields.size(), new FieldNode(ACC_PRIVATE, "prevEquippedOffHandProgress", "F", null, 0F));
         return true;
     }
 
