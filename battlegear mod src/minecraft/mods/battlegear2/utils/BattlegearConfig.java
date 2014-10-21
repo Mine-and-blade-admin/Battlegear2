@@ -25,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -454,12 +455,14 @@ public class BattlegearConfig {
             try {
                 Item item = null;
                 if(type.equalsIgnoreCase("Shield")){
-                    ShieldType shieldType = ShieldType.fromNBT(nbtValue.getCompoundTag("Material"));
+                    ShieldType shieldType = null;
+                    if(nbtValue.hasKey("Material", Constants.NBT.TAG_COMPOUND))
+                        shieldType = ShieldType.fromNBT(nbtValue.getCompoundTag("Material"));
                     if(shieldType!=null)
                         item = new ItemShield(shieldType);
                     else
                         return false;
-                } else {
+                } else if(nbtValue.hasKey("Material", Constants.NBT.TAG_STRING)){
                     Item.ToolMaterial material = Item.ToolMaterial.valueOf(nbtValue.getString("Material"));
                     if (type.equalsIgnoreCase("Dagger")) {
                         float hitTime = nbtValue.getFloat("Time");

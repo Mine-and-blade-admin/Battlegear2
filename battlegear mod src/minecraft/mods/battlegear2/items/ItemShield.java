@@ -238,4 +238,9 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 	public boolean sheatheOnBack(ItemStack item) {
 		return true;
 	}
+
+    @Override
+    public boolean getIsRepairable(ItemStack itemStack, ItemStack repair){
+        return this.enumShield.canBeRepairedWith(repair);
+    }
 }
