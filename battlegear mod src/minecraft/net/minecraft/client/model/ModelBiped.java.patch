@@ -12,13 +12,13 @@
      public ModelRenderer bipedHead;
      public ModelRenderer bipedHeadwear;
      public ModelRenderer bipedBody;
-@@ -76,7 +81,7 @@
-     public void render(Entity p_78088_1_, float p_78088_2_, float p_78088_3_, float p_78088_4_, float p_78088_5_, float p_78088_6_, float p_78088_7_)
-     {
-         this.setRotationAngles(p_78088_2_, p_78088_3_, p_78088_4_, p_78088_5_, p_78088_6_, p_78088_7_, p_78088_1_);
+@@ -174,7 +179,7 @@
+             this.bipedRightArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
+             this.bipedRightArm.rotateAngleZ = MathHelper.sin(this.onGround * (float)Math.PI) * -0.4F;
+         }
 -
-+        mods.battlegear2.client.utils.BattlegearRenderHelper.moveOffHandArm(p_78088_1_, this, p_78088_7_);//-----MB-Edited-----
-         if (this.isChild)
++        mods.battlegear2.client.utils.BattlegearRenderHelper.moveOffHandArm(p_78087_7_, this, p_78087_6_);//-----MB-Edited-----
+         if (this.isSneak)
          {
-             float f6 = 2.0F;
+             this.bipedBody.rotateAngleX = 0.5F;
 \ No newline at end of file
