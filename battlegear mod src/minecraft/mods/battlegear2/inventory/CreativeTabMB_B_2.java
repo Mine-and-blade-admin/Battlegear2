@@ -21,13 +21,13 @@ public class CreativeTabMB_B_2 extends CreativeTabs{
 	@SideOnly(Side.CLIENT)
     public String getTranslatedTabLabel()
     {
-        return StatCollector.translateToLocal("name.title");
+        return StatCollector.translateToLocal("tab.battle.title");
     }
 	
 	@Override
     @SideOnly(Side.CLIENT)
 	public Item getTabIconItem() {
-		return BattlegearConfig.heradricItem;
+		return BattlegearConfig.findNonNullItemIcon();
 	}
 	
 	@Override

@@ -37,7 +37,7 @@ import java.util.Arrays;
 public class BattlegearConfig {
     public static final String MODID = "battlegear2:";
     private static Configuration file;
-	public static final CreativeTabs customTab=new CreativeTabMB_B_2("Battlegear2");
+	public static CreativeTabs customTab;
 	public static boolean forceBackSheath = false, arrowForceRendered = true, enableSkeletonQuiver = true;
 	public static boolean enableGUIKeys = false, enableGuiButtons = true, forceHUD = false;
 	public static final String[] itemNames = {"heraldric","chain","quiver","dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow", "flagpole"};
@@ -62,8 +62,47 @@ public class BattlegearConfig {
 	public static void getConfig(Configuration config) {
         file = config;
 		config.load();
-		
-		StringBuffer sb = new StringBuffer();
+
+        enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
+        enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
+        config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.").setRequiresMcRestart(true);
+
+        String category = "Rendering";
+        config.addCustomCategoryComment(category, "This category is client side, you don't have to sync its values with server in multiplayer.");
+        StringBuffer sb = new StringBuffer();
+        sb.append("This will disable the special rendering for the provided item.\n");
+        sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
+        sb.append("The valid values are: \n");
+        for(int i = 0; i < renderNames.length; i++){
+            sb.append(renderNames[i]);
+            sb.append(", ");
+        }
+        comments[2] = sb.toString();
+        disabledRenderers = config.get(category, "Disabled Renderers", new String[0], comments[2]).getStringList();
+        Arrays.sort(disabledRenderers);
+
+        comments[3] = "Change to move this bar in your gui";
+        String[] pos = {"horizontal", "vertical"};
+        for(int i = 0; i<2; i++){
+            quiverBarOffset[i] = config.get(category, "Quiver hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
+            shieldBarOffset[i] = config.get(category, "Shield bar relative "+pos[i]+" position", 0, comments[3]).getInt();
+            battleBarOffset[i] = config.get(category, "Offhand hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
+            battleBarOffset[i+2] = config.get(category, "Mainhand hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
+        }
+        arrowForceRendered = config.get(category, "Render arrow with bow uncharged", arrowForceRendered).getBoolean();
+        forceBackSheath=config.get(category, "Force Back Sheath", forceBackSheath).getBoolean();
+        enableSkeletonQuiver=config.get(category, "Render quiver on skeleton back", enableSkeletonQuiver).getBoolean();
+        forceHUD=config.get(category, "Force screen components rendering", forceHUD).getBoolean();
+
+        category = "Skeleton CustomArrow Spawn Rate";
+        config.addCustomCategoryComment(category, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
+
+        //default 10% for everything but ender (which is 0%)
+        for(int i = 0; i < ItemMBArrow.names.length; i++){
+            skeletonArrowSpawnRate[i] = config.get(category, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0, "", 0, 1).setRequiresMcRestart(true).getDouble();
+        }
+
+		sb = new StringBuffer();
         sb.append("This will disable completely the provided item, along with their renderers and recipes including them.\n");
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
         sb.append("The valid values are: \n");
@@ -78,7 +117,12 @@ public class BattlegearConfig {
         }
         comments[0] = sb.toString();
         disabledItems = config.get(config.CATEGORY_GENERAL, "Disabled Items", new String[0], comments[0]).setRequiresMcRestart(true).getStringList();
+
+        if(Arrays.deepEquals(disabledItems, itemNames)){
+            return;//No point in going further if all items are disabled
+        }
         Arrays.sort(disabledItems);
+        customTab=new CreativeTabMB_B_2("Battlegear2");
 
         if(Arrays.binarySearch(disabledItems, itemNames[0]) < 0){
             heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName(MODID+itemNames[0]).setTextureName(MODID+"bg-icon");
@@ -93,9 +137,6 @@ public class BattlegearConfig {
         if(Arrays.binarySearch(disabledItems, itemNames[1]) < 0){
         	chain = new Item().setUnlocalizedName(MODID+itemNames[1]).setTextureName(MODID+itemNames[1]).setCreativeTab(customTab);
         }
-        enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
-        enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
-        config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.").setRequiresMcRestart(true);
         
         if(Arrays.binarySearch(disabledItems, itemNames[2]) < 0){
         	quiver = new ItemQuiver().setUnlocalizedName(MODID+itemNames[2]).setTextureName(MODID+"quiver/"+itemNames[2]).setCreativeTab(customTab);
@@ -106,23 +147,14 @@ public class BattlegearConfig {
                 QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows, i, ItemMBArrow.arrows[i]);
             }
         }
-        String category = "Skeleton CustomArrow Spawn Rate";
-        config.addCustomCategoryComment(category, "The spawn rate (between 0 & 1) that Skeletons will spawn with Arrows provided from this mod");
-
-        //default 10% for everything but ender (which is 0%)
-        for(int i = 0; i < ItemMBArrow.names.length; i++){
-            skeletonArrowSpawnRate[i] = config.get(category, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0, "", 0, 1).setRequiresMcRestart(true).getDouble();
-        }
         
         sb = new StringBuffer();
         sb.append("This will disable the crafting recipe for the provided item/blocks.\n");
         sb.append("It should be noted that this WILL NOT remove the item from the game, it will only disable the recipe.\n");
         sb.append("In this way the items may still be obtained through creative mode and cheats, but playes will be unable to craft them.\n");
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'. The valid values are: \n");
-
         count = 0;
         for(int i = 1; i < itemNames.length; i++){
-
             if(i != 9){
                 sb.append(itemNames[i]);
                 sb.append(", ");
@@ -132,7 +164,6 @@ public class BattlegearConfig {
                 }
             }
         }
-
         for(int i = 0; i < ItemMBArrow.names.length; i++){
             sb.append(itemNames[9]);
             sb.append('.');
@@ -143,37 +174,10 @@ public class BattlegearConfig {
                 sb.append("\n");
             }
         }
-
         sb.append("chain.armour");
         comments[1] = sb.toString();
         disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], comments[1]).setRequiresMcRestart(true).getStringList();
         Arrays.sort(disabledRecipies);
-
-        category = "Rendering";
-        config.addCustomCategoryComment(category, "This category is client side, you don't have to sync its values with server in multiplayer.");
-        sb = new StringBuffer();
-        sb.append("This will disable the special rendering for the provided item.\n");
-        sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
-        sb.append("The valid values are: \n");
-        for(int i = 0; i < renderNames.length; i++){
-            sb.append(renderNames[i]);
-            sb.append(", ");
-        }
-        comments[2] = sb.toString();
-        disabledRenderers = config.get(category, "Disabled Renderers", new String[0], comments[2]).getStringList();
-        Arrays.sort(disabledRenderers);
-        comments[3] = "Change to move this bar in your gui";
-        String[] pos = {"horizontal", "vertical"};
-        for(int i = 0; i<2; i++){
-            quiverBarOffset[i] = config.get(category, "Quiver hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
-            shieldBarOffset[i] = config.get(category, "Shield bar relative "+pos[i]+" position", 0, comments[3]).getInt();
-            battleBarOffset[i] = config.get(category, "Offhand hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
-            battleBarOffset[i+2] = config.get(category, "Mainhand hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
-        }
-        arrowForceRendered = config.get(category, "Render arrow with bow uncharged", arrowForceRendered).getBoolean();
-        forceBackSheath=config.get(category, "Force Back Sheath", forceBackSheath).getBoolean();
-        enableSkeletonQuiver=config.get(category, "Render quiver on skeleton back", enableSkeletonQuiver).getBoolean();
-        forceHUD=config.get(category, "Force screen components rendering", forceHUD).getBoolean();
 
         ShieldType[] types = {ShieldType.WOOD, ShieldType.HIDE, ShieldType.IRON, ShieldType.DIAMOND, ShieldType.GOLD};
         for(int i = 0; i < 5; i++){
@@ -500,5 +504,28 @@ public class BattlegearConfig {
             }
         }
         return false;
+    }
+
+    /**
+     * A symbol for Battlegear mod.
+     * Used by creative tab as icon
+     *
+     * @return a non-null instance of Item, to represent the mod
+     */
+    public static Item findNonNullItemIcon() {
+        if(heradricItem!=null)
+            return heradricItem;
+        else if(chain!=null)
+            return chain;
+        else if(quiver!=null)
+            return quiver;
+        else if(MbArrows!=null)
+            return MbArrows;
+        else{
+            for(Item i: shield)
+                if(i!=null)
+                    return i;
+        }
+        return Items.bow;//If that is null, we are screwed anyway
     }
 }
