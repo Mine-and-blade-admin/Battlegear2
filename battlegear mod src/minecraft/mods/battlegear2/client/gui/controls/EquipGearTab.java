@@ -9,7 +9,7 @@ import tconstruct.client.tabs.AbstractTab;
 public class EquipGearTab extends AbstractTab {
 
 	public EquipGearTab() {
-		super(0, 0, 0, new ItemStack(BattlegearConfig.heradricItem));
+		super(0, 0, 0, new ItemStack(BattlegearConfig.findNonNullItemIcon()));
 	}
 
 	@Override

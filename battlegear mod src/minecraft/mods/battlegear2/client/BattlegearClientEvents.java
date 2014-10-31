@@ -31,6 +31,10 @@ import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.gui.inventory.GuiContainerCreative;
+import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -390,9 +394,38 @@ public class BattlegearClientEvents {
     public void postInitGui(GuiScreenEvent.InitGuiEvent.Post event){
         if (Battlegear.battlegearEnabled && event.gui instanceof InventoryEffectRenderer) {
             if(!ClientProxy.tconstructEnabled || FMLClientHandler.instance().getClientPlayerEntity().capabilities.isCreativeMode) {
-                onOpenGui(event.buttonList, ((InventoryEffectRenderer) event.gui).guiLeft-30, ((InventoryEffectRenderer) event.gui).guiTop);
+                onOpenGui(event.buttonList, guessGuiLeft((InventoryEffectRenderer) event.gui)-30, guessGuiTop(event.gui));
             }
         }
+    }
+
+    /**
+     * Make a guess over the value of GuiContainer#guiTop (protected)
+     * Use magic numbers !
+     *
+     * @param guiContainer the current screen whose value is desired
+     * @return the guessed value
+     */
+    public static int guessGuiLeft(InventoryEffectRenderer guiContainer){
+        int offset = FMLClientHandler.instance().getClientPlayerEntity().getActivePotionEffects().isEmpty() ? 0 : 60;
+        if(guiContainer instanceof GuiContainerCreative){
+            return offset + (guiContainer.width - 195)/2;
+        }
+        return offset + (guiContainer.width - 176)/2;
+    }
+
+    /**
+     * Make a guess over the value of GuiContainer#guiLeft (protected)
+     * Use magic numbers !
+     *
+     * @param gui the current screen whose value is desired
+     * @return the guessed value
+     */
+    public static int guessGuiTop(GuiScreen gui){
+        if(gui instanceof GuiContainerCreative){
+            return (gui.height - 136)/2;
+        }
+        return (gui.height - 166)/2;
     }
 
     /**
