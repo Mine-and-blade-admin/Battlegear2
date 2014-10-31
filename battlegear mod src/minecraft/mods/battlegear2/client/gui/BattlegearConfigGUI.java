@@ -91,7 +91,7 @@ public class BattlegearConfigGUI extends GuiScreen{
         super.onGuiClosed();
         List<String> temp = this.possibleValues.getActivated();
         String[] disabled = new String[temp.size()];
-        System.arraycopy(temp.toArray(), 0, disabled, disabled.length, temp.size());
+        System.arraycopy(temp.toArray(), 0, disabled, 0, temp.size());
         BattlegearConfig.disabledRenderers = disabled;
         BattlegearConfig.refreshConfig();
     }
