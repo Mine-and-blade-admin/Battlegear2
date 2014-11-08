@@ -13,9 +13,8 @@ import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
-import net.minecraft.util.*;
-
 import org.lwjgl.opengl.GL11;
 
 public class BowRenderer implements IItemRenderer {

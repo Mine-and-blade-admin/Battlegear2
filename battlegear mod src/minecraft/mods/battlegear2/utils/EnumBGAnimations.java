@@ -1,8 +1,8 @@
 package mods.battlegear2.utils;
 
 import mods.battlegear2.api.core.IBattlePlayer;
-import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.api.shield.IShield;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 

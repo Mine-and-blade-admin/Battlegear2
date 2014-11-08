@@ -1,6 +1,15 @@
 package mods.battlegear2.coremod.transformers;
 
-import static org.objectweb.asm.Opcodes.*;
+import mods.battlegear2.api.core.BattlegearTranslator;
+import mods.battlegear2.coremod.BattlegearLoadingPlugin;
+import net.minecraft.launchwrapper.IClassTransformer;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.tree.*;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -8,16 +17,7 @@ import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.logging.log4j.*;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.*;
-
-import mods.battlegear2.coremod.BattlegearLoadingPlugin;
-import mods.battlegear2.api.core.BattlegearTranslator;
-import net.minecraft.launchwrapper.IClassTransformer;
-
-public abstract class TransformerBase implements IClassTransformer{
+public abstract class TransformerBase implements IClassTransformer, Opcodes{
     public Logger logger = LogManager.getLogger("battlegear2");
 	protected final String classPath;
 	protected final String unobfClass;

@@ -1,8 +1,5 @@
 package mods.battlegear2.items.arrows;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
@@ -15,6 +12,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
+
+import java.util.ArrayList;
+import java.util.Random;
 /**
  * An arrow which deals damage through armors and shields, shears things, and breaks glass blocks
  * @author GotoLink

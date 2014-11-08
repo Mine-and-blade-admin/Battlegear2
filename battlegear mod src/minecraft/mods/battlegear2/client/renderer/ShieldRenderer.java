@@ -1,6 +1,5 @@
 package mods.battlegear2.client.renderer;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.items.ItemShield;
 import net.minecraft.client.Minecraft;
@@ -8,9 +7,8 @@ import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.IItemRenderer;
-
 import net.minecraft.util.IIcon;
+import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 public class ShieldRenderer implements IItemRenderer{

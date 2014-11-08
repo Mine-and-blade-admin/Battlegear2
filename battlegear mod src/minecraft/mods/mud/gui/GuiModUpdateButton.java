@@ -13,7 +13,6 @@ import java.util.List;
 
 public class GuiModUpdateButton extends GuiButton{
 
-
     RenderItem renderItem = new RenderItem();
     ItemStack icon = new ItemStack(Blocks.farmland);
     List<String> text = null;

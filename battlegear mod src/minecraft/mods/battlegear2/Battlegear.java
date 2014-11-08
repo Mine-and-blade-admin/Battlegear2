@@ -6,23 +6,23 @@ import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
 import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.NetworkCheckHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.Side;
+import mods.battlegear2.api.core.BattlegearTranslator;
 import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.weapons.WeaponRegistry;
-import mods.battlegear2.api.core.BattlegearTranslator;
 import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.packet.BattlegearPacketHandeler;
-import mods.battlegear2.utils.*;
+import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.EnumHelper;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.FMLInjectionData;
 
 import java.util.Map;
 

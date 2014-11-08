@@ -8,7 +8,9 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.TreeSet;
 
 public class UpdateChecker implements Runnable{
     private Collection<UpdateEntry> updateEntries;

@@ -1,7 +1,5 @@
 package mods.battlegear2.items;
 
-import java.util.List;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.quiver.DispenseArrow;
@@ -16,6 +14,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class ItemMBArrow extends Item {
     public static final String[] names = {"explosive", "ender", "flame", "piercing", "poison", "mystery", "leech"};

@@ -1,14 +1,12 @@
 package mods.battlegear2.client;
 
-import java.util.List;
-
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.EnchantmentHelper;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.RenderItemBarEvent;
-import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.IArrowContainer2;
@@ -21,8 +19,6 @@ import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
 import mods.battlegear2.client.gui.controls.GuiPlaceableButton;
 import mods.battlegear2.client.gui.controls.GuiSigilButton;
-import mods.battlegear2.api.heraldry.PatternStore;
-import mods.battlegear2.client.heraldry.CrestImages;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.enchantments.BaseEnchantment;
@@ -32,15 +28,12 @@ import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiContainerCreative;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
-import mods.battlegear2.api.EnchantmentHelper;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -49,9 +42,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
-
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class BattlegearClientEvents {
 

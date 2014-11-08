@@ -1,17 +1,12 @@
 package mods.battlegear2.client.heraldry;
 
-import java.util.List;
-
+import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldyArmour;
 import mods.battlegear2.api.heraldry.PatternStore;
 import mods.battlegear2.heraldry.HelaldyArmourPositions;
 import mods.battlegear2.heraldry.HeraldryIcon;
 import mods.battlegear2.heraldry.SigilHelper;
-
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.client.FMLClientHandler;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.renderer.ItemRenderer;
@@ -19,6 +14,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class HeraldryArmourModel extends ModelBiped{
 

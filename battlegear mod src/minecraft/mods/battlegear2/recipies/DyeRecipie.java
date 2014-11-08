@@ -1,7 +1,5 @@
 package mods.battlegear2.recipies;
 
-import java.util.ArrayList;
-
 import mods.battlegear2.api.IDyable;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.passive.EntitySheep;
@@ -10,6 +8,8 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class DyeRecipie implements IRecipe
 {

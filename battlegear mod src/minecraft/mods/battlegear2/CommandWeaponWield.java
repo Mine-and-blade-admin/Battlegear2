@@ -11,7 +11,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
 
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Command that can be used by op to set held/named items in the WeaponRegistry and tinker its sensitivity

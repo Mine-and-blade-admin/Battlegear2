@@ -1,9 +1,9 @@
 package mods.battlegear2;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
 import mods.battlegear2.packet.LoginPacket;
-import cpw.mods.fml.common.FMLCommonHandler;
 import mods.battlegear2.recipies.CraftingHandeler;
 import net.minecraft.entity.player.EntityPlayerMP;
 

@@ -1,7 +1,5 @@
 package mods.battlegear2.api.quiver;
 
-import java.util.*;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import mods.battlegear2.api.ISensible;
@@ -13,6 +11,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import java.util.*;
 
 public class QuiverArrowRegistry {
 

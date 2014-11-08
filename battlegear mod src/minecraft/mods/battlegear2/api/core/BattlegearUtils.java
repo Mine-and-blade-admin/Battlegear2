@@ -1,8 +1,7 @@
 package mods.battlegear2.api.core;
 
-import java.io.Closeable;
-import java.io.IOException;
-
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteArrayDataOutput;
 import cpw.mods.fml.common.eventhandler.EventBus;
 import mods.battlegear2.api.IAllowItem;
 import mods.battlegear2.api.IOffhandDual;
@@ -35,8 +34,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
+import java.io.Closeable;
+import java.io.IOException;
 
 /**
  * Store commonly used method, mostly for the {@link EntityPlayer} {@link ItemStack}s management

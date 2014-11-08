@@ -1,7 +1,6 @@
 package mods.battlegear2.client.utils;
 
 import mods.battlegear2.api.core.BattlegearUtils;
-import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.item.ItemStack;

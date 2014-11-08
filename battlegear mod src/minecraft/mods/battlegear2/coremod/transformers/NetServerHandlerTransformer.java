@@ -1,15 +1,11 @@
 package mods.battlegear2.coremod.transformers;
 
-import static org.objectweb.asm.Opcodes.*;
+import cpw.mods.fml.common.FMLCommonHandler;
+import mods.battlegear2.api.core.BattlegearTranslator;
+import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 import java.util.List;
-
-import mods.battlegear2.api.core.BattlegearTranslator;
-
-import org.objectweb.asm.tree.*;
-
-import cpw.mods.fml.common.FMLCommonHandler;
 
 public class NetServerHandlerTransformer extends TransformerBase {
 

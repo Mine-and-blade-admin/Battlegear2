@@ -1,10 +1,10 @@
 package mods.battlegear2.api.quiver;
 
-import java.util.List;
-
+import cpw.mods.fml.common.eventhandler.Event.Result;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.eventhandler.Event.Result;
+
+import java.util.List;
 
 /**
  *

@@ -1,13 +1,10 @@
 package mods.battlegear2.coremod.transformers;
 
-import static org.objectweb.asm.Opcodes.*;
+import mods.battlegear2.api.core.BattlegearTranslator;
+import org.objectweb.asm.tree.*;
 
 import java.util.List;
 import java.util.ListIterator;
-
-import mods.battlegear2.api.core.BattlegearTranslator;
-
-import org.objectweb.asm.tree.*;
 
 public class NetClientHandlerTransformer extends TransformerBase {
 

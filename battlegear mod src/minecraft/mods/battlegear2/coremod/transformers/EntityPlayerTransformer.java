@@ -1,16 +1,13 @@
 package mods.battlegear2.coremod.transformers;
 
-import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.BattlegearTranslator;
-
+import mods.battlegear2.api.core.IBattlePlayer;
 import org.apache.logging.log4j.Level;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
 import java.util.List;
 import java.util.ListIterator;
-
-import static org.objectweb.asm.Opcodes.*;
 
 public class EntityPlayerTransformer extends TransformerBase {
     public static final int DATAWATCHER_SHIELD = 25;

@@ -3,7 +3,6 @@ package mods.battlegear2.api;
 import cpw.mods.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 /**
  * Created by GotoLink on 27/09/2014.

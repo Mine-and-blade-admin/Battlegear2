@@ -1,7 +1,5 @@
 package mods.battlegear2;
 
-import java.util.Map;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.weapons.*;
 import net.minecraft.entity.Entity;
@@ -14,6 +12,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+
+import java.util.Map;
 
 /**
  * User: nerd-boy

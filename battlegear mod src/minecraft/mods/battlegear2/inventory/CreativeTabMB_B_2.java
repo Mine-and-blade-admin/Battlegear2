@@ -1,15 +1,14 @@
 package mods.battlegear2.inventory;
 
-import java.util.List;
-
-import mods.battlegear2.api.EnchantmentHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.util.StatCollector;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.util.List;
 
 public class CreativeTabMB_B_2 extends CreativeTabs{
 

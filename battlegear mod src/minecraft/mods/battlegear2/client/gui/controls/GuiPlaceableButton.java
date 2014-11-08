@@ -7,7 +7,6 @@ import mods.battlegear2.packet.BattlegearGUIPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class GuiPlaceableButton extends GuiButton {

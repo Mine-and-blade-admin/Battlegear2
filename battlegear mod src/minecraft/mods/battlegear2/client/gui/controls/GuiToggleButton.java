@@ -1,11 +1,10 @@
 package mods.battlegear2.client.gui.controls;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class GuiToggleButton extends GuiButton{
 	public static final ResourceLocation resourceLocation = new ResourceLocation("battlegear2", "textures/gui/widgets-extra.png");

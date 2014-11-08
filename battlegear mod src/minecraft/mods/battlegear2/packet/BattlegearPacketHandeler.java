@@ -1,8 +1,5 @@
 package mods.battlegear2.packet;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.FMLEventChannel;
 import cpw.mods.fml.common.network.FMLNetworkEvent;
@@ -12,6 +9,9 @@ import mods.battlegear2.Battlegear;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
+
+import java.util.Hashtable;
+import java.util.Map;
 
 public class BattlegearPacketHandeler {
 

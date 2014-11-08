@@ -1,9 +1,5 @@
 package mods.battlegear2.recipies;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.shield.IArrowDisplay;
 import net.minecraft.entity.item.EntityItem;
@@ -12,6 +8,10 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeHooks;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class CraftingHandeler {
 

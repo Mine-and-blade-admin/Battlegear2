@@ -8,13 +8,11 @@ import com.google.common.primitives.Primitives;
 import cpw.mods.fml.common.FMLLog;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
-import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.Level;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.*;
 

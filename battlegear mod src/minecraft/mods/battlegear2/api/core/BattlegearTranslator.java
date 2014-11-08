@@ -1,7 +1,6 @@
 package mods.battlegear2.api.core;
 
 import com.google.common.base.Charsets;
-
 import cpw.mods.fml.common.asm.transformers.deobf.LZMAInputSupplier;
 import cpw.mods.fml.relauncher.FMLInjectionData;
 import cpw.mods.fml.relauncher.IFMLCallHook;

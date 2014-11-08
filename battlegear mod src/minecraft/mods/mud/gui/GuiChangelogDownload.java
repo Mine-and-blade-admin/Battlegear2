@@ -5,7 +5,6 @@ import mods.mud.ModUpdateDetector;
 import mods.mud.UpdateChecker;
 import mods.mud.UpdateEntry;
 import net.minecraft.client.Minecraft;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;

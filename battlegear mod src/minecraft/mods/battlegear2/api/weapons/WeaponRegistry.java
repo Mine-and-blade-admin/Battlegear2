@@ -1,16 +1,15 @@
 package mods.battlegear2.api.weapons;
 
-import java.util.*;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import mods.battlegear2.api.ISensible;
 import mods.battlegear2.api.StackHolder;
-import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.*;
 
 /**
  * Registry for stacks which will be allowed in battle inventory, accessible through {@link FMLInterModComms} messages.

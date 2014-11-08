@@ -1,9 +1,5 @@
 package mods.battlegear2.client.gui.controls;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.Tessellator;
@@ -11,6 +7,10 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.item.ItemDye;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**

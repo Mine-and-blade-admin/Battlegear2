@@ -1,21 +1,17 @@
 package mods.battlegear2.client.gui;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.api.core.IBattlePlayer;
-import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.RenderItemBarEvent;
+import mods.battlegear2.api.core.IBattlePlayer;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
-import mods.battlegear2.client.BattlegearClientEvents;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
-import mods.battlegear2.api.core.InventoryPlayerBattle;
-import mods.battlegear2.client.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
-import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
@@ -23,11 +19,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
-
-import cpw.mods.fml.client.FMLClientHandler;
 
 public class BattlegearInGameGUI extends Gui {
 

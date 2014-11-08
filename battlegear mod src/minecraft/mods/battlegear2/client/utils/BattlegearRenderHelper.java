@@ -1,20 +1,16 @@
 package mods.battlegear2.client.utils;
 
-import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
-import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
-
-import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.ISheathed;
+import mods.battlegear2.api.RenderPlayerEventChild.*;
+import mods.battlegear2.api.core.BattlegearUtils;
+import mods.battlegear2.api.core.IBattlePlayer;
+import mods.battlegear2.api.core.IOffhandRender;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.shield.IArrowDisplay;
 import mods.battlegear2.api.shield.IShield;
-import mods.battlegear2.api.RenderPlayerEventChild.*;
-import mods.battlegear2.api.core.IOffhandRender;
-import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
-import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemSpear;
 import mods.battlegear2.utils.BattlegearConfig;
-import mods.battlegear2.api.core.BattlegearUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -36,9 +32,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderPlayerEvent;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
+import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
 public class BattlegearRenderHelper {
 

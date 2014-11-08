@@ -1,17 +1,17 @@
 package mods.battlegear2.items;
 
-import java.util.Iterator;
-import java.util.Locale;
-
-import mods.battlegear2.api.weapons.*;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import mods.battlegear2.api.weapons.Attributes;
+import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import java.util.Iterator;
+import java.util.Locale;
 //Made this extend the sword class (allows them to be enchanted)
 public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon, Attributes {
 

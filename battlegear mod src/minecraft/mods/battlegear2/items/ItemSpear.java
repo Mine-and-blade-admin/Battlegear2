@@ -13,7 +13,8 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.EntityDamageSource;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,ISpecialEffect {

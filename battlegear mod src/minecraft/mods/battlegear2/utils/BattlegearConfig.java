@@ -1,6 +1,7 @@
 package mods.battlegear2.utils;
 
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
+import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.ShieldType;
@@ -19,8 +20,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.Item;
+import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,10 +30,8 @@ import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BattlegearConfig {

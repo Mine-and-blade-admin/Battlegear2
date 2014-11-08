@@ -1,10 +1,6 @@
 package mods.battlegear2.client;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -12,11 +8,11 @@ import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.common.registry.GameData;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.CommonProxy;
-import mods.battlegear2.api.shield.IShield;
+import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
+import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
 import mods.battlegear2.client.renderer.*;
-import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
@@ -31,11 +27,17 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
-import cpw.mods.fml.client.FMLClientHandler;
+
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class ClientProxy extends CommonProxy {
 

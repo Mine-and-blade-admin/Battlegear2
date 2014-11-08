@@ -1,6 +1,5 @@
 package mods.battlegear2.packet;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import net.minecraft.entity.player.EntityPlayer;
