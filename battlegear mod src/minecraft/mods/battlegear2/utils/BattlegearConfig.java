@@ -14,6 +14,7 @@ import mods.battlegear2.items.*;
 import mods.battlegear2.recipies.DyeRecipie;
 import mods.battlegear2.recipies.QuiverRecipie2;
 import mods.battlegear2.recipies.ShieldRemoveArrowRecipie;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
@@ -143,9 +144,10 @@ public class BattlegearConfig {
         }
         if(Arrays.binarySearch(disabledItems, itemNames[9]) < 0){
         	MbArrows = new ItemMBArrow().setUnlocalizedName(MODID+itemNames[9]).setTextureName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
-            for(int i = 0; i<ItemMBArrow.arrows.length; i++){
-                QuiverArrowRegistry.addArrowToRegistry(BattlegearConfig.MbArrows, i, ItemMBArrow.arrows[i]);
+            for(int i = 0; i < ItemMBArrow.arrows.length; i++){
+                QuiverArrowRegistry.addArrowToRegistry(MbArrows, i, ItemMBArrow.arrows[i]);
             }
+            BlockDispenser.dispenseBehaviorRegistry.putObject(MbArrows, ItemMBArrow.dispensable);
         }
         
         sb = new StringBuffer();
