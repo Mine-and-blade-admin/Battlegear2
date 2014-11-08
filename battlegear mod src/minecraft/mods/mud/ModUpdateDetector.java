@@ -10,6 +10,7 @@ import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import org.apache.logging.log4j.LogManager;
@@ -121,8 +122,9 @@ public class ModUpdateDetector {
         }catch(Exception handled){
         	handled.printStackTrace();
         }
-
-        FMLCommonHandler.instance().bus().register(new ModUpdateDetectorTickHandeler(Timer));
+        Object listener = new ModUpdateDetectorTickHandeler(Timer);
+        FMLCommonHandler.instance().bus().register(listener);
+        MinecraftForge.EVENT_BUS.register(listener);
         ClientCommandHandler.instance.registerCommand(new MudCommands());
     }
 
