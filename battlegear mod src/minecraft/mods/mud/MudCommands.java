@@ -1,12 +1,12 @@
 package mods.mud;
 
-import java.util.List;
-
 import mods.mud.gui.GuiChangelogDownload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+
+import java.util.List;
 
 public class MudCommands extends CommandBase{
 
@@ -27,12 +27,23 @@ public class MudCommands extends CommandBase{
 
     @Override
     public String getCommandUsage(ICommandSender icommandsender) {
-        return null;
+        return "/mud";
     }
 
     @Override
     public void processCommand(ICommandSender icommandsender, String[] astring) {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiChangelogDownload(Minecraft.getMinecraft().currentScreen));
+        new Thread() {
+            @Override
+            public void run()
+            {
+                while(Minecraft.getMinecraft().currentScreen!=null)
+                    try {
+                        Thread.sleep(100L);
+                    }catch (Exception ignored){
+                    }
+                Minecraft.getMinecraft().displayGuiScreen(new GuiChangelogDownload());
+            }
+        }.start();
     }
 
     @Override
