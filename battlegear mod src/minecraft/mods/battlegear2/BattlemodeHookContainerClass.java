@@ -284,10 +284,11 @@ public class BattlemodeHookContainerClass {
     }
 
     /**
-     * Check if a stack has a specific interaction with an entity
-     * with a call to {@link net.minecraft.item.Item#itemInteractionForEntity(ItemStack, EntityPlayer, EntityLivingBase)}
-     * @param itemStack to check for interaction
-     * @param entity to interact with
+     * Check if a stack has a specific interaction with an entity.
+     * Use a call to {@link net.minecraft.item.ItemStack#interactWithEntity(EntityPlayer, EntityLivingBase)}
+     *
+     * @param itemStack to interact last with
+     * @param entity to interact first with
      * @param entityPlayer holding the stack
      * @param asTest if data should be cloned before testing
      * @return true if a specific interaction exist (and has been done if asTest is false)
@@ -297,10 +298,10 @@ public class BattlemodeHookContainerClass {
             Entity clone = EntityList.createEntityByName(EntityList.getEntityString(entity), entity.worldObj);
             if (clone != null) {
                 clone.copyDataFrom(entity, true);
-                return !clone.interactFirst(entityPlayer) && clone instanceof EntityLivingBase && itemStack.getItem().itemInteractionForEntity(itemStack.copy(), entityPlayer, (EntityLivingBase) clone);
+                return !clone.interactFirst(entityPlayer) && clone instanceof EntityLivingBase && itemStack.copy().interactWithEntity(entityPlayer, (EntityLivingBase) clone);
             }
         } else if(!entity.interactFirst(entityPlayer) && entity instanceof EntityLivingBase){
-            return itemStack.getItem().itemInteractionForEntity(itemStack, entityPlayer, (EntityLivingBase) entity);
+            return itemStack.interactWithEntity(entityPlayer, (EntityLivingBase) entity);
         }
         return false;
     }

@@ -1,3 +1,15 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.6.2 ==
+* Fixed crash in option menu
+* Fixed creative tab crash if heraldry item is disabled
+* Fixed crash when enchantments have same id in config file
+* Mystery arrow no longer duplicate children
+* Improved look and functionality of inventory buttons
+* Made shields repairable with their main crafting ingredient
+* Made arrows shootable from dispenser
+
+**Known issue**
+When using a bow in left hand, the arrow appear to shot from the right
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.6.1 ==
 * Fixed compatibility with newer Forge versions
 * Allowed custom shields to partially block damage

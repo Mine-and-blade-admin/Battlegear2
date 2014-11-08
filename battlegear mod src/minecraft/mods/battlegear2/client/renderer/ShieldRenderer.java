@@ -44,7 +44,7 @@ public class ShieldRenderer implements IItemRenderer{
         float green = (float)(col >> 8 & 255) / 255.0F;
         float blue = (float)(col & 255) / 255.0F;
 
-        IIcon icon = item.getItem().getIconIndex(item);
+        IIcon icon = item.getIconIndex();
 
         switch (type){
             case ENTITY:

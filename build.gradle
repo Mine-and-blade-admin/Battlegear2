@@ -21,6 +21,8 @@ buildscript {
 }
 
 apply plugin: 'forge'
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
 
 // Define properties file
 ext.configFile = file "mod.properties"
@@ -45,7 +47,7 @@ sourceSets {
             srcDir 'battlegear mod src/minecraft/' include('assets/**','*.cfg','*.png','*.mcmeta','*.info')
         }
 	    java {
-	        srcDir 'battlegear mod src/minecraft/' exclude('assets/**','net/minecraft/**')
+	        srcDir 'battlegear mod src/minecraft/' include('mods/**')
 	    }
     }
 }
