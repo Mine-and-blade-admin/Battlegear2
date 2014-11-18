@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 /**
  * Created by GotoLink on 07/11/2014.
- * A generic dispensing arrow behavior for {@code BlockDispenser]
+ * A generic dispensing arrow behavior for {@link BlockDispenser]
  */
 public abstract class DispenseArrow extends BehaviorDefaultDispenseItem{
 
@@ -25,8 +25,8 @@ public abstract class DispenseArrow extends BehaviorDefaultDispenseItem{
             IPosition iPosition = BlockDispenser.func_149939_a(source);
             EnumFacing enumfacing = BlockDispenser.func_149937_b(source.getBlockMetadata());
             this.setArrowProperties(arrow, iPosition, enumfacing);
-            source.getWorld().spawnEntityInWorld(arrow);
-            itemStack.splitStack(1);
+            if(source.getWorld().spawnEntityInWorld(arrow))
+                this.consume(itemStack);
             return itemStack;
         }
         return super.dispenseStack(source, itemStack);
@@ -35,7 +35,7 @@ public abstract class DispenseArrow extends BehaviorDefaultDispenseItem{
     /**
      * Instantiate the arrow.
      *
-     * @param world where the dispenser is
+     * @param world where the dispenser is, and inside which the arrow will spawn
      * @param itemStack that the dispenser selected
      * @return null to default to the item dispensing
      */
@@ -54,5 +54,15 @@ public abstract class DispenseArrow extends BehaviorDefaultDispenseItem{
         arrow.yOffset = 0.0F;
         arrow.canBePickedUp = 1;
         arrow.setThrowableHeading((double) enumfacing.getFrontOffsetX(), (double) ((float) enumfacing.getFrontOffsetY() + 0.1F), (double) enumfacing.getFrontOffsetZ(), 1.1F, 6.0F);
+    }
+
+    /**
+     * After the arrow has been successfully spawned.
+     * Default to making a copy of the given stack with one size less.
+     *
+     * @param itemStack inside the dispenser, to consume from
+     */
+    protected void consume(ItemStack itemStack) {
+        itemStack.splitStack(1);
     }
 }

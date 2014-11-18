@@ -3,6 +3,7 @@ package mods.battlegear2.utils;
 import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.quiver.DispenseQuiverArrow;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.enchantments.BaseEnchantment;
@@ -140,6 +141,7 @@ public class BattlegearConfig {
         
         if(Arrays.binarySearch(disabledItems, itemNames[2]) < 0){
         	quiver = new ItemQuiver().setUnlocalizedName(MODID+itemNames[2]).setTextureName(MODID+"quiver/"+itemNames[2]).setCreativeTab(customTab);
+            BlockDispenser.dispenseBehaviorRegistry.putObject(quiver, new DispenseQuiverArrow(Items.bow, 1.0F));
         }
         if(Arrays.binarySearch(disabledItems, itemNames[9]) < 0){
         	MbArrows = new ItemMBArrow().setUnlocalizedName(MODID+itemNames[9]).setTextureName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
