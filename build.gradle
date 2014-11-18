@@ -44,22 +44,19 @@ archivesBaseName = config.mcversion + "-" + config.distname
 sourceSets {
     main {
         resources {
-            srcDir 'battlegear mod src/minecraft/' include('assets/**','*.cfg','*.png','*.mcmeta','*.info')
+            srcDirs 'battlegear mod src/minecraft' include('assets/**', '*.cfg', '*.png', '*.mcmeta', '*.info')
         }
 	    java {
-	        srcDir 'battlegear mod src/minecraft/' include('mods/**')
+	        srcDirs 'battlegear mod src/minecraft' include('mods/**')
 	    }
     }
 }
 
 processResources {
     // this will ensure that this task is redone when the versions change.
-
     inputs.property "version", project.version
-
     inputs.property "mcversion", project.minecraft.version
 
-    
     from(sourceSets.main.resources.srcDirs) {
         // replace stuff in mcmod.info, nothing else
         include 'mcmod.info'
@@ -74,81 +71,84 @@ processResources {
         include('*.lang', '*.wav', '*.png', '*.cfg', '*.mcmeta')
     }
 }
-
+//The coremod manifest attributes
+def coremodManifest = {
+    attributes 'FMLCorePlugin': config.loadingPlugin
+    attributes 'FMLCorePluginContainsFMLMod': config.containsMod
+}
 jar {
     //Place jar into distribution folder
-    destinationDir = file "battlegear dist/"
+    destinationDir = file 'battlegear dist'
     //Keep the jar as clean as possible
     includeEmptyDirs = false
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     // Add Coremod Manifest
-    manifest {
-        attributes 'FMLCorePlugin': config.loadingPlugin
-        attributes 'FMLCorePluginContainsFMLMod': config.containsMod
-    }
+    manifest coremodManifest
 }
 //Perform checksum and add it next to the jar
 jar.doLast { task ->
     ant.checksum file: task.archivePath
 }
 
-task jarBGSrc(dependsOn:'processResources', type:Jar)
-jarBGSrc {
-    destinationDir = file "battlegear api/"
+task jarBGSrc(type:Jar) {
+    destinationDir = file 'battlegear api'
     baseName = config.mcversion + "-Battlegear-Src"
-    from('build/sources/java/'){
+    from(sourceSets.main.java.srcDirs){
         include 'mods/battlegear2/**'
         exclude '**/DualHeldLight.java', '**/EquipGearTab.java', '**/SigilTab.java'
     }
-	
-    // Add Resources
-    from 'build/resources/main'
-    include 'LICENCE'
+    // Add license
+    from(projectDir) {
+        include 'LICENCE'
+    }
 }
 
-task jarMUDSrc(dependsOn:'processResources', type:Jar)
-jarMUDSrc{
-    destinationDir = file "battlegear api/"
-    baseName = config.mcversion+"-MUD-Src"
-    from 'build/sources/java'
-    include 'mods/mud/**'
-	
-    // Add Resources
-    from 'build/resources/main'
-    include 'LICENCE'
+task jarMUDSrc(type:Jar) {
+    destinationDir = file 'battlegear api'
+    baseName = config.mcversion + "-MUD-Src"
+    from(sourceSets.main.java.srcDirs) {
+        include 'mods/mud/**'
+    }
+    // Add license
+    from(projectDir) {
+        include 'LICENCE'
+    }
 }
 
-task jarBGBin(dependsOn:'build', type:Jar)
-jarBGBin {
-    destinationDir = file "battlegear api/"
+task jarBGBin(type:Jar) {
+    destinationDir = file 'battlegear api'
     baseName = config.mcversion + "-Battlegear-Bin"
     // Add classes
-    from('build/classes/main/'){
+    from('build/classes/main'){
         include 'mods/battlegear2/**'
         exclude '**/DualHeldLight.class', '**/EquipGearTab.class', '**/SigilTab.class'
     }
-
     // Add Resources
-    from 'build/resources/main'
-    include 'assets/battlegear2/**', '*.cfg', '*.png', '*.info', '*.mcmeta', 'LICENCE'
-
+    from(sourceSets.main.resources.srcDirs) {
+        include 'assets/battlegear2/**', '*.cfg', '*.png', '*.info', '*.mcmeta'
+    }
+    // Add license
+    from(projectDir) {
+        include 'LICENCE'
+    }
     // Add Coremod Manifest
-    manifest {
-        attributes 'FMLCorePlugin': config.loadingPlugin
-        attributes 'FMLCorePluginContainsFMLMod': config.containsMod
+    manifest coremodManifest
+}
+
+task jarMUDBin(type:Jar){
+    destinationDir = file 'battlegear api'
+    baseName = config.mcversion + "-MUD-Bin"
+    // Add classes
+    from('build/classes/main') {
+        include 'mods/mud/**'
+    }
+    // Add resources
+    from(sourceSets.main.resources.srcDirs) {
+        include 'assets/mud/**'
+    }
+    // Add license
+    from(projectDir) {
+        include 'LICENCE'
     }
 }
-
-task jarMUDBin(dependsOn:'build', type:Jar)
-jarMUDBin{
-    destinationDir = file "battlegear api/"
-    baseName = config.mcversion+"-MUD-Bin"
-    // Add classes
-    from 'build/classes/main'
-    include 'mods/mud/**'
-	
-    // Add Resources
-    from 'build/resources/main'
-    include 'assets/mud/**', 'LICENCE'
-}
-
-task jarAPI(dependsOn:['jarMUDBin','jarBGBin','jarMUDSrc','jarBGSrc'])
+tasks.build.dependsOn('jarMUDSrc','jarBGSrc','jarMUDBin','jarBGBin')
