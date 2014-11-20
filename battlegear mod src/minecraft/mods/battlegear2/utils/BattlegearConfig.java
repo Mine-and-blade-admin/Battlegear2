@@ -62,7 +62,6 @@ public class BattlegearConfig {
 	
 	public static void getConfig(Configuration config) {
         file = config;
-		config.load();
 
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
         enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
@@ -100,7 +99,7 @@ public class BattlegearConfig {
 
         //default 10% for everything but ender (which is 0%)
         for(int i = 0; i < ItemMBArrow.names.length; i++){
-            skeletonArrowSpawnRate[i] = config.get(category, ItemMBArrow.names[i], i!=1 && i!=5?0.1F:0, "", 0, 1).setRequiresMcRestart(true).getDouble();
+            skeletonArrowSpawnRate[i] = config.get(category, ItemMBArrow.names[i], i!=1 && i!=5?0.1D:0.0D, "", 0D, 1D).setRequiresMcRestart(true).getDouble();
         }
 
 		sb = new StringBuffer();
