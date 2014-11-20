@@ -1,6 +1,8 @@
 package mods.battlegear2.items.arrows;
 
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -36,45 +38,50 @@ public class EntityEnderArrow extends AbstractMBArrow{
 
     @Override
     public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
+        this.setDead();
     	if(entityHit instanceof EntityLivingBase){
             if (!this.worldObj.isRemote){
                 if(shootingEntity == null){
                     tryTeleport((EntityLivingBase)entityHit);
                 }
-                else if(shootingEntity instanceof EntityPlayerMP){
-                    EntityPlayerMP entityplayermp = (EntityPlayerMP)this.shootingEntity;
-                    double x = entityplayermp.posX;
-                    double y = entityplayermp.posY;
-                    double z = entityplayermp.posZ;
-                    if (entityplayermp.playerNetServerHandler.func_147362_b().isChannelOpen() && entityplayermp.worldObj == this.worldObj){
-                        EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, entityHit.posX+0.5F, entityHit.posY, entityHit.posZ+0.5F, 9.0F);
-                        if (!MinecraftForge.EVENT_BUS.post(event)){
-                            if (shootingEntity.isRiding()){
-                                shootingEntity.mountEntity(null);
-                            }
-                            entityplayermp.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
-                            entityplayermp.fallDistance = 0.0F;
-                            entityplayermp.attackEntityFrom(getEnderDamage(), event.attackDamage);
-                        }
-                        event = new EnderTeleportEvent((EntityLivingBase) entityHit, x+0.5F, y, z+0.5F, ((EntityLivingBase) entityHit).getMaxHealth()/10);
-                        if (!MinecraftForge.EVENT_BUS.post(event)){
-                            if (entityHit.isRiding()){
-                                entityHit.mountEntity(null);
-                            }
-                            ((EntityLivingBase) entityHit).setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
-                            entityHit.fallDistance = 0.0F;
-                            entityHit.attackEntityFrom(getEnderDamage(), event.attackDamage);
-                        }
+                else if(shootingEntity instanceof EntityLivingBase){
+                    if (shootingEntity instanceof EntityPlayerMP && !(((EntityPlayerMP)this.shootingEntity).playerNetServerHandler.func_147362_b().isChannelOpen() && shootingEntity.worldObj == this.worldObj))
+                        return false;
+                    double x = shootingEntity.posX;
+                    double y = shootingEntity.posY;
+                    double z = shootingEntity.posZ;
+                    EnderTeleportEvent event = new EnderTeleportEvent((EntityLivingBase)shootingEntity, entityHit.posX+0.5F, entityHit.posY, entityHit.posZ+0.5F, getDamageAgainst((EntityLivingBase)shootingEntity));
+                    if(handleTeleportEvent(event)) {
+                        event = new EnderTeleportEvent((EntityLivingBase) entityHit, x + 0.5F, y, z + 0.5F, getDamageAgainst((EntityLivingBase) entityHit));
+                        handleTeleportEvent(event);
                     }
                 }
             }
-        	this.setDead();
             return true;
         }
-    	this.setDead();
         return false;
     }
 
+    /**
+     * Handle calculating teleport damage.
+     * Takes into account the feather falling enchanted boots on a player, no matter the type of damage done
+     *
+     * @param entityHit that will be damaged
+     * @return the value of the damage posted into EnderTeleportEvent
+     */
+    public float getDamageAgainst(EntityLivingBase entityHit) {
+        if(entityHit instanceof EntityPlayer){
+            int fall = EnchantmentHelper.getEnchantmentLevel(Enchantment.featherFalling.effectId, entityHit.getEquipmentInSlot(1));
+            return (float) getDamage() * 2.5F - 0.5F * fall;
+        }
+        return entityHit.getMaxHealth()/10;
+    }
+
+    /**
+     * Teleport at random, for automated systems
+     *
+     * @param entity the entity hit by the arrow
+     */
     protected void tryTeleport(EntityLivingBase entity)
     {
         double x = entity.posX + (this.rand.nextDouble() - 0.5D) * tpRange * 2;
@@ -138,6 +145,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
 
     @Override
     public void onHitGround(int x, int y, int z) {
+        this.setDead();
         if(shootingEntity instanceof EntityPlayer && shootingEntity.isSneaking()){
             Block id = worldObj.getBlock(x, y, z);
             if(id != Blocks.bedrock && this.worldObj.getGameRules().getGameRuleBooleanValue("doTileDrops")){
@@ -152,7 +160,7 @@ public class EntityEnderArrow extends AbstractMBArrow{
                     }
                 }
             }
-        }else if(shootingEntity != null){
+        }else if(shootingEntity instanceof EntityLivingBase){
             while(y < 255 && !(worldObj.isAirBlock(x,y,z) && worldObj.isAirBlock(x,y+1,z))){
                 y++;
                 if(worldObj.getBlock(x, y, z)==Blocks.bedrock){
@@ -170,28 +178,38 @@ public class EntityEnderArrow extends AbstractMBArrow{
             if(!worldObj.isAirBlock(x,y,z)){
                 return;
             }
-            if (!this.worldObj.isRemote && shootingEntity instanceof EntityPlayerMP){
-                for (int i = 0; i < 32; ++i){
-                    this.worldObj.spawnParticle(PARTICLES, x+0.5F, y + this.rand.nextDouble() * 2.0D, z+0.5F, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
-                }
-                EntityPlayerMP entityplayermp = (EntityPlayerMP)this.shootingEntity;
-                if (entityplayermp.playerNetServerHandler.func_147362_b().isChannelOpen() && entityplayermp.worldObj == this.worldObj){
-                    EnderTeleportEvent event = new EnderTeleportEvent(entityplayermp, x+0.5F, y, z+0.5F, 9.0F);
-                    if (!MinecraftForge.EVENT_BUS.post(event)) {
-                        if (shootingEntity.isRiding()){
-                            shootingEntity.mountEntity(null);
-                        }
-                        entityplayermp.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
-                        entityplayermp.fallDistance = 0.0F;
-                        entityplayermp.attackEntityFrom(getEnderDamage(), event.attackDamage);
-                    }
-                }
-            }
+            if (shootingEntity instanceof EntityPlayerMP && !(((EntityPlayerMP)this.shootingEntity).playerNetServerHandler.func_147362_b().isChannelOpen() && shootingEntity.worldObj == this.worldObj))
+                return;
+            handleTeleportEvent(new EnderTeleportEvent((EntityLivingBase)shootingEntity, x+0.5F, y, z+0.5F, getDamageAgainst((EntityLivingBase)shootingEntity)));
         }
-        this.setDead();
     }
 
+    /**
+     * The type of damage done when teleporting entities, almost identical to EnderPearl damage
+     */
     public DamageSource getEnderDamage(){
         return new DamageSource("fall").setDamageBypassesArmor().setProjectile();
+    }
+
+    /**
+     * Most generic handling of EnderTeleportEvent
+     *
+     * @param event to handle
+     * @return true only if the event is not cancelled
+     */
+    private boolean handleTeleportEvent(EnderTeleportEvent event){
+        if (!MinecraftForge.EVENT_BUS.post(event)) {
+            for (int i = 0; i < 32; ++i){
+                this.worldObj.spawnParticle(PARTICLES, event.targetX, event.targetY + this.rand.nextDouble() * 2.0D, event.targetZ, this.rand.nextGaussian(), 0.0D, this.rand.nextGaussian());
+            }
+            if (event.entity.isRiding()){
+                event.entity.mountEntity(null);
+            }
+            event.entityLiving.setPositionAndUpdate(event.targetX, event.targetY, event.targetZ);
+            event.entity.fallDistance = 0.0F;
+            event.entity.attackEntityFrom(getEnderDamage(), event.attackDamage);
+            return true;
+        }
+        return false;
     }
 }
