@@ -52,12 +52,13 @@ public class GuiChangelogDownload extends GuiScreen
 
     public GuiChangelogDownload(GuiScreen parent){
         this.parent = parent;
-        changelog = new String[]{StatCollector.translateToLocal("log.message.loading")};
-        if(!ModUpdateDetector.hasChecked){
-            new UpdateChecker(ModUpdateDetector.getAllUpdateEntries()).run();
-        }
-
+        this.changelog = new String[]{StatCollector.translateToLocal("log.message.loading")};
         this.entries=new ArrayList<UpdateEntry>(ModUpdateDetector.getAllUpdateEntries());
+        if(!ModUpdateDetector.hasChecked && !ModUpdateDetector.isChecking()){
+            Thread thread = new Thread(new UpdateChecker(entries));
+            thread.setDaemon(true);
+            thread.start();
+        }
     }
 
     public GuiChangelogDownload(){
@@ -118,7 +119,7 @@ public class GuiChangelogDownload extends GuiScreen
                         return;
                     case 4:
                         File mcSource = selectedMod.getMc().getSource();
-                        String filename = selectedMod.getFileName(Loader.instance().getMCVersionString().replaceAll("Minecraft", "").trim());
+                        String filename = selectedMod.getFileName(Loader.MC_VERSION);
                         File newFile = new File(mcSource.getParent(), filename);
                         Thread t = new Thread(new Downloader(selectedMod.getLatest().download,
                                 newFile, mcSource, selectedMod.getLatest().md5

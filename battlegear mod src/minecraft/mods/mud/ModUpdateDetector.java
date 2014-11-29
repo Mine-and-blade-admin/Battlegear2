@@ -36,6 +36,7 @@ public class ModUpdateDetector {
     public static boolean enabled = true, verbose = false;
     private static boolean deleteOld, deleteFailed;
     private static ICommandSender sender = null;
+    private static Thread update;
 
     /**
      * The main registration method for a mod
@@ -81,7 +82,6 @@ public class ModUpdateDetector {
     }
 
     public static void runUpdateChecker(){
-
         if(enabled){
             if(verbose) {
                 ICommandSender sender = getSender();
@@ -90,11 +90,16 @@ public class ModUpdateDetector {
                         EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
                                 EnumChatFormatting.WHITE + ": " + StatCollector.translateToLocal("message.checking")));
             }
-
-            Thread t = new Thread(new UpdateChecker(updateMap.values()));
-            t.run();
+            if(update == null || !update.isAlive()) {
+                update = new Thread(new UpdateChecker(updateMap.values()));
+                update.setDaemon(true);
+                update.start();
+            }
         }
+    }
 
+    public static boolean isChecking(){
+        return enabled && update != null && update.isAlive();
     }
 
     public static Collection<UpdateEntry> getAllUpdateEntries(){
