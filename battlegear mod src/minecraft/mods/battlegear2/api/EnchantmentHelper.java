@@ -130,9 +130,9 @@ public class EnchantmentHelper {
     /**
      * Get the next available id for a new enchantment, makes an internal reservation.
      * Can be used when searching multiple available ids
-     * The given argument is untouched if {@code INVALID} is returned
+     * The given argument is untouched if {@link #INVALID} is returned
      *
-     * @param property read as an int {@link Property} and refreshed with the new available id
+     * @param property read as an int {@link Property#getInt()} and refreshed with the new available id
      * @return {@link #INVALID} if no id above the given one is available, or the next available id
      */
     public static int takeNextAvailableId(Property property){

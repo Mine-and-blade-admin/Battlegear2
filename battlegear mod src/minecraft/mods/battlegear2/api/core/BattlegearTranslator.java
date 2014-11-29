@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * Core Translator for Battlegear Coremod and Reflection usage
- * Allows to run Battlegear in both deobfuscated and obfuscated envrionment
+ * Allows to run Battlegear in both deobfuscated and obfuscated environment
  */
 public class BattlegearTranslator implements IFMLCallHook {
     //Setting this to true will enable the output of all edited classes as .class files
