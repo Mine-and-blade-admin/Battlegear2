@@ -5,7 +5,7 @@ import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 
-public class ModelBipedTransformer extends TransformerMethodProcess {
+public final class ModelBipedTransformer extends TransformerMethodProcess {
 
     public ModelBipedTransformer() {
 		super("net.minecraft.client.model.ModelBiped","func_78087_a",new String[]{"setRotationAngles", "(FFFFFFLnet/minecraft/entity/Entity;)V"});

@@ -38,7 +38,7 @@ import org.lwjgl.opengl.GL12;
 import static net.minecraftforge.client.IItemRenderer.ItemRenderType.EQUIPPED;
 import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3D;
 
-public class BattlegearRenderHelper {
+public final class BattlegearRenderHelper {
 
     private static final ItemStack dummyStack = new ItemStack(Blocks.flowing_lava);
     public static float PROGRESS_INCREMENT_LIMIT = 0.4F;

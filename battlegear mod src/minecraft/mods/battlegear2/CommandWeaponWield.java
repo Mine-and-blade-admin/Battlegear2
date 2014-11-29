@@ -19,7 +19,12 @@ import java.util.Set;
  * Command that can be used by op to set held/named items in the WeaponRegistry and tinker its sensitivity
  * @author GotoLink
  */
-public class CommandWeaponWield extends CommandBase{
+public final class CommandWeaponWield extends CommandBase{
+
+    public static final ICommand INSTANCE = new CommandWeaponWield();
+
+    private CommandWeaponWield(){}
+
     /**
      * Item searching modes: current for getting the held {@link ItemStack}, name for getting an itemstack from the {@link GameRegistry} by name
      * Available operations: on the selected sensitivities

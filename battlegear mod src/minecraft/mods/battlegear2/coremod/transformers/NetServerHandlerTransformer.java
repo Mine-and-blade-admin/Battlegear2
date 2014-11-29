@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.*;
 import java.util.Iterator;
 import java.util.List;
 
-public class NetServerHandlerTransformer extends TransformerBase {
+public final class NetServerHandlerTransformer extends TransformerBase {
 
     public NetServerHandlerTransformer() {
 		super("net.minecraft.network.NetHandlerPlayServer");

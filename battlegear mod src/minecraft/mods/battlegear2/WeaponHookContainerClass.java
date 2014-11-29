@@ -22,9 +22,13 @@ import java.util.Map;
  * Events registered with MinecraftForge event bus on default priority: 
  * {@link LivingAttackEvent}, to perform weapons custom effects
  */
-public class WeaponHookContainerClass {
+public final class WeaponHookContainerClass {
 
+    public static final WeaponHookContainerClass INSTANCE = new WeaponHookContainerClass();
 	public static final float backstabFuzzy = 0.01F;
+
+    private WeaponHookContainerClass(){}
+
     @SubscribeEvent
     public void onAttack(LivingAttackEvent event){
 
@@ -91,7 +95,7 @@ public class WeaponHookContainerClass {
         }
     }
 
-    protected boolean performBackStab(Item item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
+    public boolean performBackStab(Item item, EntityLivingBase entityHit, EntityLivingBase entityHitting) {
         //Get victim and murderer vector views at hit time
         double[] victimView = new double[]{entityHit.getLookVec().xCoord,entityHit.getLookVec().zCoord};
         double[] murdererView = new double[]{entityHitting.getLookVec().xCoord,entityHitting.getLookVec().zCoord};
@@ -105,7 +109,7 @@ public class WeaponHookContainerClass {
         return false;
     }
 
-    protected void performEffects(Map<PotionEffect, Float> map, EntityLivingBase entityHit) {
+    public void performEffects(Map<PotionEffect, Float> map, EntityLivingBase entityHit) {
         double roll = Math.random();
         for(PotionEffect effect:map.keySet()){
             //add effects if they aren't already applied, with corresponding chance factor

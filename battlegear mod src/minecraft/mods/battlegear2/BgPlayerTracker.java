@@ -7,7 +7,11 @@ import mods.battlegear2.packet.LoginPacket;
 import mods.battlegear2.recipies.CraftingHandeler;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class BgPlayerTracker {
+public final class BgPlayerTracker {
+
+    public static final BgPlayerTracker INSTANCE = new BgPlayerTracker();
+
+    private BgPlayerTracker(){}
 
     @SubscribeEvent
     public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {

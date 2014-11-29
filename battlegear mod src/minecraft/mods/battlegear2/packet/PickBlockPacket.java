@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 
-public class PickBlockPacket extends AbstractMBPacket{
+public final class PickBlockPacket extends AbstractMBPacket{
     public final static String packetName = "MB2|CreaPick";
     private ItemStack stack;
     private int slot;

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class CraftingHandeler {
+public final class CraftingHandeler {
 
     public static void onCrafting(EntityPlayer player, ItemStack item, IInventory craftMatrix) {
 

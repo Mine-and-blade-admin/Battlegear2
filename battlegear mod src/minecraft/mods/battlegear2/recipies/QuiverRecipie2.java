@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-public class QuiverRecipie2 implements IRecipe {
+public final class QuiverRecipie2 implements IRecipe {
 
     @Override
     public boolean matches(InventoryCrafting inventorycrafting, World world) {

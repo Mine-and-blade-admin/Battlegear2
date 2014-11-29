@@ -12,7 +12,11 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
-public class MobHookContainerClass {
+public final class MobHookContainerClass {
+
+    public static final MobHookContainerClass INSTANCE = new MobHookContainerClass();
+
+    private MobHookContainerClass(){}
 
     /**
      * The key used when registering/loading the arrow data (as byte) into/from the {@link EntitySkeleton}s {@link net.minecraft.entity.DataWatcher}

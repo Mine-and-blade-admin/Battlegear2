@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
  * Time: 1:38 PM
  * TODO: Add discription
  */
-public class BattlegearGUIPacket extends AbstractMBPacket {
+public final class BattlegearGUIPacket extends AbstractMBPacket {
 
     public static final String packetName = "MB2|GUI";
 

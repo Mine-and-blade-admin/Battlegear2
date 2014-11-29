@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class BattlegearShieldFlashPacket extends AbstractMBPacket{
+public final class BattlegearShieldFlashPacket extends AbstractMBPacket{
 
     public static final String packetName = "MB2|ShieldFlash";
 	private String username;

@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-public class ShieldRemoveArrowRecipie implements IRecipe{
+public final class ShieldRemoveArrowRecipie implements IRecipe{
 
     @Override
     public boolean matches(InventoryCrafting inventorycrafting, World world) {

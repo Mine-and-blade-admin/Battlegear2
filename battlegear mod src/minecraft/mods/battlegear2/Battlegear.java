@@ -96,7 +96,7 @@ public class Battlegear {
 
     @Mod.EventHandler
     public void serverStart(FMLServerStartingEvent event){
-        event.registerServerCommand(new CommandWeaponWield());
+        event.registerServerCommand(CommandWeaponWield.INSTANCE);
     }
     
     @Mod.EventHandler

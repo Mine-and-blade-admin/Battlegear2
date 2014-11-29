@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiScreen;
 
 import java.util.Set;
 
-public class BattlegearGuiFactory implements IModGuiFactory{
+public final class BattlegearGuiFactory implements IModGuiFactory{
 
     @Override
     public void initialize(Minecraft minecraft) {

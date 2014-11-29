@@ -13,7 +13,7 @@ import net.minecraft.item.ItemStack;
  * A gui that displays like the in-game screen, where each element is a {@link GuiDrawButton}
  * Used to move gui elements and save their position into configuration file
  */
-public class BattlegearFakeGUI extends GuiScreen{
+public final class BattlegearFakeGUI extends GuiScreen{
     private final GuiScreen previous;
     private final BattlegearInGameGUI helper = new BattlegearInGameGUI();
     public BattlegearFakeGUI(GuiScreen parent){
@@ -78,7 +78,7 @@ public class BattlegearFakeGUI extends GuiScreen{
         BattlegearConfig.refreshGuiValues();
     }
 
-    public class WeaponSlotRenderer implements GuiDrawButton.IDrawnHandler{
+    public final class WeaponSlotRenderer implements GuiDrawButton.IDrawnHandler{
         private final boolean isMainHand;
         public WeaponSlotRenderer(boolean isMainHand){
             this.isMainHand = isMainHand;
@@ -90,7 +90,7 @@ public class BattlegearFakeGUI extends GuiScreen{
         }
     }
 
-    public class BlockBarRenderer implements GuiDrawButton.IDrawnHandler{
+    public final class BlockBarRenderer implements GuiDrawButton.IDrawnHandler{
         ItemStack dummy;
         public BlockBarRenderer(){
             if(BattlegearConfig.shield[0]!=null)
@@ -104,7 +104,7 @@ public class BattlegearFakeGUI extends GuiScreen{
         }
     }
 
-    public class QuiverSlotRenderer implements GuiDrawButton.IDrawnHandler{
+    public final class QuiverSlotRenderer implements GuiDrawButton.IDrawnHandler{
         ItemStack dummy;
         public QuiverSlotRenderer(){
             if(BattlegearConfig.quiver!=null)

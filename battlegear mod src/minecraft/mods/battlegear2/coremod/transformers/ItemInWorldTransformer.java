@@ -5,7 +5,7 @@ import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 
-public class ItemInWorldTransformer extends TransformerMethodProcess {
+public final class ItemInWorldTransformer extends TransformerMethodProcess {
 
     public ItemInWorldTransformer() {
 		super("net.minecraft.server.management.ItemInWorldManager", "func_73085_a", new String[]{"tryUseItem", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"});

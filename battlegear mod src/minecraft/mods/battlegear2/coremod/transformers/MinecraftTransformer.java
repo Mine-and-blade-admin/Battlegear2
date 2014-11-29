@@ -3,7 +3,7 @@ package mods.battlegear2.coremod.transformers;
 import mods.battlegear2.api.core.BattlegearTranslator;
 import org.objectweb.asm.tree.MethodNode;
 
-public class MinecraftTransformer extends TransformerMethodProcess {
+public final class MinecraftTransformer extends TransformerMethodProcess {
 
 	public MinecraftTransformer(){
 		super("net.minecraft.client.Minecraft", "func_147121_ag", new String[]{"func_147121_ag", "()V"});

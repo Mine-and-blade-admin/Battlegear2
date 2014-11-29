@@ -10,7 +10,7 @@ import net.minecraft.tileentity.TileEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BattlegearBannerPacket extends AbstractMBPacket{
+public final class BattlegearBannerPacket extends AbstractMBPacket{
     public static final String packetName = "MB2|Banner";
     private int posX, posY, posZ;
     private List<ItemStack> parts = new ArrayList<ItemStack>();

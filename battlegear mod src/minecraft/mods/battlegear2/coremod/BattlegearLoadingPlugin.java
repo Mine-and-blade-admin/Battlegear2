@@ -10,7 +10,7 @@ import java.util.Map;
 
 @TransformerExclusions({"mods.battlegear2.coremod"})
 @Name("Mine and Blade: Battlegear2")
-public class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
+public final class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 
     public static final String EntityPlayerTransformer = "mods.battlegear2.coremod.transformers.EntityPlayerTransformer";
     public static final String ModelBipedTransformer = "mods.battlegear2.coremod.transformers.ModelBipedTransformer";

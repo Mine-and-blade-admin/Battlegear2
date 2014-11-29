@@ -43,7 +43,12 @@ import net.minecraftforge.event.entity.player.*;
 
 import java.util.List;
 
-public class BattlemodeHookContainerClass {
+public final class BattlemodeHookContainerClass {
+
+    public static final BattlemodeHookContainerClass INSTANCE = new BattlemodeHookContainerClass();
+
+    private BattlemodeHookContainerClass(){}
+
     private boolean isFake(Entity entity){
         return entity instanceof FakePlayer;
     }

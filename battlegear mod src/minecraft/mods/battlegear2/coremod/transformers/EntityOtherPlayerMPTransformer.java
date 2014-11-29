@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.*;
 import java.util.Iterator;
 import java.util.List;
 
-public class EntityOtherPlayerMPTransformer extends TransformerBase {
+public final class EntityOtherPlayerMPTransformer extends TransformerBase {
 
     public EntityOtherPlayerMPTransformer() {
 		super("net.minecraft.client.entity.EntityOtherPlayerMP");

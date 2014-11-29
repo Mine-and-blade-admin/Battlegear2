@@ -11,7 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class BattleEquipGUI extends InventoryEffectRenderer {
+public final class BattleEquipGUI extends InventoryEffectRenderer {
 
     public static final ResourceLocation resource = new ResourceLocation("battlegear2", "textures/gui/Equip GUI.png");
     public static Class equipTab;

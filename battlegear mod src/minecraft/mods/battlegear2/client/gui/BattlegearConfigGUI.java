@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.Arrays;
 import java.util.List;
 
-public class BattlegearConfigGUI extends GuiScreen{
+public final class BattlegearConfigGUI extends GuiScreen{
     private final String[] availableRenderers = BattlegearConfig.renderNames;
     private final GuiScreen parent;
     private GUITextList possibleValues;

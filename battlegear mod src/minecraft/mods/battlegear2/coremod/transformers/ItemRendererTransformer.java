@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.*;
 import java.util.Iterator;
 import java.util.List;
 
-public class ItemRendererTransformer extends TransformerBase {
+public final class ItemRendererTransformer extends TransformerBase {
 
     public ItemRendererTransformer() {
 		super("net.minecraft.client.renderer.ItemRenderer");

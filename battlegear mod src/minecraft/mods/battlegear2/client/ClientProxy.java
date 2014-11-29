@@ -39,7 +39,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-public class ClientProxy extends CommonProxy {
+public final class ClientProxy extends CommonProxy {
 
     public static boolean tconstructEnabled = false;
     public static Method updateTab, addTabs;
@@ -52,15 +52,15 @@ public class ClientProxy extends CommonProxy {
     @Override
     public void registerKeyHandelers() {
         if(BattlegearConfig.enableGUIKeys){
-            FMLCommonHandler.instance().bus().register(new BattlegearGuiKeyHandler());
+            FMLCommonHandler.instance().bus().register(BattlegearGuiKeyHandler.INSTANCE);
         }
     }
 
     @Override
     public void registerTickHandelers() {
         super.registerTickHandelers();
-        MinecraftForge.EVENT_BUS.register(new BattlegearClientEvents());
-        FMLCommonHandler.instance().bus().register(new BattlegearClientTickHandeler());
+        MinecraftForge.EVENT_BUS.register(BattlegearClientEvents.INSTANCE);
+        FMLCommonHandler.instance().bus().register(BattlegearClientTickHandeler.INSTANCE);
     }
 
     @Override

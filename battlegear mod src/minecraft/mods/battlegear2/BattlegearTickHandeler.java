@@ -11,7 +11,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldServer;
 
-public class BattlegearTickHandeler {
+public final class BattlegearTickHandeler {
+    public static final BattlegearTickHandeler INSTANCE = new BattlegearTickHandeler();
+
+    private BattlegearTickHandeler(){}
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event){

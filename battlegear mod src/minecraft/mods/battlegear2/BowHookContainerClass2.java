@@ -24,8 +24,11 @@ import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
 import java.util.Random;
 
-public class BowHookContainerClass2 {
-    public BowHookContainerClass2(){
+public final class BowHookContainerClass2 {
+
+    public static final BowHookContainerClass2 INSTANCE = new BowHookContainerClass2();
+
+    private BowHookContainerClass2(){
         QuiverArrowRegistry.addQuiverSelection(new OffhandQuiverSelection());
         QuiverArrowRegistry.addQuiverSelection(new MainQuiverSelection());
     }

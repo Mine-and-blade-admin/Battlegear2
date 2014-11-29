@@ -12,7 +12,7 @@ import net.minecraft.world.WorldServer;
  * Date: 26/06/13
  * Time: 1:47 PM
  */
-public class BattlegearAnimationPacket extends AbstractMBPacket {
+public final class BattlegearAnimationPacket extends AbstractMBPacket {
 
     public static final String packetName = "MB2|Animation";
 	private EnumBGAnimations animation;

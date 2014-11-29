@@ -13,7 +13,7 @@ import net.minecraft.network.NetHandlerPlayServer;
 import java.util.Hashtable;
 import java.util.Map;
 
-public class BattlegearPacketHandeler {
+public final class BattlegearPacketHandeler {
 
     public Map<String, AbstractMBPacket> map = new Hashtable<String, AbstractMBPacket>();
     public Map<String, FMLEventChannel> channels = new Hashtable<String, FMLEventChannel>();

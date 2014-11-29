@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
  * Date: 26/06/13
  * Time: 1:40 PM
  */
-public class BattlegearSyncItemPacket extends AbstractMBPacket {
+public final class BattlegearSyncItemPacket extends AbstractMBPacket {
 
     public static final String packetName = "MB2|SyncItem";
 	private String user;

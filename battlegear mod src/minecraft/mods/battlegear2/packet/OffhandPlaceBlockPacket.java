@@ -23,7 +23,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
-public class OffhandPlaceBlockPacket extends AbstractMBPacket{
+public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
     public static final String packetName = "MB2|Place";
     private int xPosition;
     private int yPosition;

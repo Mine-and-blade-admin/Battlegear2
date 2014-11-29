@@ -9,7 +9,7 @@ import org.objectweb.asm.tree.*;
 import java.util.List;
 import java.util.ListIterator;
 
-public class EntityPlayerTransformer extends TransformerBase {
+public final class EntityPlayerTransformer extends TransformerBase {
     public static final int DATAWATCHER_SHIELD = 25;
     public EntityPlayerTransformer() {
 		super("net.minecraft.entity.player.EntityPlayer");

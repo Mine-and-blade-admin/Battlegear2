@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class DyeRecipie implements IRecipe
+public final class DyeRecipie implements IRecipe
 {
     @Override
     public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World)

@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 
-public class SpecialActionPacket extends AbstractMBPacket{
+public final class SpecialActionPacket extends AbstractMBPacket{
 
     public static final String packetName = "MB2|Special";
 	private EntityPlayer player;

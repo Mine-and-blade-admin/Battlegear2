@@ -3,7 +3,7 @@ package mods.battlegear2.coremod.transformers;
 import mods.battlegear2.api.core.BattlegearTranslator;
 import org.objectweb.asm.tree.MethodNode;
 
-public class EntityAIControlledByPlayerTransformer extends TransformerMethodProcess {
+public final class EntityAIControlledByPlayerTransformer extends TransformerMethodProcess {
 
     public EntityAIControlledByPlayerTransformer() {
 		super("net.minecraft.entity.ai.EntityAIControlledByPlayer", "func_75246_d", new String[]{"updateTask", "()V"});

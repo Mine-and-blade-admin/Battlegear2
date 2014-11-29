@@ -5,7 +5,7 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.item.ItemStack;
 
-public class BattlegearClientUtils {
+public final class BattlegearClientUtils {
     /**
      * Patch over EntityOtherPlayerMP#onUpdate() to update isItemInUse field
      * @param player the player whose #onUpdate method is triggered

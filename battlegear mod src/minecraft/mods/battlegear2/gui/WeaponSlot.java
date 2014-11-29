@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
 
-public class WeaponSlot extends Slot {
+public final class WeaponSlot extends Slot {
 
     private WeaponSlot partner;
     private boolean mainHand;

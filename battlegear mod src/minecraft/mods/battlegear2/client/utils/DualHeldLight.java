@@ -10,7 +10,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  * Created by GotoLink on 06/06/2014.
  * Using DynamicLight interface to give player a chance of light when holding offhand item
  */
-public class DualHeldLight implements IDynamicLightSource{
+public final class DualHeldLight implements IDynamicLightSource{
     /**
      * Cached previous light value, because DynamicLight checks aren't consistent
      */

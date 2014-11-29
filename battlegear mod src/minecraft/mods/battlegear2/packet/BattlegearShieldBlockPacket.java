@@ -6,7 +6,7 @@ import mods.battlegear2.api.core.IBattlePlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
 
-public class BattlegearShieldBlockPacket extends AbstractMBPacket {
+public final class BattlegearShieldBlockPacket extends AbstractMBPacket {
 	public static final String packetName = "MB2|Block";
 	private boolean block;
 	private String username;

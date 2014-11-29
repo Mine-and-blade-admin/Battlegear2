@@ -5,7 +5,7 @@ import mods.battlegear2.api.heraldry.IHeraldryItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-public class BattlegearChangeHeraldryPacket extends AbstractMBPacket{
+public final class BattlegearChangeHeraldryPacket extends AbstractMBPacket{
     public static final String packetName = "MB2|Heraldry";
     private byte[] data;
     public BattlegearChangeHeraldryPacket() {

@@ -9,12 +9,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
-public class BattlegearGuiKeyHandler {
+public final class BattlegearGuiKeyHandler {
 
 	public static KeyBinding battleInv = new KeyBinding("Battle Inventory", Keyboard.KEY_I, "key.categories.inventory");
 	public static KeyBinding openSigilEditor = new KeyBinding("Open Sigil Editor", Keyboard.KEY_P, "key.categories.misc");
+    public static final BattlegearGuiKeyHandler INSTANCE = new BattlegearGuiKeyHandler();
 
-	public BattlegearGuiKeyHandler() {
+    private BattlegearGuiKeyHandler() {
 		ClientRegistry.registerKeyBinding(battleInv);
         ClientRegistry.registerKeyBinding(openSigilEditor);
 	}

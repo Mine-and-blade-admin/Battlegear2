@@ -13,12 +13,12 @@ public class CommonProxy {
     public void registerKeyHandelers() {}
 
     public void registerTickHandelers(){
-        FMLCommonHandler.instance().bus().register(new BattlegearTickHandeler());
-        FMLCommonHandler.instance().bus().register(new BgPlayerTracker());
-        MinecraftForge.EVENT_BUS.register(new BattlemodeHookContainerClass());
-        MinecraftForge.EVENT_BUS.register(new WeaponHookContainerClass());
-        MinecraftForge.EVENT_BUS.register(new BowHookContainerClass2());
-        MinecraftForge.EVENT_BUS.register(new MobHookContainerClass());
+        FMLCommonHandler.instance().bus().register(BattlegearTickHandeler.INSTANCE);
+        FMLCommonHandler.instance().bus().register(BgPlayerTracker.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(BattlemodeHookContainerClass.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(WeaponHookContainerClass.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(BowHookContainerClass2.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(MobHookContainerClass.INSTANCE);
     }
 
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {}

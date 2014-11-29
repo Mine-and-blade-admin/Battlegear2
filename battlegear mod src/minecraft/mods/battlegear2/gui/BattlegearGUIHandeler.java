@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.world.World;
 
-public class BattlegearGUIHandeler implements IGuiHandler {
+public final class BattlegearGUIHandeler implements IGuiHandler {
     public static final int mainID = 0;
     public static final int equipID = 1;
     public static final int sigilEditor = 2;

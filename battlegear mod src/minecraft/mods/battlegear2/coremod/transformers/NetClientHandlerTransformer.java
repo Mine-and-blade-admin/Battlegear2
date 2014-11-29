@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.*;
 import java.util.List;
 import java.util.ListIterator;
 
-public class NetClientHandlerTransformer extends TransformerBase {
+public final class NetClientHandlerTransformer extends TransformerBase {
 
     public NetClientHandlerTransformer() {
 		super("net.minecraft.client.network.NetHandlerPlayClient");

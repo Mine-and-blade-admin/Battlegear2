@@ -3,7 +3,7 @@ package mods.battlegear2.coremod.transformers;
 import mods.battlegear2.api.core.BattlegearTranslator;
 import org.objectweb.asm.tree.MethodNode;
 
-public class PlayerControllerMPTransformer extends TransformerMethodProcess {
+public final class PlayerControllerMPTransformer extends TransformerMethodProcess {
 
     public PlayerControllerMPTransformer() {
 		super("net.minecraft.client.multiplayer.PlayerControllerMP", "func_78769_a", new String[]{"sendUseItem", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"});

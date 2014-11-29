@@ -41,26 +41,25 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.lwjgl.input.Keyboard;
 
-public class BattlegearClientTickHandeler {
+public final class BattlegearClientTickHandeler {
+    public static final BattlegearClientTickHandeler INSTANCE = new BattlegearClientTickHandeler();
+    public static KeyBinding drawWeapons = new KeyBinding("Draw Weapons", Keyboard.KEY_R, "key.categories.gameplay");
+    public static KeyBinding special = new KeyBinding("Special", Keyboard.KEY_Z, "key.categories.gameplay");
 
     public static float blockBar = 1;
+    public static float partialTick;
     public static boolean wasBlocking = false;
     public static final float[] COLOUR_DEFAULT = new float[]{0, 0.75F, 1};
     public static final float[] COLOUR_RED = new float[]{1, 0.1F, 0.1F};
     public static final float[] COLOUR_YELLOW = new float[]{1, 1F, 0.1F};
     private static final int FLASH_MAX = 30;
     private static int flashTimer;
-
-    public static float partialTick;
-
-    public static KeyBinding drawWeapons = new KeyBinding("Draw Weapons", Keyboard.KEY_R, "key.categories.gameplay");
-    public static KeyBinding special = new KeyBinding("Special", Keyboard.KEY_Z, "key.categories.gameplay");
-
     private static int previousNormal = 0;
     public static int previousBattlemode = InventoryPlayerBattle.OFFSET;
     private boolean specialDone = false, drawDone = false, inBattle = false;
     private final Minecraft mc;
-    public BattlegearClientTickHandeler(){
+
+    private BattlegearClientTickHandeler(){
         ClientRegistry.registerKeyBinding(drawWeapons);
         ClientRegistry.registerKeyBinding(special);
         mc = FMLClientHandler.instance().getClient();
