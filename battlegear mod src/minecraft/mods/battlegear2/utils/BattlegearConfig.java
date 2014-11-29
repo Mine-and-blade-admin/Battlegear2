@@ -198,6 +198,8 @@ public class BattlegearConfig {
         	}
         	if(Arrays.binarySearch(disabledItems, itemNames[7]) < 0){
                 shield[i] = new ItemShield(types[i]);
+                if(i==0)
+                    GameRegistry.registerFuelHandler(shield[i]);
         	}
             if(i!=4 && Arrays.binarySearch(disabledItems, itemNames[8]) < 0){
                 knightArmor[i] = new ItemKnightArmour(i);

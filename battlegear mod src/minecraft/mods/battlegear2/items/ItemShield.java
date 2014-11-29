@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,7 +30,7 @@ import net.minecraft.util.StatCollector;
 
 import java.util.List;
 
-public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed, IArrowCatcher, IArrowDisplay{
+public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed, IArrowCatcher, IArrowDisplay, IFuelHandler{
 
     public ShieldType enumShield;
 
@@ -242,5 +243,12 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
     @Override
     public boolean getIsRepairable(ItemStack itemStack, ItemStack repair){
         return this.enumShield.canBeRepairedWith(repair);
+    }
+
+    @Override
+    public int getBurnTime(ItemStack fuel) {
+        if(fuel.getItem() == this)
+            return 300;
+        return 0;
     }
 }
