@@ -61,17 +61,17 @@ public class GuiSlotModList extends GuiScrollingList
         ModContainer mc=entries.get(listIndex).getMc();
         if (Loader.instance().getModState(mc)== LoaderState.ModState.DISABLED)
         {
-            this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(mc.getName(), listWidth - 10), this.left + 3 , var3 + 2, 0xFF2222);
-            this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth("DISABLED", listWidth - 10), this.left + 3 , var3 + 12, 0xFF2222);
+            drawString(mc.getName(), this.left + 3 , var3 + 2, 0xFF2222);
+            drawString("DISABLED", this.left + 3 , var3 + 12, 0xFF2222);
         }
         else
         {
-            this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(mc.getName(), listWidth - 10), this.left + 3 , var3 + 2, 0xFFFFFF);
+            drawString(mc.getName(), this.left + 3 , var3 + 2, 0xFFFFFF);
             try{
                 if(entries.get(listIndex).isUpToDate()){
-                    this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(I18n.format("mud.version.latest"), listWidth - 10), this.left + 3 , var3 + 12, 0xFF00FF00);
+                    drawString(I18n.format("mud.version.latest"), this.left + 3 , var3 + 12, 0xFF00FF00);
                 }else{
-                    this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(I18n.format("mud.version.out"), listWidth - 10), this.left + 3 , var3 + 12, 0xFFFF0000);
+                    drawString(I18n.format("mud.version.out"), this.left + 3 , var3 + 12, 0xFFFF0000);
                 }
             }catch (UnknownVersionFormatException e){
 
@@ -81,4 +81,7 @@ public class GuiSlotModList extends GuiScrollingList
         }
     }
 
+    protected void drawString(String text, int left, int right, int color){
+        this.parent.getFontRenderer().drawString(this.parent.getFontRenderer().trimStringToWidth(text, listWidth - 10), left, right, color);
+    }
 }

@@ -2,6 +2,7 @@ package mods.mud;
 
 import cpw.mods.fml.common.Loader;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -19,24 +20,19 @@ public class UpdateChecker implements Runnable{
         updateEntries = entries;
     }
 
-
     @Override
     public void run() {
-        //Map<String, Release> latestReleases = new HashMap<String, Release>();
-
         for(UpdateEntry entry:updateEntries){
             Release latest = getUpToDateRelease(
                     entry.getMc().getModId(),
-                    Loader.instance().getMCVersionString().replaceAll("Minecraft ", ""),
+                    Loader.MC_VERSION,
                     Release.EnumReleaseType.Normal,
                     entry.getUpdateXML()
             );
 
             entry.setLatest(latest);
         }
-
         ModUpdateDetector.notifyUpdateDone();
-
     }
 
     public Release getUpToDateRelease(String modId, String targetMcVersion, Release.EnumReleaseType versionLevel, URL updateURL){
@@ -88,40 +84,27 @@ public class UpdateChecker implements Runnable{
         }
 
         return null;
-
     }
-
-
 
     private Release parseNode(Node item, Release.EnumReleaseType versionLevel) {
         if(item.hasAttributes()){
-
-            Node versionNode = item.getAttributes().getNamedItem("version");
-            Node typeNode = item.getAttributes().getNamedItem("type");
-            String url = null;
-            String download = null;
-            String md5 = null;
-            if(item.getAttributes().getNamedItem("url") != null){
-                url = item.getAttributes().getNamedItem("url").getNodeValue();
-            }
-            if(item.getAttributes().getNamedItem("md5") != null){
-                md5 = item.getAttributes().getNamedItem("md5").getNodeValue();
-            }
-            if(item.getAttributes().getNamedItem("download") != null){
-                download = item.getAttributes().getNamedItem("download").getNodeValue();
-            }
+            NamedNodeMap nodeMap = item.getAttributes();
+            String versionNode = getNodeValue(nodeMap, "version");
+            if(versionNode == null)
+                return null;
+            String type = getNodeValue(nodeMap, "type");
             Release.EnumReleaseType releaseType = Release.EnumReleaseType.Normal;
-            if(typeNode != null){
-                if(typeNode.getNodeValue().equalsIgnoreCase("beta")){
+            if(type != null){
+                if(type.equalsIgnoreCase("beta")){
                     releaseType = Release.EnumReleaseType.Beta;
                 }
-                if(typeNode.getNodeValue().equalsIgnoreCase("dev")){
+                else if(type.equalsIgnoreCase("dev")){
                     releaseType = Release.EnumReleaseType.Dev;
                 }
             }
 
-            if(versionNode != null && releaseType.level <= versionLevel.level){
-                String[] split = versionNode.getNodeValue().toLowerCase(Locale.ENGLISH).split("\\.");
+            if(releaseType.level <= versionLevel.level){
+                String[] split = versionNode.toLowerCase(Locale.ENGLISH).split("\\.");
                 int[] version = new int[split.length];
                 for(int i = 0; i < split.length; i++){
                     try{
@@ -130,15 +113,17 @@ public class UpdateChecker implements Runnable{
                         return null;
                     }
                 }
+                String url = getNodeValue(nodeMap, "url");
+                String download = getNodeValue(nodeMap, "download");
+                String md5 = getNodeValue(nodeMap, "md5");
 
                 return new Release(releaseType, url, version, download, md5);
-            }else{
-                return null;
             }
-
-
-        }else{
-            return null;
         }
+        return null;
+    }
+
+    private String getNodeValue(NamedNodeMap map, String nodeName){
+        return map.getNamedItem(nodeName) != null ? map.getNamedItem(nodeName).getNodeValue() : null;
     }
 }
