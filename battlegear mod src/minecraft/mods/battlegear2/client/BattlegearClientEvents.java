@@ -1,6 +1,7 @@
 package mods.battlegear2.client;
 
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.Battlegear;
@@ -47,15 +48,23 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
-public class BattlegearClientEvents {
+public final class BattlegearClientEvents {
 
-	private final BattlegearInGameGUI inGameGUI = new BattlegearInGameGUI();
-	private final QuiverModel quiverModel = new QuiverModel();
-	private final ResourceLocation quiverDetails = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverDetails.png");
-	private final ResourceLocation quiverBase = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverBase.png");
+	private final BattlegearInGameGUI inGameGUI;
+	private final QuiverModel quiverModel;
+	private final ResourceLocation quiverDetails;
+	private final ResourceLocation quiverBase;
     //public static final ResourceLocation patterns = new ResourceLocation("battlegear2", "textures/heraldry/Patterns-small.png");
     //public static int storageIndex;
-	public static GuiPlaceableButton[] tabsList = { new GuiBGInventoryButton(0, 10, 10), new GuiSigilButton(1, 20, 20)};
+	public static final GuiPlaceableButton[] tabsList = { new GuiBGInventoryButton(0), new GuiSigilButton(1)};
+    public static final BattlegearClientEvents INSTANCE = new BattlegearClientEvents();
+
+    private BattlegearClientEvents(){
+        inGameGUI = new BattlegearInGameGUI();
+        quiverModel = new QuiverModel();
+        quiverDetails = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverDetails.png");
+        quiverBase = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverBase.png");
+    }
 
     /**
      * Offset battle slots rendering according to config values
@@ -384,7 +393,7 @@ public class BattlegearClientEvents {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void postInitGui(GuiScreenEvent.InitGuiEvent.Post event){
         if (Battlegear.battlegearEnabled && event.gui instanceof InventoryEffectRenderer) {
             if(!ClientProxy.tconstructEnabled || FMLClientHandler.instance().getClientPlayerEntity().capabilities.isCreativeMode) {
@@ -394,14 +403,15 @@ public class BattlegearClientEvents {
     }
 
     /**
-     * Make a guess over the value of GuiContainer#guiTop (protected)
+     * Make a guess over the value of GuiContainer#guiLeft (protected)
      * Use magic numbers !
+     * NotEnoughItems mod is also changing the gui offset, for some reason.
      *
      * @param guiContainer the current screen whose value is desired
      * @return the guessed value
      */
     public static int guessGuiLeft(InventoryEffectRenderer guiContainer){
-        int offset = FMLClientHandler.instance().getClientPlayerEntity().getActivePotionEffects().isEmpty() ? 0 : 60;
+        int offset = Loader.isModLoaded("NotEnoughItems") || FMLClientHandler.instance().getClientPlayerEntity().getActivePotionEffects().isEmpty() ? 0 : 60;
         if(guiContainer instanceof GuiContainerCreative){
             return offset + (guiContainer.width - 195)/2;
         }
@@ -409,7 +419,7 @@ public class BattlegearClientEvents {
     }
 
     /**
-     * Make a guess over the value of GuiContainer#guiLeft (protected)
+     * Make a guess over the value of GuiContainer#guiTop (protected)
      * Use magic numbers !
      *
      * @param gui the current screen whose value is desired
@@ -431,7 +441,8 @@ public class BattlegearClientEvents {
 	public static void onOpenGui(List buttons, int guiLeft, int guiTop) {
         if(BattlegearConfig.enableGuiButtons){
 			int count = 0;
-			for (GuiPlaceableButton button : tabsList) {
+			for (GuiPlaceableButton tab : tabsList) {
+                GuiPlaceableButton button = tab.copy();
 				button.place(count, guiLeft, guiTop);
 				button.id = buttons.size()+2;//Due to GuiInventory and GuiContainerCreative button performed actions, without them having buttons...
 				count++;

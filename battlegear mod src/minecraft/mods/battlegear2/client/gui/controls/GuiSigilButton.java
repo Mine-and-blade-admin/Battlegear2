@@ -5,10 +5,10 @@ import mods.battlegear2.client.gui.BattlegearSigilGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
-public class GuiSigilButton extends GuiPlaceableButton {
+public final class GuiSigilButton extends GuiPlaceableButton {
 
-	public GuiSigilButton(int par1, int par2, int par3) {
-		super(par1, par2, par3, "Sigil");
+	public GuiSigilButton(int par1) {
+		super(par1, "Sigil");
 	}
 
 	@Override
@@ -20,6 +20,11 @@ public class GuiSigilButton extends GuiPlaceableButton {
 	protected Class<? extends GuiScreen> getGUIClass() {
 		return BattlegearSigilGUI.class;
 	}
+
+    @Override
+    public GuiPlaceableButton copy(){
+        return new GuiSigilButton(this.id);
+    }
 
     @Override
     protected void drawTextureBox(int hoverState){

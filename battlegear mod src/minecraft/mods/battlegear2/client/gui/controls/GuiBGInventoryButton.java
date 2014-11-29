@@ -4,10 +4,10 @@ import mods.battlegear2.client.gui.BattleEquipGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
-public class GuiBGInventoryButton extends GuiPlaceableButton{
+public final class GuiBGInventoryButton extends GuiPlaceableButton{
 
-	public GuiBGInventoryButton(int par1, int par2, int par3) {
-		super(par1, par2, par3, "BG");
+	public GuiBGInventoryButton(int par1) {
+		super(par1, "BG");
 	}
 
 	@Override
@@ -19,4 +19,9 @@ public class GuiBGInventoryButton extends GuiPlaceableButton{
 	protected Class<? extends GuiScreen> getGUIClass() {
 		return BattleEquipGUI.class;
 	}
+
+    @Override
+    public GuiPlaceableButton copy(){
+        return new GuiBGInventoryButton(this.id);
+    }
 }
