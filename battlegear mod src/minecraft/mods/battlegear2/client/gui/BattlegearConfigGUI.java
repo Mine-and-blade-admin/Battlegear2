@@ -78,8 +78,7 @@ public final class BattlegearConfigGUI extends GuiScreen{
         this.drawDefaultBackground();
         this.drawCenteredString(this.fontRendererObj, I18n.format("config.battlegear.title"), this.width / 2, this.height / 2 - 115, 0xFFFFFF);
         this.drawCenteredString(this.fontRendererObj, I18n.format("config.battlegear.category"), this.width / 2, this.height / 2 - 15, 0xFFFFFF);
-        this.fontRendererObj.drawStringWithShadow(I18n.format("config.battlegear.warn.part1"), this.width / 2 + 60, this.height / 2 + 20, 0xFFFFFF);
-        this.fontRendererObj.drawStringWithShadow(I18n.format("config.battlegear.warn.part2"), this.width / 2 + 60, this.height / 2 + 30, 0xFFFFFF);
+        this.fontRendererObj.drawSplitString(I18n.format("config.battlegear.warn"), this.width / 2 + 60, this.height / 2 + 20, this.width / 2 - 60, 0xFFFFFF);
         this.possibleValues.drawScreen(par1, par2, par3);
         super.drawScreen(par1, par2, par3);
         GL11.glDisable(GL11.GL_LIGHTING);
