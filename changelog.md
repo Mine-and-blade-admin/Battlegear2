@@ -1,3 +1,14 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.6.3 ==
+* Fixed /mud command not displaying changelog screen
+* Added firing arrows from a quiver in a dispenser
+* Fixed ender arrows applying too much damage with feather falling boots
+* Fixed english locals (consistency with vanilla items)
+* Changed gui buttons placement (vertical, with NEI support)
+* Fixed player inventory update when switching with buttons
+* Made M.U.D changelog screen accessible while it is checking for updates
+* Wooden shields can now be used in furnace as fuel
+* Fixed previous known issue with arrows
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.6.2 ==
 * Fixed crash in option menu
 * Fixed creative tab crash if heraldry item is disabled
