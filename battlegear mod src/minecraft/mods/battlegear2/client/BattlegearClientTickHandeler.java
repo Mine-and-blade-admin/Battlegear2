@@ -42,24 +42,22 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.lwjgl.input.Keyboard;
 
 public final class BattlegearClientTickHandeler {
-    public static final BattlegearClientTickHandeler INSTANCE = new BattlegearClientTickHandeler();
-    public static KeyBinding drawWeapons = new KeyBinding("Draw Weapons", Keyboard.KEY_R, "key.categories.gameplay");
-    public static KeyBinding special = new KeyBinding("Special", Keyboard.KEY_Z, "key.categories.gameplay");
-
-    public static float blockBar = 1;
-    public static float partialTick;
-    public static boolean wasBlocking = false;
-    public static final float[] COLOUR_DEFAULT = new float[]{0, 0.75F, 1};
-    public static final float[] COLOUR_RED = new float[]{1, 0.1F, 0.1F};
-    public static final float[] COLOUR_YELLOW = new float[]{1, 1F, 0.1F};
     private static final int FLASH_MAX = 30;
-    private static int flashTimer;
-    private static int previousNormal = 0;
-    public static int previousBattlemode = InventoryPlayerBattle.OFFSET;
-    private boolean specialDone = false, drawDone = false, inBattle = false;
+    private final KeyBinding drawWeapons, special;
     private final Minecraft mc;
 
+    private float blockBar = 1;
+    private float partialTick;
+    private boolean wasBlocking = false;
+    private int previousBattlemode = InventoryPlayerBattle.OFFSET;
+    private int previousNormal = 0;
+    private int flashTimer;
+    private boolean specialDone = false, drawDone = false, inBattle = false;
+    public static final BattlegearClientTickHandeler INSTANCE = new BattlegearClientTickHandeler();
+
     private BattlegearClientTickHandeler(){
+        drawWeapons = new KeyBinding("Draw Weapons", Keyboard.KEY_R, "key.categories.gameplay");
+        special = new KeyBinding("Special", Keyboard.KEY_Z, "key.categories.gameplay");
         ClientRegistry.registerKeyBinding(drawWeapons);
         ClientRegistry.registerKeyBinding(special);
         mc = FMLClientHandler.instance().getClient();
@@ -85,12 +83,12 @@ public final class BattlegearClientTickHandeler {
                             if (offhand != null && offhand.getItem() instanceof IShield) {
                                 float shieldBashPenalty = 0.33F - 0.06F * EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashWeight, offhand);
 
-                                if (BattlegearClientTickHandeler.blockBar >= shieldBashPenalty) {
+                                if (blockBar >= shieldBashPenalty) {
                                     FMLProxyPacket p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player).generatePacket();
                                     Battlegear.packetHandler.sendPacketToServer(p);
                                     ((IBattlePlayer) player).setSpecialActionTimer(((IShield) offhand.getItem()).getBashTimer(offhand));
 
-                                    BattlegearClientTickHandeler.blockBar -= shieldBashPenalty;
+                                    blockBar -= shieldBashPenalty;
                                 }
                             }
                         }
@@ -325,10 +323,30 @@ public final class BattlegearClientTickHandeler {
     }
 
     public static void resetFlash(){
-        flashTimer = FLASH_MAX;
+        INSTANCE.flashTimer = FLASH_MAX;
     }
 
     public static int getFlashTimer(){
-        return flashTimer;
+        return INSTANCE.flashTimer;
+    }
+
+    public static float getBlockTime(){
+        return INSTANCE.blockBar;
+    }
+
+    public static void reduceBlockTime(float value){
+        INSTANCE.blockBar -= value;
+    }
+
+    public static float getPartialTick(){
+        return INSTANCE.partialTick;
+    }
+
+    public static ItemStack getPreviousMainhand(EntityPlayer player){
+        return player.inventory.getStackInSlot(INSTANCE.previousBattlemode);
+    }
+
+    public static ItemStack getPreviousOffhand(EntityPlayer player){
+        return player.inventory.getStackInSlot(INSTANCE.previousBattlemode+InventoryPlayerBattle.WEAPON_SETS);
     }
 }

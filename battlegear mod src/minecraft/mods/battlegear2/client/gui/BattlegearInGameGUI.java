@@ -24,11 +24,14 @@ import org.lwjgl.opengl.GL12;
 
 public class BattlegearInGameGUI extends Gui {
 
+    public static final float[] COLOUR_DEFAULT = new float[]{0, 0.75F, 1};
+    public static final float[] COLOUR_RED = new float[]{1, 0.1F, 0.1F};
+    public static final float[] COLOUR_YELLOW = new float[]{1, 1F, 0.1F};
     public static final int SLOT_H = 22;
     public static final RenderItem itemRenderer = new RenderItem();
     public static final ResourceLocation resourceLocation = new ResourceLocation("textures/gui/widgets.png");
     public static final ResourceLocation resourceLocationShield = new ResourceLocation("battlegear2", "textures/gui/Shield Bar.png");
-    private Minecraft mc;
+    private final Minecraft mc;
 
     public BattlegearInGameGUI() {
         super();
@@ -163,15 +166,15 @@ public class BattlegearInGameGUI extends Gui {
 
         this.drawTexturedModalRect(x, y, 0, 0, 182, 9);
 
-        float[] colour = BattlegearClientTickHandeler.COLOUR_DEFAULT;
-        if(BattlegearClientTickHandeler.blockBar < 0.33F){
-            colour = BattlegearClientTickHandeler.COLOUR_RED;
+        float[] colour = COLOUR_DEFAULT;
+        if(BattlegearClientTickHandeler.getBlockTime() < 0.33F){
+            colour = COLOUR_RED;
         }
         if(BattlegearClientTickHandeler.getFlashTimer() > 0 && (System.currentTimeMillis() / 250) % 2 == 0){
-            colour = BattlegearClientTickHandeler.COLOUR_YELLOW;
+            colour = COLOUR_YELLOW;
         }
         GL11.glColor3f(colour[0], colour[1], colour[2]);
-        this.drawTexturedModalRect(x, y, 0, 9, (int) (182 * BattlegearClientTickHandeler.blockBar), 9);
+        this.drawTexturedModalRect(x, y, 0, 9, (int) (182 * BattlegearClientTickHandeler.getBlockTime()), 9);
 
         GL11.glDisable(GL11.GL_BLEND);
     }

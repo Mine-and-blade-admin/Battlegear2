@@ -78,7 +78,7 @@ public final class ClientProxy extends CommonProxy {
             ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 
             if(offhand != null && offhand.getItem() instanceof IShield)
-                BattlegearClientTickHandeler.blockBar -= ((IShield) offhand.getItem()).getDamageDecayRate(offhand, damage);
+                BattlegearClientTickHandeler.reduceBlockTime(((IShield) offhand.getItem()).getDamageDecayRate(offhand, damage));
         }
     }
 

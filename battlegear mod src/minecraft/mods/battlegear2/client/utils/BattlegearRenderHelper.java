@@ -529,8 +529,8 @@ public final class BattlegearRenderHelper {
 
     private static void renderSheathedItems(EntityPlayer par1EntityPlayer, ModelBiped modelBipedMain, float frame) {
 
-        ItemStack mainhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearClientTickHandeler.previousBattlemode);
-        ItemStack offhandSheathed = par1EntityPlayer.inventory.getStackInSlot(BattlegearClientTickHandeler.previousBattlemode+InventoryPlayerBattle.WEAPON_SETS);
+        ItemStack mainhandSheathed = BattlegearClientTickHandeler.getPreviousMainhand(par1EntityPlayer);
+        ItemStack offhandSheathed = BattlegearClientTickHandeler.getPreviousOffhand(par1EntityPlayer);
 
         ModelBiped chestModel = null;
         ModelBiped legsModel = null;

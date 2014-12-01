@@ -11,11 +11,12 @@ import org.lwjgl.input.Keyboard;
 
 public final class BattlegearGuiKeyHandler {
 
-	public static KeyBinding battleInv = new KeyBinding("Battle Inventory", Keyboard.KEY_I, "key.categories.inventory");
-	public static KeyBinding openSigilEditor = new KeyBinding("Open Sigil Editor", Keyboard.KEY_P, "key.categories.misc");
+	private final KeyBinding battleInv, openSigilEditor;
     public static final BattlegearGuiKeyHandler INSTANCE = new BattlegearGuiKeyHandler();
 
     private BattlegearGuiKeyHandler() {
+        battleInv = new KeyBinding("Battle Inventory", Keyboard.KEY_I, "key.categories.inventory");
+        openSigilEditor = new KeyBinding("Open Sigil Editor", Keyboard.KEY_P, "key.categories.misc");
 		ClientRegistry.registerKeyBinding(battleInv);
         ClientRegistry.registerKeyBinding(openSigilEditor);
 	}

@@ -56,6 +56,8 @@ public final class BattlegearClientEvents {
 	private final ResourceLocation quiverBase;
     //public static final ResourceLocation patterns = new ResourceLocation("battlegear2", "textures/heraldry/Patterns-small.png");
     //public static int storageIndex;
+
+    private static final int MAIN_INV = InventoryPlayer.getHotbarSize();
 	public static final GuiPlaceableButton[] tabsList = { new GuiBGInventoryButton(0), new GuiSigilButton(1)};
     public static final BattlegearClientEvents INSTANCE = new BattlegearClientEvents();
 
@@ -191,8 +193,7 @@ public final class BattlegearClientEvents {
 	@SubscribeEvent
 	public void renderLiving(RenderLivingEvent.Post event) {
 
-		if (BattlegearConfig.enableSkeletonQuiver && event.entity instanceof EntitySkeleton
-				&& event.renderer instanceof RenderSkeleton) {
+		if (BattlegearConfig.enableSkeletonQuiver && event.entity instanceof EntitySkeleton && event.renderer instanceof RenderSkeleton) {
 
 			GL11.glPushMatrix();
 			GL11.glDisable(GL11.GL_CULL_FACE);
@@ -200,13 +201,12 @@ public final class BattlegearClientEvents {
 			GL11.glColor3f(1, 1, 1);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(quiverDetails);
 
-			double d0 = (((EntitySkeleton) event.entity).lastTickPosX + ((((EntitySkeleton) event.entity).posX - ((EntitySkeleton) event.entity).lastTickPosX) * BattlegearClientTickHandeler.partialTick));
-			double d1 = (((EntitySkeleton) event.entity).lastTickPosY + ((((EntitySkeleton) event.entity).posY - ((EntitySkeleton) event.entity).lastTickPosY) * BattlegearClientTickHandeler.partialTick));
+			double d0 = (((EntitySkeleton) event.entity).lastTickPosX + ((((EntitySkeleton) event.entity).posX - ((EntitySkeleton) event.entity).lastTickPosX) * BattlegearClientTickHandeler.getPartialTick()));
+			double d1 = (((EntitySkeleton) event.entity).lastTickPosY + ((((EntitySkeleton) event.entity).posY - ((EntitySkeleton) event.entity).lastTickPosY) * BattlegearClientTickHandeler.getPartialTick()));
 			double d2 = (((EntitySkeleton) event.entity).lastTickPosZ + (((EntitySkeleton) event.entity).posZ - ((EntitySkeleton) event.entity).lastTickPosZ)
-					* BattlegearClientTickHandeler.partialTick);
+					* BattlegearClientTickHandeler.getPartialTick());
 
-			GL11.glTranslatef((float) (d0 - RenderManager.renderPosX),
-					(float) (d1 - RenderManager.renderPosY),
+			GL11.glTranslatef((float) (d0 - RenderManager.renderPosX), (float) (d1 - RenderManager.renderPosY),
 					(float) (d2 - RenderManager.renderPosZ));
 
 			GL11.glScalef(1, -1, 1);
@@ -217,7 +217,7 @@ public final class BattlegearClientEvents {
 
 			if (event.entity.deathTime > 0) {
 				float f3 = ((float) event.entity.deathTime
-						+ BattlegearClientTickHandeler.partialTick - 1.0F) / 20.0F * 1.6F;
+						+ BattlegearClientTickHandeler.getPartialTick() - 1.0F) / 20.0F * 1.6F;
 				f3 = MathHelper.sqrt_float(f3);
 
 				if (f3 > 1.0F) {
@@ -261,8 +261,6 @@ public final class BattlegearClientEvents {
             event.newfov /= 1.0F - f1 * 0.15F;
         }
     }
-
-    private static final int MAIN_INV = InventoryPlayer.getHotbarSize();
 
     /**
      * Fixes pick block
