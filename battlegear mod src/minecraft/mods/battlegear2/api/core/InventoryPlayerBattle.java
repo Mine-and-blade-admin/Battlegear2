@@ -29,7 +29,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
     public ItemStack[] extraItems;
 
-
     public InventoryPlayerBattle(EntityPlayer entityPlayer) {
         super(entityPlayer);
         extraItems = new ItemStack[EXTRA_INV_SIZE];
@@ -167,8 +166,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     @Override
     public int clearInventory(Item targetId, int targetDamage) {
-        hasChanged = true;
-
         int stacks = super.clearInventory(targetId, targetDamage);
 
         for (int i = 0; i < extraItems.length; i++) {
@@ -180,7 +177,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
                 extraItems[i] = null;
             }
         }
-
+        hasChanged = stacks > 0;
         return stacks;
     }
 
@@ -247,11 +244,11 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     @Override
     public ItemStack decrStackSize(int slot, int amount) {
-        hasChanged = true;
         if (slot >= OFFSET) {
             ItemStack targetStack = extraItems[slot - OFFSET];
 
             if (targetStack != null) {
+                hasChanged = true;
                 if (targetStack.stackSize <= amount) {
                     extraItems[slot - OFFSET] = null;
                     return targetStack;
@@ -448,11 +445,11 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     @Override
     public void copyInventory(InventoryPlayer par1InventoryPlayer) {
-        hasChanged = true;
         this.mainInventory = new ItemStack[par1InventoryPlayer.mainInventory.length];
         this.armorInventory = new ItemStack[par1InventoryPlayer.armorInventory.length];
         super.copyInventory(par1InventoryPlayer);
         if (par1InventoryPlayer instanceof InventoryPlayerBattle) {
+            hasChanged = true;
             this.extraItems = new ItemStack[((InventoryPlayerBattle) par1InventoryPlayer).extraItems.length];
             for (int i = 0; i < extraItems.length; i++) {
                 this.extraItems[i] = ItemStack.copyItemStack(par1InventoryPlayer.getStackInSlot(i + OFFSET));
