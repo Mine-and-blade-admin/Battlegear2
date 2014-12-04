@@ -201,6 +201,10 @@ public abstract class PlayerEventChild extends PlayerEvent{
              */
             public float bowSoundVolume = 1.0F;
             /**
+             * Sound used right before spawning the arrow entity
+             */
+            public String bowSound = "random.bow";
+            /**
              * Decides if standard enchantments can be added to the arrow
              */
             public boolean addEnchantments = true;
