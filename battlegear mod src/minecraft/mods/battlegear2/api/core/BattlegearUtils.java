@@ -33,6 +33,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -557,5 +558,23 @@ public class BattlegearUtils {
             }
         }
         return entityPlayer.getCurrentEquippedItem();
+    }
+
+    /**
+     * Patch in ItemStack#damageItem() to fix bow stack weird depletion
+     *
+     * @param itemStack which item is instance of ItemBow, and size is 0
+     * @param entityPlayer who has damaged and depleted the stack
+     */
+    public static void onBowStackDepleted(EntityPlayer entityPlayer, ItemStack itemStack){
+        if(itemStack == entityPlayer.getCurrentEquippedItem()){
+            entityPlayer.destroyCurrentEquippedItem();
+        }else{
+            ItemStack orig = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
+            if(orig == itemStack) {
+                setPlayerOffhandItem(entityPlayer, null);
+                MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(entityPlayer, orig));
+            }
+        }
     }
 }

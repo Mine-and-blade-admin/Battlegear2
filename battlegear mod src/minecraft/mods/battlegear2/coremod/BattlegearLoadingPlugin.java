@@ -19,7 +19,7 @@ public final class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
     public static final String PlayerControllerMPTransformer = "mods.battlegear2.coremod.transformers.PlayerControllerMPTransformer";
     public static final String ItemRendererTransformer = "mods.battlegear2.coremod.transformers.ItemRendererTransformer";
     public static final String MinecraftTransformer = "mods.battlegear2.coremod.transformers.MinecraftTransformer";
-    //public static final String RenderPlayerTransformer = "mods.battlegear2.coremod.transformers.RenderPlayerTransformer";
+    public static final String ItemStackTransformer = "mods.battlegear2.coremod.transformers.ItemStackTransformer";
     public static final String ItemInWorldTransformer = "mods.battlegear2.coremod.transformers.ItemInWorldTransformer";
     public static final String EntityAIControlledTransformer = "mods.battlegear2.coremod.transformers.EntityAIControlledByPlayerTransformer";
     public static final String EntityOtherPlayerMPTransformer = "mods.battlegear2.coremod.transformers.EntityOtherPlayerMPTransformer";
@@ -35,7 +35,7 @@ public final class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 		        PlayerControllerMPTransformer,
 		        ItemRendererTransformer,
 		        MinecraftTransformer,
-		        //RenderPlayerTransformer,
+		        ItemStackTransformer,
 		        ItemInWorldTransformer,
 		        EntityAIControlledTransformer,
 		        EntityOtherPlayerMPTransformer,
