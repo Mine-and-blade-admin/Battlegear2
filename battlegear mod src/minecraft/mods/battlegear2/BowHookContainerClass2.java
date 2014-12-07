@@ -22,8 +22,6 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
-import java.util.Random;
-
 public final class BowHookContainerClass2 {
 
     public static final BowHookContainerClass2 INSTANCE = new BowHookContainerClass2();
@@ -144,10 +142,10 @@ public final class BowHookContainerClass2 {
                         if(arrowEvent.bowDamage>0)
                             event.bow.damageItem(arrowEvent.bowDamage, event.entityPlayer);
                         if(arrowEvent.bowSoundVolume>0)
-                            world.playSoundAtEntity(event.entityPlayer, "random.bow", arrowEvent.bowSoundVolume, 1.0F / (new Random().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
+                            world.playSoundAtEntity(arrowEvent.getPlayer(), arrowEvent.bowSound, arrowEvent.bowSoundVolume, 1.0F / (arrowEvent.getPlayer().getRNG().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
                         if (!world.isRemote)
                             world.spawnEntityInWorld(entityarrow);
-                        quiver.onArrowFired(world, event.entityPlayer, stack, event.bow, entityarrow);
+                        quiver.onArrowFired(world, arrowEvent.getPlayer(), stack, event.bow, entityarrow);
                         //Canceling the event, since we successfully fired our own arrow
                         event.setCanceled(true);
                     }
