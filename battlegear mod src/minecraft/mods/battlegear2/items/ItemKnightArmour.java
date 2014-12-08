@@ -4,6 +4,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.IHeraldyArmour;
@@ -26,6 +27,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 
 import java.util.List;
@@ -35,13 +37,20 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 	private IIcon baseIcon[];
 	private IIcon postRenderIcon[];
 	private IIcon trimRenderIcon;
-	
 	private Object modelObject;
+    private final float motionFactor;
 
 	public ItemKnightArmour(int armourType) {
 		super(Battlegear.knightArmourMaterial, 1, armourType);
 		setCreativeTab(BattlegearConfig.customTab);
 		setUnlocalizedName("battlegear2:knights_armour."+ BattlegearConfig.armourTypes[armourType]);
+        if(armourType==1){//Chest
+            motionFactor = -0.20F;
+        }else if(armourType==2){//Legs
+            motionFactor = -0.15F;
+        }else{
+            motionFactor = -0.05F;
+        }
         GameRegistry.registerItem(this, "knights_armour."+ BattlegearConfig.armourTypes[armourType]);
 	}
 	
@@ -50,7 +59,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 	public void registerIcons(IIconRegister par1IconRegister) {
 		//super.registerIcons(par1IconRegister);
 		
-		if(armorType == 0){
+		if(armorType == 0){//Helm
 			baseIcon = new IIcon[4];
 			postRenderIcon = new IIcon[4];
 			for(int i = 0; i < 4; i ++){
@@ -117,8 +126,8 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 	public void addInformation(ItemStack armor, EntityPlayer player, List par3List, boolean par4) {
 		super.addInformation(armor, player, par3List, par4);
 		par3List.add(String.format("%s +%d %s", 
-				EnumChatFormatting.BLUE, this.damageReduceAmount,
-				StatCollector.translateToLocal("tooltip.armour.points")));
+				EnumChatFormatting.BLUE, this.damageReduceAmount, StatCollector.translateToLocal("tooltip.armour.points")));
+        par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + 2, ItemStack.field_111284_a.format(-motionFactor*100.0D), StatCollector.translateToLocal("attribute.name.generic.movementSpeed")));
 	}
 
 	@Override
@@ -172,32 +181,50 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 		}
 		
 		HeraldryArmourModel model = (HeraldryArmourModel)modelObject;
-		
-		
-		model.setItemStack(itemStack);
-		model.bipedHead.showModel = armorSlot == 0;
 
-		model.bipedHeadwear.showModel = false;
-		model.bipedBody.showModel = armorSlot == 1 || armorSlot == 2;
-		model.bipedRightArm.showModel = armorSlot == 1;
-		model.bipedLeftArm.showModel = armorSlot == 1;
-		model.bipedRightLeg.showModel = armorSlot == 2 || armorSlot == 3;
-		model.bipedLeftLeg.showModel = armorSlot == 2 || armorSlot == 3;
+		model.setItemStack(itemStack);
+        if(armorSlot==0){
+            model.bipedHead.showModel = true;
+        }else if(armorSlot==1){
+            model.bipedBody.showModel = true;
+            model.bipedRightArm.showModel = true;
+            model.bipedLeftArm.showModel = true;
+        }else{
+            model.bipedRightLeg.showModel = true;
+            model.bipedLeftLeg.showModel = true;
+            model.bipedBody.showModel = armorSlot == 2;
+        }
 		
 		if(entityLiving != null){
-			model.heldItemRight = entityLiving.getHeldItem() == null?0:1;
+            ItemStack heldRight = entityLiving.getHeldItem();
+			model.heldItemRight = heldRight == null?0:1;
 			if(entityLiving instanceof EntityPlayer)
 			{
-				if (entityLiving.getHeldItem() != null &&  ((EntityPlayer)entityLiving).getItemInUseCount() > 0){
-					EnumAction enumaction = entityLiving.getHeldItem().getItemUseAction();
+                EnumAction enumaction;
+				if (heldRight != null && ((EntityPlayer)entityLiving).getItemInUseCount() > 0){
+					enumaction = heldRight.getItemUseAction();
 					if (enumaction == EnumAction.block){
 		                model.heldItemRight = 3;
 		            }
 					model.aimedBow = enumaction == EnumAction.bow;
 		        }
-				
-				model.heldItemLeft = ((EntityPlayer)entityLiving).inventory.getStackInSlot(
-						((EntityPlayer)entityLiving).inventory.currentItem+ InventoryPlayerBattle.WEAPON_SETS) == null?0:1;
+				if(entityLiving instanceof IBattlePlayer && ((IBattlePlayer) entityLiving).isBattlemode()) {
+                    ItemStack heldLeft = ((EntityPlayer) entityLiving).inventory.getStackInSlot(
+                            ((EntityPlayer) entityLiving).inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS);
+                    if(heldLeft != null){
+                        model.heldItemLeft = 1;
+                        if(((EntityPlayer)entityLiving).getItemInUseCount() > 0){
+                            enumaction = heldLeft.getItemUseAction();
+                            if(enumaction == EnumAction.block){
+                                model.heldItemLeft = 3;
+                            }else {
+                                model.aimedBow |= enumaction == EnumAction.bow;
+                            }
+                        }
+                    }else{
+                        model.heldItemLeft = 0;
+                    }
+                }
 				
 			}
 			model.isSneak = entityLiving.isSneaking();
@@ -250,5 +277,13 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
     @Override
     public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {
 	    stack.damageItem(damage, entity);
+    }
+
+    @Override
+    public void onArmorTick(World world, EntityPlayer player, ItemStack itemStack){
+        player.motionX *= (1+motionFactor);
+        player.motionZ *= (1+motionFactor);
+        if(player.motionY>0.005D)//No need to change falling speed
+            player.motionY *= (1+motionFactor);
     }
 }

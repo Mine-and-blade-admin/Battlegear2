@@ -49,6 +49,13 @@ public class HeraldryArmourModel extends ModelBiped{
 	
 	public void setItemStack(ItemStack stack){
 		this.stack = stack;
+        bipedHead.showModel = false;
+        bipedHeadwear.showModel = false;
+        bipedBody.showModel = false;
+        bipedRightArm.showModel = false;
+        bipedLeftArm.showModel = false;
+        bipedRightLeg.showModel = false;
+        bipedLeftLeg.showModel = false;
 	}
 
 	@Override
