@@ -1,18 +1,24 @@
+Index: battlegear mod src/minecraft/net/minecraft/entity/player/EntityPlayer.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- battlegear mod src/minecraft/net/minecraft/entity/player/EntityPlayer.java	(revision )
++++ battlegear mod src/minecraft/net/minecraft/entity/player/EntityPlayer.java	(revision )
 @@ -92,14 +92,23 @@
  import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
  import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
  
 -public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
--{
 +public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender, mods.battlegear2.api.core.IBattlePlayer
-+{/*
-+	 * Mine & Blade: Notes Edits made by: nerd-boy
+ {
++    /** Mine & Blade: Notes Edits made by: nerd-boy and GotoLink
 +	 *
-+	 * Edits: 5 Added Methods: 7 Added Fields: 5
++	 * Edits: 4 Added Methods: 7 Added Fields: 6
 +	 *
 +	 * Adding methods and fields is relatively easy. Some of the methods
 +	 * provided are not needed, they do however provide more simple access.
-+	 *
++	 * The bigger edits are patches over the "using item" system.
 +	 * The only other edit is to replace the instance of Inventory player with
 +	 * the custom Inventory class.*/
      public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
@@ -25,15 +31,7 @@
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
      /** The Container for the player's inventory (which opens when they press E) */
      public Container inventoryContainer;
-@@ -187,6 +196,7 @@
-         this.dataWatcher.addObject(16, Byte.valueOf((byte)0));
-         this.dataWatcher.addObject(17, Float.valueOf(0.0F));
-         this.dataWatcher.addObject(18, Integer.valueOf(0));
-+        this.dataWatcher.addObject(25, Byte.valueOf((byte)0));//-----MB-Edited-----
-     }
- 
-     /**
-@@ -259,7 +269,7 @@
+@@ -259,7 +268,7 @@
          FMLCommonHandler.instance().onPlayerPreTick(this);
          if (this.itemInUse != null)
          {
@@ -42,7 +40,7 @@
  
              if (itemstack == this.itemInUse)
              {
-@@ -469,7 +479,7 @@
+@@ -469,7 +478,7 @@
              int i = this.itemInUse.stackSize;
              ItemStack itemstack = this.itemInUse.onFoodEaten(this.worldObj, this);
  
@@ -51,7 +49,7 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
-@@ -2362,7 +2372,7 @@
+@@ -2363,7 +2372,7 @@
      {
          if (p_70062_1_ == 0)
          {
@@ -60,7 +58,7 @@
          }
          else
          {
-@@ -2625,5 +2635,72 @@
+@@ -2626,5 +2635,69 @@
          NOT_SAFE;
  
          private static final String __OBFID = "CL_00001712";
@@ -72,6 +70,7 @@
 +    public int offHandSwingProgressInt = 0;
 +    public boolean isOffHandSwingInProgress = false;
 +    public int specialActionTimer = 0;
++    public boolean isShielding = false;
 +    // -----MB-AddMethod-----
 +    public void attackTargetEntityWithCurrentOffItem(Entity target) {
 +        mods.battlegear2.api.core.BattlegearUtils.attackTargetEntityWithCurrentOffItem(this, target);
@@ -122,14 +121,11 @@
 +    }
 +    //-----MB-AddMethod-----
 +    public boolean isBlockingWithShield(){
-+        return mods.battlegear2.api.core.BattlegearUtils.isBlockingWithShield(this);
++        return mods.battlegear2.api.core.BattlegearUtils.canBlockWithShield(this) && isShielding;
 +    }
 +    //-----MB-AddMethod-----
 +    public void setBlockingWithShield(boolean block){
-+        if(block && mods.battlegear2.api.core.BattlegearUtils.canBlockWithShield(this)){
-+            dataWatcher.updateObject(25, (byte)1);
-+        }else{
-+            dataWatcher.updateObject(25, (byte)0);
-+        }
++        isShielding = block && mods.battlegear2.api.core.BattlegearUtils.canBlockWithShield(this);
      }
  }
+\ No newline at end of file

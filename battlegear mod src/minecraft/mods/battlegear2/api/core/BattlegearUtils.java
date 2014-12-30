@@ -81,7 +81,7 @@ public class BattlegearUtils {
      * Helper method to check if player is using {@link IShield}
      */
     public static boolean isBlockingWithShield(EntityPlayer player){
-    	return canBlockWithShield(player) && player.getDataWatcher().getWatchableObjectByte(25)>0;
+    	return ((IBattlePlayer)player).isBlockingWithShield();
     }
 
     /**

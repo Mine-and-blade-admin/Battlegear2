@@ -39,7 +39,7 @@ public interface IBattlePlayer{
 
     /**
      * Helper for {@link IShield} usage,
-     * sets the {@link net.minecraft.entity.DataWatcher} flag according to argument if {@link IShield} is being held in offhand
+     * sets the flag according to argument if {@link IShield} is being held in offhand
      * @param block new value for the {@link net.minecraft.entity.DataWatcher} flag
      */
     public void setBlockingWithShield(boolean block);
