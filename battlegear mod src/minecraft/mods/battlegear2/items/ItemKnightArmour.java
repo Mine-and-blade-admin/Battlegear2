@@ -245,14 +245,19 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 
     @Override
     public ArmorProperties getProperties(EntityLivingBase player, ItemStack armor, DamageSource source, double damage, int slot) {
+        int max = getMaxAbsorption(armor);
         if(slot==1||slot==2){
-            return new ArmorProperties(1,0.8,10);
+            return new ArmorProperties(1,0.8D,max);
         }else if(slot==0){
-            return new ArmorProperties(0,0.6,16);
+            return new ArmorProperties(0,0.6D,max);
         }else if(slot==3){
-            return new ArmorProperties(0,0.4,8);
+            return new ArmorProperties(0,0.4D,max);
         }
         return null;
+    }
+
+    public int getMaxAbsorption(ItemStack armor) {
+        return armor.getMaxDamage() + 1 - armor.getItemDamage();
     }
 
     @Override
