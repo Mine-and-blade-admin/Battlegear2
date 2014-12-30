@@ -156,8 +156,6 @@ public class FlagPoleItemRenderer implements IItemRenderer {
 
 
                 break;
-            case FIRST_PERSON_MAP:
-                break;
         }
     }
 }

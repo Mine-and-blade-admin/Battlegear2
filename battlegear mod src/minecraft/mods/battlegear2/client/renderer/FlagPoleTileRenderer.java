@@ -3,6 +3,7 @@ package mods.battlegear2.client.renderer;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.client.utils.ImageCache;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockAir;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -39,25 +40,29 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
             GL11.glTranslated(d0, d1, d2);
             GL11.glColor3f(1,1,1);
 
+            Block banner = tileentity.getBlockType();
+            if(banner instanceof BlockAir){
+                GL11.glPopMatrix();
+                return;
+            }
             float[] dims = new float[5];
             for(int i=0; i<5; i++){
                 dims[i] = ((IFlagHolder)tileentity).getTextureDimensions(type, i);
             }
-            Block banner = tileentity.getBlockType();
             switch (side){
                 case 0:
-                    renderYFlagPole(banner, f, type, side, dims);
-                    renderYFlag((IFlagHolder)tileentity, d0, d1, d2, f, type, side);
+                    renderYFlagPole(banner, f, type, dims);
+                    renderYFlag((IFlagHolder)tileentity, d0, d1, d2, f, type);
                     break;
                 case 1:
-                    renderZFlagPole(banner, f, type, side, dims);
-                    renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type, side);
+                    renderZFlagPole(banner, f, type, dims);
+                    renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type);
                     break;
                 case 2:
                     GL11.glRotatef(90, 0, 1, 0);
                     GL11.glTranslatef(-1, 0, 0);
-                    renderZFlagPole(banner, f, type, side, dims);
-                    renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type, side);
+                    renderZFlagPole(banner, f, type, dims);
+                    renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type);
                     break;
             }
 
@@ -65,7 +70,7 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         }
     }
 
-    private void renderZFlag(IFlagHolder tileentity, double d0, double d1, double d2, float f, int type, int side) {
+    private void renderZFlag(IFlagHolder tileentity, double d0, double d1, double d2, float f, int type) {
 
         List<ItemStack> flags = tileentity.getFlags();
         if(flags.size()>0)
@@ -132,7 +137,7 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         }
     }
 
-    private void renderZFlagPole(Block banner, float f, int type, int side, float[] dims) {
+    private void renderZFlagPole(Block banner, float f, int type, float[] dims) {
         IIcon icon = banner.getIcon(2, type);
         Tessellator tess = Tessellator.instance;
         tess.startDrawingQuads();
@@ -180,7 +185,7 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         tess.draw();
     }
 
-    private void renderYFlag(IFlagHolder tileentity, double d0, double d1, double d2, float f, int type, int side) {
+    private void renderYFlag(IFlagHolder tileentity, double d0, double d1, double d2, float f, int type) {
 
         List<ItemStack> flags = tileentity.getFlags();
         if(flags.size()>0)
@@ -238,7 +243,7 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         }
     }
 
-    private void renderYFlagPole(Block banner, float f, int type, int side, float[] dims) {
+    private void renderYFlagPole(Block banner, float f, int type, float[] dims) {
 
         IIcon icon = banner.getIcon(2, type);
         Tessellator tess = Tessellator.instance;
@@ -287,5 +292,4 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         tess.addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
         tess.draw();
     }
-
 }
