@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class TransformerBase implements IClassTransformer, Opcodes{
+    public static final String SIMPLEST_METHOD_DESC = "()V";
     public Logger logger = LogManager.getLogger("battlegear2");
 	protected final String classPath;
 	protected final String unobfClass;
@@ -150,8 +151,7 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
         mn.instructions.add(new VarInsnNode(opCode, 1));
         mn.instructions.add(new FieldInsnNode(PUTFIELD, className, fieldName, fieldType));
         mn.instructions.add(new InsnNode(RETURN));
-        mn.maxStack = 2;
-        mn.maxLocals = 2;
+        mn.visitMaxs(2,2);
         return mn;
     }
 
@@ -172,8 +172,7 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
             opCode = ARETURN;
         }
         mn.instructions.add(new InsnNode(opCode));
-        mn.maxStack = 1;
-        mn.maxLocals = 1;
+        mn.visitMaxs(1, 1);
         return mn;
     }
 }

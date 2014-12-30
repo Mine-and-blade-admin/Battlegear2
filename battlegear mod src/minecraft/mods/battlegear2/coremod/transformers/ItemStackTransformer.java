@@ -9,7 +9,6 @@ public final class ItemStackTransformer extends TransformerMethodProcess{
     private String entityPlayerClassName;
     private String itemStackClassName;
     private String destroyMethodName;
-    private final String destroyMethodDesc = "()V";
     public ItemStackTransformer() {
         super("net.minecraft.item.ItemStack", "func_77972_a", new String[]{"damageItem", "(ILnet/minecraft/entity/EntityLivingBase;)V"});
     }
@@ -24,7 +23,7 @@ public final class ItemStackTransformer extends TransformerMethodProcess{
             AbstractInsnNode node = it.next();
             if(node instanceof MethodInsnNode && node.getOpcode() == INVOKEVIRTUAL){
                 MethodInsnNode methNode = (MethodInsnNode) node;
-                if(methNode.owner.equals(entityPlayerClassName) && methNode.name.equals(destroyMethodName) && methNode.desc.equals(destroyMethodDesc)){
+                if(methNode.owner.equals(entityPlayerClassName) && methNode.name.equals(destroyMethodName) && methNode.desc.equals(SIMPLEST_METHOD_DESC)){
                     newList.add(new VarInsnNode(ALOAD, 0));
                     newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "onBowStackDepleted", "(L"+entityPlayerClassName+";L"+itemStackClassName+";)V"));
                     continue;

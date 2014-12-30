@@ -18,14 +18,10 @@ public final class ItemRendererTransformer extends TransformerBase {
 	private String itemStackClass;
     private String itemRendererClass;
     private String minecraftClass;
-
     private String itemRendererMinecraftField;
-    private String itemRendereriteToRenderField;
-
     private String renderItem1stPersonMethodName;
     private String renderItem1stPersonMethodDesc;
     private String updateEquippedItemMethodName;
-    private String updateEquippedItemMethodDesc;
 
     @Override
     void addInterface(List<String> interfaces) {
@@ -82,12 +78,10 @@ public final class ItemRendererTransformer extends TransformerBase {
 	boolean processMethods(List<MethodNode> methods) {
         int found = 0;
 		for (MethodNode mn : methods) {
-            if (mn.name.equals(renderItem1stPersonMethodName) &&
-                    mn.desc.equals(renderItem1stPersonMethodDesc)) {
+            if (mn.name.equals(renderItem1stPersonMethodName) && mn.desc.equals(renderItem1stPersonMethodDesc)) {
                 processRenderItemMethod(mn);
                 found++;
-            } else if (mn.name.equals(updateEquippedItemMethodName) &&
-                    mn.desc.equals(updateEquippedItemMethodDesc)) {
+            } else if (mn.name.equals(updateEquippedItemMethodName) && mn.desc.equals(SIMPLEST_METHOD_DESC)) {
                 processUpdateEquippedMethod(mn);
                 found++;
             }
@@ -120,13 +114,10 @@ public final class ItemRendererTransformer extends TransformerBase {
         minecraftClass = BattlegearTranslator.getMapedClassName("client.Minecraft");
 
         itemRendererMinecraftField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78455_a", "mc");
-        itemRendereriteToRenderField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78453_b", "itemToRender");
 
         renderItem1stPersonMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78440_a", "renderItemInFirstPerson");
         renderItem1stPersonMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78440_a", "(F)V");
 
         updateEquippedItemMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78441_a", "updateEquippedItem");
-        updateEquippedItemMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78441_a", "()V");
-
 	}
 }

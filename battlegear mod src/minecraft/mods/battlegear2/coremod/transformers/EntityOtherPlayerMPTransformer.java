@@ -15,7 +15,6 @@ public final class EntityOtherPlayerMPTransformer extends TransformerBase {
     private String entityOtherPlayerMPClassName;
     private String playerInventoryFieldName;
     private String onUpdateMethodName;
-    private String onUpdateMethodDesc;
     private String setCurrentItemMethodName;
     private String setCurrentItemMethodDesc;
     private String isItemInUseFieldName;
@@ -72,14 +71,12 @@ public final class EntityOtherPlayerMPTransformer extends TransformerBase {
 	boolean processMethods(List<MethodNode> methods) {
         int found = 0;
 		for (MethodNode mn : methods) {
-            if (mn.name.equals(setCurrentItemMethodName) &&
-                    mn.desc.equals(setCurrentItemMethodDesc)) {
+            if (mn.name.equals(setCurrentItemMethodName) && mn.desc.equals(setCurrentItemMethodDesc)) {
                 processSetCurrentItemMethod(mn);
                 found++;
             }
 
-            if (mn.name.equals(onUpdateMethodName) &&
-                    mn.desc.equals(onUpdateMethodDesc)) {
+            if (mn.name.equals(onUpdateMethodName) && mn.desc.equals(SIMPLEST_METHOD_DESC)) {
                 processOnUpdateMethod2(mn);
                 found++;
             }
@@ -108,7 +105,5 @@ public final class EntityOtherPlayerMPTransformer extends TransformerBase {
                 BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70062_b", "(IL"+itemStackClassName+";)V");
         onUpdateMethodName =
                 BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70071_h_", "onUpdate");
-        onUpdateMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70071_h_", "()V");
 	}
 }

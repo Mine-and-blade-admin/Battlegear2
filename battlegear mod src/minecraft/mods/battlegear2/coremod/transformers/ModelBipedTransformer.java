@@ -20,7 +20,6 @@ public final class ModelBipedTransformer extends TransformerMethodProcess {
     	super.setupMappings();
         modelBipedClassName = BattlegearTranslator.getMapedClassName("client.model.ModelBiped");
         entityClassName = BattlegearTranslator.getMapedClassName("entity.Entity");
-
         isSneakFieldName = BattlegearTranslator.getMapedFieldName("ModelBiped", "field_78117_n", "isSneak");
 	}
     

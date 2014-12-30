@@ -10,7 +10,6 @@ public final class MinecraftTransformer extends TransformerMethodProcess {
 	}
 	
     private String entityClientPlayerClass;
-
     private String playerInventoryFieldName;
 
 	@Override
@@ -26,5 +25,4 @@ public final class MinecraftTransformer extends TransformerMethodProcess {
 		entityClientPlayerClass = BattlegearTranslator.getMapedClassName("client.entity.EntityClientPlayerMP");
         playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
 	}
-
 }
