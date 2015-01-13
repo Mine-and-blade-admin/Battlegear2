@@ -28,22 +28,26 @@ public final class ModelBipedTransformer extends TransformerMethodProcess {
 
         sendPatchLog("setRotationAngles");
         Iterator<AbstractInsnNode> it = method.instructions.iterator();
+        AbstractInsnNode nextInsn = null;
         while (it.hasNext()) {
-            AbstractInsnNode nextInsn = it.next();
+            nextInsn = it.next();
             if(nextInsn.getOpcode() == ALOAD && ((VarInsnNode) nextInsn).var == 0){
                 AbstractInsnNode follow = nextInsn.getNext();
                 if(follow.getOpcode() == GETFIELD && ((FieldInsnNode) follow).desc.equals("Z") && ((FieldInsnNode) follow).name.equals(isSneakFieldName)) {
-                    InsnList newInsn = new InsnList();
-                    newInsn.add(new VarInsnNode(ALOAD, 7));
-                    newInsn.add(new VarInsnNode(ALOAD, 0));
-                    newInsn.add(new VarInsnNode(FLOAD, 6));
-                    newInsn.add(new MethodInsnNode(INVOKESTATIC,
-                            "mods/battlegear2/client/utils/BattlegearRenderHelper",
-                            "moveOffHandArm", "(L" + entityClassName + ";L" + modelBipedClassName + ";F)V"));
-                    method.instructions.insertBefore(nextInsn, newInsn);
                     break;
                 }
             }
+            nextInsn = null;
+        }
+        if(nextInsn!=null) {
+            InsnList newInsn = new InsnList();
+            newInsn.add(new VarInsnNode(ALOAD, 7));
+            newInsn.add(new VarInsnNode(ALOAD, 0));
+            newInsn.add(new VarInsnNode(FLOAD, 6));
+            newInsn.add(new MethodInsnNode(INVOKESTATIC,
+                    "mods/battlegear2/client/utils/BattlegearRenderHelper",
+                    "moveOffHandArm", "(L" + entityClassName + ";L" + modelBipedClassName + ";F)V"));
+            method.instructions.insertBefore(nextInsn, newInsn);
         }
     }
 }

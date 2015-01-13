@@ -28,50 +28,44 @@ public final class ItemRendererTransformer extends TransformerBase {
         interfaces.add(Type.getInternalName(IOffhandRender.class));
     }
 
-    private void processUpdateEquippedMethod(MethodNode mn) {
-        sendPatchLog("updateEquippedItem");
-        InsnList newList = new InsnList();
-
+    private AbstractInsnNode getReturnNode(MethodNode mn){
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
         while (it.hasNext()) {
             AbstractInsnNode insn = it.next();
-
             if (insn.getOpcode() == RETURN) {
-                newList.add(new VarInsnNode(ALOAD, 0));
-                newList.add(new VarInsnNode(ALOAD, 0));
-                newList.add(new FieldInsnNode(GETFIELD, itemRendererClass, itemRendererMinecraftField, "L" + minecraftClass + ";"));
-                newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearRenderHelper", "updateEquippedItem"
-                        , "(L" + itemRendererClass + ";L" + minecraftClass + ";)V"));
+                return insn;
             }
-
-            newList.add(insn);
         }
+        return null;
+    }
 
-        mn.instructions = newList;
+    private void processUpdateEquippedMethod(MethodNode mn) {
+        sendPatchLog("updateEquippedItem");
+        AbstractInsnNode insnNode = getReturnNode(mn);
+        if(insnNode!=null){
+            InsnList newList = new InsnList();
+            newList.add(new VarInsnNode(ALOAD, 0));
+            newList.add(new VarInsnNode(ALOAD, 0));
+            newList.add(new FieldInsnNode(GETFIELD, itemRendererClass, itemRendererMinecraftField, "L" + minecraftClass + ";"));
+            newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearRenderHelper", "updateEquippedItem"
+                    , "(L" + itemRendererClass + ";L" + minecraftClass + ";)V"));
+            mn.instructions.insertBefore(insnNode, newList);
+        }
     }
 
     private void processRenderItemMethod(MethodNode mn) {
-
         sendPatchLog("renderItemInFirstPerson");
-        InsnList newList = new InsnList();
-
-        Iterator<AbstractInsnNode> it = mn.instructions.iterator();
-        while (it.hasNext()) {
-            AbstractInsnNode insn = it.next();
-
-            if (insn.getOpcode() == RETURN) {
-                newList.add(new VarInsnNode(FLOAD, 1));
-                newList.add(new VarInsnNode(ALOAD, 0));
-                newList.add(new FieldInsnNode(GETFIELD, itemRendererClass, itemRendererMinecraftField, "L" + minecraftClass + ";"));
-                newList.add(new VarInsnNode(ALOAD, 0));
-                newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearRenderHelper", "renderItemInFirstPerson"
-                        , "(FL" + minecraftClass + ";L" + itemRendererClass + ";)V"));
-            }
-
-            newList.add(insn);
+        AbstractInsnNode insnNode = getReturnNode(mn);
+        if(insnNode!=null){
+            InsnList newList = new InsnList();
+            newList.add(new VarInsnNode(FLOAD, 1));
+            newList.add(new VarInsnNode(ALOAD, 0));
+            newList.add(new FieldInsnNode(GETFIELD, itemRendererClass, itemRendererMinecraftField, "L" + minecraftClass + ";"));
+            newList.add(new VarInsnNode(ALOAD, 0));
+            newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearRenderHelper", "renderItemInFirstPerson"
+                    , "(FL" + minecraftClass + ";L" + itemRendererClass + ";)V"));
+            mn.instructions.insertBefore(insnNode, newList);
         }
-
-        mn.instructions = newList;
     }
 
 	@Override
