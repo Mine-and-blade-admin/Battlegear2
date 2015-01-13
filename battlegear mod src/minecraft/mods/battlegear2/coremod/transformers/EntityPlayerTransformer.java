@@ -130,7 +130,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
     }
 
     private MethodNode generateIsBlockingWithShield() {
-        MethodNode mv = new MethodNode(ASM4, ACC_PUBLIC, "isBlockingWithShield", "()Z", null, null);
+        MethodNode mv = new MethodNode(ACC_PUBLIC, "isBlockingWithShield", "()Z", null, null);
         mv.visitCode();
         Label l0 = new Label();
         mv.visitLabel(l0);
@@ -160,7 +160,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
     }
     
     private MethodNode generateSetBlockingWithShield() {
-        MethodNode mv = new MethodNode(ASM4, ACC_PUBLIC, "setBlockingWithShield", "(Z)V", null, null);
+        MethodNode mv = new MethodNode(ACC_PUBLIC, "setBlockingWithShield", "(Z)V", null, null);
         mv.visitCode();
         Label l0 = new Label();
         mv.visitLabel(l0);
@@ -195,7 +195,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
 
     private MethodNode generateAttackOffhandMethod() {
 
-        MethodNode mv = new MethodNode(ASM4, ACC_PUBLIC, "attackTargetEntityWithCurrentOffItem", "(L" + entityClassName + ";)V", null, null);
+        MethodNode mv = new MethodNode(ACC_PUBLIC, "attackTargetEntityWithCurrentOffItem", "(L" + entityClassName + ";)V", null, null);
         mv.visitCode();
         Label l0 = new Label();
         mv.visitLabel(l0);
@@ -216,7 +216,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
     }
 
     private MethodNode generateSwingOffhand() {
-        MethodNode mv = new MethodNode(ASM4, ACC_PUBLIC, "swingOffItem", SIMPLEST_METHOD_DESC, null, null);
+        MethodNode mv = new MethodNode(ACC_PUBLIC, "swingOffItem", SIMPLEST_METHOD_DESC, null, null);
         mv.visitCode();
         Label l0 = new Label();
         mv.visitLabel(l0);
@@ -259,7 +259,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
 
     private MethodNode generateGetOffSwingMethod() {
 
-        MethodNode mv = new MethodNode(ASM4, ACC_PUBLIC, "getOffSwingProgress", "(F)F", null, null);
+        MethodNode mv = new MethodNode(ACC_PUBLIC, "getOffSwingProgress", "(F)F", null, null);
         mv.visitCode();
         Label l0 = new Label();
         mv.visitLabel(l0);
@@ -304,7 +304,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
 
     private MethodNode generateUpdateSwingArm() {
 
-        MethodNode mv = new MethodNode(ASM4, ACC_PROTECTED, playerUpdateArmSwingMethodName, SIMPLEST_METHOD_DESC, null, null);
+        MethodNode mv = new MethodNode(ACC_PROTECTED, playerUpdateArmSwingMethodName, SIMPLEST_METHOD_DESC, null, null);
         mv.visitCode();
         Label l0 = new Label();
         mv.visitLabel(l0);
@@ -418,7 +418,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
     }
     
     private MethodNode generateIsBattleMode() {
-        MethodNode mv = new MethodNode(ASM4, ACC_PUBLIC, "isBattlemode", "()Z", null, null);
+        MethodNode mv = new MethodNode(ACC_PUBLIC, "isBattlemode", "()Z", null, null);
         mv.visitCode();
         Label l0 = new Label();
         mv.visitLabel(l0);

@@ -33,7 +33,7 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
 			logger.log(Level.INFO, "M&B - Patching Class "+ unobfClass +" (" + name + ")");
 
             ClassReader cr = new ClassReader(bytes);
-            ClassNode cn = new ClassNode(ASM4);
+            ClassNode cn = new ClassNode();
 
             cr.accept(cn, 0);
 
@@ -134,10 +134,11 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
     }
 
     public static MethodNode generateSetter(String className, String methodName, String fieldName, String fieldType){
-        MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, methodName, "("+fieldType+")V", null, null);
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        int opCode = 0;
-        if(fieldType.equals("I")){
+        MethodNode mn = new MethodNode(ACC_PUBLIC, methodName, "("+fieldType+")V", null, null);
+        mn.visitCode();
+        mn.visitVarInsn(ALOAD, 0);
+        int opCode;
+        if(fieldType.equals("I") || fieldType.equals("Z")){
             opCode = ILOAD;
         }else if(fieldType.equals("L")){
             opCode = LLOAD;
@@ -148,18 +149,20 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
         }else {
             opCode = ALOAD;
         }
-        mn.instructions.add(new VarInsnNode(opCode, 1));
-        mn.instructions.add(new FieldInsnNode(PUTFIELD, className, fieldName, fieldType));
-        mn.instructions.add(new InsnNode(RETURN));
-        mn.visitMaxs(2,2);
+        mn.visitVarInsn(opCode, 1);
+        mn.visitFieldInsn(PUTFIELD, className, fieldName, fieldType);
+        mn.visitInsn(RETURN);
+        mn.visitMaxs(2, 2);
+        mn.visitEnd();
         return mn;
     }
 
     public static MethodNode generateGetter(String className, String methodName, String fieldName, String fieldType){
-        MethodNode mn = new MethodNode(ASM4, ACC_PUBLIC, methodName, "()"+fieldType, null, null);
-        mn.instructions.add(new VarInsnNode(ALOAD, 0));
-        mn.instructions.add(new FieldInsnNode(GETFIELD, className, fieldName, fieldType));
-        int opCode = 0;
+        MethodNode mn = new MethodNode(ACC_PUBLIC, methodName, "()"+fieldType, null, null);
+        mn.visitCode();
+        mn.visitVarInsn(ALOAD, 0);
+        mn.visitFieldInsn(GETFIELD, className, fieldName, fieldType);
+        int opCode;
         if(fieldType.equals("I")){
             opCode = IRETURN;
         }else if(fieldType.equals("L")){
@@ -171,8 +174,9 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
         }else {
             opCode = ARETURN;
         }
-        mn.instructions.add(new InsnNode(opCode));
+        mn.visitInsn(opCode);
         mn.visitMaxs(1, 1);
+        mn.visitEnd();
         return mn;
     }
 }
