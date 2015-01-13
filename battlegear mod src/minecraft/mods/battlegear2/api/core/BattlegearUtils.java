@@ -61,6 +61,7 @@ public class BattlegearUtils {
                 new Class[]{ItemStack.class, EntityPlayer.class, World.class, int.class, int.class, int.class, int.class, float.class, float.class, float.class},
                 new Class[]{ItemStack.class, World.class, EntityPlayer.class}
     };
+    private static ItemStack prevNotWieldable;
     /**
      * The generic attack damage key for {@link ItemStack#getAttributeModifiers()}
      */
@@ -128,12 +129,15 @@ public class BattlegearUtils {
             return true;
         else if(main.getMaxStackSize()==1 && main.getMaxDamage()>0 && !main.getHasSubtypes())//Usual values for tools, sword, and bow
             return true;
+        else if(main == prevNotWieldable)//Prevent lag from check spam
+            return false;
         else if(WeaponRegistry.isWeapon(main))//Registered as such
             return true;
         else if(!checkForRightClickFunction(main)){//Make sure there are no special functions for offhand/mainhand weapons
             WeaponRegistry.addDualWeapon(main);//register so as not to make that costly check again
             return true;
         }
+        prevNotWieldable = main;
         return false;
     }
 
@@ -182,6 +186,8 @@ public class BattlegearUtils {
     public static boolean usagePriorAttack(ItemStack itemStack){
         if(itemStack.getItem() instanceof IUsableItem)
             return ((IUsableItem) itemStack.getItem()).isUsedOverAttack(itemStack);
+        else if(itemStack.getItemUseAction()==EnumAction.drink || itemStack.getItemUseAction()==EnumAction.eat)
+            return true;
         return isCommonlyUsable(itemStack.getItem());
     }
 
@@ -191,7 +197,7 @@ public class BattlegearUtils {
      * @return true if it is commonly usable
      */
     public static boolean isCommonlyUsable(Item item){
-        return isBow(item) || item instanceof ItemBlock || item instanceof ItemHoe || item instanceof ItemPotion || item instanceof ItemFood;
+        return isBow(item) || item instanceof ItemBlock || item instanceof ItemHoe || item instanceof ItemBucket;
     }
 
     /**

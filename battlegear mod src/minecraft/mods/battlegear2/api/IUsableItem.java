@@ -17,10 +17,11 @@ import net.minecraft.item.ItemStack;
  * Note: {@link net.minecraft.entity.player.EntityPlayer#getCurrentEquippedItem()} and {@link net.minecraft.entity.player.EntityPlayer#getHeldItem()} will still return the {@link ItemStack} held in right hand,
  * and can therefore be used to differentiate between left and right hand wielding by comparing with the given {@link ItemStack} argument in each method
  *
- * Note: ItemBow, ItemBlock, ItemHoe, ItemPotion and ItemFood instances are already considered usable, though this implementation has priority
+ * Note: ItemBow, ItemBlock, ItemHoe, ItemPotion, ItemFood and ItemBucket instances are already considered usable, though this implementation has priority
  *
- * Note: For more flexibility over your item usage in left hand, see
- * {@link mods.battlegear2.api.PlayerEventChild.UseOffhandItemEvent} and {@link mods.battlegear2.api.PlayerEventChild.OffhandAttackEvent}
+ * Note: For more flexibility over your item usage in left hand
+ * @see mods.battlegear2.api.PlayerEventChild.UseOffhandItemEvent
+ * @see mods.battlegear2.api.PlayerEventChild.OffhandAttackEvent
  */
 public interface IUsableItem {
     /**
