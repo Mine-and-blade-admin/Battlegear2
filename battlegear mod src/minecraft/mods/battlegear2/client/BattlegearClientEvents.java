@@ -274,7 +274,7 @@ public final class BattlegearClientEvents {
                     event.setCanceled(true);
                     if (!((IBattlePlayer) mc.thePlayer).isBattlemode()) {
                         boolean isCreative = mc.thePlayer.capabilities.isCreativeMode;
-                        ItemStack stack = getItemFromPointedAt(mc.objectMouseOver, mc.theWorld, isCreative);
+                        ItemStack stack = getItemFromPointedAt(mc.objectMouseOver, mc.thePlayer);
                         if (stack != null) {
                             int k = -1;
                             ItemStack temp;
@@ -292,6 +292,7 @@ public final class BattlegearClientEvents {
                                 }
                             }
                             if (k >= 0 && k < MAIN_INV) {
+                                mc.thePlayer.inventory.currentItem = k;
                                 Battlegear.packetHandler.sendPacketToServer(new PickBlockPacket(stack, k).generatePacket());
                             }
                         }
@@ -304,27 +305,27 @@ public final class BattlegearClientEvents {
     /**
      * Equivalent code to the creative pick block
      * @param target The client target vector
-     * @param world The world of the player
-     * @param creative If player is in creative mode
+     * @param player The player trying to pick
      * @return the stack expected for the creative pick button
      */
-    private static ItemStack getItemFromPointedAt(MovingObjectPosition target, World world, boolean creative) {
+    private static ItemStack getItemFromPointedAt(MovingObjectPosition target, EntityPlayer player) {
         if(target!=null){
             if (target.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
             {
                 int x = target.blockX;
                 int y = target.blockY;
                 int z = target.blockZ;
+                World world = player.getEntityWorld();
                 Block block = world.getBlock(x, y, z);
                 if (block.isAir(world, x, y, z))
                 {
                     return null;
                 }
-                return block.getPickBlock(target, world, x, y, z);
+                return block.getPickBlock(target, world, x, y, z);//TODO support newer version
             }
             else
             {
-                if (target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY || target.entityHit == null || !creative)
+                if (target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY || target.entityHit == null || !player.capabilities.isCreativeMode)
                 {
                     return null;
                 }
