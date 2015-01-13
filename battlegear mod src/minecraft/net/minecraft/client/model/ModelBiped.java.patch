@@ -1,23 +1,13 @@
-@@ -8,7 +8,12 @@
- 
- @SideOnly(Side.CLIENT)
- public class ModelBiped extends ModelBase
--{
-+{/*
-+	 * Mine & Blade: Notes
-+	 * Edits made by nerd-boy : 1
-+	 *
-+	 * Like the ItemRenderer and PlayerRenderer the edit will differ the changes required to another class
-+	 */
-     public ModelRenderer bipedHead;
-     public ModelRenderer bipedHeadwear;
-     public ModelRenderer bipedBody;
-@@ -174,7 +179,7 @@
+@@ -174,7 +174,11 @@
              this.bipedRightArm.rotateAngleY += this.bipedBody.rotateAngleY * 2.0F;
              this.bipedRightArm.rotateAngleZ = MathHelper.sin(this.onGround * (float)Math.PI) * -0.4F;
          }
 -
-+        mods.battlegear2.client.utils.BattlegearRenderHelper.moveOffHandArm(p_78087_7_, this, p_78087_6_);//-----MB-Edited-----
++        mods.battlegear2.client.utils.BattlegearRenderHelper.moveOffHandArm(p_78087_7_, this, p_78087_6_);
++        /**-----MB-Edited-----
++         * Edit made by nerd-boy
++         * Like the ItemRenderer and PlayerRenderer the edit will differ the changes required to another class
++        */
          if (this.isSneak)
          {
              this.bipedBody.rotateAngleX = 0.5F;

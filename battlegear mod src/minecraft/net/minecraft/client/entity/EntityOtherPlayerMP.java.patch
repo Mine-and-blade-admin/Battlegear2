@@ -1,30 +1,4 @@
-@@ -3,6 +3,8 @@
- import com.mojang.authlib.GameProfile;
- import cpw.mods.fml.relauncher.Side;
- import cpw.mods.fml.relauncher.SideOnly;
-+import mods.battlegear2.api.core.BattlegearUtils;
-+import mods.battlegear2.client.utils.BattlegearClientUtils;
- import net.minecraft.client.Minecraft;
- import net.minecraft.item.ItemStack;
- import net.minecraft.util.ChunkCoordinates;
-@@ -14,6 +16,16 @@
- @SideOnly(Side.CLIENT)
- public class EntityOtherPlayerMP extends AbstractClientPlayer
- {
-+    /*
-+     * Mine & Blade: Notes
-+     * Edits made by: nerd-boy
-+     *
-+     * Edits: 2
-+     * Added Methods: 0
-+     * Added Fields: 0
-+     *
-+     * Prevention of index out of bounds error
-+     */
-     private boolean isItemInUse;
-     private int otherPlayerMPPosRotationIncrements;
-     private double otherPlayerMPX;
-@@ -82,19 +94,8 @@
+@@ -82,19 +82,13 @@
  
          this.limbSwingAmount += (f - this.limbSwingAmount) * 0.4F;
          this.limbSwing += this.limbSwingAmount;
@@ -34,7 +8,12 @@
 -            ItemStack itemstack = this.inventory.mainInventory[this.inventory.currentItem];
 -            this.setItemInUse(this.inventory.mainInventory[this.inventory.currentItem], itemstack.getItem().getMaxItemUseDuration(itemstack));
 -            this.isItemInUse = true;
-+        isItemInUse = BattlegearClientUtils.entityOtherPlayerIsItemInUseHook(this, isItemInUse);//-----MB-Edited-----
++        /**
++         * Mine & Blade: Notes
++         * Edits made by nerd-boy : 2
++         * Prevention of index out of bounds error
++         */
++        isItemInUse = mods.battlegear2.client.utils.BattlegearClientUtils.entityOtherPlayerIsItemInUseHook(this, isItemInUse);//-----MB-Edited-----
 -        }
 +    }
 -        else if (this.isItemInUse && !this.isEating())
@@ -46,13 +25,13 @@
  
      public float getShadowSize()
      {
-@@ -163,7 +164,7 @@
+@@ -163,7 +157,7 @@
      {
-         if (par1 == 0)
+         if (p_70062_1_ == 0)
          {
--            this.inventory.mainInventory[this.inventory.currentItem] = par2ItemStack;
-+            BattlegearUtils.setPlayerCurrentItem(this, par2ItemStack);//-----MB-Edited-----
+-            this.inventory.mainInventory[this.inventory.currentItem] = p_70062_2_;
++            mods.battlegear2.api.core.BattlegearUtils.setPlayerCurrentItem(this, p_70062_2_);//-----MB-Edited-----
          }
          else
          {
-
+\ No newline at end of file

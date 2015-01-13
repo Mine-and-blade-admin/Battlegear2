@@ -1,44 +1,34 @@
-@@ -1,5 +1,6 @@
- package net.minecraft.server.management;
- 
-+import mods.battlegear2.api.core.BattlegearUtils;
- import net.minecraft.block.Block;
- import net.minecraft.block.material.Material;
- import net.minecraft.entity.player.EntityPlayer;
-@@ -22,6 +23,18 @@
- 
- public class ItemInWorldManager
- {
-+    /*
-+	 * Mine & Blade: Notes
-+	 * Edits made by: nerd-boy
-+	 *
-+	 * Edits: 2
-+	 * Added Methods: 0
-+	 * Added Fields: 0
-+	 *
-+	 * Both of the edits to this class involve replacing a call to the inventory.mainInventory array.
-+	 * This is just to prevent an index out of bounds error. *grumble about dodgey Mojang coding*
-+	 *
-+	 */
-     /** Forge reach distance */
-     private double blockReachDistance = 5.0d;
+@@ -334,8 +334,13 @@
+             return flag;
+         }
+     }
+-
      /**
-@@ -352,7 +365,7 @@
++     * Mine & Blade: Notes
++     * Edits made by nerd-boy: 2
++     * Both of the edits to this class involve replacing a call to the inventory.mainInventory array.
++     * This is just to prevent an index out of bounds error. *grumble about dodgey Mojang coding*
++     */
++    /**
+      * Attempts to right-click use an item by the given EntityPlayer in the given World
+      */
+     public boolean tryUseItem(EntityPlayer p_73085_1_, World p_73085_2_, ItemStack p_73085_3_)
+@@ -350,7 +355,7 @@
          }
          else
          {
--            par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = itemstack1;
-+            BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, itemstack1);//-----MB-Edited-----
+-            p_73085_1_.inventory.mainInventory[p_73085_1_.inventory.currentItem] = itemstack1;
++            mods.battlegear2.api.core.BattlegearUtils.setPlayerCurrentItem(p_73085_1_, itemstack1);//-----MB-Edited-----
  
              if (this.isCreative())
              {
-@@ -366,7 +379,7 @@
+@@ -364,7 +369,7 @@
  
              if (itemstack1.stackSize == 0)
              {
--                par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = null;
-+                BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, null);//-----MB-Edited-----
+-                p_73085_1_.inventory.mainInventory[p_73085_1_.inventory.currentItem] = null;
++                mods.battlegear2.api.core.BattlegearUtils.setPlayerCurrentItem(p_73085_1_, null);//-----MB-Edited-----
                  MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(thisPlayerMP, itemstack1));
              }
-
+ 
+\ No newline at end of file

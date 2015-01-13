@@ -1,40 +1,29 @@
-@@ -2,6 +2,7 @@
- 
- import cpw.mods.fml.relauncher.Side;
- import cpw.mods.fml.relauncher.SideOnly;
-+import mods.battlegear2.api.core.BattlegearUtils;
- import net.minecraft.block.Block;
- import net.minecraft.block.material.Material;
- import net.minecraft.client.Minecraft;
-@@ -35,6 +36,16 @@
- @SideOnly(Side.CLIENT)
- public class PlayerControllerMP
- {
-+  	/*
-+	 * Mine & Blade: Notes
-+	 * Edits made by: nerd-boy
-+	 *
-+	 * Edits: 2
-+	 * Added Methods: 0
-+	 * Added Fields: 0
-+	 *
-+	 * Also prevention of index out of bounds errors
-+	 */
+@@ -418,8 +418,12 @@
+             return true;
+         }
+     }
+-
      /**
-      * The Minecraft instance.
++     * Mine & Blade: Notes
++     * Edits made by nerd-boy : 2
++     * Prevention of index out of bounds errors
++     */
++    /**
+      * Notifies the server of things like consuming food, etc...
       */
-@@ -457,11 +468,11 @@
+     public boolean sendUseItem(EntityPlayer p_78769_1_, World p_78769_2_, ItemStack p_78769_3_)
+@@ -435,11 +439,11 @@
          }
          else
          {
--            par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = itemstack1;
-+            BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, itemstack1);//-----MB-Edited-----
+-            p_78769_1_.inventory.mainInventory[p_78769_1_.inventory.currentItem] = itemstack1;
++            mods.battlegear2.api.core.BattlegearUtils.setPlayerCurrentItem(p_78769_1_, itemstack1);//-----MB-Edited-----
  
              if (itemstack1.stackSize <= 0)
              {
--                par1EntityPlayer.inventory.mainInventory[par1EntityPlayer.inventory.currentItem] = null;
-+                BattlegearUtils.setPlayerCurrentItem(par1EntityPlayer, null);//-----MB-Edited-----
-                 MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(par1EntityPlayer, itemstack1));
+-                p_78769_1_.inventory.mainInventory[p_78769_1_.inventory.currentItem] = null;
++                mods.battlegear2.api.core.BattlegearUtils.setPlayerCurrentItem(p_78769_1_, null);//-----MB-Edited-----
+                 MinecraftForge.EVENT_BUS.post(new PlayerDestroyItemEvent(p_78769_1_, itemstack1));
              }
-
-
+ 
+\ No newline at end of file
