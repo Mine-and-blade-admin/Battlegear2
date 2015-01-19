@@ -1,5 +1,6 @@
 package mods.battlegear2.client.utils;
 
+import mods.battlegear2.api.IBackSheathedRender;
 import mods.battlegear2.api.ISheathed;
 import mods.battlegear2.api.RenderPlayerEventChild.*;
 import mods.battlegear2.api.core.BattlegearUtils;
@@ -9,7 +10,6 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.shield.IArrowDisplay;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
-import mods.battlegear2.items.ItemSpear;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -555,12 +555,7 @@ public final class BattlegearRenderHelper {
         
         if(mainhandSheathed != null && !(mainhandSheathed.getItem() instanceof ItemBlock)){
 
-            boolean onBack = BattlegearConfig.forceBackSheath;
-            if(mainhandSheathed.getItem() instanceof ISheathed){
-                onBack = ((ISheathed) mainhandSheathed.getItem()).sheatheOnBack(mainhandSheathed);
-            }else if (BattlegearUtils.isBow(mainhandSheathed.getItem())){
-                onBack = true;
-            }
+            boolean onBack = isBackSheathed(mainhandSheathed);
 
             ModelBiped target = modelBipedMain;
             if(chestModel != null){
@@ -572,14 +567,14 @@ public final class BattlegearRenderHelper {
             GL11.glPushMatrix();
             target.bipedBody.postRender(0.0625F);
             if(onBack){
-                if(mainhandSheathed.getItem() instanceof ItemSpear){
-                    GL11.glScalef(0.6F, -0.6F, 0.6F);
-                    GL11.glTranslatef(0, -1, 0);
-                }else
+                if(mainhandSheathed.getItem() instanceof IBackSheathedRender){
+                    ((IBackSheathedRender)mainhandSheathed.getItem()).preRenderBackSheathed(mainhandSheathed, backCount, preRender, true);
+                }else {
                     GL11.glScalef(0.6F, 0.6F, 0.6F);
+                }
                 GL11.glTranslatef(-8F / 16F, 0, 6F / 16F);
                 GL11.glRotatef(-5F, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(40.0F+90, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(130.0F, 0.0F, 1.0F, 0.0F);
                 GL11.glTranslatef(0, 0, 4F/16F - backCount*2F/16F);
                 backCount++;
             }else{
@@ -619,12 +614,7 @@ public final class BattlegearRenderHelper {
         }
 
         if(offhandSheathed != null && !(offhandSheathed.getItem() instanceof ItemBlock)){
-            boolean onBack = BattlegearConfig.forceBackSheath;
-            if(offhandSheathed.getItem() instanceof ISheathed){
-                onBack = ((ISheathed) offhandSheathed.getItem()).sheatheOnBack(offhandSheathed);
-            }else if (BattlegearUtils.isBow(offhandSheathed.getItem())){
-                onBack = true;
-            }
+            boolean onBack = isBackSheathed(offhandSheathed);
 
             ModelBiped target = modelBipedMain;
             if(chestModel != null){
@@ -637,7 +627,9 @@ public final class BattlegearRenderHelper {
             target.bipedBody.postRender(0.0625F);
 
             if(onBack){
-                if(offhandSheathed.getItem() instanceof IShield){
+                if(offhandSheathed.getItem() instanceof IBackSheathedRender){
+                    ((IBackSheathedRender)offhandSheathed.getItem()).preRenderBackSheathed(offhandSheathed, backCount, preRender, false);
+                }else if(offhandSheathed.getItem() instanceof IShield){
                     GL11.glScalef(-0.6F, -0.6F, 0.6F);
                     GL11.glTranslatef(0, -1, 0);
                 }else{
@@ -681,6 +673,15 @@ public final class BattlegearRenderHelper {
             BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, false, offhandSheathed));
             GL11.glPopMatrix();
         }
+    }
+
+    private static boolean isBackSheathed(ItemStack sheathed) {
+        if(sheathed.getItem() instanceof ISheathed){
+            return ((ISheathed) sheathed.getItem()).sheatheOnBack(sheathed);
+        }else if (BattlegearUtils.isBow(sheathed.getItem())){
+            return true;
+        }
+        return BattlegearConfig.forceBackSheath;
     }
 
     public static void renderEnchantmentEffects(Tessellator tessellator) {

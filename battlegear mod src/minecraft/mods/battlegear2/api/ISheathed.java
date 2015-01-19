@@ -7,7 +7,8 @@ import net.minecraft.item.ItemStack;
  * and previously selected are displayed, either on the back (slightly moved depending on armor) or on the hip (opposite side to the hand slot it is stored in)
  * Note:Default behavior is dependent on Battlegear configuration
  * This interface can be implemented in a {@link net.minecraft.item.Item} instance to decide where to actually render it
- * See {@link mods.battlegear2.api.RenderPlayerEventChild.PreRenderSheathed} and {@link mods.battlegear2.api.RenderPlayerEventChild.PostRenderSheathed}
+ * @see RenderPlayerEventChild.PreRenderSheathed
+ * @see RenderPlayerEventChild.PostRenderSheathed
  * for more flexibility over the rendering
  */
 public interface ISheathed {
