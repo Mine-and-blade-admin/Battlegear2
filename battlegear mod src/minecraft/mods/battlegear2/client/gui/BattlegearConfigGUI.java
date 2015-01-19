@@ -39,7 +39,7 @@ public final class BattlegearConfigGUI extends GuiScreen{
         this.buttonList.add(new GuiToggleButton(3, this.width / 2 + 20, this.height / 2 - 100, I18n.format("use.gui.keys")+":"+BattlegearConfig.enableGUIKeys, this.fontRendererObj));
         this.buttonList.add(new GuiToggleButton(4, this.width / 2 - 180, this.height / 2 - 70, I18n.format("render.quiver.skeleton")+":"+BattlegearConfig.enableSkeletonQuiver, this.fontRendererObj));
         this.buttonList.add(new GuiToggleButton(5, this.width / 2 + 20, this.height / 2 - 70, I18n.format("render.arrow.bow")+":"+BattlegearConfig.arrowForceRendered, this.fontRendererObj));
-        this.buttonList.add(new GuiToggleButton(6, this.width / 2 - 180, this.height / 2 - 40, I18n.format("render.back.sheathed")+":"+BattlegearConfig.forceBackSheath, this.fontRendererObj));
+        this.buttonList.add(new GuiToggleButton(6, this.width / 2 - 180, this.height / 2 - 40, BattlegearConfig.forceSheath.format(), this.fontRendererObj));
         this.buttonList.add(new GuiToggleButton(7, this.width / 2 + 20, this.height / 2 + 60, I18n.format("render.hud.forced")+":"+BattlegearConfig.forceHUD, this.fontRendererObj));
         this.possibleValues.registerScrollButtons(this.buttonList, 8, 9);
         this.buttonList.add(new GuiButton(10, this.width / 2 - 180, this.height / 2 + 60, I18n.format("gui.open.fake")));
@@ -59,7 +59,8 @@ public final class BattlegearConfigGUI extends GuiScreen{
             }else if(button.id == 5){
                 BattlegearConfig.arrowForceRendered = !BattlegearConfig.arrowForceRendered;
             }else if(button.id == 6){
-                BattlegearConfig.forceBackSheath = !BattlegearConfig.forceBackSheath;
+                BattlegearConfig.forceSheath = BattlegearConfig.forceSheath.next();
+                button.displayString = BattlegearConfig.forceSheath.format();
             }else if(button.id == 7){
                 BattlegearConfig.forceHUD = !BattlegearConfig.forceHUD;
             }else if(button.id == 10){

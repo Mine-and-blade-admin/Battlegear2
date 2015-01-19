@@ -29,6 +29,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -39,7 +40,8 @@ public class BattlegearConfig {
     public static final String MODID = "battlegear2:";
     private static Configuration file;
 	public static CreativeTabs customTab;
-	public static boolean forceBackSheath = false, arrowForceRendered = true, enableSkeletonQuiver = true;
+	public static Sheath forceSheath = Sheath.HIP;
+    public static boolean arrowForceRendered = true, enableSkeletonQuiver = true;
 	public static boolean enableGUIKeys = false, enableGuiButtons = true, forceHUD = false;
 	public static final String[] itemNames = {"heraldric","chain","quiver","dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow", "flagpole"};
 	public static final String[] renderNames = {"spear", "shield", "bow", "quiver", "flagpole"};
@@ -73,8 +75,8 @@ public class BattlegearConfig {
         sb.append("This will disable the special rendering for the provided item.\n");
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
         sb.append("The valid values are: \n");
-        for(int i = 0; i < renderNames.length; i++){
-            sb.append(renderNames[i]);
+        for (String renderName : renderNames) {
+            sb.append(renderName);
             sb.append(", ");
         }
         comments[2] = sb.toString();
@@ -90,7 +92,7 @@ public class BattlegearConfig {
             battleBarOffset[i+2] = config.get(category, "Mainhand hotbar relative "+pos[i]+" position", 0, comments[3]).getInt();
         }
         arrowForceRendered = config.get(category, "Render arrow with bow uncharged", arrowForceRendered).getBoolean();
-        forceBackSheath=config.get(category, "Force Back Sheath", forceBackSheath).getBoolean();
+        forceSheath=Sheath.from(config.get(category, "Default Sheath", forceSheath.toString(), "Where sheathed items are going by default", Sheath.names()).getString());
         enableSkeletonQuiver=config.get(category, "Render quiver on skeleton back", enableSkeletonQuiver).getBoolean();
         forceHUD=config.get(category, "Force screen components rendering", forceHUD).getBoolean();
 
@@ -262,11 +264,10 @@ public class BattlegearConfig {
         RecipeSorter.register("battlegear:dyeing", DyeRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
         GameRegistry.addRecipe(new DyeRecipie());
 
-        
 		//Weapon recipes
 		String woodStack = "plankWood";
 		for(int i = 0; i < 5; i++){
-			Item craftingMaterial = ToolMaterial.values()[i].func_150995_f();
+			ItemStack craftingMaterial = new ItemStack(ToolMaterial.values()[i].func_150995_f(), 1, OreDictionary.WILDCARD_VALUE);
             if(dagger[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[3])  < 0){
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dagger[i]), "L","S",
                         'S', "stickWood",
@@ -375,7 +376,7 @@ public class BattlegearConfig {
             Arrays.sort(disabledRenderers);
             file.get("Rendering", "Disabled Renderers", new String[0], comments[2]).set(disabledRenderers);
             file.get("Rendering", "Render arrow with bow uncharged", true).set(arrowForceRendered);
-            file.get("Rendering", "Force Back Sheath", false).set(forceBackSheath);
+            file.get("Rendering", "Default Sheath", Sheath.HIP.toString()).set(forceSheath.toString());
             file.get("Rendering", "Render quiver on skeleton back", true).set(enableSkeletonQuiver);
             file.get("Rendering", "Force screen components rendering", false).set(forceHUD);
             file.get(file.CATEGORY_GENERAL, "Enable GUI Keys", false).set(enableGUIKeys);

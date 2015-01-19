@@ -11,6 +11,7 @@ import mods.battlegear2.api.shield.IArrowDisplay;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
 import mods.battlegear2.utils.BattlegearConfig;
+import mods.battlegear2.utils.Sheath;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
@@ -528,7 +529,8 @@ public final class BattlegearRenderHelper {
     }
 
     private static void renderSheathedItems(EntityPlayer par1EntityPlayer, ModelBiped modelBipedMain, float frame) {
-
+        if(BattlegearConfig.forceSheath==Sheath.NONE)
+            return;
         ItemStack mainhandSheathed = BattlegearClientTickHandeler.getPreviousMainhand(par1EntityPlayer);
         ItemStack offhandSheathed = BattlegearClientTickHandeler.getPreviousOffhand(par1EntityPlayer);
 
@@ -681,7 +683,7 @@ public final class BattlegearRenderHelper {
         }else if (BattlegearUtils.isBow(sheathed.getItem())){
             return true;
         }
-        return BattlegearConfig.forceBackSheath;
+        return BattlegearConfig.forceSheath == Sheath.BACK;
     }
 
     public static void renderEnchantmentEffects(Tessellator tessellator) {
