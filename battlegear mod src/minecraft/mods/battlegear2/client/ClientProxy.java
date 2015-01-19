@@ -8,11 +8,13 @@ import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import cpw.mods.fml.common.registry.GameData;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.CommonProxy;
+import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
 import mods.battlegear2.client.renderer.*;
+import mods.battlegear2.client.utils.BattlegearClientUtils;
 import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
@@ -43,8 +45,8 @@ public final class ClientProxy extends CommonProxy {
 
     public static boolean tconstructEnabled = false;
     public static Method updateTab, addTabs;
-    public static Object dynLightPlayerMod;
-    public static Method dynLightFromItemStack, refresh;
+    private static Object dynLightPlayerMod;
+    private static Method dynLightFromItemStack, refresh;
     public static ItemStack heldCache;
     public static IIcon[] backgroundIcon;
     public static IIcon[] bowIcons;
@@ -61,6 +63,7 @@ public final class ClientProxy extends CommonProxy {
         super.registerTickHandelers();
         MinecraftForge.EVENT_BUS.register(BattlegearClientEvents.INSTANCE);
         FMLCommonHandler.instance().bus().register(BattlegearClientTickHandeler.INSTANCE);
+        BattlegearUtils.RENDER_BUS.register(new BattlegearClientUtils());
     }
 
     @Override
