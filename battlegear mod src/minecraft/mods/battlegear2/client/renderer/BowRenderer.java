@@ -69,10 +69,7 @@ public class BowRenderer implements IItemRenderer {
                 }
             }
         }else if (entityLivingBase instanceof EntitySkeleton){
-            int type = entityLivingBase.getDataWatcher().getWatchableObjectByte(MobHookContainerClass.Skell_Arrow_Datawatcher);
-            if(type > -1){
-                arrowStack = new ItemStack(BattlegearConfig.MbArrows, 1, type);
-            }
+            arrowStack = MobHookContainerClass.INSTANCE.getArrowForMob((EntitySkeleton) entityLivingBase);
             drawArrows = true;
         }else if (entityLivingBase == null || entityLivingBase.equals(BattlegearRenderHelper.dummyEntity)){
             arrowStack = null;

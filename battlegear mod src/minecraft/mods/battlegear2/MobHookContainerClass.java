@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -56,12 +57,7 @@ public final class MobHookContainerClass {
                 if(event.entity.getClass() == EntityArrow.class) {
                     EntitySkeleton skeleton = (EntitySkeleton) arrow.shootingEntity;
 
-                    int type;
-                    try {
-                        type = skeleton.getDataWatcher().getWatchableObjectByte(Skell_Arrow_Datawatcher);
-                    } catch (Exception handled) {
-                        type = -1;
-                    }
+                    int type = getArrowType(skeleton);
                     if (type > -1) {
 
                         AbstractMBArrow mbArrow = AbstractMBArrow.generate(type, arrow, skeleton);
@@ -102,6 +98,23 @@ public final class MobHookContainerClass {
                 }
             }
         }
+    }
+
+    private int getArrowType(EntitySkeleton skeleton){
+        int type;
+        try {
+            type = skeleton.getDataWatcher().getWatchableObjectByte(Skell_Arrow_Datawatcher);
+        }catch (Exception handled){
+            type = -1;
+        }
+        return type;
+    }
+
+    public ItemStack getArrowForMob(EntitySkeleton skeleton){
+        int type = getArrowType(skeleton);
+        if(type>-1)
+            return new ItemStack(BattlegearConfig.MbArrows, 1, type);
+        return new ItemStack(Items.arrow);
     }
 
 }
