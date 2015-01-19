@@ -99,21 +99,20 @@ public class BattlegearInGameGUI extends Gui {
         drawTexturedModalRect(x, y, 0, 0, 31, SLOT_H);
         drawTexturedModalRect(x + 31, y, 151, 0, 31, SLOT_H);
 
-        if (mc.thePlayer!=null && ((IBattlePlayer) mc.thePlayer).isBattlemode()) {
-            this.drawTexturedModalRect(x + (mc.thePlayer.inventory.currentItem - InventoryPlayerBattle.OFFSET) * 20,
-                    y - 1, 0, 22, 24, SLOT_H);
-        }
-
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-        RenderHelper.enableGUIStandardItemLighting();
-        if(mc.thePlayer!=null){
+        if (mc.thePlayer!=null){
+            if(((IBattlePlayer) mc.thePlayer).isBattlemode())
+                this.drawTexturedModalRect(x + (mc.thePlayer.inventory.currentItem - InventoryPlayerBattle.OFFSET) * 20-1,
+                        y - 1, 0, 22, 24, SLOT_H);
+            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            RenderHelper.enableGUIStandardItemLighting();
             for (int i = 0; i < InventoryPlayerBattle.WEAPON_SETS; ++i) {
                 int varx = x + i * 20 + 3;
-                this.renderInventorySlot(i + InventoryPlayerBattle.OFFSET+(isMainHand?0:InventoryPlayerBattle.WEAPON_SETS), varx, y+3, frame);
+                this.renderInventorySlot(i + InventoryPlayerBattle.OFFSET+(isMainHand?0:InventoryPlayerBattle.WEAPON_SETS),
+                        varx, y+3, frame);
             }
+            RenderHelper.disableStandardItemLighting();
+            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         }
-        RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
         GL11.glDisable(GL11.GL_BLEND);
     }
 
@@ -130,14 +129,14 @@ public class BattlegearInGameGUI extends Gui {
 
         int selectedSlot =  ((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver);
 
-        drawTexturedModalRect(xOffset -(2 + maxSlots) + 20*selectedSlot, -1+yOffset, 0, 22, 24, SLOT_H);
+        drawTexturedModalRect(xOffset -(2 + maxSlots) + 20*selectedSlot, yOffset-1, 0, 22, 24, SLOT_H);
 
         GL11.glEnable(GL12.GL_RESCALE_NORMAL);
         RenderHelper.enableGUIStandardItemLighting();
 
         for (int i = 0; i < maxSlots/10; ++i) {
-            int x = xOffset -(maxSlots-1) + i * 20;
-            renderStackAt(x, yOffset+2, ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, i), frame);
+            int x = xOffset -(1+maxSlots) + i * 20 + 3;
+            renderStackAt(x, yOffset+3, ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, i), frame);
         }
 
         RenderHelper.disableStandardItemLighting();
@@ -158,7 +157,7 @@ public class BattlegearInGameGUI extends Gui {
                 }
             }else{
                 y-= 16;
-                if(ForgeHooks.getTotalArmorValue(mc.thePlayer) > 0 || mc.thePlayer.isRidingHorse() || mc.thePlayer.getAir() < 300){
+                if(mc.thePlayer.isRidingHorse() || mc.thePlayer.getAir() < 300 || ForgeHooks.getTotalArmorValue(mc.thePlayer) > 0){
                     y-=10;
                 }
             }
