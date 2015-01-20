@@ -41,6 +41,7 @@ public class BattlegearConfig {
     private static Configuration file;
 	public static CreativeTabs customTab;
 	public static Sheath forceSheath = Sheath.HIP;
+    public static int updateRate = 20;
     public static boolean arrowForceRendered = true, enableSkeletonQuiver = true;
 	public static boolean enableGUIKeys = false, enableGuiButtons = true, forceHUD = false;
 	public static final String[] itemNames = {"heraldric","chain","quiver","dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow", "flagpole"};
@@ -67,6 +68,7 @@ public class BattlegearConfig {
 
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
         enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
+        updateRate=config.getInt("Update packet rate", "Server", updateRate, 1, 200, "How often packets are sent over the network to update the battle inventory slots. Lower for faster updates, but more packets to deal for each client.");
         config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.").setRequiresMcRestart(true);
 
         String category = "Rendering";
@@ -109,11 +111,11 @@ public class BattlegearConfig {
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
         sb.append("The valid values are: \n");
         int count = 0;
-        for(int i = 0; i < itemNames.length; i++){
-            sb.append(itemNames[i]);
+        for (String itemName : itemNames) {
+            sb.append(itemName);
             sb.append(", ");
             count++;
-            if(count % 5 == 0){
+            if (count % 5 == 0) {
                 sb.append("\n");
             }
         }
