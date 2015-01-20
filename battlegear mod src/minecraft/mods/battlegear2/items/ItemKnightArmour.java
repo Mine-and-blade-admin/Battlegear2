@@ -13,6 +13,9 @@ import mods.battlegear2.client.heraldry.HeraldryArmourModel;
 import mods.battlegear2.heraldry.SigilHelper;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -200,32 +203,13 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 			model.heldItemRight = heldRight == null?0:1;
 			if(entityLiving instanceof EntityPlayer)
 			{
-                EnumAction enumaction;
-				if (heldRight != null && ((EntityPlayer)entityLiving).getItemInUseCount() > 0){
-					enumaction = heldRight.getItemUseAction();
-					if (enumaction == EnumAction.block){
-		                model.heldItemRight = 3;
-		            }
-					model.aimedBow = enumaction == EnumAction.bow;
-		        }
-				if(entityLiving instanceof IBattlePlayer && ((IBattlePlayer) entityLiving).isBattlemode()) {
-                    ItemStack heldLeft = ((EntityPlayer) entityLiving).inventory.getStackInSlot(
-                            ((EntityPlayer) entityLiving).inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS);
-                    if(heldLeft != null){
-                        model.heldItemLeft = 1;
-                        if(((EntityPlayer)entityLiving).getItemInUseCount() > 0){
-                            enumaction = heldLeft.getItemUseAction();
-                            if(enumaction == EnumAction.block){
-                                model.heldItemLeft = 3;
-                            }else {
-                                model.aimedBow |= enumaction == EnumAction.bow;
-                            }
-                        }
-                    }else{
-                        model.heldItemLeft = 0;
-                    }
-                }
-				
+				Render renderer = RenderManager.instance.getEntityRenderObject(entityLiving);
+				if(renderer instanceof RenderPlayer){
+					ModelBiped modelArmor = armorSlot==2?((RenderPlayer) renderer).modelArmor:((RenderPlayer) renderer).modelArmorChestplate;
+					model.heldItemLeft = modelArmor.heldItemLeft;
+					model.heldItemRight = modelArmor.heldItemRight;
+					model.aimedBow = modelArmor.aimedBow;
+				}
 			}
 			model.isSneak = entityLiving.isSneaking();
 		}

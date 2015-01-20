@@ -42,6 +42,7 @@ import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import org.lwjgl.opengl.GL11;
@@ -167,9 +168,12 @@ public final class BattlegearClientEvents {
             GL11.glColor3f(1, 1, 1);
             Minecraft.getMinecraft().getTextureManager().bindTexture(quiverDetails);
             GL11.glPushMatrix();
-            biped.bipedBody.postRender(0.0625F);
+            if(event.entityPlayer.getEquipmentInSlot(3)!=null){//chest armor
+                GL11.glTranslatef(0, 0, BattlegearRenderHelper.RENDER_UNIT);
+            }
+            biped.bipedBody.postRender(BattlegearRenderHelper.RENDER_UNIT);
             GL11.glScalef(1.05F, 1.05F, 1.05F);
-            quiverModel.render(arrowCount, 0.0625F);
+            quiverModel.render(arrowCount, BattlegearRenderHelper.RENDER_UNIT);
 
             Minecraft.getMinecraft().getTextureManager().bindTexture(quiverBase);
             if(quiverStack.getItem() instanceof IDyable){
@@ -179,7 +183,7 @@ public final class BattlegearClientEvents {
                 float blue = (float) (col & 255) / 255.0F;
                 GL11.glColor3f(red, green, blue);
             }
-            quiverModel.render(0, 0.0625F);
+            quiverModel.render(0, BattlegearRenderHelper.RENDER_UNIT);
             GL11.glColor3f(1, 1, 1);
 
             GL11.glPopMatrix();
@@ -230,13 +234,13 @@ public final class BattlegearClientEvents {
 			GL11.glTranslatef(0, -1.5F, 0);
 
 			GL11.glRotatef(event.entity.rotationPitch, 0, 1, 0);
-            ((ModelBiped)event.renderer.mainModel).bipedBody.postRender(0.0625F);
+            ((ModelBiped)event.renderer.mainModel).bipedBody.postRender(BattlegearRenderHelper.RENDER_UNIT);
 			GL11.glScalef(1.05F, 1.05F, 1.05F);
-			quiverModel.render(SKELETON_ARROW, 0.0625F);
+			quiverModel.render(SKELETON_ARROW, BattlegearRenderHelper.RENDER_UNIT);
 
 			Minecraft.getMinecraft().getTextureManager().bindTexture(quiverBase);
 			GL11.glColor3f(0.10F, 0.10F, 0.10F);
-			quiverModel.render(0, 0.0625F);
+			quiverModel.render(0, BattlegearRenderHelper.RENDER_UNIT);
 			GL11.glColor3f(1, 1, 1);
 
 			GL11.glEnable(GL11.GL_CULL_FACE);

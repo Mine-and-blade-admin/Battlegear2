@@ -30,6 +30,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.RenderPlayerEvent;
@@ -42,6 +43,7 @@ import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.BLOCK_3
 public final class BattlegearRenderHelper {
 
     private static final ItemStack dummyStack = new ItemStack(Blocks.flowing_lava);
+    public static final float RENDER_UNIT = 1F/16F;//0.0625
     public static float PROGRESS_INCREMENT_LIMIT = 0.4F;
     public static EntityLivingBase dummyEntity;
 
@@ -108,11 +110,7 @@ public final class BattlegearRenderHelper {
             float var20;
 
             if (offhandRender.getItemToRender() != null) {
-                var18 = offhandRender.getItemToRender().getItem().getColorFromItemStack(offhandRender.getItemToRender(), 0);
-                var20 = (float) (var18 >> 16 & 255) / 255.0F;
-                var21 = (float) (var18 >> 8 & 255) / 255.0F;
-                var10 = (float) (var18 & 255) / 255.0F;
-                GL11.glColor4f(var20, var21, var10, 1.0F);
+                applyColorFromItemStack(offhandRender.getItemToRender(), 0);
             } else {
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             }
@@ -123,12 +121,11 @@ public final class BattlegearRenderHelper {
             RenderPlayer var26 = (RenderPlayer) RenderManager.instance.getEntityRenderObject(mc.thePlayer);
             RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(player, var26, frame);
             RenderPlayerEvent postRender = new RenderPlayerEvent.Post(player, var26, frame);
+            var7 = 0.8F;
             if (offhandRender.getItemToRender() != null) {
 
 	        	if(offhandRender.getItemToRender().getItem() instanceof IShield){
                     GL11.glPushMatrix();
-
-	        		var7 = 0.8F;
 
                     float swingProgress =
                             (float)((IBattlePlayer)player).getSpecialActionTimer() / (
@@ -153,7 +150,6 @@ public final class BattlegearRenderHelper {
 
 	        	}else{
                     GL11.glPushMatrix();
-                    var7 = 0.8F;
 
                     if (player.getItemInUseCount() > 0) {
                         EnumAction action = offhandRender.getItemToRender().getItemUseAction();
@@ -199,7 +195,6 @@ public final class BattlegearRenderHelper {
 
                     //Rotate y back to original position + 45
                     GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
-
 
                     var11 = 0.4F;
                     GL11.glScalef(var11, var11, var11);
@@ -268,7 +263,6 @@ public final class BattlegearRenderHelper {
                 }
             } else if (!player.isInvisible()) {
                 GL11.glPushMatrix();
-                var7 = 0.8F;
 
                 GL11.glScalef(-1.0F, 1.0F, 1.0F);
 
@@ -398,18 +392,16 @@ public final class BattlegearRenderHelper {
         if (var21 != null) {
 
             float var7;
-            float var8;
-            float var11;
             RenderPlayer render = (RenderPlayer) RenderManager.instance.getEntityRenderObject(par1EntityPlayer);
             RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
             RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
             
             GL11.glPushMatrix();
             if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.Offhand, null)))
-            	modelBipedMain.bipedLeftArm.postRender(0.0625F);
+            	modelBipedMain.bipedLeftArm.postRender(RENDER_UNIT);
             BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.Offhand, null));
         	
-            GL11.glTranslatef(0.0625F, 0.4375F, 0.0625F);
+            GL11.glTranslatef(RENDER_UNIT, 0.4375F, RENDER_UNIT);
 
             if (par1EntityPlayer.fishEntity != null) {
                 var21 = new ItemStack(Items.stick);
@@ -428,7 +420,7 @@ public final class BattlegearRenderHelper {
                 var7 = 0.625F;
                 GL11.glScalef(var7, -var7, var7);
 
-                GL11.glTranslated(8F/16F, -11F/16F, -1F/16F);
+                GL11.glTranslated(8F/16F, -11F/16F, -RENDER_UNIT);
 
                 GL11.glRotatef(-100.0F+90, 1.0F, 0.0F, 0.0F);
                 GL11.glRotatef(45.0F-90, 0.0F, 1.0F, 0.0F);
@@ -436,19 +428,11 @@ public final class BattlegearRenderHelper {
                 if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){
 	                if (var21.getItem().requiresMultipleRenderPasses()) {
 	                    for (int var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
-	                        int var26 = var21.getItem().getColorFromItemStack(var21, var27);
-	                        float var28 = (float) (var26 >> 16 & 255) / 255.0F;
-	                        float var10 = (float) (var26 >> 8 & 255) / 255.0F;
-	                        var11 = (float) (var26 & 255) / 255.0F;
-	                        GL11.glColor4f(var28, var10, var11, 1.0F);
+                            applyColorFromItemStack(var21, var27);
 	                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
 	                    }
 	                } else {
-	                    int var27 = var21.getItem().getColorFromItemStack(var21, 0);
-	                    var8 = (float) (var27 >> 16 & 255) / 255.0F;
-	                    float var28 = (float) (var27 >> 8 & 255) / 255.0F;
-	                    float var10 = (float) (var27 & 255) / 255.0F;
-	                    GL11.glColor4f(var8, var28, var10, 1.0F);
+                        applyColorFromItemStack(var21, 0);
 	                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
 	                }
                 }
@@ -496,26 +480,15 @@ public final class BattlegearRenderHelper {
                     GL11.glRotatef(20.0F, 0.0F, 0.0F, 1.0F);
                 }
 
-                float var10;
-                int var27;
-                float var28;
                 if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){
     	            
 	                if (var21.getItem().requiresMultipleRenderPasses()) {
-	                    for (var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
-	                        int var26 = var21.getItem().getColorFromItemStack(var21, var27);
-	                        var28 = (float) (var26 >> 16 & 255) / 255.0F;
-	                        var10 = (float) (var26 >> 8 & 255) / 255.0F;
-	                        var11 = (float) (var26 & 255) / 255.0F;
-	                        GL11.glColor4f(var28, var10, var11, 1.0F);
+	                    for (int var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
+                            applyColorFromItemStack(var21, var27);
 	                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
 	                    }
 	                } else {
-	                    var27 = var21.getItem().getColorFromItemStack(var21, 0);
-	                    var8 = (float) (var27 >> 16 & 255) / 255.0F;
-	                    var28 = (float) (var27 >> 8 & 255) / 255.0F;
-	                    var10 = (float) (var27 & 255) / 255.0F;
-	                    GL11.glColor4f(var8, var28, var10, 1.0F);
+                        applyColorFromItemStack(var21, 0);
 	                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
 	                }
                 }
@@ -534,24 +507,24 @@ public final class BattlegearRenderHelper {
         ItemStack mainhandSheathed = BattlegearClientTickHandeler.getPreviousMainhand(par1EntityPlayer);
         ItemStack offhandSheathed = BattlegearClientTickHandeler.getPreviousOffhand(par1EntityPlayer);
 
-        ModelBiped chestModel = null;
-        ModelBiped legsModel = null;
+        RenderPlayer render = (RenderPlayer) RenderManager.instance.getEntityRenderObject(par1EntityPlayer);
+        ModelBiped chestModel = render.modelArmorChestplate;
+        ModelBiped legsModel = render.modelArmor;
 
         boolean hasChestArmour = false;
         boolean hasLegArmour = false;
-        ItemStack chest =  par1EntityPlayer.getEquipmentInSlot(2);
+        ItemStack chest = par1EntityPlayer.getEquipmentInSlot(3);
         if(chest != null){
-            chestModel = chest.getItem().getArmorModel(par1EntityPlayer, chest, 1);
+            chestModel = ForgeHooksClient.getArmorModel(par1EntityPlayer, chest, 1, chestModel);
             hasChestArmour = true;
         }
-        ItemStack legs =  par1EntityPlayer.getEquipmentInSlot(3);
+        ItemStack legs =  par1EntityPlayer.getEquipmentInSlot(2);
         if(legs != null){
-            legsModel = legs.getItem().getArmorModel(par1EntityPlayer, legs, 2);
+            legsModel = ForgeHooksClient.getArmorModel(par1EntityPlayer, legs, 2, legsModel);
             hasLegArmour = true;
         }
 
         int backCount = hasChestArmour?1:0;
-        RenderPlayer render = (RenderPlayer) RenderManager.instance.getEntityRenderObject(par1EntityPlayer);
         RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
         RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
         
@@ -567,7 +540,7 @@ public final class BattlegearRenderHelper {
             }
 
             GL11.glPushMatrix();
-            target.bipedBody.postRender(0.0625F);
+            target.bipedBody.postRender(RENDER_UNIT);
             if(onBack){
                 if(mainhandSheathed.getItem() instanceof IBackSheathedRender){
                     ((IBackSheathedRender)mainhandSheathed.getItem()).preRenderBackSheathed(mainhandSheathed, backCount, preRender, true);
@@ -593,19 +566,11 @@ public final class BattlegearRenderHelper {
     	        
 	            if (mainhandSheathed.getItem().requiresMultipleRenderPasses()) {
 	                for (int var27 = 0; var27 < mainhandSheathed.getItem().getRenderPasses(mainhandSheathed.getItemDamage()); ++var27) {
-	                    int var26 = mainhandSheathed.getItem().getColorFromItemStack(mainhandSheathed, var27);
-	                    float var28 = (float) (var26 >> 16 & 255) / 255.0F;
-	                    float var10 = (float) (var26 >> 8 & 255) / 255.0F;
-	                    float var11 = (float) (var26 & 255) / 255.0F;
-	                    GL11.glColor4f(var28, var10, var11, 1.0F);
+                        applyColorFromItemStack(mainhandSheathed, var27);
 	                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, var27);
 	                }
 	            } else {
-	                int var27 = mainhandSheathed.getItem().getColorFromItemStack(mainhandSheathed, 0);
-	                float var8 = (float) (var27 >> 16 & 255) / 255.0F;
-	                float var28 = (float) (var27 >> 8 & 255) / 255.0F;
-	                float var10 = (float) (var27 & 255) / 255.0F;
-	                GL11.glColor4f(var8, var28, var10, 1.0F);
+                    applyColorFromItemStack(mainhandSheathed, 0);
 	                RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, 0);
 	            }
             }
@@ -626,7 +591,7 @@ public final class BattlegearRenderHelper {
             }
 
             GL11.glPushMatrix();
-            target.bipedBody.postRender(0.0625F);
+            target.bipedBody.postRender(RENDER_UNIT);
 
             if(onBack){
                 if(offhandSheathed.getItem() instanceof IBackSheathedRender){
@@ -655,19 +620,11 @@ public final class BattlegearRenderHelper {
         	    
 	            if (offhandSheathed.getItem().requiresMultipleRenderPasses()) {
 	                for (int var27 = 0; var27 < offhandSheathed.getItem().getRenderPasses(offhandSheathed.getItemDamage()); ++var27) {
-	                    int var26 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, var27);
-	                    float var28 = (float) (var26 >> 16 & 255) / 255.0F;
-	                    float var10 = (float) (var26 >> 8 & 255) / 255.0F;
-	                    float var11 = (float) (var26 & 255) / 255.0F;
-	                    GL11.glColor4f(var28, var10, var11, 1.0F);
+                        applyColorFromItemStack(offhandSheathed, var27);
 	                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, var27);
 	                }
 	            } else {
-	                int var27 = offhandSheathed.getItem().getColorFromItemStack(offhandSheathed, 0);
-	                float var8 = (float) (var27 >> 16 & 255) / 255.0F;
-	                float var28 = (float) (var27 >> 8 & 255) / 255.0F;
-	                float var10 = (float) (var27 & 255) / 255.0F;
-	                GL11.glColor4f(var8, var28, var10, 1.0F);
+                    applyColorFromItemStack(offhandSheathed, 0);
 	                RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, 0);
 	            }
             }
@@ -675,6 +632,14 @@ public final class BattlegearRenderHelper {
             BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, false, offhandSheathed));
             GL11.glPopMatrix();
         }
+    }
+
+    public static void applyColorFromItemStack(ItemStack itemStack, int pass){
+        int col = itemStack.getItem().getColorFromItemStack(itemStack, pass);
+        float r = (float) (col >> 16 & 255) / 255.0F;
+        float g = (float) (col >> 8 & 255) / 255.0F;
+        float b = (float) (col & 255) / 255.0F;
+        GL11.glColor4f(r, g, b, 1.0F);
     }
 
     private static boolean isBackSheathed(ItemStack sheathed) {
@@ -701,14 +666,14 @@ public final class BattlegearRenderHelper {
         float f9 = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0F * 8.0F;
         GL11.glTranslatef(f9, 0.0F, 0.0F);
         GL11.glRotatef(-50.0F, 0.0F, 0.0F, 1.0F);
-        ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
+        ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, RENDER_UNIT);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
         GL11.glScalef(f8, f8, f8);
         f9 = (float) (Minecraft.getSystemTime() % 4873L) / 4873.0F * 8.0F;
         GL11.glTranslatef(-f9, 0.0F, 0.0F);
         GL11.glRotatef(10.0F, 0.0F, 0.0F, 1.0F);
-        ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, 0.0625F);
+        ItemRenderer.renderItemIn2D(tessellator, 0.0F, 0.0F, 1.0F, 1.0F, 256, 256, RENDER_UNIT);
         GL11.glPopMatrix();
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glDisable(GL11.GL_BLEND);
