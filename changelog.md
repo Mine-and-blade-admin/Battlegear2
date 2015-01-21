@@ -1,3 +1,17 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.7.0 ==
+* Fix bow breaking in left hand removing right hand item
+* Reduce speed while wearing knight armor
+* Increased knight armor damage absorption
+* Fix incompatibilities removing DataWatcher need for shield
+* Fix possible crash with flagpole rendering
+* Made 'pick block' more reactive client side
+* Added buckets as usable item in battlemode
+* Silently handle incompatibity with modded skeleton rendering
+* Fixed selection highlight/item offset in HUD
+* Added option to disable sheathed item rendering
+* Fixed invalid offset on quiver/sheathed items when wearing armor
+* Added update rate option for server
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.6.3 ==
 * Fixed /mud command not displaying changelog screen
 * Added firing arrows from a quiver in a dispenser
