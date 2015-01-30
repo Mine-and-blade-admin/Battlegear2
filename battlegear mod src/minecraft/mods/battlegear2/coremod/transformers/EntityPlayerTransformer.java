@@ -135,7 +135,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
         Label l0 = new Label();
         mv.visitLabel(l0);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "canBlockWithShield", "(L"+entityPlayerClassName+";)Z", false);
+        mv.visitMethodInsn(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "canBlockWithShield", "(L"+entityPlayerClassName+";)Z");
         Label l1 = new Label();
         mv.visitJumpInsn(IFEQ, l1);
         mv.visitVarInsn(ALOAD, 0);
@@ -169,7 +169,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
         Label l1 = new Label();
         mv.visitJumpInsn(IFEQ, l1);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "canBlockWithShield", "(L"+entityPlayerClassName+";)Z", false);
+        mv.visitMethodInsn(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "canBlockWithShield", "(L"+entityPlayerClassName+";)Z");
         mv.visitJumpInsn(IFEQ, l1);
         mv.visitInsn(ICONST_1);
         Label l2 = new Label();
@@ -201,7 +201,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
         mv.visitLabel(l0);
         mv.visitVarInsn(ALOAD, 0);
         mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "attackTargetEntityWithCurrentOffItem", "(L"+entityPlayerClassName+";L"+entityClassName+";)V", false);
+        mv.visitMethodInsn(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "attackTargetEntityWithCurrentOffItem", "(L"+entityPlayerClassName+";L"+entityClassName+";)V");
         Label l1 = new Label();
         mv.visitLabel(l1);
         mv.visitInsn(RETURN);
@@ -227,7 +227,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
         mv.visitVarInsn(ALOAD, 0);
         mv.visitFieldInsn(GETFIELD, entityPlayerClassName, "offHandSwingProgressInt", "I");
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, entityPlayerClassName, getArmSwingEndMethodName, "()I", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, entityPlayerClassName, getArmSwingEndMethodName, "()I");
         mv.visitInsn(ICONST_2);
         mv.visitInsn(IDIV);
         mv.visitJumpInsn(IF_ICMPGE, l1);
@@ -309,7 +309,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
         Label l0 = new Label();
         mv.visitLabel(l0);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESPECIAL, entityLivingClassName, playerUpdateArmSwingMethodName, SIMPLEST_METHOD_DESC, false);
+        mv.visitMethodInsn(INVOKESPECIAL, entityLivingClassName, playerUpdateArmSwingMethodName, SIMPLEST_METHOD_DESC);
         Label l1 = new Label();
         mv.visitLabel(l1);
         mv.visitVarInsn(ALOAD, 0);
@@ -319,7 +319,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
         Label l2 = new Label();
         mv.visitLabel(l2);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKEVIRTUAL, entityPlayerClassName, getArmSwingEndMethodName, "()I", false);
+        mv.visitMethodInsn(INVOKEVIRTUAL, entityPlayerClassName, getArmSwingEndMethodName, "()I");
         mv.visitVarInsn(ISTORE, 1);
         Label l3 = new Label();
         mv.visitLabel(l3);
@@ -423,7 +423,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
         Label l0 = new Label();
         mv.visitLabel(l0);
         mv.visitVarInsn(ALOAD, 0);
-        mv.visitMethodInsn(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "isPlayerInBattlemode", "(L"+entityPlayerClassName+";)Z", false);
+        mv.visitMethodInsn(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "isPlayerInBattlemode", "(L"+entityPlayerClassName+";)Z");
         mv.visitInsn(IRETURN);
         Label l1 = new Label();
         mv.visitLabel(l1);
