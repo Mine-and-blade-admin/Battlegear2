@@ -18,15 +18,16 @@ import net.minecraftforge.common.MinecraftForge;
  * Replacement for the player inventory
  */
 public class InventoryPlayerBattle extends InventoryPlayer {
-
+    //Mark the inventory content as dirty to be send to the client
     public boolean hasChanged = true;
+    //The offsets used
     public static int ARMOR_OFFSET = 100;
     public static int OFFSET = 150;
     public static int WEAPON_SETS = 3;
 
     public static int EXTRA_ITEMS = WEAPON_SETS * 2;
     public static int EXTRA_INV_SIZE = EXTRA_ITEMS + 6 + 6;
-
+    //The "battle" extra slots
     public ItemStack[] extraItems;
 
     public InventoryPlayerBattle(EntityPlayer entityPlayer) {
@@ -135,8 +136,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     @Override
     @SideOnly(Side.CLIENT)
     public void changeCurrentItem(int direction) {
-        hasChanged = true;
-
         if (isBattlemode()) {
 
         	if (direction > 0){
@@ -166,7 +165,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     @Override
     public int clearInventory(Item targetId, int targetDamage) {
-        int stacks = super.clearInventory(targetId, targetDamage);
+        int stacks = 0;
 
         for (int i = 0; i < extraItems.length; i++) {
             if (extraItems[i] != null &&
@@ -178,7 +177,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
             }
         }
         hasChanged = stacks > 0;
-        return stacks;
+        return super.clearInventory(targetId, targetDamage) + stacks;
     }
 
     /**
@@ -225,15 +224,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
             int j = this.getInventorySlotContainItem(par1);
             return j >= 0;
         }
-    }
-
-    /**
-     * Adds the item stack to the inventory, returns false if it is impossible.
-     * @param par1ItemStack the item stack to add
-     */
-    @Override
-    public boolean addItemStackToInventory(ItemStack par1ItemStack) {
-        return super.addItemStackToInventory(par1ItemStack);
     }
 
     /**
@@ -299,8 +289,8 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      * @param changed if the inventory packet should be sent next tick
      */
     public void setInventorySlotContents(int slot, ItemStack itemStack, boolean changed) {
-        hasChanged = changed;
         if (slot >= OFFSET) {
+            hasChanged = changed;
             extraItems[slot - OFFSET] = itemStack;
         } else {
             super.setInventorySlotContents(slot, itemStack);
@@ -420,6 +410,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     @Override
     public void dropAllItems() {
+        hasChanged = true;
     	super.dropAllItems();
         for (int i = 0; i < this.extraItems.length; ++i) {
             if (this.extraItems[i] != null) {
@@ -427,16 +418,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
                 this.extraItems[i] = null;
             }
         }
-    }
-
-    /**
-     * UNUSED in vanilla for players, but let's pretend
-     * Mark the inventory content as dirty to be send to the client
-     */
-    @Override
-    public void markDirty() {
-        super.markDirty();
-        hasChanged = true;
     }
 
     /**
@@ -449,7 +430,6 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         this.armorInventory = new ItemStack[par1InventoryPlayer.armorInventory.length];
         super.copyInventory(par1InventoryPlayer);
         if (par1InventoryPlayer instanceof InventoryPlayerBattle) {
-            hasChanged = true;
             this.extraItems = new ItemStack[((InventoryPlayerBattle) par1InventoryPlayer).extraItems.length];
             for (int i = 0; i < extraItems.length; i++) {
                 this.extraItems[i] = ItemStack.copyItemStack(par1InventoryPlayer.getStackInSlot(i + OFFSET));
