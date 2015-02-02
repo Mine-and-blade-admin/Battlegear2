@@ -234,6 +234,10 @@ public final class BattlegearClientEvents {
 			GL11.glTranslatef(0, -1.5F, 0);
 
 			GL11.glRotatef(event.entity.rotationPitch, 0, 1, 0);
+
+            if(event.entity.getEquipmentInSlot(3)!=null){//chest armor
+                GL11.glTranslatef(0, 0, BattlegearRenderHelper.RENDER_UNIT);
+            }
             ((ModelBiped)event.renderer.mainModel).bipedBody.postRender(BattlegearRenderHelper.RENDER_UNIT);
 			GL11.glScalef(1.05F, 1.05F, 1.05F);
 			quiverModel.render(SKELETON_ARROW, BattlegearRenderHelper.RENDER_UNIT);
