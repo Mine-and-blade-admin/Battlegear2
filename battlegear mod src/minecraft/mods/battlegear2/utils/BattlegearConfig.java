@@ -157,7 +157,7 @@ public class BattlegearConfig {
         sb = new StringBuffer();
         sb.append("This will disable the crafting recipe for the provided item/blocks.\n");
         sb.append("It should be noted that this WILL NOT remove the item from the game, it will only disable the recipe.\n");
-        sb.append("In this way the items may still be obtained through creative mode and cheats, but playes will be unable to craft them.\n");
+        sb.append("In this way the items may still be obtained through creative mode and cheats, but players will be unable to craft them.\n");
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'. The valid values are: \n");
         count = 0;
         for(int i = 1; i < itemNames.length; i++){
@@ -407,7 +407,7 @@ public class BattlegearConfig {
 
     /**
      * Remap old item names for consistency
-     * @param mapping receive from the event
+     * @param mapping received from the event
      * @return true if remap was successful
      */
     public static boolean remap(FMLMissingMappingsEvent.MissingMapping mapping) {
