@@ -26,7 +26,7 @@ import net.minecraftforge.common.util.EnumHelper;
 
 import java.util.Map;
 
-@Mod(modid = Battlegear.MODID, useMetadata = true, guiFactory = "mods.battlegear2.gui.BattlegearGuiFactory")
+@Mod(modid = Battlegear.MODID, version = "$version", guiFactory = "mods.battlegear2.gui.BattlegearGuiFactory")
 public class Battlegear {
 
     public static final String MODID = "battlegear2";
@@ -75,12 +75,7 @@ public class Battlegear {
         BattlegearConfig.registerRecipes();
         QuiverArrowRegistry.addArrowToRegistry(Items.arrow, EntityArrow.class);
         packetHandler = new BattlegearPacketHandeler();
-        FMLEventChannel eventChannel;
-        for(String channel:packetHandler.map.keySet()){
-            eventChannel = NetworkRegistry.INSTANCE.newEventDrivenChannel(channel);
-            eventChannel.register(packetHandler);
-            packetHandler.channels.put(channel, eventChannel);
-        }
+        packetHandler.register();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new BattlegearGUIHandeler());
     }
 

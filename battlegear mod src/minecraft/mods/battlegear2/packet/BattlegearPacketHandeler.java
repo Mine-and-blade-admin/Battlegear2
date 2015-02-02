@@ -16,8 +16,8 @@ import java.util.Map;
 
 public final class BattlegearPacketHandeler {
 
-    public Map<String, AbstractMBPacket> map = new Hashtable<String, AbstractMBPacket>();
-    public Map<String, FMLEventChannel> channels = new Hashtable<String, FMLEventChannel>();
+    private final Map<String, AbstractMBPacket> map = new Hashtable<String, AbstractMBPacket>();
+    private final Map<String, FMLEventChannel> channels = new Hashtable<String, FMLEventChannel>();
 
     public BattlegearPacketHandeler() {
         map.put(BattlegearSyncItemPacket.packetName, new BattlegearSyncItemPacket());
@@ -31,6 +31,15 @@ public final class BattlegearPacketHandeler {
         map.put(LoginPacket.packetName, new LoginPacket());
         map.put(OffhandPlaceBlockPacket.packetName, new OffhandPlaceBlockPacket());
         map.put(PickBlockPacket.packetName, new PickBlockPacket());
+    }
+
+    public void register(){
+        FMLEventChannel eventChannel;
+        for(String channel:map.keySet()){
+            eventChannel = NetworkRegistry.INSTANCE.newEventDrivenChannel(channel);
+            eventChannel.register(this);
+            channels.put(channel, eventChannel);
+        }
     }
 
     @SubscribeEvent
