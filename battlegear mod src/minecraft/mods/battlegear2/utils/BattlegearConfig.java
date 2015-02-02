@@ -68,7 +68,7 @@ public class BattlegearConfig {
 
         enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
         enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
-        updateRate=config.getInt("Update packet rate", "Server", updateRate, 1, 200, "How often packets are sent over the network to update the battle inventory slots. Lower for faster updates, but more packets to deal for each client.");
+        updateRate=config.getInt("Update packet rate", "Server", updateRate, 1, 20000, "How often packets are sent over the network to update the battle inventory slots. Lower for faster updates, but more packets to deal for each client.");
         config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.").setRequiresMcRestart(true);
 
         String category = "Rendering";
