@@ -47,7 +47,7 @@ sigil.icon_colour1.title=Sigil%nColor 1
 sigil.icon_colour2.title=Sigil%nColor 2
 
 attribute.name.weapon.penetrateArmor=Arrrmor Penetration
-attribute.shield.arrow.count=Arrrrows
+attribute.shield.arrow.count=%s Arrrrows
 attribute.quiver.arrow.empty=No Arrrrows
 attribute.quiver.arrow.count=Arrrrows
 

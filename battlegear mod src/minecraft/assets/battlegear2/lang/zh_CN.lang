@@ -109,8 +109,8 @@ attribute.name.weapon.extendedReach=攻击距离
 attribute.name.weapon.attackSpeed=攻击速度
 attribute.name.weapon.backstab=背刺
 attribute.name.weapon.mountedBonus=骑兵额外伤害
-attribute.shield.block.time=秒格挡
-attribute.shield.arrow.count=弓箭
+attribute.shield.block.time=%s 秒格挡
+attribute.shield.arrow.count=%s 弓箭
 attribute.quiver.arrow.empty=已空
 attribute.quiver.arrow.count=弓箭
 

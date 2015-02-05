@@ -152,12 +152,12 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         par3List.add("");
 
         par3List.add(EnumChatFormatting.DARK_GREEN+
-                ItemStack.field_111284_a.format( 1F / (enumShield.getDecayRate()) / 20F)+
-                StatCollector.translateToLocal("attribute.shield.block.time"));
+                StatCollector.translateToLocalFormatted("attribute.shield.block.time", ItemStack.field_111284_a.format(1F / (enumShield.getDecayRate()) / 20F)));
 
         int arrowCount = getArrowCount(par1ItemStack);
         if(arrowCount > 0){
-            par3List.add(String.format("%s%s %s", EnumChatFormatting.GOLD, arrowCount, StatCollector.translateToLocal("attribute.shield.arrow.count")));
+            par3List.add(EnumChatFormatting.GOLD+
+                    StatCollector.translateToLocalFormatted("attribute.shield.arrow.count", arrowCount));
         }
 
     }

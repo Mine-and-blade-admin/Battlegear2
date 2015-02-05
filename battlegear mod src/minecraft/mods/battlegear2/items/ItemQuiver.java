@@ -200,7 +200,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
         super.addInformation(stack, par2EntityPlayer, list, par4);
 
-        list.add(String.format("%s",StatCollector.translateToLocal("attribute.quiver.arrow.count")));
+        list.add(StatCollector.translateToLocal("attribute.quiver.arrow.count"));
 
         int slotCount = getSlotCount(stack);
         int selected = getSelectedSlot(stack);
@@ -210,7 +210,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
                 list.add(String.format(" %s%s: %s x %s", i,
                         i==selected?EnumChatFormatting.DARK_GREEN:EnumChatFormatting.GOLD,
                         slotStack.stackSize,
-                        StatCollector.translateToLocal(slotStack.getItem().getUnlocalizedName(slotStack)+".name")));
+                        slotStack.getDisplayName()));
             }else{
                 list.add(String.format(" %s%s: %s", i,
                         i==selected?EnumChatFormatting.DARK_GREEN:EnumChatFormatting.GOLD,
