@@ -1,0 +1,140 @@
+tab.battle.title=M&B Battlegear 2
+config.battlegear.title=Конфигурация Mine&Blade Battlegear 2
+config.battlegear.category=Отключенное пользоват. отображение предметов
+config.battlegear.warn=Требуется перезапуск для того, чтобы изменения вступили в силу
+use.gui.buttons=Включить кнопки для инвентаря
+use.gui.keys=Включить клавиши для инвентаря
+render.quiver.skeleton=Отображать колчан на скелетах
+render.arrow.bow=Отображать выбранную стрелу на луке
+render.sheathed=Default sheathed rendering on player's : %s
+render.hud.forced=Принудительное отображение HUD
+gui.open.fake=Открыть настройщик экрана
+gui.fake.help1=Двигайте компоненты экрана щелчком и перетаскиванием
+gui.fake.help2=Слоты колчана
+gui.fake.help3=Полоска выносливости щита
+gui.fake.help4=Слоты доп. руки
+gui.fake.help5=Слоты главной руки
+flag.design.save=Сохранить
+flag.design.load=Загрузить
+flag.design.load.sections=Раздел загрузки
+
+item.battlegear2:heraldric.name=Геральдическая иконка
+item.battlegear2:chain.name=Цепь
+item.battlegear2:quiver.name=Колчан
+
+item.battlegear2:mb.arrow.ender.name=Стрела Края
+item.battlegear2:mb.arrow.explosive.name=Разрывная стрела
+item.battlegear2:mb.arrow.flame.name=Пламенная стрела
+item.battlegear2:mb.arrow.piercing.name=Бронебойная стрела
+item.battlegear2:mb.arrow.poison.name=Ядовитая стрела
+item.battlegear2:mb.arrow.mystery.name=Таинственная стрела
+item.battlegear2:mb.arrow.leech.name=Стрела-кровосос
+
+item.battlegear2:dagger.wood.name=Деревянный кинжал
+item.battlegear2:dagger.stone.name=Каменный кинжал
+item.battlegear2:dagger.iron.name=Железный кинжал
+item.battlegear2:dagger.diamond.name=Алмазный кинжал
+item.battlegear2:dagger.gold.name=Золотой кинжал
+
+item.battlegear2:waraxe.wood.name=Деревянный боевой топор
+item.battlegear2:waraxe.stone.name=Каменный боевой топор
+item.battlegear2:waraxe.iron.name=Железный боевой топор
+item.battlegear2:waraxe.diamond.name=Алмазный боевой топор
+item.battlegear2:waraxe.gold.name=Золотой боевой топор
+
+item.battlegear2:mace.wood.name=Деревянная булава
+item.battlegear2:mace.stone.name=Каменная булава
+item.battlegear2:mace.iron.name=Железная булава
+item.battlegear2:mace.diamond.name=Алмазная булава
+item.battlegear2:mace.gold.name=Золотая булава
+
+item.battlegear2:spear.wood.name=Деревянное копьё
+item.battlegear2:spear.stone.name=Каменное копьё
+item.battlegear2:spear.iron.name=Железное копьё
+item.battlegear2:spear.diamond.name=Алмазное копьё
+item.battlegear2:spear.gold.name=Золотое копьё
+
+item.battlegear2:shield.wood.name=Деревянный щит
+item.battlegear2:shield.hide.name=Кожанный щит
+item.battlegear2:shield.iron.name=Железный щит
+item.battlegear2:shield.diamond.name=Алмазный щит
+item.battlegear2:shield.gold.name=Золотой щит
+
+item.battlegear2:knights_armour.helmet.name=Шлем рыцаря
+item.battlegear2:knights_armour.plate.name=Кираса рыцаря
+item.battlegear2:knights_armour.legs.name=Поножи рыцаря
+item.battlegear2:knights_armour.boots.name=Ботинки рыцаря
+
+item.battlegear2:cloak.name=Плащ
+
+enchantment.bash.weightless=Невесомость сильного удара
+enchantment.bash.power=Сила сильного удара
+enchantment.bash.damage=Урон сильного удара
+enchantment.shield.usage=Эффективность щита
+enchantment.shield.recover=Восстановление щита
+enchantment.bow.loot=Удача для лука
+enchantment.bow.charge=Скорость натяжения лука
+
+tile.battlegear2:flagpole.oak.name=Флагшток из дуба
+tile.battlegear2:flagpole.spruce.name=Флагшток из ели
+tile.battlegear2:flagpole.birch.name=Флагшток из берёзы
+tile.battlegear2:flagpole.jungle.name=Флагшток из тропического дерева
+tile.battlegear2:flagpole.iron.name=Железный флагшток
+tile.battlegear2:flagpole.acacia.name=Флагшток из акации
+tile.battlegear2:flagpole.big_oak.name=Флагшток из тёмного дуба
+
+sigil.pattern.title=Шаблон
+sigil.icon.title=Сигил
+sigil.icon_pos.title=Расположение сигила
+sigil.colour1.title=Цвет 1-ый
+sigil.colour2.title=Цвет 2-ой
+sigil.icon_colour1.title=Сигил%nЦвет 1-ый
+sigil.icon_colour2.title=Сигил%nЦвет 2-ой
+sigil.banner.title=Знамя
+sigil.helm.title=Шлем
+sigil.colour.select=Выбрать
+
+gui.sigil.add=Добавить
+gui.sigil.remove=Убрать
+gui.sigil.crest=Нашлемник
+gui.sigil.pattern=Задний фон
+
+
+attribute.name.weapon.penetrateArmor=Пробивание брони
+attribute.name.weapon.daze=Оглушение
+attribute.name.weapon.extendedReach=Размах
+attribute.name.weapon.attackSpeed=Скорость атаки
+attribute.name.weapon.backstab=Удар в спину
+attribute.name.weapon.mountedBonus=Урон верхом
+attribute.shield.block.time=s Block
+attribute.shield.arrow.count=Стрелы
+attribute.quiver.arrow.empty=Пусто
+attribute.quiver.arrow.count=Стрелы
+
+lore.base.arrow.explosive=Содержит взрывную силу
+lore.base.arrow.ender=Этому Оку Края кажется больно...
+lore.base.arrow.flame=Огниво? Спасибо, не надо
+lore.base.arrow.piercing=Необычная проникающая способность
+lore.base.arrow.poison=Дорого, хе-хе?
+lore.base.arrow.mystery=Все любят печенье!
+lore.base.arrow.leech=Делает Вас слабым и грустным
+lore.advanced.arrow.explosive=Сила взрыва зависит от критического удара
+lore.advanced.arrow.ender=Мгновенное перемещение или перемещение блока
+lore.advanced.arrow.flame=Поджигает мобов, игроков и блоки
+lore.advanced.arrow.piercing=Стрижёт овец со стилем
+lore.advanced.arrow.poison=Наносит иссушающий эффект
+lore.advanced.arrow.mystery=Посылает мир и сообщение любви
+lore.advanced.arrow.leech=Прикосновение вампира
+
+tooltip.armour.points=Броня
+
+commands.weaponwield.usage=/weaponwield current <рука> [игрок] ИЛИ /weaponwield name <рука> <название предмета> ИЛИ /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
+commands.weaponwield.set=%1$s successfully set as wieldable weapon
+commands.weaponwield.sensitivity=Оружейный компаратор имеет следующие чувствительности: %1$s
+commands.weaponwield.sensitivity.added=Чувствительность добавлена к оружейному компаратору: %1$s
+commands.weaponwield.sensitivity.removed=Чувствительность убрана из оружейного компаратора: %1$s
+
+death.attack.battlegearExtra.backstab=%1$s был зарезан сзади игроком %2$s
+death.attack.battlegearExtra.backstab.item=%1$s был зарезан сзади игроком %2$s с помощью %3$s
+death.attack.battlegearExtra.mounted=%1$s был проткнут насквозь игроком %2$s и его лошадью
+death.attack.battlegearExtra.mounted.item=%1$s был проткнут насквозь игроком %2$s и его лошадью, с помощью %3$s
