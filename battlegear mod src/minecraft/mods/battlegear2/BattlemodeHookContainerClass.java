@@ -302,7 +302,11 @@ public final class BattlemodeHookContainerClass {
         if (asTest) {
             Entity clone = EntityList.createEntityByName(EntityList.getEntityString(entity), entity.worldObj);
             if (clone != null) {
-                clone.copyDataFrom(entity, true);
+                try {
+                    clone.copyDataFrom(entity, true);
+                }catch (Throwable throwable){//Entity#writeToNBT(NBTTagCompound) failed
+                    return false;
+                }
                 return !clone.interactFirst(entityPlayer) && clone instanceof EntityLivingBase && itemStack.copy().interactWithEntity(entityPlayer, (EntityLivingBase) clone);
             }
         } else if(!entity.interactFirst(entityPlayer) && entity instanceof EntityLivingBase){
