@@ -59,7 +59,7 @@ public final class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
 
     @Override
     public String getSetupClass() {
-        return "mods.battlegear2.api.core.BattlegearTranslator";
+        return null;
     }
 
     @Override
