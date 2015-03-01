@@ -31,23 +31,26 @@ public class BattlegearTranslator implements IFMLCallHook {
     private static HashMap<String, String> methodDescMap = new HashMap<String, String>();
 
     public static String getMapedFieldName(String className, String fieldName, String devName) {
-        return obfuscatedEnv?fieldNameMap.get(className + "." + fieldName):devName;
+        //return obfuscatedEnv?fieldNameMap.get(className + "." + fieldName):devName;
+    	return obfuscatedEnv?fieldName:devName;
     }
 
     public static String getMapedClassName(String className) {
-    	if(obfuscatedEnv)
-    		return classNameMap.get(className.substring(className.lastIndexOf(".")+1));
-    	else{
+    	//if(obfuscatedEnv)
+    	//	return classNameMap.get(className.substring(className.lastIndexOf(".")+1));
+    	//else{
     		return new StringBuilder("net/minecraft/").append(className.replace(".", "/")).toString();
-    	}
+    	//}
     }
 
     public static String getMapedMethodName(String className, String methodName, String devName) {
-        return obfuscatedEnv?methodNameMap.get(className + "." + methodName):devName;
+        //return obfuscatedEnv?methodNameMap.get(className + "." + methodName):devName;
+    	return obfuscatedEnv?methodName:devName;
     }
 
     public static String getMapedMethodDesc(String className, String methodName, String devDesc) {
-        return obfuscatedEnv?methodDescMap.get(className + "." + methodName):devDesc;
+        //return obfuscatedEnv?methodDescMap.get(className + "." + methodName):devDesc;
+    	return devDesc;
     }
 
     public static void setup(String deobFileName){

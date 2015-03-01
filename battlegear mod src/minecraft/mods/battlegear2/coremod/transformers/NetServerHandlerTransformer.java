@@ -86,7 +86,7 @@ public final class NetServerHandlerTransformer extends TransformerBase {
                         nextNode = it.next();
                     }
 
-    //BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
+    //BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem().copy()));
                     newList.add(new VarInsnNode(ALOAD, 0));
                     newList.add(new FieldInsnNode(GETFIELD, netServiceHandelerClassName, netServiceHandelerPlayerField, "L" + entityPlayerMPClassName + ";"));
                     newList.add(new FieldInsnNode(GETFIELD, entityPlayerMPClassName, playerInventoryFieldName, "L" + inventoryPlayerClassName + ";"));
@@ -112,6 +112,7 @@ public final class NetServerHandlerTransformer extends TransformerBase {
                         if(nextNode instanceof LineNumberNode && slotIndex!=0) {
                             int line = ((LineNumberNode) nextNode).line;
                             LabelNode L0 = new LabelNode();
+                            // if(slot == null) return;
                             newList.add(new VarInsnNode(ALOAD, slotIndex));
                             newList.add(new JumpInsnNode(IFNONNULL, L0));
                             newList.add(new InsnNode(RETURN));
