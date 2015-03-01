@@ -2,6 +2,8 @@ package mods.battlegear2.coremod.transformers;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import mods.battlegear2.api.core.BattlegearTranslator;
+import net.minecraft.launchwrapper.Launch;
+
 import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
@@ -96,7 +98,8 @@ public final class NetServerHandlerTransformer extends TransformerBase {
                             "mods/battlegear2/api/core/BattlegearUtils",
                             "setPlayerCurrentItem", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
                     
-                    if(!FMLCommonHandler.instance().getModName().contains("mcpc")){//MCPC already adds a fix for this
+                    // MCPC and Minecraft Forkage already add fixes for this
+                    if(!FMLCommonHandler.instance().getModName().contains("mcpc") && !Launch.blackboard.containsKey("IsForkage")){
 	                    int slotIndex = 0;
                         while(it.hasNext()){
 	                    	nextNode = it.next();
