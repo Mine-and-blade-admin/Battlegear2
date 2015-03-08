@@ -3,7 +3,6 @@ package mods.battlegear2.coremod.transformers;
 import mods.battlegear2.api.core.BattlegearTranslator;
 import mods.battlegear2.coremod.BattlegearLoadingPlugin;
 import net.minecraft.launchwrapper.IClassTransformer;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,8 +14,6 @@ import org.objectweb.asm.tree.*;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Iterator;
 import java.util.List;
 
@@ -50,12 +47,6 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
             logger.log(success ?Level.INFO:Level.ERROR, "M&B - Patching Class " + unobfClass + (success ? " done" : " FAILED!"));
             if (!success && BattlegearTranslator.debug) {
                 writeClassFile(cw, unobfClass+" ("+name+")");
-            }
-            
-            if(name.contains("NetHandlerPlayServer")) {
-            	try (OutputStream out = new FileOutputStream("NetHandlerPlayServer.class")) {
-            		out.write(cw.toByteArray());
-            	} catch(Exception e) {throw new RuntimeException(e);}
             }
             
 			return cw.toByteArray();
