@@ -49,7 +49,6 @@ public class Battlegear {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         //Set up the Translator
-        BattlegearTranslator.setup("/deobfuscation_data-" + FMLInjectionData.data()[4] + ".lzma");
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
 
