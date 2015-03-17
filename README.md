@@ -63,7 +63,7 @@ Translations
 ------------
 If you can help to update any of the translation files please fork & make a pull request.
 
-We currently have translation for the following languages (please note that many of these will be out of date)
+We currently have translation for the following languages (please note that many of these may be out of date)
 * English US (default)
 * English UK (mainly just change armor -> armour)
 * English Pirate
@@ -71,6 +71,7 @@ We currently have translation for the following languages (please note that many
 * Polish
 * Chinese 
 * German
+* Spanish
 
 Please feel free to add to this list or update any of the current language files. They can be found in battlegear mod src/minecraft/assets/battlegear2/lang/.
 

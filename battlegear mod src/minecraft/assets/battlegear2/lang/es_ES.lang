@@ -1,0 +1,141 @@
+tab.battle.title=M&B Battlegear 2
+config.battlegear.title=Configuración de Mine&Blade Battlegear 2
+config.battlegear.category=Desactivar Renderizado Especial de Objetos
+config.battlegear.warn=Se requiere reiniciar para que los cambios tengan efecto
+use.gui.buttons=Activar botones para inventario
+use.gui.keys=Activar teclas para inventario
+render.quiver.skeleton=Mostrar carcaj de flechas en esqueletos
+render.arrow.bow=Mostrar flecha en arco
+render.sheathed=Mostrar armas envainadas en otros jugadores (valor por defecto): %s
+render.hud.forced=Forzar renderizado de HUD
+gui.open.fake=Abrir Personalizador de Pantalla
+gui.fake.help1=Mueve los componentes en pantalla pinchando y arrastrando
+gui.fake.help2=Huecos del Carcaj
+gui.fake.help3=Barra de Resistencia del Escudo
+gui.fake.help4=Huecos de la mano zurda
+gui.fake.help5=Huecos de la mano diestra
+flag.design.save=Guardar
+flag.design.load=Cargar
+flag.design.load.sections=Cargar Sección
+
+item.battlegear2:heraldric.name=Icono Heraldico
+item.battlegear2:chain.name=Cadena
+item.battlegear2:quiver.name=Carcaj
+
+item.battlegear2:mb.arrow.ender.name=Flecha Ender
+item.battlegear2:mb.arrow.explosive.name=Flecha Explosiva
+item.battlegear2:mb.arrow.flame.name=Flecha Incendiaria
+item.battlegear2:mb.arrow.piercing.name=Flecha Perforante
+item.battlegear2:mb.arrow.poison.name=Flecha Envenenada
+item.battlegear2:mb.arrow.mystery.name=Flecha Misteriosa
+item.battlegear2:mb.arrow.leech.name=Flecha Sanguijuela
+
+item.battlegear2:dagger.wood.name=Daga de Madera
+item.battlegear2:dagger.stone.name=Daga de Piedra
+item.battlegear2:dagger.iron.name=Daga de Hierro
+item.battlegear2:dagger.diamond.name=Daga de Diamante
+item.battlegear2:dagger.gold.name=Daga de Oro
+
+item.battlegear2:waraxe.wood.name=Hacha de Guerra de Madera
+item.battlegear2:waraxe.stone.name=Hacha de Guerra de Piedra
+item.battlegear2:waraxe.iron.name=Hacha de Guerra de Hierro
+item.battlegear2:waraxe.diamond.name=Hacha de Guerra de Diamante
+item.battlegear2:waraxe.gold.name=Hacha de Guerra de Oro
+
+item.battlegear2:mace.wood.name=Maza de Madera
+item.battlegear2:mace.stone.name=Maza de Piedra
+item.battlegear2:mace.iron.name=Maza de Hierro
+item.battlegear2:mace.diamond.name=Maza de Diamante
+item.battlegear2:mace.gold.name=Maza de Oro
+
+item.battlegear2:spear.wood.name=Lanza de Madera
+item.battlegear2:spear.stone.name=Lanza de Piedra
+item.battlegear2:spear.iron.name=Lanza de Hierro
+item.battlegear2:spear.diamond.name=Lanza de Diamante
+item.battlegear2:spear.gold.name=Lanza de Oro
+
+item.battlegear2:shield.wood.name=Escudo de Madera
+item.battlegear2:shield.hide.name=Escudo de Piel
+item.battlegear2:shield.iron.name=Escudo de Hierro
+item.battlegear2:shield.diamond.name=Escudo de Diamante
+item.battlegear2:shield.gold.name=Escudo de Oro
+
+item.battlegear2:knights_armour.helmet.name=Casco de Caballero
+item.battlegear2:knights_armour.plate.name=Coraza de Caballero
+item.battlegear2:knights_armour.legs.name=Perneras de Caballero
+item.battlegear2:knights_armour.boots.name=Botas de Caballero
+
+item.battlegear2:cloak.name=Capa
+
+enchantment.bash.weightless=Embestida Ingrávida
+enchantment.bash.power=Embestida Potente
+enchantment.bash.damage=Embestida Dañina
+enchantment.shield.usage=Eficiencia de Escudo
+enchantment.shield.recover=Recuperación de Escudo
+enchantment.bow.loot=Arquero Afortunado
+enchantment.bow.charge=Arco Reforzado
+
+tile.battlegear2:flagpole.oak.name=Mástil de Bandera de Roble
+tile.battlegear2:flagpole.spruce.name=Mástil de Bandera de Pino
+tile.battlegear2:flagpole.birch.name=Mástil de Bandera de Abedul
+tile.battlegear2:flagpole.jungle.name=Mástil de Bandera de Selva
+tile.battlegear2:flagpole.iron.name=Mástil de Bandera de Hierro
+tile.battlegear2:flagpole.acacia.name=Mástil de Bandera de Acacia
+tile.battlegear2:flagpole.big_oak.name=Mástil de Bandera de Roble Oscuro
+
+sigil.pattern.title=Patrón
+sigil.icon.title=Símbolo
+sigil.icon_pos.title=Posición del Símbolo
+sigil.colour1.title=Color 1
+sigil.colour2.title=Color 2
+sigil.icon_colour1.title=Símbolo%nColor 1
+sigil.icon_colour2.title=Símbolo%nColor 2
+sigil.banner.title=Bandera
+sigil.helm.title=Casco
+sigil.colour.select=Seleccíon
+
+gui.sigil.add=Añadir
+gui.sigil.remove=Quitar
+gui.sigil.crest=Blasón
+gui.sigil.pattern=Fondo
+
+
+attribute.name.weapon.penetrateArmor=Penetración de Armadura
+attribute.name.weapon.daze=Aturdimiento
+attribute.name.weapon.extendedReach=Alcance
+attribute.name.weapon.attackSpeed=Velocidad de Ataque
+attribute.name.weapon.backstab=Puñalada por la espalda
+attribute.name.weapon.mountedBonus=Daño Montado
+attribute.shield.block.time=s Bloqueo
+attribute.shield.arrow.count=Flechas
+attribute.quiver.arrow.empty=Vacio
+attribute.quiver.arrow.count=Flechas
+
+lore.base.arrow.explosive=Tiene personalidad explosiva
+lore.base.arrow.ender=Este Ojo de Ender parece dolorido...
+lore.base.arrow.flame=¿Cerillas? ¿Para que?
+lore.base.arrow.piercing=Cortan cosa mala
+lore.base.arrow.poison=Parecen caras
+lore.base.arrow.mystery=¡A todo el mundo le gusta las galletas!
+lore.base.arrow.leech=Te hace sentir débil y triste
+lore.advanced.arrow.explosive=La fuerza de la explosión depende de los impactos criticos
+lore.advanced.arrow.ender=Viaje instantáneo o transportación de bloques
+lore.advanced.arrow.flame=Prende fuego a mobs, jugadores y bloques
+lore.advanced.arrow.piercing=Esquila ovejas con estilo
+lore.advanced.arrow.poison=Provoca daños de Marchitación
+lore.advanced.arrow.mystery=Envia un mensaje de paz y amor
+lore.advanced.arrow.leech=Diplomacia vampirica
+
+tooltip.armour.points=Armadura
+
+commands.weaponwield.usage=/weaponwield current <hand> [player] O /weaponwield name <hand> <item name> O /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
+commands.weaponwield.set=%1$s configurado con éxito como arma empuñable
+commands.weaponwield.sensitivity=El comparador de armas tiene la siguiente sensibilidad: %1$s
+commands.weaponwield.sensitivity.added=Sensibilidad añadida al comparador de armas: %1$s
+commands.weaponwield.sensitivity.removed=Sensibilidad retirada del comparador de armas: %1$s
+
+death.attack.battlegearExtra.backstab=%1$s fue apuñalado por la espalda por %2$s
+death.attack.battlegearExtra.backstab.item=%1$s fue apuñalado por la espalda por %2$s usando %3$s
+death.attack.battlegearExtra.mounted=%1$s fue ensartado por %2$s y su montura
+death.attack.battlegearExtra.mounted.item=%1$s fue ensartado por %2$s y su montura usando %3$s
+
