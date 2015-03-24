@@ -106,8 +106,8 @@ attribute.name.weapon.extendedReach=Размах
 attribute.name.weapon.attackSpeed=Скорость атаки
 attribute.name.weapon.backstab=Удар в спину
 attribute.name.weapon.mountedBonus=Урон верхом
-attribute.shield.block.time=s Block
-attribute.shield.arrow.count=Стрелы
+attribute.shield.block.time=Блок на %s
+attribute.shield.arrow.count=Стрелы: %s
 attribute.quiver.arrow.empty=Пусто
 attribute.quiver.arrow.count=Стрелы
 
