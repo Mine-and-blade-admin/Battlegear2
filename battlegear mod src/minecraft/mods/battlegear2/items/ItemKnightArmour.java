@@ -254,13 +254,8 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
                     }
                 }
             }
-            return 7;
-        }else if(slot==2){
-            return 5;
-        }else if(slot==0||slot==3){
-            return 3;
         }
-        return 0;
+        return damageReduceAmount;
     }
 
     @Override

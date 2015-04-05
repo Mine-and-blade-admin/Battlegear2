@@ -203,11 +203,10 @@ public class WeaponRegistry {
             public boolean differenciate(StackHolder holder1, StackHolder holder2) {
                 if(holder1.stack.hasTagCompound())
                     return !holder1.stack.getTagCompound().equals(holder2.stack.getTagCompound());
-                else if(holder1.stack.hasTagCompound())
-                    return true;
-                return false;
+                else
+                    return holder2.stack.hasTagCompound();
             }
-        };
+        }
     }
 
     /**

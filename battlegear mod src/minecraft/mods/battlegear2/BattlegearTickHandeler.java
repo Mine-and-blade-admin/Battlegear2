@@ -28,7 +28,7 @@ public final class BattlegearTickHandeler {
 
     public void tickStart(EntityPlayer entityPlayer) {
 
-        if (entityPlayer.worldObj instanceof WorldServer) {
+        if (!entityPlayer.worldObj.isRemote && entityPlayer.worldObj instanceof WorldServer) {
 
             if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 

@@ -330,27 +330,9 @@ public final class BattlemodeHookContainerClass {
                     boolean shouldBlock = true;
                     Entity opponent = event.source.getEntity();
                     if(opponent != null){
-                        double d0 = opponent.posX - event.entity.posX;
-                        double d1;
-
-                        for (d1 = opponent.posZ - player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D){
-                            d0 = (Math.random() - Math.random()) * 0.01D;
-                        }
-
-                        float yaw = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - player.rotationYaw;
-                        yaw = yaw - 90;
-
-                        while(yaw < -180){
-                            yaw+= 360;
-                        }
-                        while(yaw >= 180){
-                            yaw-=360;
-                        }
-
+                        float yaw = getAngle(opponent, player);
                         float blockAngle = ((IShield) shield.getItem()).getBlockAngle(shield);
-
                         shouldBlock = yaw < blockAngle && yaw > -blockAngle;
-                        //player.knockBack(opponent, 50, 100, 100);
                     }
 
                     if(shouldBlock){
@@ -381,16 +363,35 @@ public final class BattlemodeHookContainerClass {
                                 shield.damageItem(Math.round(dmg-red), player);
                                 if(shield.stackSize <= 0){
                                     ForgeEventFactory.onPlayerDestroyItem(player, shield);
-                                    player.inventory.setInventorySlotContents(player.inventory.currentItem + 3, null);
+                                    player.inventory.setInventorySlotContents(player.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS, null);
                                     //TODO Render item break
                                 }
-                                ((InventoryPlayerBattle)player.inventory).hasChanged = true;
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private float getAngle(Entity opponent, Entity player){
+        double d0 = opponent.posX - player.posX;
+        double d1;
+
+        for (d1 = opponent.posZ - player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D){
+            d0 = (Math.random() - Math.random()) * 0.01D;
+        }
+
+        float yaw = (float)(Math.atan2(d1, d0) * 180.0D / Math.PI) - player.rotationYaw;
+        yaw = yaw - 90;
+
+        while(yaw < -180){
+            yaw+= 360;
+        }
+        while(yaw >= 180){
+            yaw-=360;
+        }
+        return yaw;
     }
 
     @SubscribeEvent

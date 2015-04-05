@@ -350,7 +350,7 @@ public final class BattlegearClientEvents {
 	 * two angles we are. Example: par1 = 30, par2 = 50, par3 = 0.5, then return
 	 * = 40
 	 */
-	private float interpolateRotation(float par1, float par2, float par3) {
+	public float interpolateRotation(float par1, float par2, float par3) {
 		float f3 = par2 - par1;
 
 		while (f3 < -180.0F) {
