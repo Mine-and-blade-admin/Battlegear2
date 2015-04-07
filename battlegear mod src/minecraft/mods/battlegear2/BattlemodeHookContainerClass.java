@@ -394,26 +394,40 @@ public final class BattlemodeHookContainerClass {
         return yaw;
     }
 
+    /**
+     * Apply the "bow loot" enchantment, on drops from mobs dying of projectile based damage
+     * Search first the right hand of the archer, then the left hand (if archer is a player in battlemode)
+     */
     @SubscribeEvent
     public void onDrop(LivingDropsEvent event){
-    	if(BaseEnchantment.bowLoot.isPresent() && event.source.getEntity() instanceof EntityLivingBase){
+    	if(BaseEnchantment.bowLoot.isPresent() && event.source.isProjectile() && event.source.getEntity() instanceof EntityLivingBase){
     		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getHeldItem();
-    		if(!addLootFromEnchant(stack, event.drops) && event.source.getEntity() instanceof EntityPlayer && !isFake(event.source.getEntity())){
-                stack = ((InventoryPlayerBattle)((EntityPlayer) event.source.getEntity()).inventory).getCurrentOffhandWeapon();
-                addLootFromEnchant(stack, event.drops);
+    		if(!addLootFromEnchant(stack, event.drops) && event.recentlyHit && event.source.getEntity() instanceof IBattlePlayer && !isFake(event.source.getEntity())){
+                EntityPlayer player = (EntityPlayer) event.source.getEntity();
+                if(((IBattlePlayer)player).isBattlemode()) {
+                    stack = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
+                    addLootFromEnchant(stack, event.drops);
+                }
             }
     	}
     }
 
+    /**
+     * The "bow loot" enchantment effect:
+     * Adds to each stack size the enchantment level
+     *
+     * @param bow the stack to check for the enchantment
+     * @param drops to add drops to
+     * @return true if the stack is enchanted with "bow loot"
+     */
     private boolean addLootFromEnchant(ItemStack bow, List<EntityItem> drops){
         int lvl = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowLoot, bow);
         if(lvl>0){
             ItemStack drop;
             for(EntityItem items:drops){
                 drop = items.getEntityItem();
-                if(drop!=null && drop.getMaxStackSize()<drop.stackSize+lvl){
+                if(drop!=null && drop.getMaxStackSize()>=drop.stackSize+lvl){
                     drop.stackSize+=lvl;
-                    items.setEntityItemStack(drop);
                 }
             }
             return true;
