@@ -1,3 +1,10 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.8.0 ==
+* "MinecraftForkage" support
+* More languages (thanks to our contributors)
+* Fixed bow "loot" enchantment
+* Fixed empty left-hand swap animation
+* Fixed multiple pass item rendering color
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.7.0 ==
 * Fix bow breaking in left hand removing right hand item
 * Reduce speed while wearing knight armor
@@ -6,7 +13,7 @@
 * Fix possible crash with flagpole rendering
 * Made 'pick block' more reactive client side
 * Added buckets as usable item in battlemode
-* Silently handle incompatibity with modded skeleton rendering
+* Silently handle incompatibility with modded skeleton rendering
 * Fixed selection highlight/item offset in HUD
 * Added option to disable sheathed item rendering
 * Fixed invalid offset on quiver/sheathed items when wearing armor

@@ -72,6 +72,7 @@ We currently have translation for the following languages (please note that many
 * Chinese 
 * German
 * Spanish
+* Russian
 
 Please feel free to add to this list or update any of the current language files. They can be found in battlegear mod src/minecraft/assets/battlegear2/lang/.
 
