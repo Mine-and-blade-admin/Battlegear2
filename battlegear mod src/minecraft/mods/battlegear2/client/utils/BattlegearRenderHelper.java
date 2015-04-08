@@ -104,7 +104,6 @@ public final class BattlegearRenderHelper {
             int var8 = var18 % 65536;
             int var9 = var18 / 65536;
             OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) var8 / 1.0F, (float) var9 / 1.0F);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
             float var10;
             float var21;
             float var20;
@@ -242,19 +241,13 @@ public final class BattlegearRenderHelper {
                         GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
                     }
                     if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()))){
-	
+
+                        itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
                     	if (offhandRender.getItemToRender().getItem().requiresMultipleRenderPasses()) {
-	                        itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
 	                        for (int x = 1; x < offhandRender.getItemToRender().getItem().getRenderPasses(offhandRender.getItemToRender().getItemDamage()); x++) {
-	                            int var25 = offhandRender.getItemToRender().getItem().getColorFromItemStack(offhandRender.getItemToRender(), x);
-	                            var13 = (float) (var25 >> 16 & 255) / 255.0F;
-	                            var14 = (float) (var25 >> 8 & 255) / 255.0F;
-	                            var15 = (float) (var25 & 255) / 255.0F;
-	                            GL11.glColor4f(var6 * var13, var6 * var14, var6 * var15, 1.0F);
+	                            applyColorFromItemStack(offhandRender.getItemToRender(), x);
 	                            itemRenderer.renderItem(player, offhandRender.getItemToRender(), x);
 	                        }
-	                    } else {
-	                        itemRenderer.renderItem(player, offhandRender.getItemToRender(), 0);
 	                    }
                     }
                     BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()));
@@ -306,28 +299,22 @@ public final class BattlegearRenderHelper {
         offhandRender.setPrevEquippedProgress(offhandRender.getEquippedProgress());
         int slot = mc.thePlayer.inventory.currentItem + InventoryPlayerBattle.WEAPON_SETS;
         EntityPlayer var1 = mc.thePlayer;
-        ItemStack var2 = ((IBattlePlayer)var1).isBattlemode() && offhandRender.getEquippedItemSlot() > 0 ?
-                var1.inventory.getStackInSlot(offhandRender.getEquippedItemSlot()) : dummyStack;
+        ItemStack var2 = ((IBattlePlayer)var1).isBattlemode() ? var1.inventory.getStackInSlot(slot) : dummyStack;
 
-        boolean var3 = offhandRender.getEquippedItemSlot() == slot && var2 == offhandRender.getItemToRender();
+        boolean sameItem = offhandRender.getEquippedItemSlot() == slot && var2 == offhandRender.getItemToRender();
 
         if (offhandRender.getItemToRender() == null && var2 == null) {
-            var3 = true;
+            sameItem = true;
         }
 
         if (var2 != null && offhandRender.getItemToRender() != null &&
                 var2 != offhandRender.getItemToRender() && var2.getItem() == offhandRender.getItemToRender().getItem() &&
                 var2.getItemDamage() == offhandRender.getItemToRender().getItemDamage()) {
             offhandRender.setItemToRender(var2);
-            var3 = true;
+            sameItem = true;
         }
 
-        if(var3) {
-            ItemStack offhand = ((IBattlePlayer) var1).isBattlemode() ? var1.inventory.getStackInSlot(slot) : dummyStack;
-            var3 = (offhandRender.getEquippedItemSlot() == slot && offhand == offhandRender.getItemToRender());
-        }
-
-        float increment = (var3 ? 1.0F : 0.0F) - offhandRender.getEquippedProgress();
+        float increment = (sameItem ? 1.0F : 0.0F) - offhandRender.getEquippedProgress();
 
         if (increment < -PROGRESS_INCREMENT_LIMIT) {
             increment = -PROGRESS_INCREMENT_LIMIT;
@@ -397,11 +384,10 @@ public final class BattlegearRenderHelper {
             RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
             
             GL11.glPushMatrix();
-            if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.Offhand, null)))
-            	modelBipedMain.bipedLeftArm.postRender(RENDER_UNIT);
+            modelBipedMain.bipedLeftArm.postRender(RENDER_UNIT);
             BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.Offhand, null));
         	
-            GL11.glTranslatef(RENDER_UNIT, 0.4375F, RENDER_UNIT);
+            GL11.glTranslatef(RENDER_UNIT, 7*RENDER_UNIT, RENDER_UNIT);
 
             if (par1EntityPlayer.fishEntity != null) {
                 var21 = new ItemStack(Items.stick);
@@ -417,47 +403,38 @@ public final class BattlegearRenderHelper {
             boolean is3D = (customRenderer != null && customRenderer.shouldUseRenderHelper(EQUIPPED, var21, BLOCK_3D));
 
             if(var21.getItem() instanceof IShield){
-                var7 = 0.625F;
+                var7 = 10*RENDER_UNIT;
                 GL11.glScalef(var7, -var7, var7);
 
-                GL11.glTranslated(8F/16F, -11F/16F, -RENDER_UNIT);
+                GL11.glTranslated(8*RENDER_UNIT, -11*RENDER_UNIT, -RENDER_UNIT);
 
-                GL11.glRotatef(-100.0F+90, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(45.0F-90, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(25, 0.0F, 0.0F, 1.0F);
+                GL11.glRotatef(-10.0F, 1.0F, 0.0F, 0.0F);
+                GL11.glRotatef(-45.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(25.0F, 0.0F, 0.0F, 1.0F);
                 if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){
-	                if (var21.getItem().requiresMultipleRenderPasses()) {
-	                    for (int var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
-                            applyColorFromItemStack(var21, var27);
-	                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
-	                    }
-	                } else {
-                        applyColorFromItemStack(var21, 0);
-	                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
-	                }
+                    renderItemAllPasses(par1EntityPlayer, var21);
                 }
             }else{
 
                 if (var21.getItem() instanceof ItemBlock && (is3D || RenderBlocks.renderItemIn3d(Block.getBlockFromItem(var21.getItem()).getRenderType()))) {
-                    var7 = 0.5F;
-                    GL11.glTranslatef(0.0F, 0.1875F, -0.3125F);
-                    var7 *= 0.75F;
+                    GL11.glTranslatef(0.0F, 3*RENDER_UNIT, -5*RENDER_UNIT);
+                    var7 = 0.5F*0.75F;
                     GL11.glRotatef(20.0F, 1.0F, 0.0F, 0.0F);
                     GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
                     GL11.glScalef(-var7, -var7, var7);
                 } else if (BattlegearUtils.isBow(var21.getItem())) {
-                    var7 = 0.625F;
-                    GL11.glTranslatef(0.0F, 0.125F, 0.3125F);
+                    var7 = 10*RENDER_UNIT;
+                    GL11.glTranslatef(0, 2*RENDER_UNIT, 5*RENDER_UNIT);
                     GL11.glRotatef(-20.0F, 0.0F, 1.0F, 0.0F);
                     GL11.glScalef(var7, -var7, var7);
                     GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
                     GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
                 } else if (var21.getItem().isFull3D()) {
-                    var7 = 0.625F;
+                    var7 = 10*RENDER_UNIT;
 
                     if (var21.getItem().shouldRotateAroundWhenRendering()) {
                         GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
-                        GL11.glTranslatef(0.0F, -0.125F, 0.0F);
+                        GL11.glTranslatef(0, -2*RENDER_UNIT, 0);
                     }
 
                     if (par1EntityPlayer.getItemInUseCount() > 0 && var23 == EnumAction.block) {
@@ -467,13 +444,13 @@ public final class BattlegearRenderHelper {
                         GL11.glRotatef(-60.0F, 0.0F, 0.0F, 1.0F);
                     }
 
-                    GL11.glTranslatef(0.0F, 0.1875F, 0.0F);
+                    GL11.glTranslatef(0, 3*RENDER_UNIT, 0);
                     GL11.glScalef(var7, -var7, var7);
                     GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
                     GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
                 } else {
-                    var7 = 0.375F;
-                    GL11.glTranslatef(0.25F, 0.1875F, -0.1875F);
+                    var7 = 6*RENDER_UNIT;
+                    GL11.glTranslatef(4*RENDER_UNIT, 3*RENDER_UNIT, -3*RENDER_UNIT);
                     GL11.glScalef(var7, var7, var7);
                     GL11.glRotatef(60.0F, 0.0F, 0.0F, 1.0F);
                     GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
@@ -481,16 +458,7 @@ public final class BattlegearRenderHelper {
                 }
 
                 if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))){
-    	            
-	                if (var21.getItem().requiresMultipleRenderPasses()) {
-	                    for (int var27 = 0; var27 < var21.getItem().getRenderPasses(var21.getItemDamage()); ++var27) {
-                            applyColorFromItemStack(var21, var27);
-	                        RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, var27);
-	                    }
-	                } else {
-                        applyColorFromItemStack(var21, 0);
-	                    RenderManager.instance.itemRenderer.renderItem(par1EntityPlayer, var21, 0);
-	                }
+                    renderItemAllPasses(par1EntityPlayer, var21);
                 }
             }
             BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.ItemOffhand, var21));
@@ -547,32 +515,23 @@ public final class BattlegearRenderHelper {
                 }else {
                     GL11.glScalef(0.6F, 0.6F, 0.6F);
                 }
-                GL11.glTranslatef(-8F / 16F, 0, 6F / 16F);
+                GL11.glTranslatef(-8*RENDER_UNIT, 0, 6*RENDER_UNIT);
                 GL11.glRotatef(-5F, 0.0F, 0.0F, 1.0F);
                 GL11.glRotatef(130.0F, 0.0F, 1.0F, 0.0F);
-                GL11.glTranslatef(0, 0, 4F/16F - backCount*2F/16F);
+                GL11.glTranslatef(0, 0, 4*RENDER_UNIT - backCount*2*RENDER_UNIT);
                 backCount++;
             }else{
                 GL11.glScalef(0.6F, 0.6F, 0.6F);
-                GL11.glTranslatef(8F/16F, 1, -4F/16F);
+                GL11.glTranslatef(8*RENDER_UNIT, 1, -4*RENDER_UNIT);
                 if(hasChestArmour || hasLegArmour){
-                    GL11.glTranslatef(2F/16F, 0, 0);
+                    GL11.glTranslatef(2*RENDER_UNIT, 0, 0);
                 }
                 GL11.glRotatef(35F, 1.0F, 0.0F, 0.0F);
                 GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
             }
 
             if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, true, mainhandSheathed))){
-    	        
-	            if (mainhandSheathed.getItem().requiresMultipleRenderPasses()) {
-	                for (int var27 = 0; var27 < mainhandSheathed.getItem().getRenderPasses(mainhandSheathed.getItemDamage()); ++var27) {
-                        applyColorFromItemStack(mainhandSheathed, var27);
-	                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, var27);
-	                }
-	            } else {
-                    applyColorFromItemStack(mainhandSheathed, 0);
-	                RenderManager.instance.itemRenderer.renderItem(dummyEntity, mainhandSheathed, 0);
-	            }
+                renderItemAllPasses(dummyEntity, mainhandSheathed);
             }
 
             BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, true, mainhandSheathed));
@@ -602,35 +561,38 @@ public final class BattlegearRenderHelper {
                 }else{
                     GL11.glScalef(-0.6F, 0.6F, 0.6F);
                 }
-                GL11.glTranslatef(-8F / 16F, 0, 6F / 16F);
+                GL11.glTranslatef(-8*RENDER_UNIT, 0, 6*RENDER_UNIT);
                 GL11.glRotatef(-5F, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(40.0F+90, 0.0F, 1.0F, 0.0F);
-                GL11.glTranslatef(0, 0, 4F/16F - backCount*2F/16F);
+                GL11.glRotatef(130F, 0.0F, 1.0F, 0.0F);
+                GL11.glTranslatef(0, 0, 4*RENDER_UNIT - backCount*2*RENDER_UNIT);
                 backCount++;
             }else{
                 GL11.glScalef(0.6F, 0.6F, 0.6F);
-                GL11.glTranslatef(-7F/16F, 1, -4F/16F);
+                GL11.glTranslatef(-7*RENDER_UNIT, 1, -4*RENDER_UNIT);
                 if(hasChestArmour || hasLegArmour){
-                    GL11.glTranslatef(-2F/16F, 0, 0);
+                    GL11.glTranslatef(-2*RENDER_UNIT, 0, 0);
                 }
                 GL11.glRotatef(35F, 1.0F, 0.0F, 0.0F);
                 GL11.glRotatef(40.0F, 0.0F, 1.0F, 0.0F);
             }
             if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, false, offhandSheathed))){
-        	    
-	            if (offhandSheathed.getItem().requiresMultipleRenderPasses()) {
-	                for (int var27 = 0; var27 < offhandSheathed.getItem().getRenderPasses(offhandSheathed.getItemDamage()); ++var27) {
-                        applyColorFromItemStack(offhandSheathed, var27);
-	                    RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, var27);
-	                }
-	            } else {
-                    applyColorFromItemStack(offhandSheathed, 0);
-	                RenderManager.instance.itemRenderer.renderItem(dummyEntity, offhandSheathed, 0);
-	            }
+                renderItemAllPasses(dummyEntity, offhandSheathed);
             }
 
             BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, false, offhandSheathed));
             GL11.glPopMatrix();
+        }
+    }
+
+    public static void renderItemAllPasses(EntityLivingBase livingBase, ItemStack itemStack){
+        if (itemStack.getItem().requiresMultipleRenderPasses()) {
+            for (int var27 = 0; var27 < itemStack.getItem().getRenderPasses(itemStack.getItemDamage()); ++var27) {
+                applyColorFromItemStack(itemStack, var27);
+                RenderManager.instance.itemRenderer.renderItem(livingBase, itemStack, var27);
+            }
+        } else {
+            applyColorFromItemStack(itemStack, 0);
+            RenderManager.instance.itemRenderer.renderItem(livingBase, itemStack, 0);
         }
     }
 
@@ -714,30 +676,29 @@ public final class BattlegearRenderHelper {
 
         GL11.glTranslatef(x + 10.5F, y + 9.5F, 0);
 
-        GL11.glRotatef(pitch, 0.0F, 1.0F, 0.0F);
-        GL11.glRotatef(yaw, 1.0F, 0.0F, 0.0F);
-        GL11.glNormal3f(f10, 0.0F, 0.0F);
+        GL11.glRotatef(pitch, 0, 1, 0);
+        GL11.glRotatef(yaw, 1, 0, 0);
+        GL11.glNormal3f(f10, 0, 0);
 
         double f2 = 12F/32F * depth;
-        double f3 = 0D;
         double f5 = 5 / 32.0F;
         Tessellator tessellator = Tessellator.instance;
         for (int i = 0; i < 2; ++i)
         {
-            GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);
-            GL11.glNormal3f(0.0F, 0.0F, f10);
+            GL11.glRotatef(90, 1, 0, 0);
+            GL11.glNormal3f(0, 0, f10);
             tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, f2, f3);
-            tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, f3, f3);
-            tessellator.addVertexWithUV(16.0D * depth, 2.0D, 0.0D, f3, f5);
-            tessellator.addVertexWithUV(0.0D * depth, 2.0D, 0.0D, f2, f5);
+            tessellator.addVertexWithUV(0, -2, 0, f2, 0);
+            tessellator.addVertexWithUV(16 * depth, -2, 0, 0, 0);
+            tessellator.addVertexWithUV(16 * depth, 2, 0, 0, f5);
+            tessellator.addVertexWithUV(0, 2, 0, f2, f5);
             tessellator.draw();
 
             tessellator.startDrawingQuads();
-            tessellator.addVertexWithUV(0.0D * depth, 2.0D, 0.0D, f2, f5);
-            tessellator.addVertexWithUV(16.0D * depth, 2.0D, 0.0D, f3, f5);
-            tessellator.addVertexWithUV(16.0D * depth, -2.0D, 0.0D, f3, f3);
-            tessellator.addVertexWithUV(0.0D * depth, -2.0D, 0.0D, f2, f3);
+            tessellator.addVertexWithUV(0, 2, 0, f2, f5);
+            tessellator.addVertexWithUV(16 * depth, 2, 0, 0, f5);
+            tessellator.addVertexWithUV(16 * depth, -2, 0, 0, 0);
+            tessellator.addVertexWithUV(0 * depth, -2, 0, f2, 0);
             tessellator.draw();
         }
         GL11.glPopMatrix();
