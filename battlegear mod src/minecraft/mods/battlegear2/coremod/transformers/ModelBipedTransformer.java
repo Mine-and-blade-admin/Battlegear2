@@ -8,38 +8,38 @@ import java.util.Iterator;
 public final class ModelBipedTransformer extends TransformerMethodProcess {
 
     public ModelBipedTransformer() {
-		super("net.minecraft.client.model.ModelBiped","func_78087_a",new String[]{"setRotationAngles", "(FFFFFFLnet/minecraft/entity/Entity;)V"});
-	}
+        super("net.minecraft.client.model.ModelBiped", "func_78087_a", new String[]{"setRotationAngles", "(FFFFFFLnet/minecraft/entity/Entity;)V"});
+    }
 
-	private String modelBipedClassName;
+    private String modelBipedClassName;
     private String entityClassName;
     private String isSneakFieldName;
 
     @Override
     void setupMappings() {
-    	super.setupMappings();
+        super.setupMappings();
         modelBipedClassName = BattlegearTranslator.getMapedClassName("client.model.ModelBiped");
         entityClassName = BattlegearTranslator.getMapedClassName("entity.Entity");
-        isSneakFieldName = BattlegearTranslator.getMapedFieldName("ModelBiped", "field_78117_n", "isSneak");
-	}
-    
+        isSneakFieldName = BattlegearTranslator.getMapedFieldName("field_78117_n", "isSneak");
+    }
+
     @Override
-    void processMethod(MethodNode method){
+    void processMethod(MethodNode method) {
 
         sendPatchLog("setRotationAngles");
         Iterator<AbstractInsnNode> it = method.instructions.iterator();
         AbstractInsnNode nextInsn = null;
         while (it.hasNext()) {
             nextInsn = it.next();
-            if(nextInsn.getOpcode() == ALOAD && ((VarInsnNode) nextInsn).var == 0){
+            if (nextInsn.getOpcode() == ALOAD && ((VarInsnNode) nextInsn).var == 0) {
                 AbstractInsnNode follow = nextInsn.getNext();
-                if(follow.getOpcode() == GETFIELD && ((FieldInsnNode) follow).desc.equals("Z") && ((FieldInsnNode) follow).name.equals(isSneakFieldName)) {
+                if (follow.getOpcode() == GETFIELD && ((FieldInsnNode) follow).desc.equals("Z") && ((FieldInsnNode) follow).name.equals(isSneakFieldName)) {
                     break;
                 }
             }
             nextInsn = null;
         }
-        if(nextInsn!=null) {
+        if (nextInsn != null) {
             InsnList newInsn = new InsnList();
             newInsn.add(new VarInsnNode(ALOAD, 7));
             newInsn.add(new VarInsnNode(ALOAD, 0));

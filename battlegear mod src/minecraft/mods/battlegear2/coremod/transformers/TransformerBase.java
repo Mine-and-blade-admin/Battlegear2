@@ -17,20 +17,21 @@ import java.io.FileOutputStream;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class TransformerBase implements IClassTransformer, Opcodes{
+public abstract class TransformerBase implements IClassTransformer, Opcodes {
     public static final String SIMPLEST_METHOD_DESC = "()V";
     public Logger logger = LogManager.getLogger("battlegear2");
-	protected final String classPath;
-	protected final String unobfClass;
-	public TransformerBase(String classPath){
-		this.classPath = classPath;
-		this.unobfClass = classPath.substring(classPath.lastIndexOf('.')+1);
-	}
-	
-	@Override
-	public byte[] transform(String name, String transformedName, byte[] bytes) {
-		if (transformedName.equals(classPath)) {
-			logger.log(Level.INFO, "M&B - Patching Class "+ unobfClass +" (" + name + ")");
+    protected final String classPath;
+    protected final String unobfClass;
+
+    public TransformerBase(String classPath) {
+        this.classPath = classPath;
+        this.unobfClass = classPath.substring(classPath.lastIndexOf('.') + 1);
+    }
+
+    @Override
+    public byte[] transform(String name, String transformedName, byte[] bytes) {
+        if (transformedName.equals(classPath)) {
+            logger.log(Level.INFO, "M&B - Patching Class " + unobfClass + " (" + name + ")");
 
             ClassReader cr = new ClassReader(bytes);
             ClassNode cn = new ClassNode();
@@ -40,30 +41,31 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
             setupMappings();
             boolean success = processFields(cn.fields) && processMethods(cn.methods);
             addInterface(cn.interfaces);
-            
-			ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+
+            ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
             cn.accept(cw);
 
-            logger.log(success ?Level.INFO:Level.ERROR, "M&B - Patching Class " + unobfClass + (success ? " done" : " FAILED!"));
+            logger.log(success ? Level.INFO : Level.ERROR, "M&B - Patching Class " + unobfClass + (success ? " done" : " FAILED!"));
             if (!success && BattlegearTranslator.debug) {
-                writeClassFile(cw, unobfClass+" ("+name+")");
+                writeClassFile(cw, unobfClass + " (" + name + ")");
             }
-            
-			return cw.toByteArray();
 
-        } else
-            return bytes;
-	}
+            return cw.toByteArray();
 
-	void addInterface(List<String> interfaces) {}
+        }
+        return bytes;
+    }
 
-	abstract boolean processMethods(List<MethodNode> methods);
+    void addInterface(List<String> interfaces) {
+    }
 
-	abstract boolean processFields(List<FieldNode> fields);
+    abstract boolean processMethods(List<MethodNode> methods);
 
-	abstract void setupMappings();
-	
-	public static void writeClassFile(ClassWriter cw, String name) {
+    abstract boolean processFields(List<FieldNode> fields);
+
+    abstract void setupMappings();
+
+    public static void writeClassFile(ClassWriter cw, String name) {
         try {
             File outDir = BattlegearLoadingPlugin.debugOutputLocation;
             outDir.mkdirs();
@@ -76,8 +78,8 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
             e.printStackTrace();
         }
     }
-	
-	public static MethodNode replaceInventoryArrayAccess(MethodNode method, String className, String fieldName, int maxStack, int maxLocal) {
+
+    public static MethodNode replaceInventoryArrayAccess(MethodNode method, String className, String fieldName, int maxStack, int maxLocal) {
         return replaceInventoryArrayAccess(method, className, fieldName, 4, maxStack, maxLocal);
     }
 
@@ -95,7 +97,7 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
                     ((FieldInsnNode) nextNode).owner.equals(className) &&
                     ((FieldInsnNode) nextNode).name.equals(fieldName) &&
                     ((FieldInsnNode) nextNode.getNext()).owner.equals(BattlegearTranslator.getMapedClassName("entity.player.InventoryPlayer")) &&
-                    ((FieldInsnNode) nextNode.getNext()).name.equals(BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a", "mainInventory"))
+                    ((FieldInsnNode) nextNode.getNext()).name.equals(BattlegearTranslator.getMapedFieldName("field_70462_a", "mainInventory"))
                     ) {
 
                 //skip the next 4
@@ -129,25 +131,25 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
         return method;
 
     }
-    
-    public void sendPatchLog(String method){
+
+    public void sendPatchLog(String method) {
         logger.log(Level.INFO, "\tPatching method " + method + " in " + unobfClass);
     }
 
-    public static MethodNode generateSetter(String className, String methodName, String fieldName, String fieldType){
-        MethodNode mn = new MethodNode(ACC_PUBLIC, methodName, "("+fieldType+")V", null, null);
+    public static MethodNode generateSetter(String className, String methodName, String fieldName, String fieldType) {
+        MethodNode mn = new MethodNode(ACC_PUBLIC, methodName, "(" + fieldType + ")V", null, null);
         mn.visitCode();
         mn.visitVarInsn(ALOAD, 0);
         int opCode;
-        if(fieldType.equals("I") || fieldType.equals("Z")){
+        if (fieldType.equals("I") || fieldType.equals("Z")) {
             opCode = ILOAD;
-        }else if(fieldType.equals("L")){
+        } else if (fieldType.equals("L")) {
             opCode = LLOAD;
-        }else if(fieldType.equals("F")){
+        } else if (fieldType.equals("F")) {
             opCode = FLOAD;
-        }else if(fieldType.equals("D")){
+        } else if (fieldType.equals("D")) {
             opCode = DLOAD;
-        }else {
+        } else {
             opCode = ALOAD;
         }
         mn.visitVarInsn(opCode, 1);
@@ -158,21 +160,21 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
         return mn;
     }
 
-    public static MethodNode generateGetter(String className, String methodName, String fieldName, String fieldType){
-        MethodNode mn = new MethodNode(ACC_PUBLIC, methodName, "()"+fieldType, null, null);
+    public static MethodNode generateGetter(String className, String methodName, String fieldName, String fieldType) {
+        MethodNode mn = new MethodNode(ACC_PUBLIC, methodName, "()" + fieldType, null, null);
         mn.visitCode();
         mn.visitVarInsn(ALOAD, 0);
         mn.visitFieldInsn(GETFIELD, className, fieldName, fieldType);
         int opCode;
-        if(fieldType.equals("I")){
+        if (fieldType.equals("I")) {
             opCode = IRETURN;
-        }else if(fieldType.equals("L")){
+        } else if (fieldType.equals("L")) {
             opCode = LRETURN;
-        }else if(fieldType.equals("F")){
+        } else if (fieldType.equals("F")) {
             opCode = FRETURN;
-        }else if(fieldType.equals("D")){
+        } else if (fieldType.equals("D")) {
             opCode = DRETURN;
-        }else {
+        } else {
             opCode = ARETURN;
         }
         mn.visitInsn(opCode);

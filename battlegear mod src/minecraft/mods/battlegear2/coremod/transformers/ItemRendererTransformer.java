@@ -12,10 +12,10 @@ import java.util.List;
 public final class ItemRendererTransformer extends TransformerBase {
 
     public ItemRendererTransformer() {
-		super("net.minecraft.client.renderer.ItemRenderer");
-	}
+        super("net.minecraft.client.renderer.ItemRenderer");
+    }
 
-	private String itemStackClass;
+    private String itemStackClass;
     private String itemRendererClass;
     private String minecraftClass;
     private String itemRendererMinecraftField;
@@ -28,7 +28,7 @@ public final class ItemRendererTransformer extends TransformerBase {
         interfaces.add(Type.getInternalName(IOffhandRender.class));
     }
 
-    private AbstractInsnNode getReturnNode(MethodNode mn){
+    private AbstractInsnNode getReturnNode(MethodNode mn) {
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
         while (it.hasNext()) {
             AbstractInsnNode insn = it.next();
@@ -42,7 +42,7 @@ public final class ItemRendererTransformer extends TransformerBase {
     private void processUpdateEquippedMethod(MethodNode mn) {
         sendPatchLog("updateEquippedItem");
         AbstractInsnNode insnNode = getReturnNode(mn);
-        if(insnNode!=null){
+        if (insnNode != null) {
             InsnList newList = new InsnList();
             newList.add(new VarInsnNode(ALOAD, 0));
             newList.add(new VarInsnNode(ALOAD, 0));
@@ -56,7 +56,7 @@ public final class ItemRendererTransformer extends TransformerBase {
     private void processRenderItemMethod(MethodNode mn) {
         sendPatchLog("renderItemInFirstPerson");
         AbstractInsnNode insnNode = getReturnNode(mn);
-        if(insnNode!=null){
+        if (insnNode != null) {
             InsnList newList = new InsnList();
             newList.add(new VarInsnNode(FLOAD, 1));
             newList.add(new VarInsnNode(ALOAD, 0));
@@ -68,10 +68,10 @@ public final class ItemRendererTransformer extends TransformerBase {
         }
     }
 
-	@Override
-	boolean processMethods(List<MethodNode> methods) {
+    @Override
+    boolean processMethods(List<MethodNode> methods) {
         int found = 0;
-		for (MethodNode mn : methods) {
+        for (MethodNode mn : methods) {
             if (mn.name.equals(renderItem1stPersonMethodName) && mn.desc.equals(renderItem1stPersonMethodDesc)) {
                 processRenderItemMethod(mn);
                 found++;
@@ -80,19 +80,19 @@ public final class ItemRendererTransformer extends TransformerBase {
                 found++;
             }
         }
-        methods.add(methods.size(),generateSetter(itemRendererClass, "setItemToRender", "offHandItemToRender", "L" + itemStackClass + ";"));
-        methods.add(methods.size(),generateSetter(itemRendererClass, "setEquippedItemSlot", "equippedItemOffhandSlot", "I"));
-        methods.add(methods.size(),generateSetter(itemRendererClass, "setEquippedProgress", "equippedOffHandProgress", "F"));
-        methods.add(methods.size(),generateSetter(itemRendererClass, "setPrevEquippedProgress", "prevEquippedOffHandProgress", "F"));
-        methods.add(methods.size(),generateGetter(itemRendererClass, "getItemToRender", "offHandItemToRender", "L" + itemStackClass + ";"));
-        methods.add(methods.size(),generateGetter(itemRendererClass, "getEquippedItemSlot", "equippedItemOffhandSlot", "I"));
-        methods.add(methods.size(),generateGetter(itemRendererClass, "getEquippedProgress", "equippedOffHandProgress", "F"));
-        methods.add(methods.size(),generateGetter(itemRendererClass, "getPrevEquippedProgress", "prevEquippedOffHandProgress", "F"));
+        methods.add(methods.size(), generateSetter(itemRendererClass, "setItemToRender", "offHandItemToRender", "L" + itemStackClass + ";"));
+        methods.add(methods.size(), generateSetter(itemRendererClass, "setEquippedItemSlot", "equippedItemOffhandSlot", "I"));
+        methods.add(methods.size(), generateSetter(itemRendererClass, "setEquippedProgress", "equippedOffHandProgress", "F"));
+        methods.add(methods.size(), generateSetter(itemRendererClass, "setPrevEquippedProgress", "prevEquippedOffHandProgress", "F"));
+        methods.add(methods.size(), generateGetter(itemRendererClass, "getItemToRender", "offHandItemToRender", "L" + itemStackClass + ";"));
+        methods.add(methods.size(), generateGetter(itemRendererClass, "getEquippedItemSlot", "equippedItemOffhandSlot", "I"));
+        methods.add(methods.size(), generateGetter(itemRendererClass, "getEquippedProgress", "equippedOffHandProgress", "F"));
+        methods.add(methods.size(), generateGetter(itemRendererClass, "getPrevEquippedProgress", "prevEquippedOffHandProgress", "F"));
         return found == 2;
-	}
+    }
 
-	@Override
-	boolean processFields(List<FieldNode> fields) {
+    @Override
+    boolean processFields(List<FieldNode> fields) {
         logger.log(Level.INFO, "\tAdding new fields to ItemRenderer");
         fields.add(fields.size(), new FieldNode(ACC_PRIVATE, "offHandItemToRender", "L" + itemStackClass + ";", null, null));
         fields.add(fields.size(), new FieldNode(ACC_PRIVATE, "equippedItemOffhandSlot", "I", null, -1));
@@ -101,17 +101,17 @@ public final class ItemRendererTransformer extends TransformerBase {
         return true;
     }
 
-	@Override
-	void setupMappings() {
-		itemStackClass = BattlegearTranslator.getMapedClassName("item.ItemStack");
+    @Override
+    void setupMappings() {
+        itemStackClass = BattlegearTranslator.getMapedClassName("item.ItemStack");
         itemRendererClass = BattlegearTranslator.getMapedClassName("client.renderer.ItemRenderer");
         minecraftClass = BattlegearTranslator.getMapedClassName("client.Minecraft");
 
-        itemRendererMinecraftField = BattlegearTranslator.getMapedFieldName("ItemRenderer", "field_78455_a", "mc");
+        itemRendererMinecraftField = BattlegearTranslator.getMapedFieldName("field_78455_a", "mc");
 
-        renderItem1stPersonMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78440_a", "renderItemInFirstPerson");
-        renderItem1stPersonMethodDesc = BattlegearTranslator.getMapedMethodDesc("ItemRenderer", "func_78440_a", "(F)V");
+        renderItem1stPersonMethodName = BattlegearTranslator.getMapedMethodName("func_78440_a", "renderItemInFirstPerson");
+        renderItem1stPersonMethodDesc = "(F)V";
 
-        updateEquippedItemMethodName = BattlegearTranslator.getMapedMethodName("ItemRenderer", "func_78441_a", "updateEquippedItem");
-	}
+        updateEquippedItemMethodName = BattlegearTranslator.getMapedMethodName("func_78441_a", "updateEquippedItem");
+    }
 }

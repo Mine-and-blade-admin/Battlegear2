@@ -8,10 +8,10 @@ import java.util.Iterator;
 public final class ItemInWorldTransformer extends TransformerMethodProcess {
 
     public ItemInWorldTransformer() {
-		super("net.minecraft.server.management.ItemInWorldManager", "func_73085_a", new String[]{"tryUseItem", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"});
-	}
+        super("net.minecraft.server.management.ItemInWorldManager", "func_73085_a", new String[]{"tryUseItem", "(Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/world/World;Lnet/minecraft/item/ItemStack;)Z"});
+    }
 
-	private String entityPlayerClassName;
+    private String entityPlayerClassName;
     private String inventoryPlayerClassName;
     private String itemStackClassName;
 
@@ -21,8 +21,8 @@ public final class ItemInWorldTransformer extends TransformerMethodProcess {
     private String setInventorySlotMethodName;
     private String setInventorySlotMethodDesc;
 
-	@Override
-	void processMethod(MethodNode mn) {
+    @Override
+    void processMethod(MethodNode mn) {
         sendPatchLog("tryUseItem");
         replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 5, 7);
 
@@ -47,24 +47,23 @@ public final class ItemInWorldTransformer extends TransformerMethodProcess {
         }
 
         mn.instructions = newList;
-	}
+    }
 
-	@Override
-	void setupMappings() {
-		super.setupMappings();
-		entityPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer");
+    @Override
+    void setupMappings() {
+        super.setupMappings();
+        entityPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer");
         inventoryPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.InventoryPlayer");
         itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
 
         playerInventoryFieldName =
-                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
+                BattlegearTranslator.getMapedFieldName("field_71071_by", "inventory");
         mainInventoryArrayFieldName =
-                BattlegearTranslator.getMapedFieldName("InventoryPlayer", "field_70462_a", "mainInventory");
+                BattlegearTranslator.getMapedFieldName("field_70462_a", "mainInventory");
 
         setInventorySlotMethodName =
-                BattlegearTranslator.getMapedMethodName("InventoryPlayer", "func_70299_a", "setInventorySlotContents");
-        setInventorySlotMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("InventoryPlayer", "func_70299_a", "(IL"+itemStackClassName+";)V");
-	}
+                BattlegearTranslator.getMapedMethodName("func_70299_a", "setInventorySlotContents");
+        setInventorySlotMethodDesc = "(IL" + itemStackClassName + ";)V";
+    }
 
 }

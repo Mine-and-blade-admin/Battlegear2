@@ -9,10 +9,10 @@ import java.util.ListIterator;
 public final class NetClientHandlerTransformer extends TransformerBase {
 
     public NetClientHandlerTransformer() {
-		super("net.minecraft.client.network.NetHandlerPlayClient");
-	}
+        super("net.minecraft.client.network.NetHandlerPlayClient");
+    }
 
-	private String entityOtherPlayerMPClassName;
+    private String entityOtherPlayerMPClassName;
     private String playerInventoryFieldName;
 
     private String netClientHandlerHandleNamedEntitySpawnMethodName;
@@ -22,7 +22,7 @@ public final class NetClientHandlerTransformer extends TransformerBase {
     private String netClientHandlerHandleBlockItemSwitchMethodDesc;
 
     @Override
-	boolean processMethods(List<MethodNode> methods) {
+    boolean processMethods(List<MethodNode> methods) {
         int found = 0;
         for (MethodNode method : methods) {
             if (method.name.equals(netClientHandlerHandleNamedEntitySpawnMethodName) &&
@@ -31,29 +31,29 @@ public final class NetClientHandlerTransformer extends TransformerBase {
 
                 replaceInventoryArrayAccess(method, entityOtherPlayerMPClassName, playerInventoryFieldName, 9, 14);
                 found++;
-            }else if (method.name.equals(netClientHandlerHandleBlockItemSwitchMethodName) &&
+            } else if (method.name.equals(netClientHandlerHandleBlockItemSwitchMethodName) &&
                     method.desc.equals(netClientHandlerHandleBlockItemSwitchMethodDesc)) {
                 sendPatchLog("handleHeldItemChange");
 
                 ListIterator<AbstractInsnNode> insn = method.instructions.iterator();
                 InsnList newList = new InsnList();
 
-                while(insn.hasNext()){
+                while (insn.hasNext()) {
 
                     AbstractInsnNode nextNode = insn.next();
 
-                    if(nextNode instanceof JumpInsnNode && nextNode.getOpcode() == IFLT){
+                    if (nextNode instanceof JumpInsnNode && nextNode.getOpcode() == IFLT) {
                         LabelNode label = ((JumpInsnNode) nextNode).label;
                         newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/InventoryPlayerBattle", "isValidSwitch", "(I)Z"));
                         newList.add(new JumpInsnNode(IFEQ, label));//"if equal" branch
 
                         found++;
                         nextNode = insn.next();
-                        while(insn.hasNext() && !(nextNode instanceof JumpInsnNode) && nextNode.getOpcode() != IF_ICMPGE){
+                        while (insn.hasNext() && !(nextNode instanceof JumpInsnNode) && nextNode.getOpcode() != IF_ICMPGE) {
                             nextNode = insn.next();//continue till "if int greater than or equal to" branch
                         }
 
-                    }else{
+                    } else {
                         newList.add(nextNode);
                     }
 
@@ -65,26 +65,24 @@ public final class NetClientHandlerTransformer extends TransformerBase {
         return found == 2;
     }
 
-	@Override
-	boolean processFields(List<FieldNode> fields) {
-		return true;
-	}
+    @Override
+    boolean processFields(List<FieldNode> fields) {
+        return true;
+    }
 
-	@Override
-	void setupMappings() {
+    @Override
+    void setupMappings() {
 
         entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("client.entity.EntityOtherPlayerMP");
-        playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
+        playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("field_71071_by", "inventory");
 
         netClientHandlerHandleNamedEntitySpawnMethodName =
-                BattlegearTranslator.getMapedMethodName("NetHandlerPlayClient", "func_147237_a", "handleSpawnPlayer");
-        netClientHandlerHandleNamedEntitySpawnMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("NetHandlerPlayClient", "func_147237_a", "(Lnet/minecraft/network/play/server/S0CPacketSpawnPlayer;)V");
+                BattlegearTranslator.getMapedMethodName("func_147237_a", "handleSpawnPlayer");
+        netClientHandlerHandleNamedEntitySpawnMethodDesc = "(Lnet/minecraft/network/play/server/S0CPacketSpawnPlayer;)V";
 
         netClientHandlerHandleBlockItemSwitchMethodName =
-                BattlegearTranslator.getMapedMethodName("NetHandlerPlayClient", "func_147257_a", "handleHeldItemChange");
-        netClientHandlerHandleBlockItemSwitchMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("NetHandlerPlayClient", "func_147257_a", "(Lnet/minecraft/network/play/server/S09PacketHeldItemChange;)V");
-	}
+                BattlegearTranslator.getMapedMethodName("func_147257_a", "handleHeldItemChange");
+        netClientHandlerHandleBlockItemSwitchMethodDesc = "(Lnet/minecraft/network/play/server/S09PacketHeldItemChange;)V";
+    }
 
 }

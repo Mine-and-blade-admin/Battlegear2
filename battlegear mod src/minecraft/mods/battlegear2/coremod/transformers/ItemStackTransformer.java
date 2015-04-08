@@ -5,10 +5,11 @@ import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 
-public final class ItemStackTransformer extends TransformerMethodProcess{
+public final class ItemStackTransformer extends TransformerMethodProcess {
     private String entityPlayerClassName;
     private String itemStackClassName;
     private String destroyMethodName;
+
     public ItemStackTransformer() {
         super("net.minecraft.item.ItemStack", "func_77972_a", new String[]{"damageItem", "(ILnet/minecraft/entity/EntityLivingBase;)V"});
     }
@@ -21,11 +22,11 @@ public final class ItemStackTransformer extends TransformerMethodProcess{
 
         while (it.hasNext()) {
             AbstractInsnNode node = it.next();
-            if(node instanceof MethodInsnNode && node.getOpcode() == INVOKEVIRTUAL){
+            if (node instanceof MethodInsnNode && node.getOpcode() == INVOKEVIRTUAL) {
                 MethodInsnNode methNode = (MethodInsnNode) node;
-                if(methNode.owner.equals(entityPlayerClassName) && methNode.name.equals(destroyMethodName) && methNode.desc.equals(SIMPLEST_METHOD_DESC)){
+                if (methNode.owner.equals(entityPlayerClassName) && methNode.name.equals(destroyMethodName) && methNode.desc.equals(SIMPLEST_METHOD_DESC)) {
                     newList.add(new VarInsnNode(ALOAD, 0));
-                    newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "onBowStackDepleted", "(L"+entityPlayerClassName+";L"+itemStackClassName+";)V"));
+                    newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/api/core/BattlegearUtils", "onBowStackDepleted", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
                     continue;
                 }
             }
@@ -39,6 +40,6 @@ public final class ItemStackTransformer extends TransformerMethodProcess{
         super.setupMappings();
         entityPlayerClassName = BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer");
         itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
-        destroyMethodName = BattlegearTranslator.getMapedMethodName("EntityPlayer", "func_71028_bD", "destroyCurrentEquippedItem");
+        destroyMethodName = BattlegearTranslator.getMapedMethodName("func_71028_bD", "destroyCurrentEquippedItem");
     }
 }

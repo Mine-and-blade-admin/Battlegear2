@@ -9,8 +9,8 @@ import java.util.List;
 public final class EntityOtherPlayerMPTransformer extends TransformerBase {
 
     public EntityOtherPlayerMPTransformer() {
-		super("net.minecraft.client.entity.EntityOtherPlayerMP");
-	}
+        super("net.minecraft.client.entity.EntityOtherPlayerMP");
+    }
 
     private String entityOtherPlayerMPClassName;
     private String playerInventoryFieldName;
@@ -22,39 +22,39 @@ public final class EntityOtherPlayerMPTransformer extends TransformerBase {
 
     private void processOnUpdateMethod2(MethodNode mn) {
 
-    	sendPatchLog("onUpdate");
+        sendPatchLog("onUpdate");
         InsnList newList = new InsnList();
 
         Iterator<AbstractInsnNode> it = mn.instructions.iterator();
 
         boolean done = false;
-        while(it.hasNext() && !done){
+        while (it.hasNext() && !done) {
             AbstractInsnNode node = it.next();
             if (node instanceof FieldInsnNode &&
                     node.getOpcode() == PUTFIELD &&
                     ((FieldInsnNode) node).owner.equals(entityOtherPlayerMPClassName) &&
-                    ((FieldInsnNode) node).name.equals(limbSwingFieldName)){
+                    ((FieldInsnNode) node).name.equals(limbSwingFieldName)) {
                 newList.add(node);
                 newList.add(new VarInsnNode(ALOAD, 0));
                 newList.add(new VarInsnNode(ALOAD, 0));
                 newList.add(new VarInsnNode(ALOAD, 0));
 
                 newList.add(new FieldInsnNode(GETFIELD, entityOtherPlayerMPClassName, isItemInUseFieldName, "Z"));
-                newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearClientUtils", "entityOtherPlayerIsItemInUseHook", "(L"+entityOtherPlayerMPClassName+";Z)Z"));
+                newList.add(new MethodInsnNode(INVOKESTATIC, "mods/battlegear2/client/utils/BattlegearClientUtils", "entityOtherPlayerIsItemInUseHook", "(L" + entityOtherPlayerMPClassName + ";Z)Z"));
                 newList.add(new FieldInsnNode(PUTFIELD, entityOtherPlayerMPClassName, isItemInUseFieldName, "Z"));
 
                 node = it.next();
-                while(!(node instanceof InsnNode && node.getOpcode() == RETURN)){
-                	node = it.next();
+                while (!(node instanceof InsnNode && node.getOpcode() == RETURN)) {
+                    node = it.next();
                 }
-            	newList.add(node);
-                while(it.hasNext()){
-                	node = it.next();
-                	newList.add(node);
+                newList.add(node);
+                while (it.hasNext()) {
+                    node = it.next();
+                    newList.add(node);
                 }
 
                 done = true;
-            }else{
+            } else {
                 newList.add(node);
             }
 
@@ -64,13 +64,13 @@ public final class EntityOtherPlayerMPTransformer extends TransformerBase {
 
     private void processSetCurrentItemMethod(MethodNode mn) {
         sendPatchLog("setCurrentItem");
-        replaceInventoryArrayAccess(mn, entityOtherPlayerMPClassName, playerInventoryFieldName, 4,3,3);
+        replaceInventoryArrayAccess(mn, entityOtherPlayerMPClassName, playerInventoryFieldName, 4, 3, 3);
     }
 
-	@Override
-	boolean processMethods(List<MethodNode> methods) {
+    @Override
+    boolean processMethods(List<MethodNode> methods) {
         int found = 0;
-		for (MethodNode mn : methods) {
+        for (MethodNode mn : methods) {
             if (mn.name.equals(setCurrentItemMethodName) && mn.desc.equals(setCurrentItemMethodDesc)) {
                 processSetCurrentItemMethod(mn);
                 found++;
@@ -81,29 +81,28 @@ public final class EntityOtherPlayerMPTransformer extends TransformerBase {
                 found++;
             }
         }
-        return found==2;
-	}
+        return found == 2;
+    }
 
-	@Override
-	boolean processFields(List<FieldNode> fields) {
-		return true;
-	}
+    @Override
+    boolean processFields(List<FieldNode> fields) {
+        return true;
+    }
 
-	@Override
-	void setupMappings() {
+    @Override
+    void setupMappings() {
         String itemStackClassName = BattlegearTranslator.getMapedClassName("item.ItemStack");
         entityOtherPlayerMPClassName = BattlegearTranslator.getMapedClassName("client.entity.EntityOtherPlayerMP");
 
-        isItemInUseFieldName = BattlegearTranslator.getMapedFieldName("EntityOtherPlayerMP", "field_71186_a", "isItemInUse");
-        limbSwingFieldName = BattlegearTranslator.getMapedFieldName("EntityLivingBase", "field_70754_ba", "limbSwing");
+        isItemInUseFieldName = BattlegearTranslator.getMapedFieldName("field_71186_a", "isItemInUse");
+        limbSwingFieldName = BattlegearTranslator.getMapedFieldName("field_70754_ba", "limbSwing");
         playerInventoryFieldName =
-                BattlegearTranslator.getMapedFieldName("EntityPlayer", "field_71071_by", "inventory");
+                BattlegearTranslator.getMapedFieldName("field_71071_by", "inventory");
 
         setCurrentItemMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70062_b", "setCurrentItemOrArmor");
-        setCurrentItemMethodDesc =
-                BattlegearTranslator.getMapedMethodDesc("EntityOtherPlayerMP", "func_70062_b", "(IL"+itemStackClassName+";)V");
+                BattlegearTranslator.getMapedMethodName("func_70062_b", "setCurrentItemOrArmor");
+        setCurrentItemMethodDesc = "(IL" + itemStackClassName + ";)V";
         onUpdateMethodName =
-                BattlegearTranslator.getMapedMethodName("EntityOtherPlayerMP", "func_70071_h_", "onUpdate");
-	}
+                BattlegearTranslator.getMapedMethodName("func_70071_h_", "onUpdate");
+    }
 }
