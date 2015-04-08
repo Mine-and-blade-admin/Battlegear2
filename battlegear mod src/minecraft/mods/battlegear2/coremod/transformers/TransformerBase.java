@@ -41,13 +41,14 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes{
             boolean success = processFields(cn.fields) && processMethods(cn.methods);
             addInterface(cn.interfaces);
             
-			ClassWriter cw = new ClassWriter(0);
+			ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS);
             cn.accept(cw);
 
             logger.log(success ?Level.INFO:Level.ERROR, "M&B - Patching Class " + unobfClass + (success ? " done" : " FAILED!"));
             if (!success && BattlegearTranslator.debug) {
                 writeClassFile(cw, unobfClass+" ("+name+")");
             }
+            
 			return cw.toByteArray();
 
         } else

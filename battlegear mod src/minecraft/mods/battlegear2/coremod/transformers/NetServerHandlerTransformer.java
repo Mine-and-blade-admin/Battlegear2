@@ -2,6 +2,8 @@ package mods.battlegear2.coremod.transformers;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import mods.battlegear2.api.core.BattlegearTranslator;
+import net.minecraft.launchwrapper.Launch;
+
 import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
@@ -86,7 +88,7 @@ public final class NetServerHandlerTransformer extends TransformerBase {
                         nextNode = it.next();
                     }
 
-    //BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));
+    //BattlegearUtils.setPlayerCurrentItem(playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem().copy()));
                     newList.add(new VarInsnNode(ALOAD, 0));
                     newList.add(new FieldInsnNode(GETFIELD, netServiceHandelerClassName, netServiceHandelerPlayerField, "L" + entityPlayerMPClassName + ";"));
                     newList.add(new FieldInsnNode(GETFIELD, entityPlayerMPClassName, playerInventoryFieldName, "L" + inventoryPlayerClassName + ";"));
@@ -96,7 +98,8 @@ public final class NetServerHandlerTransformer extends TransformerBase {
                             "mods/battlegear2/api/core/BattlegearUtils",
                             "setPlayerCurrentItem", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
                     
-                    if(!FMLCommonHandler.instance().getModName().contains("mcpc")){//MCPC already adds a fix for this
+                    // MCPC and Minecraft Forkage already add fixes for this
+                    if(!FMLCommonHandler.instance().getModName().contains("mcpc") && !Launch.blackboard.containsKey("IsForkage")){
 	                    int slotIndex = 0;
                         while(it.hasNext()){
 	                    	nextNode = it.next();
@@ -112,6 +115,7 @@ public final class NetServerHandlerTransformer extends TransformerBase {
                         if(nextNode instanceof LineNumberNode && slotIndex!=0) {
                             int line = ((LineNumberNode) nextNode).line;
                             LabelNode L0 = new LabelNode();
+                            // if(slot == null) return;
                             newList.add(new VarInsnNode(ALOAD, slotIndex));
                             newList.add(new JumpInsnNode(IFNONNULL, L0));
                             newList.add(new InsnNode(RETURN));
