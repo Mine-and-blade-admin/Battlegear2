@@ -1,7 +1,7 @@
 package mods.battlegear2.api;
 
 /**
- * Soon:
+ * CANCELLED:
  * Utility to use one of the default Battlegear2 renderer
  * Implement in an item to get its renderer automatically registered
  * This is obviously client-side only

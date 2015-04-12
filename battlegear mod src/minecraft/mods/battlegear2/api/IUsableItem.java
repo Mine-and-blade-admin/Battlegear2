@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
  * Note: For more flexibility over your item usage in left hand
  * @see mods.battlegear2.api.PlayerEventChild.UseOffhandItemEvent
  * @see mods.battlegear2.api.PlayerEventChild.OffhandAttackEvent
+ * @see IOffhandListener
  */
 public interface IUsableItem {
     /**
