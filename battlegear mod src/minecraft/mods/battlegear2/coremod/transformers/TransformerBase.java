@@ -18,14 +18,21 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class TransformerBase implements IClassTransformer, Opcodes {
+    public static final String UTILITY_CLASS = "mods/battlegear2/api/core/BattlegearUtils";
     public static final String SIMPLEST_METHOD_DESC = "()V";
     public Logger logger = LogManager.getLogger("battlegear2");
     protected final String classPath;
     protected final String unobfClass;
+    private boolean skipDebug;
 
     public TransformerBase(String classPath) {
         this.classPath = classPath;
         this.unobfClass = classPath.substring(classPath.lastIndexOf('.') + 1);
+        setDebug(false);
+    }
+
+    protected final void setDebug(boolean debug){
+        this.skipDebug = !debug;
     }
 
     @Override
@@ -36,7 +43,7 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes {
             ClassReader cr = new ClassReader(bytes);
             ClassNode cn = new ClassNode();
 
-            cr.accept(cn, 0);
+            cr.accept(cn, skipDebug ? ClassReader.SKIP_DEBUG : 0);
 
             setupMappings();
             boolean success = processFields(cn.fields) && processMethods(cn.methods);
@@ -113,7 +120,7 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes {
 
                 //Add New
                 newList.add(new MethodInsnNode(INVOKESTATIC,
-                        "mods/battlegear2/api/core/BattlegearUtils",
+                        UTILITY_CLASS,
                         "setPlayerCurrentItem",
                         "(L" + BattlegearTranslator.getMapedClassName("entity.player.EntityPlayer") +
                                 ";L" + BattlegearTranslator.getMapedClassName("item.ItemStack") + ";)V"));
@@ -166,7 +173,7 @@ public abstract class TransformerBase implements IClassTransformer, Opcodes {
         mn.visitVarInsn(ALOAD, 0);
         mn.visitFieldInsn(GETFIELD, className, fieldName, fieldType);
         int opCode;
-        if (fieldType.equals("I")) {
+        if (fieldType.equals("I") || fieldType.equals("Z")) {
             opCode = IRETURN;
         } else if (fieldType.equals("L")) {
             opCode = LRETURN;

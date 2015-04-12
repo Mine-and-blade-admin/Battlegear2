@@ -12,6 +12,7 @@ public final class NetServerHandlerTransformer extends TransformerBase {
 
     public NetServerHandlerTransformer() {
         super("net.minecraft.network.NetHandlerPlayServer");
+        setDebug(true);
     }
 
     private String packet16BlockItemSwitchClassName;
@@ -74,7 +75,7 @@ public final class NetServerHandlerTransformer extends TransformerBase {
 
                     newList.add(nextNode);
                     newList.add(new MethodInsnNode(INVOKESTATIC,
-                            "mods/battlegear2/api/core/BattlegearUtils",
+                            UTILITY_CLASS,
                             "setPlayerCurrentItem",
                             "(L" + entityPlayerClassName +
                                     ";L" + itemStackClassName + ";)V"));
@@ -94,7 +95,7 @@ public final class NetServerHandlerTransformer extends TransformerBase {
                     newList.add(new MethodInsnNode(INVOKEVIRTUAL, inventoryPlayerClassName, inventoryGetCurrentMethodName, inventoryGetCurrentMethodDesc));
                     newList.add(new MethodInsnNode(INVOKESTATIC, itemStackClassName, itemStackCopyStackMethodName, itemStackCopyStackMethodDesc));
                     newList.add(new MethodInsnNode(INVOKESTATIC,
-                            "mods/battlegear2/api/core/BattlegearUtils",
+                            UTILITY_CLASS,
                             "setPlayerCurrentItem", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
 
                     // MCPC and Minecraft Forkage already add fixes for this
