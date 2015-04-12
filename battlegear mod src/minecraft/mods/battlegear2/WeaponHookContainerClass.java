@@ -1,9 +1,11 @@
 package mods.battlegear2;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.weapons.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -11,7 +13,9 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import java.util.Map;
 
@@ -52,17 +56,9 @@ public final class WeaponHookContainerClass {
                 if(stack!=null)
                 {
                     boolean hit=false;
-                    if(stack.getItem() instanceof IPenetrateWeapon)
-                    {
-                        //Attack using the "generic" damage type (ignores armour)
-                        entityHit.attackEntityFrom(DamageSource.generic, ((IPenetrateWeapon)stack.getItem()).getPenetratingPower(stack));
-                        hit=true;
-                    }
                     if(stack.getItem() instanceof IBackStabbable)
                     {
-                        boolean tempHit = performBackStab(stack.getItem(), entityHit, entityHitting);
-                        if(!hit)
-                            hit = tempHit;
+                        hit = performBackStab(stack.getItem(), entityHit, entityHitting);
                     }
                     if(stack.getItem() instanceof ISpecialEffect)
                     {
@@ -74,24 +70,53 @@ public final class WeaponHookContainerClass {
                     {
                         performEffects(((IPotionEffect)stack.getItem()).getEffectsOnHit(entityHit, entityHitting), entityHit);
                     }
-                    if(stack.getItem() instanceof IHitTimeModifier)
-                    {
-                        int timeModifier = ((IHitTimeModifier)stack.getItem()).getHitTime(stack, entityHit);
-                        //If the hurt resistance time is under the modified hurt resistance time, set it to the modified hurt resistance time
-                        if(entityHit.hurtResistantTime < (float)(entityHit.maxHurtResistantTime) * (0.5) + timeModifier){
-                            entityHit.hurtResistantTime += timeModifier;
-                        }else{ //if not cancel the attack
-                            event.setCanceled(true);
+                    if(!entityHit.worldObj.isRemote) {
+                        if (stack.getItem() instanceof IHitTimeModifier) {
+                            if (entityHit.hurtResistantTime > entityHit.maxHurtResistantTime * 0.5F) {//Hit shield is in effect
+                                int timeModifier = ((IHitTimeModifier) stack.getItem()).getHitTime(stack, entityHit);
+                                boolean apply = timeModifier!=0;
+                                //If the shield is supposed to be reduced, don't re-apply the effect every time
+                                if (timeModifier < 0 && entityHit.getAITarget() == entityHitting && entityHit.ticksExisted - entityHit.func_142015_aE() < -timeModifier) {
+                                    apply = false;
+                                }
+                                //Apply hit shield modifier
+                                if (apply) {
+                                    entityHit.hurtResistantTime += timeModifier;
+                                    if (entityHit.hurtResistantTime < 0)
+                                        entityHit.hurtResistantTime = 0;
+                                }
+                            }
+                        } else if (hit) {
+                            //Re-apply the saved values
+                            entityHit.hurtTime = hurtTimeTemp;
+                            entityHit.hurtResistantTime = hurtResistanceTimeTemp;
                         }
-                    }
-                    else if(hit)
-                    {
-                        //Re-apply the saved values
-                        entityHit.hurtTime = hurtTimeTemp;
-                        entityHit.hurtResistantTime = hurtResistanceTimeTemp;
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void onLivingHurt(LivingHurtEvent hurt){
+        if(hurt.source.getEntity() instanceof EntityLivingBase && hurt.source instanceof EntityDamageSource){
+            ItemStack itemStack = ((EntityLivingBase) hurt.source.getEntity()).getHeldItem();
+            if(itemStack!=null && itemStack.getItem() instanceof IPenetrateWeapon) {
+                //Attack using the "generic" damage type (ignores armour)
+                hurt.entityLiving.attackEntityFrom(DamageSource.generic, ((IPenetrateWeapon) itemStack.getItem()).getPenetratingPower(itemStack));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onLivingConstructor(EntityEvent.EntityConstructing constructing){
+        if(constructing.entity instanceof EntityLivingBase){
+            BaseAttributeMap attributeMap = ((EntityLivingBase) constructing.entity).getAttributeMap();
+            attributeMap.registerAttribute(Attributes.armourPenetrate);
+            attributeMap.registerAttribute(Attributes.daze);
+            attributeMap.registerAttribute(Attributes.extendedReach);
+            attributeMap.registerAttribute(Attributes.attackSpeed);
+            attributeMap.registerAttribute(Attributes.mountedBonus);
         }
     }
 
