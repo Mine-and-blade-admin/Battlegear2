@@ -1,5 +1,6 @@
 package mods.battlegear2;
 
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
@@ -36,7 +37,7 @@ public final class MobHookContainerClass {
      *
      * Move arrows position slightly to the left when fired from a bow in left hand
      */
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onEntityJoinWorld(EntityJoinWorldEvent event){
         if(event.entity instanceof EntitySkeleton){
 
