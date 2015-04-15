@@ -72,7 +72,7 @@ public final class WeaponHookContainerClass {
                     }
                     if(!entityHit.worldObj.isRemote) {
                         if (stack.getItem() instanceof IHitTimeModifier) {
-                            if (entityHit.hurtResistantTime > entityHit.maxHurtResistantTime * 0.5F) {//Hit shield is in effect
+                            if (hurtResistanceTimeTemp > entityHit.maxHurtResistantTime * 0.5F) {//Hit shield is in effect
                                 int timeModifier = ((IHitTimeModifier) stack.getItem()).getHitTime(stack, entityHit);
                                 boolean apply = timeModifier!=0;
                                 //If the shield is supposed to be reduced, don't re-apply the effect every time
@@ -81,7 +81,7 @@ public final class WeaponHookContainerClass {
                                 }
                                 //Apply hit shield modifier
                                 if (apply) {
-                                    entityHit.hurtResistantTime += timeModifier;
+                                    entityHit.hurtResistantTime = hurtResistanceTimeTemp + timeModifier;
                                     if (entityHit.hurtResistantTime < 0)
                                         entityHit.hurtResistantTime = 0;
                                 }
@@ -97,17 +97,36 @@ public final class WeaponHookContainerClass {
         }
     }
 
+    /**
+     * Additional damage sources:
+     * {@code Battlegear#CUSTOM_DAMAGE_SOURCE+".mounted"} to apply mounted bonus attribute
+     * {@code DamageSource#generic} for penetrative weapons
+     */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onLivingHurt(LivingHurtEvent hurt){
-        if(hurt.source.getEntity() instanceof EntityLivingBase && hurt.source instanceof EntityDamageSource){
+        if(hurt.source.getEntity() instanceof EntityLivingBase && hurt.source instanceof EntityDamageSource && hurt.entityLiving.hurtTime == 0){
+
+            final int hurtResistanceTimeTemp = hurt.entityLiving.hurtResistantTime;
+            if(!hurt.source.damageType.startsWith(Battlegear.CUSTOM_DAMAGE_SOURCE) && hurt.source.getEntity().isRiding()) {
+                float damage = (float) ((EntityLivingBase) hurt.source.getEntity()).getEntityAttribute(Attributes.mountedBonus).getAttributeValue();
+                if(damage>0){
+                    hurt.entityLiving.hurtResistantTime = 0;
+                    hurt.entityLiving.attackEntityFrom(new EntityDamageSource(Battlegear.CUSTOM_DAMAGE_SOURCE+".mounted", hurt.source.getEntity()), damage);
+                }
+            }
             ItemStack itemStack = ((EntityLivingBase) hurt.source.getEntity()).getHeldItem();
             if(itemStack!=null && itemStack.getItem() instanceof IPenetrateWeapon) {
+                hurt.entityLiving.hurtResistantTime = 0;
                 //Attack using the "generic" damage type (ignores armour)
                 hurt.entityLiving.attackEntityFrom(DamageSource.generic, ((IPenetrateWeapon) itemStack.getItem()).getPenetratingPower(itemStack));
             }
+            hurt.entityLiving.hurtResistantTime = hurtResistanceTimeTemp;
         }
     }
 
+    /**
+     * Register the custom attributes
+     */
     @SubscribeEvent
     public void onLivingConstructor(EntityEvent.EntityConstructing constructing){
         if(constructing.entity instanceof EntityLivingBase){

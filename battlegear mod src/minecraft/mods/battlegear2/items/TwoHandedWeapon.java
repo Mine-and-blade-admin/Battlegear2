@@ -11,13 +11,7 @@ public class TwoHandedWeapon extends ItemWeapon{
 	public TwoHandedWeapon(ToolMaterial material, String named) {
 		super(material, named);
 	}
-	
-	@Override
-	public EnumAction getItemUseAction(ItemStack par1ItemStack)
-    {
-        return EnumAction.none;
-    }
-	
+
 	@Override
 	public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
 		return offhand == null;

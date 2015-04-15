@@ -4,23 +4,20 @@ import com.google.common.collect.Multimap;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.IBackSheathedRender;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
-import mods.battlegear2.api.weapons.ISpecialEffect;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.lwjgl.opengl.GL11;
 
-public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,ISpecialEffect,IBackSheathedRender {
+public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,IBackSheathedRender {
 
     //Will make it one more than a sword
     private final int mounted_extra_damage;
@@ -60,19 +57,20 @@ public class ItemSpear extends TwoHandedWeapon implements IExtendedReachWeapon,I
     }
 
     @Override
+    public EnumAction getItemUseAction(ItemStack par1ItemStack){
+        return EnumAction.none;
+    }
+
+    @Override
+    public int getMaxItemUseDuration(ItemStack itemStack){
+        return 0;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public void registerIcons(IIconRegister par1IconRegister) {
         super.registerIcons(par1IconRegister);
         bigIcon = par1IconRegister.registerIcon(this.getIconString()+".big");
-    }
-
-    @Override
-    public boolean performEffects(EntityLivingBase entityHit, EntityLivingBase entityHitting) {
-        if(entityHitting.isRiding() || entityHitting.isSprinting()){
-            entityHit.attackEntityFrom(new EntityDamageSource(Battlegear.CUSTOM_DAMAGE_SOURCE+".mounted", entityHitting), mounted_extra_damage);
-            return true;
-        }
-        return false;
     }
 
     @Override
