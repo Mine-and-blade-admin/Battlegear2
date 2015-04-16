@@ -4,6 +4,9 @@
 * Fixed bow "loot" enchantment
 * Fixed empty left-hand swap animation
 * Fixed multiple pass item rendering color
+* Applied "weapon.mountedBonus" as a generic attribute
+* Registered "weapon.penetrateArmor", "weapon.daze", "weapon.attackSpeed" as dummy generic attributes (no-op)
+* Registered "weapon.extendedReach" as dummy player attribute (no-op)
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.7.0 ==
 * Fix bow breaking in left hand removing right hand item

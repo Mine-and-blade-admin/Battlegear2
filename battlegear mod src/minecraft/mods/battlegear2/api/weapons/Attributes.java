@@ -18,7 +18,7 @@ public interface Attributes {
     RangedAttribute daze = new RangedAttribute("weapon.daze", 3.0D, 0.0D, Double.MAX_VALUE);
 
     UUID extendReachUUID = UUID.fromString("fb557a05-866e-4017-990b-aab8450bf41b");
-    RangedAttribute extendedReach = new RangedAttribute("weapon.extendedReach", 2.0D, 0.0D, Double.MAX_VALUE);
+    RangedAttribute extendedReach = new RangedAttribute("weapon.extendedReach", 0.0D, -5.0D, Double.MAX_VALUE);
 
     UUID attackSpeedUUID = UUID.fromString("4833af8b-40f2-44c5-8405-735f7003b1be");
     RangedAttribute attackSpeed = new RangedAttribute("weapon.attackSpeed", 0.0D, -10.0D, 10.0D);

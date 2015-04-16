@@ -133,7 +133,9 @@ public final class WeaponHookContainerClass {
             BaseAttributeMap attributeMap = ((EntityLivingBase) constructing.entity).getAttributeMap();
             attributeMap.registerAttribute(Attributes.armourPenetrate);
             attributeMap.registerAttribute(Attributes.daze);
-            attributeMap.registerAttribute(Attributes.extendedReach);
+            if(constructing.entity instanceof EntityPlayer){
+                attributeMap.registerAttribute(Attributes.extendedReach).setBaseValue(-2.2);//Reduce bare hands range
+            }
             attributeMap.registerAttribute(Attributes.attackSpeed);
             attributeMap.registerAttribute(Attributes.mountedBonus);
         }
