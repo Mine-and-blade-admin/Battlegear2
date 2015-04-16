@@ -23,7 +23,7 @@ public final class BattlegearGUIHandeler implements IGuiHandler {
             case mainID:
                 return new ContainerPlayer(player.inventory, !world.isRemote, player);
             case equipID:
-                return new ContainerBattle(player.inventory, !world.isRemote, player);
+                return new ContainerBattle(!world.isRemote, player);
             case sigilEditor:
                 return Battlegear.debug?new ContainerHeraldry(player.inventory, !world.isRemote, player):null;
             default:

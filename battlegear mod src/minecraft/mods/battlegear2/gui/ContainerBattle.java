@@ -13,8 +13,9 @@ import net.minecraft.item.ItemStack;
 
 public class ContainerBattle extends ContainerLocalPlayer {
 
-    public ContainerBattle(InventoryPlayer inventoryPlayer, boolean local, EntityPlayer player) {
+    public ContainerBattle(boolean local, EntityPlayer player) {
         super(local, player);
+        InventoryPlayer inventoryPlayer = player.inventory;
         //Armour slots,range [0-3]
         for (int i = 0; i < 4; i++) {
             this.addSlotToContainer(new ArmorSlot(i, inventoryPlayer, inventoryPlayer.getSizeInventory() - 1 - i, 98, 8 + i * 18));
