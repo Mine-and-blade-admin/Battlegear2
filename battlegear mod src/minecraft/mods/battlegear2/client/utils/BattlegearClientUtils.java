@@ -22,7 +22,7 @@ public final class BattlegearClientUtils {
         ItemStack itemStack = player.getCurrentEquippedItem();
         if(BattlegearUtils.isPlayerInBattlemode(player)){
             ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
-            if(offhand!=null && BattlegearUtils.usagePriorAttack(offhand))
+            if(offhand!=null && BattlegearUtils.usagePriorAttack(offhand, player))
                 itemStack = offhand;
         }
         if (!isItemInUse && player.isEating() && itemStack != null){

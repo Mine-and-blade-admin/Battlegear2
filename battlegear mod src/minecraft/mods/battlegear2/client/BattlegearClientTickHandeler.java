@@ -181,52 +181,39 @@ public final class BattlegearClientTickHandeler {
     }
 
     public void tryCheckUseItem(ItemStack offhand, EntityPlayer player){
-        if(BattlegearUtils.usagePriorAttack(offhand)){
-            MovingObjectPosition mouseOver = mc.objectMouseOver;
-            boolean flag = true;
-            if (mouseOver != null)
-            {
-                if (mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY)
-                {
-                    if(mc.playerController.interactWithEntitySendPacket(player, mouseOver.entityHit))
-                        flag = false;
+        MovingObjectPosition mouseOver = mc.objectMouseOver;
+        boolean flag = true;
+        if (mouseOver != null && mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK){
+            int j = mouseOver.blockX;
+            int k = mouseOver.blockY;
+            int l = mouseOver.blockZ;
+            if (!player.worldObj.getBlock(j, k, l).isAir(player.worldObj, j, k, l)) {
+                final int size = offhand.stackSize;
+                int i1 = mouseOver.sideHit;
+                PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, j, k, l, i1, player.worldObj), offhand);
+                if (!MinecraftForge.EVENT_BUS.post(useItemEvent) && onPlayerPlaceBlock(mc.playerController, player, offhand, j, k, l, i1, mouseOver.hitVec)) {
+                    if(useItemEvent.swingOffhand)
+                        BattlemodeHookContainerClass.sendOffSwingEvent(useItemEvent.event, null, offhand);
+                    flag = false;
                 }
-                else if (mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
-                {
-                    int j = mouseOver.blockX;
-                    int k = mouseOver.blockY;
-                    int l = mouseOver.blockZ;
-                    if (!player.worldObj.getBlock(j, k, l).isAir(player.worldObj, j, k, l)) {
-                        final int size = offhand.stackSize;
-                        int i1 = mouseOver.sideHit;
-                        PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, j, k, l, i1, player.worldObj), offhand);
-                        if (!MinecraftForge.EVENT_BUS.post(useItemEvent) && onPlayerPlaceBlock(mc.playerController, player, offhand, j, k, l, i1, mouseOver.hitVec)) {
-                            ((IBattlePlayer) player).swingOffItem();
-                            flag = false;
-                        }
-                        if (offhand == null)
-                        {
-                            return;
-                        }
-                        if (offhand.stackSize == 0)
-                        {
-                            BattlegearUtils.setPlayerOffhandItem(player, null);
-                        }
-                        else if (offhand.stackSize != size || mc.playerController.isInCreativeMode())
-                        {
-                            ((IOffhandRender)mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
-                        }
-                    }
+                if (offhand == null){
+                    return;
                 }
-            }
-            if (flag)
-            {
-                offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
-                PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.worldObj), offhand);
-                if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent) && BattlemodeHookContainerClass.tryUseItem(player, offhand, Side.CLIENT))
-                {
+                if (offhand.stackSize == 0){
+                    BattlegearUtils.setPlayerOffhandItem(player, null);
+                }else if (offhand.stackSize != size || mc.playerController.isInCreativeMode()){
                     ((IOffhandRender)mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
                 }
+            }
+        }
+        if (flag){
+            offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
+            PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.worldObj), offhand);
+            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent) && BattlemodeHookContainerClass.tryUseItem(player, offhand, Side.CLIENT))
+            {
+                if(useItemEvent.swingOffhand)
+                    BattlemodeHookContainerClass.sendOffSwingEvent(useItemEvent.event, null, offhand);
+                ((IOffhandRender)mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
             }
         }
     }

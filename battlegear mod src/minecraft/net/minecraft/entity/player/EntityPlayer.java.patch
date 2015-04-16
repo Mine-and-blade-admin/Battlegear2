@@ -1,19 +1,19 @@
-@@ -92,14 +92,23 @@
+@@ -92,14 +92,22 @@
  import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
  import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
  
 -public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
+-{
 +public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender, mods.battlegear2.api.core.IBattlePlayer
- {
-+    /** Mine & Blade: Notes Edits made by: nerd-boy and GotoLink
-+	 *
-+	 * Edits: 4 Added Methods: 7 Added Fields: 6
-+	 *
-+	 * Adding methods and fields is relatively easy. Some of the methods
-+	 * provided are not needed, they do however provide more simple access.
-+	 * The bigger edits are patches over the "using item" system.
-+	 * The only other edit is to replace the instance of Inventory player with
-+	 * the custom Inventory class.*/
++{/** Mine & Blade: Notes Edits made by: nerd-boy and GotoLink
++ 	 *
++ 	 * Edits: 4 Added Methods: 7 Added Fields: 6
++ 	 *
++ 	 * Adding methods and fields is relatively easy. Some of the methods
++ 	 * provided are not needed, they do however provide more simple access.
++ 	 * The bigger edits are patches over the "using item" system.
++ 	 * The only other edit is to replace the instance of Inventory player with
++ 	 * the custom Inventory class.*/
      public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
      private HashMap<Integer, ChunkCoordinates> spawnChunkMap = new HashMap<Integer, ChunkCoordinates>();
      private HashMap<Integer, Boolean> spawnForcedMap = new HashMap<Integer, Boolean>();
@@ -24,7 +24,7 @@
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
      /** The Container for the player's inventory (which opens when they press E) */
      public Container inventoryContainer;
-@@ -259,7 +268,7 @@
+@@ -259,7 +267,7 @@
          FMLCommonHandler.instance().onPlayerPreTick(this);
          if (this.itemInUse != null)
          {
@@ -33,7 +33,7 @@
  
              if (itemstack == this.itemInUse)
              {
-@@ -469,7 +478,7 @@
+@@ -469,7 +477,7 @@
              int i = this.itemInUse.stackSize;
              ItemStack itemstack = this.itemInUse.onFoodEaten(this.worldObj, this);
  
@@ -42,7 +42,60 @@
  
              if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
              {
-@@ -2363,7 +2372,7 @@
+@@ -1260,50 +1268,9 @@
+ 
+     public boolean interactWith(Entity p_70998_1_)
+     {
+-        if (MinecraftForge.EVENT_BUS.post(new EntityInteractEvent(this, p_70998_1_))) return false;
+-        ItemStack itemstack = this.getCurrentEquippedItem();
+-        ItemStack itemstack1 = itemstack != null ? itemstack.copy() : null;
+-
+-        if (!p_70998_1_.interactFirst(this))
+-        {
+-            if (itemstack != null && p_70998_1_ instanceof EntityLivingBase)
+-            {
+-                if (this.capabilities.isCreativeMode)
+-                {
+-                    itemstack = itemstack1;
++        return mods.battlegear2.api.core.BattlegearUtils.interactWith(this, p_70998_1_);
+-                }
++    }
+ 
+-                if (itemstack.interactWithEntity(this, (EntityLivingBase)p_70998_1_))
+-                {
+-                    if (itemstack.stackSize <= 0 && !this.capabilities.isCreativeMode)
+-                    {
+-                        this.destroyCurrentEquippedItem();
+-                    }
+-
+-                    return true;
+-                }
+-            }
+-
+-            return false;
+-        }
+-        else
+-        {
+-            if (itemstack != null && itemstack == this.getCurrentEquippedItem())
+-            {
+-                if (itemstack.stackSize <= 0 && !this.capabilities.isCreativeMode)
+-                {
+-                    this.destroyCurrentEquippedItem();
+-                }
+-                else if (itemstack.stackSize < itemstack1.stackSize && this.capabilities.isCreativeMode)
+-                {
+-                    itemstack.stackSize = itemstack1.stackSize;
+-                }
+-            }
+-
+-            return true;
+-        }
+-    }
+-
+     /**
+      * Returns the currently being used item by the player.
+      */
+@@ -2363,7 +2330,7 @@
      {
          if (p_70062_1_ == 0)
          {
@@ -51,7 +104,7 @@
          }
          else
          {
-@@ -2626,5 +2635,69 @@
+@@ -2626,5 +2593,69 @@
          NOT_SAFE;
  
          private static final String __OBFID = "CL_00001712";
@@ -121,4 +174,3 @@
 +        isShielding = block && mods.battlegear2.api.core.BattlegearUtils.canBlockWithShield(this);
      }
  }
-\ No newline at end of file

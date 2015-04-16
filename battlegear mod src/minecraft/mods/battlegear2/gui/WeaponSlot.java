@@ -4,7 +4,8 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.core.BattlegearUtils;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
@@ -15,7 +16,7 @@ public final class WeaponSlot extends Slot {
     private WeaponSlot partner;
     private boolean mainHand;
 
-    public WeaponSlot(IInventory par1iInventory, int par2, int par3, int par4, boolean mainhand) {
+    public WeaponSlot(InventoryPlayer par1iInventory, int par2, int par3, int par4, boolean mainhand) {
         super(par1iInventory, par2, par3, par4);
         this.mainHand = mainhand;
     }
@@ -41,10 +42,13 @@ public final class WeaponSlot extends Slot {
     public boolean isItemValid(ItemStack par1ItemStack) {
         if (par1ItemStack == null) {
             return super.isItemValid(null);
-        } else if (mainHand) {
-            return BattlegearUtils.isMainHand(par1ItemStack, partner.getStack()) && super.isItemValid(par1ItemStack);
-        } else if (BattlegearUtils.isOffHand(par1ItemStack)) {
-            return BattlegearUtils.isMainHand(partner.getStack(), par1ItemStack) && super.isItemValid(par1ItemStack);
+        } else if(inventory instanceof InventoryPlayer){
+            EntityPlayer player = ((InventoryPlayer) inventory).player;
+            if (mainHand) {
+                return BattlegearUtils.isMainHand(par1ItemStack, partner.getStack(), player) && super.isItemValid(par1ItemStack);
+            } else if (BattlegearUtils.isOffHand(par1ItemStack, player)) {
+                return BattlegearUtils.isMainHand(partner.getStack(), par1ItemStack, player) && super.isItemValid(par1ItemStack);
+            }
         }
         return false;
     }

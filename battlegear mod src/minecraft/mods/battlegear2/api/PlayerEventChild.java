@@ -78,10 +78,23 @@ public abstract class PlayerEventChild extends PlayerEvent{
     public static class OffhandSwingEvent extends PlayerEventChild {
         public final ItemStack mainHand;
         public final ItemStack offHand;
+        @Deprecated
         public OffhandSwingEvent(PlayerEvent parent, ItemStack mainHand, ItemStack offHand){
+            this(parent, offHand);
+        }
+
+        public OffhandSwingEvent(PlayerEvent parent, ItemStack offHand){
             super(parent);
-            this.mainHand = mainHand;
+            this.mainHand = parent.entityPlayer.getCurrentEquippedItem();
             this.offHand = offHand;
+        }
+
+        public boolean onEntity(){
+            return parent instanceof EntityInteractEvent;
+        }
+
+        public boolean onBlock(){
+            return parent instanceof PlayerInteractEvent;
         }
     }
 
@@ -94,21 +107,25 @@ public abstract class PlayerEventChild extends PlayerEvent{
     public static class OffhandAttackEvent extends PlayerEventChild {
 
         /**
-         * If we should call the OffhandSwingEvent and perform swinging
+         * If we should call the OffhandSwingEvent and perform swinging animation
          */
         public boolean swingOffhand = true;
         /**
          * If we should perform an attack on the entity with the offhand item
          * Note: Will post {@link AttackEntityEvent} and {@link Item#onLeftClickEntity(ItemStack, EntityPlayer, Entity)}
-         * with {@link InventoryPlayer#currentItem} offset to the offhand
+         * with {@link InventoryPlayer#currentItem} offset to the offhand.
          */
         public boolean shouldAttack = true;
         /**
-         * If we should cancel the base entity interaction event
+         * If we should Prevent {@link PlayerInteractEvent.Action.RIGHT_CLICK_AIR} and
+         * {@link ItemStack#useItemRightClick(World, EntityPlayer)}
+         * from being called for the item in main hand.
          */
         public boolean cancelParent = true;
         /**
          * The base entity interaction event
+         * This event has already been posted in EventBus, handled by all potential listeners and was not cancelled.
+         * Changing its state will have no effect.
          */
         public final EntityInteractEvent event;
         /**
@@ -120,10 +137,15 @@ public abstract class PlayerEventChild extends PlayerEvent{
          */
         public final ItemStack offHand;
 
+        @Deprecated
         public OffhandAttackEvent(EntityInteractEvent parent, ItemStack mainHand, ItemStack offHand) {
+            this(parent, offHand);
+        }
+
+        public OffhandAttackEvent(EntityInteractEvent parent, ItemStack offHand) {
             super(parent);
             this.event = parent;
-            this.mainHand = mainHand;
+            this.mainHand = parent.entityPlayer.getCurrentEquippedItem();
             this.offHand = offHand;
         }
 
@@ -140,6 +162,10 @@ public abstract class PlayerEventChild extends PlayerEvent{
     @Cancelable
     public static class UseOffhandItemEvent extends PlayerEventChild{
         /**
+         * If we should call the OffhandSwingEvent and perform swinging animation
+         */
+        public boolean swingOffhand;
+        /**
          * The {@link ItemStack} held in left hand
          */
         public final ItemStack offhand;
@@ -151,6 +177,11 @@ public abstract class PlayerEventChild extends PlayerEvent{
             super(event);
             this.event = event;
             this.offhand = offhand;
+            this.swingOffhand = onBlock();
+        }
+
+        public boolean onBlock(){
+            return event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK;
         }
     }
 
