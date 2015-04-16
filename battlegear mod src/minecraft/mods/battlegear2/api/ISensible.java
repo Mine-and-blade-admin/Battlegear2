@@ -14,7 +14,7 @@ public interface ISensible<T> {
      * Predicate filtering, uses a comparing object of same type and iterating over multiple instance of above interface
      * @param <T>
      */
-    public static class Filter<T> implements Predicate<T> {
+    final class Filter<T> implements Predicate<T> {
         private final Iterator<ISensible<T>> senses;
         private final T toCompare;
         public Filter(T compare, Iterator<ISensible<T>> sensitivities){
@@ -41,7 +41,7 @@ public interface ISensible<T> {
             if(this == object){
                 return true;
             }
-            return object!=null && object instanceof Filter && this.toCompare.equals(((Filter) object).toCompare) && this.senses.equals(((Filter) object).senses);
+            return object!=null && object instanceof Filter<?> && this.toCompare.equals(((Filter<?>) object).toCompare) && this.senses.equals(((Filter<?>) object).senses);
         }
     }
 }

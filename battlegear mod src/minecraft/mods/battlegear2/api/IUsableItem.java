@@ -26,8 +26,8 @@ import net.minecraft.item.ItemStack;
  */
 public interface IUsableItem {
     /**
-     *
-     * @param itemStack holding this item
+     * Note: next version will include wielding player as second argument
+     * @param itemStack which contain this item
      * @return true if this item prefer being used instead of swinging/attacking
      */
     public boolean isUsedOverAttack(ItemStack itemStack);
