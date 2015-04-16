@@ -1,9 +1,6 @@
 package mods.battlegear2.client.gui.controls;
 
 import cpw.mods.fml.client.config.GuiUtils;
-import mods.battlegear2.Battlegear;
-import mods.battlegear2.gui.BattlegearGUIHandeler;
-import mods.battlegear2.packet.BattlegearGUIPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
