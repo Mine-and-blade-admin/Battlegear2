@@ -231,7 +231,7 @@ public class BattlegearUtils {
     /**
      * Defines a item which "use" (effect on right click) should have priority over its "attack" (effect on left click)
      * @param itemStack the item which will be "used", instead of attacking
-     * @param wielder The player trying to use of attack with this item
+     * @param wielder The player trying to use or attack with this item
      * @return true if such item prefer being "used"
      */
     public static boolean usagePriorAttack(ItemStack itemStack, EntityPlayer wielder){
@@ -244,12 +244,12 @@ public class BattlegearUtils {
     }
 
     /**
-     * Defines items that are usually usable (the vanilla instances do, at least)
+     * Defines items that are usually usable (the vanilla instances do, at least), and that battlemode can support
      * @param item the instance to consider for usability
      * @return true if it is commonly usable
      */
     public static boolean isCommonlyUsable(Item item){
-        return isBow(item) || item instanceof ItemBlock || item instanceof ItemHoe || item instanceof ItemBucket || item instanceof ItemSnowball;
+        return isBow(item) || item instanceof ItemBlock || item instanceof ItemFlintAndSteel || item instanceof ItemFireball || item instanceof ItemBucket || item instanceof ItemSnowball || item instanceof ItemEnderPearl;
     }
 
     /**
