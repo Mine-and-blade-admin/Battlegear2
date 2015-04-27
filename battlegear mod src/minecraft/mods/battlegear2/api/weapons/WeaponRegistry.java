@@ -8,19 +8,20 @@ import mods.battlegear2.api.ISensible;
 import mods.battlegear2.api.StackHolder;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
 /**
  * Registry for stacks which will be allowed in battle inventory, accessible through {@link FMLInterModComms} messages.
  * Use only if your item is not recognized by default.
- * Use of {@link IBattlegearWeapon} is preferred over this method.
+ * Use of {@link IBattlegearWeapon} or {@link IUsableItem} are preferred over this method.
  * {@link NBTTagCompound} are supported by default, though can be bypassed through /weaponwield sensitivity command by server op
  * @author GotoLink
  *
  */
 public class WeaponRegistry {
-    private static Map<StackHolder, Wield> wielding = new HashMap<StackHolder, Wield>();
+    private static Map<StackHolder, Pair<Wield, Boolean>> wielding = new HashMap<StackHolder, Pair<Wield, Boolean>>();
     private static Set<ISensible<StackHolder>> sensitivities = Sets.newHashSetWithExpectedSize(3);
     static{
         Collections.addAll(sensitivities, Sensitivity.ID, Sensitivity.DAMAGE, Sensitivity.NBT);
@@ -51,21 +52,21 @@ public class WeaponRegistry {
 	 * Helper method to set an {@link ItemStack} as dual-wieldable
 	 */
 	public static void addDualWeapon(ItemStack stack) {
-        wielding.put(new StackHolder(stack), Wield.BOTH);
+        wielding.put(new StackHolder(stack), Pair.of(Wield.BOTH, false));
 	}
 	
 	/**
 	 * Helper method to set an {@link ItemStack} as wieldable only in mainhand
 	 */
 	public static void addTwoHanded(ItemStack stack) {
-        wielding.put(new StackHolder(stack), Wield.RIGHT);
+        wielding.put(new StackHolder(stack), Pair.of(Wield.RIGHT, false));
 	}
 
 	/**
 	 * Helper method to set an {@link ItemStack} as wieldable only in offhand
 	 */
 	public static void addOffhandWeapon(ItemStack stack) {
-        wielding.put(new StackHolder(stack), Wield.LEFT);
+        wielding.put(new StackHolder(stack), Pair.of(Wield.LEFT, false));
 	}
 
     /**
@@ -118,8 +119,8 @@ public class WeaponRegistry {
 	public static boolean isMainHand(ItemStack stack) {
         StackHolder holder = new StackHolder(stack);
         if(sensitivities==null) {
-            Wield w = wielding.get(holder);
-            return w != null && w.isMainhand();
+            Pair<Wield,Boolean> w = wielding.get(holder);
+            return w != null && w.getLeft().isMainhand();
         }else
             return isMainHand(holder, sensitivities.iterator());
 	}
@@ -132,10 +133,10 @@ public class WeaponRegistry {
      */
     public static boolean isMainHand(StackHolder holder, Iterator<ISensible<StackHolder>> itr){
         final Predicate<StackHolder> filter = new ISensible.Filter<StackHolder>(holder, itr);
-        return Iterators.any(wielding.entrySet().iterator(), new Predicate<Map.Entry<StackHolder,Wield>>() {
+        return Iterators.any(wielding.entrySet().iterator(), new Predicate<Map.Entry<StackHolder,Pair<Wield, Boolean>>>() {
                     @Override
-                    public boolean apply(Map.Entry<StackHolder,Wield> input) {
-                        return input.getValue().isMainhand() && filter.apply(input.getKey());
+                    public boolean apply(Map.Entry<StackHolder,Pair<Wield, Boolean>> input) {
+                        return input.getValue().getLeft().isMainhand() && filter.apply(input.getKey());
                     }
                 });
     }
@@ -148,8 +149,8 @@ public class WeaponRegistry {
 	public static boolean isOffHand(ItemStack stack) {
         StackHolder holder = new StackHolder(stack);
         if(sensitivities==null) {
-            Wield w = wielding.get(holder);
-            return w != null && w.isOffhand();
+            Pair<Wield,Boolean> w = wielding.get(holder);
+            return w != null && w.getLeft().isOffhand();
         }else
             return isOffHand(holder, sensitivities.iterator());
 	}
@@ -162,10 +163,29 @@ public class WeaponRegistry {
      */
     public static boolean isOffHand(StackHolder holder, Iterator<ISensible<StackHolder>> itr){
         final Predicate<StackHolder> filter = new ISensible.Filter<StackHolder>(holder, itr);
-        return Iterators.any(wielding.entrySet().iterator(), new Predicate<Map.Entry<StackHolder,Wield>>() {
+        return Iterators.any(wielding.entrySet().iterator(), new Predicate<Map.Entry<StackHolder,Pair<Wield, Boolean>>>() {
             @Override
-            public boolean apply(Map.Entry<StackHolder,Wield> input) {
-                return input.getValue().isOffhand() && filter.apply(input.getKey());
+            public boolean apply(Map.Entry<StackHolder,Pair<Wield, Boolean>> input) {
+                return input.getValue().getLeft().isOffhand() && filter.apply(input.getKey());
+            }
+        });
+    }
+
+    public static boolean useOverAttack(ItemStack stack, boolean inOffhand){
+        StackHolder holder = new StackHolder(stack);
+        if(sensitivities==null) {
+            Pair<Wield,Boolean> w = wielding.get(holder);
+            return w != null && w.getRight() && (inOffhand ? w.getLeft().isOffhand() : w.getLeft().isMainhand());
+        }else
+            return useOverAttack(holder, sensitivities.iterator(), inOffhand);
+    }
+
+    public static boolean useOverAttack(StackHolder holder, Iterator<ISensible<StackHolder>> itr, final boolean inOffhand){
+        final Predicate<StackHolder> filter = new ISensible.Filter<StackHolder>(holder, itr);
+        return Iterators.any(wielding.entrySet().iterator(), new Predicate<Map.Entry<StackHolder,Pair<Wield, Boolean>>>() {
+            @Override
+            public boolean apply(Map.Entry<StackHolder,Pair<Wield, Boolean>> input) {
+                return input.getValue().getRight() && (inOffhand ? input.getValue().getLeft().isOffhand():input.getValue().getLeft().isMainhand()) && filter.apply(input.getKey());
             }
         });
     }
@@ -236,7 +256,12 @@ public class WeaponRegistry {
         }
 
         public boolean setWeapon(ItemStack stack){
-            wielding.put(new StackHolder(stack), this);
+            wielding.put(new StackHolder(stack), Pair.of(this, false));
+            return true;
+        }
+
+        public boolean setUsable(ItemStack stack){
+            wielding.put(new StackHolder(stack), Pair.of(this, true));
             return true;
         }
     }

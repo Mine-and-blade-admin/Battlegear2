@@ -31,7 +31,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
-import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -123,9 +122,9 @@ public final class BattlemodeHookContainerClass {
                 ItemStack offhandItem = ((InventoryPlayerBattle) event.entityPlayer.inventory).getCurrentOffhandWeapon();
                 if(offhandItem == null) {
                     sendOffSwingEvent(event, null, null);
-                }else if(BattlegearUtils.usagePriorAttack(offhandItem, event.entityPlayer)) {
+                }else if(BattlegearUtils.usagePriorAttack(offhandItem, event.entityPlayer, true)) {
                     ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
-                    if (mainHandItem == null || !BattlegearUtils.usagePriorAttack(mainHandItem, event.entityPlayer)) {
+                    if (mainHandItem == null || !BattlegearUtils.usagePriorAttack(mainHandItem, event.entityPlayer, false)) {
                         event.setCanceled(true);
                     }
                 }
@@ -189,7 +188,7 @@ public final class BattlemodeHookContainerClass {
         {
             return false;
         }else{
-            BattlegearUtils.setPlayerOffhandItem(entityPlayer, itemstack1);
+            BattlegearUtils.setPlayerCurrentItem(entityPlayer, itemstack1);
             if (side.isServer() && ((EntityPlayerMP)entityPlayer).theItemInWorldManager.isCreative()){
                 itemstack1.stackSize = i;
                 if (itemstack1.isItemStackDamageable())
@@ -198,8 +197,7 @@ public final class BattlemodeHookContainerClass {
                 }
             }
             if (itemstack1.stackSize <= 0){
-                BattlegearUtils.setPlayerOffhandItem(entityPlayer, null);
-                ForgeEventFactory.onPlayerDestroyItem(entityPlayer, itemstack1);
+                entityPlayer.destroyCurrentEquippedItem();
             }
             if (side.isServer() && !entityPlayer.isUsingItem()){
                 ((EntityPlayerMP) entityPlayer).sendContainerToPlayer(entityPlayer.inventoryContainer);
@@ -228,11 +226,11 @@ public final class BattlemodeHookContainerClass {
                 if(!shouldSwing){
                     event.setCanceled(true);
                 }
-            }else if(BattlegearUtils.usagePriorAttack(event.offHand, event.getPlayer()) || event.offHand.getItem() instanceof IShield || event.offHand.getItem() instanceof IArrowContainer2){
+            }else if(BattlegearUtils.usagePriorAttack(event.offHand, event.getPlayer(), true) || event.offHand.getItem() instanceof IShield || event.offHand.getItem() instanceof IArrowContainer2){
                 event.setCanceled(true);
             }
         }
-        if(event.mainHand != null && !event.isCanceled() && BattlegearUtils.usagePriorAttack(event.mainHand, event.getPlayer())) {
+        if(event.mainHand != null && !event.isCanceled() && BattlegearUtils.usagePriorAttack(event.mainHand, event.getPlayer(), false)) {
             event.setCanceled(true);
         }
     }
@@ -262,7 +260,7 @@ public final class BattlemodeHookContainerClass {
                 event.swingOffhand = ((IOffhandDual) event.offHand.getItem()).offhandAttackEntity(event, event.mainHand, event.offHand);
             }else if(event.offHand.getItem() instanceof IOffhandListener){
                 ((IOffhandListener) event.offHand.getItem()).onAttackEntity(event, true);
-            }else if(event.offHand.getItem() instanceof IShield || BattlegearUtils.usagePriorAttack(event.offHand, event.getPlayer())){
+            }else if(event.offHand.getItem() instanceof IShield || BattlegearUtils.usagePriorAttack(event.offHand, event.getPlayer(), true)){
                 event.swingOffhand = false;
                 event.shouldAttack = false;
             }else if(event.offHand.getItem() instanceof IArrowContainer2){
@@ -272,8 +270,8 @@ public final class BattlemodeHookContainerClass {
         if(event.mainHand != null) {
             if(event.mainHand.getItem() instanceof IOffhandListener) {
                 ((IOffhandListener) event.mainHand.getItem()).onAttackEntity(event, false);
-            }else if (event.shouldAttack && !event.isCanceled() && BattlegearUtils.usagePriorAttack(event.mainHand, event.getPlayer())) {
-                event.setCanceled(true);
+            }else if (event.shouldAttack && !event.isCanceled() && BattlegearUtils.usagePriorAttack(event.mainHand, event.getPlayer(), false)) {
+                event.cancelParent = false;
             }
         }
     }
@@ -282,8 +280,11 @@ public final class BattlemodeHookContainerClass {
     public void onOffhandUse(PlayerEventChild.UseOffhandItemEvent offhandItemEvent){
         if(offhandItemEvent.offhand!=null){
             ItemStack offhandItem = offhandItemEvent.offhand;
-            if(!BattlegearUtils.usagePriorAttack(offhandItem, offhandItemEvent.getPlayer())){
+            if(!BattlegearUtils.usagePriorAttack(offhandItem, offhandItemEvent.getPlayer(), true)){
                 offhandItemEvent.event.useItem = Event.Result.DENY;
+                if(offhandItemEvent.onBlock()) {
+                    offhandItemEvent.event.useBlock = Event.Result.DENY;
+                }
             }
             Event.Result cancel = offhandItemEvent.swingOffhand ? Event.Result.DEFAULT : Event.Result.ALLOW;
             if (offhandItem.getItem() instanceof IHandListener) {
@@ -297,6 +298,7 @@ public final class BattlemodeHookContainerClass {
                 offhandItemEvent.setCanceled(true);
             else if (cancel == Event.Result.DEFAULT)
                 offhandItemEvent.swingOffhand = true;
+
         }
     }
 

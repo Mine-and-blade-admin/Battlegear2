@@ -31,6 +31,7 @@ public final class BattlegearPacketHandeler {
         map.put(LoginPacket.packetName, new LoginPacket());
         map.put(OffhandPlaceBlockPacket.packetName, new OffhandPlaceBlockPacket());
         map.put(PickBlockPacket.packetName, new PickBlockPacket());
+        map.put(WieldSetPacket.packetName, new WieldSetPacket());
     }
 
     public void register(){

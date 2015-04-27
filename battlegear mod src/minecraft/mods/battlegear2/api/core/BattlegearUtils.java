@@ -155,7 +155,7 @@ public class BattlegearUtils {
         else if(usagePriorAttack(main))//"Usable" item
             return off == null || !usagePriorAttack(off);//With empty hand or non "usable item"
         else if(isWeapon(main))//A generic weapon
-            return  main.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isMainHand(main);//With either generic attack, or registered
+            return main.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isMainHand(main);//With either generic attack, or registered
         return false;
     }
 
@@ -174,10 +174,10 @@ public class BattlegearUtils {
             return ((IAllowItem) main.getItem()).allowOffhand(main, off);//defined by the item TODO pass through third parameter
         else if(main.getItem() instanceof IArrowContainer2)//A quiver
             return true;//anything ?
-        else if(usagePriorAttack(main, wielder))//"Usable" item
-            return off == null || !usagePriorAttack(off, wielder);//With empty hand or non "usable item"
+        else if(usagePriorAttack(main, wielder, false))//"Usable" item
+            return off == null || !usagePriorAttack(off, wielder, true);//With empty hand or non "usable item"
         else if(isWeapon(main))//A generic weapon
-            return  main.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isMainHand(main);//With either generic attack, or registered
+            return main.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isMainHand(main);//With either generic attack, or registered
         return false;
     }
 
@@ -209,7 +209,7 @@ public class BattlegearUtils {
             return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);//defined by the item
         else if(off.getItem() instanceof IOffhandWield)//An item using the API
             return ((IOffhandWield) off.getItem()).isOffhandWieldable(off, wielder);//defined by the item
-        else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || usagePriorAttack(off, wielder))//Shield, Quiver, or "usable"
+        else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || usagePriorAttack(off, wielder, true))//Shield, Quiver, or "usable"
             return true;//always
         else if(isWeapon(off))//A generic weapon
             return off.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isOffHand(off);//with a generic attack or registered
@@ -234,12 +234,12 @@ public class BattlegearUtils {
      * @param wielder The player trying to use or attack with this item
      * @return true if such item prefer being "used"
      */
-    public static boolean usagePriorAttack(ItemStack itemStack, EntityPlayer wielder){
+    public static boolean usagePriorAttack(ItemStack itemStack, EntityPlayer wielder, boolean off){
         if(itemStack.getItem() instanceof IUsableItem)//TODO pass through wielding player
             return ((IUsableItem) itemStack.getItem()).isUsedOverAttack(itemStack);
         else {
             EnumAction useAction = itemStack.getItemUseAction();
-            return useAction == EnumAction.bow || useAction == EnumAction.drink || useAction == EnumAction.eat || isCommonlyUsable(itemStack.getItem());
+            return useAction == EnumAction.bow || useAction == EnumAction.drink || useAction == EnumAction.eat || isCommonlyUsable(itemStack.getItem()) || WeaponRegistry.useOverAttack(itemStack, off);
         }
     }
 

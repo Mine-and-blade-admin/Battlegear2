@@ -131,7 +131,7 @@ lore.advanced.arrow.leech=拥有吸血鬼之触.
 
 tooltip.armour.points=护甲
 
-commands.weaponwield.usage=/weaponwield <itemSearch:current/name> <handWielding:both/right/left> <player or item name>
+commands.weaponwield.usage=/weaponwield current <hand> [player] [usage] OR /weaponwield name <hand> <item name> [usage] OR /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
 commands.weaponwield.set=已成功设置该物品可装备至护盾格
 
 death.attack.battlegearExtra.backstab=%1$s死于%2$s的背刺.

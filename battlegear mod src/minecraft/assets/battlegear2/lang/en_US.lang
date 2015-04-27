@@ -128,7 +128,7 @@ lore.advanced.arrow.leech=Has a vampire touch
 
 tooltip.armour.points=Armor
 
-commands.weaponwield.usage=/weaponwield current <hand> [player] OR /weaponwield name <hand> <item name> OR /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
+commands.weaponwield.usage=/weaponwield current <hand> [player] [usage] OR /weaponwield name <hand> <item name> [usage] OR /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
 commands.weaponwield.set=%1$s successfully set as wieldable weapon
 commands.weaponwield.sensitivity=The weapon comparator has following sensitivities: %1$s
 commands.weaponwield.sensitivity.added=Sensibility added to the weapon comparator: %1$s

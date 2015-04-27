@@ -128,7 +128,7 @@ lore.advanced.arrow.leech=Tem um toque vampírico
 
 tooltip.armour.points=Armadura
 
-commands.weaponwield.usage=/weaponwield current <hand> [player] OR /weaponwield name <hand> <item name> OR /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
+commands.weaponwield.usage=/weaponwield current <hand> [player] [usage] OR /weaponwield name <hand> <item name> [usage] OR /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
 commands.weaponwield.set=%1$s definida com sucesso como arma de brandir
 commands.weaponwield.sensitivity=O comparador de arma tem a seguinte sensibilidade: %1$s
 commands.weaponwield.sensitivity.added=Sensibilidade adicionada ao comparador de armas: %1$s

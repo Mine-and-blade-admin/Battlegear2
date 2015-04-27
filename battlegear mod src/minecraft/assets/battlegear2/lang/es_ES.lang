@@ -128,7 +128,7 @@ lore.advanced.arrow.leech=Diplomacia vampirica
 
 tooltip.armour.points=Armadura
 
-commands.weaponwield.usage=/weaponwield current <hand> [player] O /weaponwield name <hand> <item name> O /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
+commands.weaponwield.usage=/weaponwield current <hand> [player] [usage] O /weaponwield name <hand> <item name> [usage] O /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
 commands.weaponwield.set=%1$s configurado con éxito como arma empuñable
 commands.weaponwield.sensitivity=El comparador de armas tiene la siguiente sensibilidad: %1$s
 commands.weaponwield.sensitivity.added=Sensibilidad añadida al comparador de armas: %1$s
