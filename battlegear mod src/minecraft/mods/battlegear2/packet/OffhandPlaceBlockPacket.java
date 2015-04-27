@@ -97,7 +97,9 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.getEntityWorld());
             MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, offhandWeapon));
             if (event.useItem != Event.Result.DENY){
+                BattlegearUtils.refreshAttributes(player, false);
                 BattlemodeHookContainerClass.tryUseItem(player, offhandWeapon, Side.SERVER);
+                BattlegearUtils.refreshAttributes(player, true);
             }
             flag = false;
         }
@@ -172,14 +174,16 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             return false;
         }
 
+        BattlegearUtils.refreshAttributes(playerMP, false);
         if (itemStack != null && itemStack.getItem().onItemUseFirst(itemStack, playerMP, theWorld, x, y, z, side, xOffset, yOffset, zOffset))
         {
             if (itemStack.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(playerMP, itemStack);
+            BattlegearUtils.refreshAttributes(playerMP, true);
             return true;
         }
 
-        boolean useBlock = !playerMP.isSneaking() || ((InventoryPlayerBattle)playerMP.inventory).getCurrentOffhandWeapon() == null;
-        if (!useBlock) useBlock = ((InventoryPlayerBattle)playerMP.inventory).getCurrentOffhandWeapon().getItem().doesSneakBypassUse(theWorld, x, y, z, playerMP);
+        boolean useBlock = !playerMP.isSneaking() || playerMP.getHeldItem() == null;
+        if (!useBlock) useBlock = playerMP.getHeldItem().getItem().doesSneakBypassUse(theWorld, x, y, z, playerMP);
         boolean result = false;
 
         if (useBlock)
@@ -207,6 +211,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             }
             if (itemStack.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(playerMP, itemStack);
         }
+        BattlegearUtils.refreshAttributes(playerMP, true);
         return result;
     }
 

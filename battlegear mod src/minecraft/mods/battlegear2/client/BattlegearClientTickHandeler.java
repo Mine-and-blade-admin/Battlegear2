@@ -191,17 +191,20 @@ public final class BattlegearClientTickHandeler {
                 final int size = offhand.stackSize;
                 int i1 = mouseOver.sideHit;
                 PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, j, k, l, i1, player.worldObj), offhand);
-                if (!MinecraftForge.EVENT_BUS.post(useItemEvent) && onPlayerPlaceBlock(mc.playerController, player, offhand, j, k, l, i1, mouseOver.hitVec)) {
-                    if(useItemEvent.swingOffhand)
-                        BattlemodeHookContainerClass.sendOffSwingEvent(useItemEvent.event, null, offhand);
-                    flag = false;
+                if (!MinecraftForge.EVENT_BUS.post(useItemEvent)){
+                    BattlegearUtils.refreshAttributes(player, false);
+                    if(onPlayerPlaceBlock(mc.playerController, player, useItemEvent.offhand, j, k, l, i1, mouseOver.hitVec)) {
+                        BattlegearUtils.refreshAttributes(player, true);
+                        if (useItemEvent.swingOffhand)
+                            BattlemodeHookContainerClass.sendOffSwingEvent(useItemEvent.event, null, useItemEvent.offhand);
+                        flag = false;
+                    }else{
+                        BattlegearUtils.refreshAttributes(player, true);
+                    }
                 }
-                if (offhand == null){
-                    return;
-                }
-                if (offhand.stackSize == 0){
+                if (useItemEvent.offhand.stackSize == 0){
                     BattlegearUtils.setPlayerOffhandItem(player, null);
-                }else if (offhand.stackSize != size || mc.playerController.isInCreativeMode()){
+                }else if (useItemEvent.offhand.stackSize != size || mc.playerController.isInCreativeMode()){
                     ((IOffhandRender)mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
                 }
             }
@@ -209,11 +212,17 @@ public final class BattlegearClientTickHandeler {
         if (flag){
             offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
             PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.worldObj), offhand);
-            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent) && BattlemodeHookContainerClass.tryUseItem(player, offhand, Side.CLIENT))
+            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent))
             {
-                if(useItemEvent.swingOffhand)
-                    BattlemodeHookContainerClass.sendOffSwingEvent(useItemEvent.event, null, offhand);
-                ((IOffhandRender)mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
+                BattlegearUtils.refreshAttributes(player, false);
+                if(BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT)) {
+                    BattlegearUtils.refreshAttributes(player, true);
+                    if (useItemEvent.swingOffhand)
+                        BattlemodeHookContainerClass.sendOffSwingEvent(useItemEvent.event, null, useItemEvent.offhand);
+                    ((IOffhandRender) mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
+                }else{
+                    BattlegearUtils.refreshAttributes(player, true);
+                }
             }
         }
     }
@@ -238,7 +247,7 @@ public final class BattlegearClientTickHandeler {
         if (offhand.getItem().onItemUseFirst(offhand, player, worldObj, i, j, k, l, f, f1, f2)){
             return true;
         }
-        if (!player.isSneaking() || ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon() == null || ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon().getItem().doesSneakBypassUse(worldObj, i, j, k, player)){
+        if (!player.isSneaking() || player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem().doesSneakBypassUse(worldObj, i, j, k, player)){
             Block b = worldObj.getBlock(i, j, k);
             if (!b.isAir(worldObj, i, j, k) && b.onBlockActivated(worldObj, i, j, k, player, l, f, f1, f2)){
                 flag = true;
