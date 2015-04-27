@@ -153,3 +153,4 @@ task jarMUDBin(type:Jar){
     }
 }
 tasks.build.dependsOn('jarMUDSrc','jarBGSrc','jarMUDBin','jarBGBin')
+idea { module { inheritOutputDirs = true } }

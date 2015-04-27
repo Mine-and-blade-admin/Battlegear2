@@ -62,11 +62,8 @@ public interface IOffhandDual {
 
     @SuppressWarnings("unused")
     /**
-     * Perform any passive effects on each game tick when this item is held in the offhand
-     * @deprecated See {@link Item#onUpdate(ItemStack, World, Entity, int, boolean)}
-     * @param effectiveSide the effective side the method was called from
-     * @param mainhandItem  the {@link ItemStack} currently being held in the right hand
-     * @param offhandItem   the {@link ItemStack} currently being held in the left hand
+     * No-OP
+     * @See {Item#onUpdate(ItemStack, World, Entity, int, boolean)}
      */
     public void performPassiveEffects(Side effectiveSide, ItemStack mainhandItem, ItemStack offhandItem);
 }

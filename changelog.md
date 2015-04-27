@@ -7,8 +7,10 @@
 * Applied "weapon.mountedBonus" as a generic attribute
 * Registered "weapon.penetrateArmor", "weapon.daze", "weapon.attackSpeed" as dummy generic attributes (no-op)
 * Registered "weapon.extendedReach" as dummy player attribute (no-op)
-* Reworked entity interaction support (fix duplication)
+* Reworked entity and block interaction support (fix possible duplication)
 * Reworked battlemode API (fix rare case issues, prepare future changes, added docs)
+* Fixed inaccurate player attributes when using an item in offhand
+* Added new option into /weaponwield command
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.7.0 ==
 * Fix bow breaking in left hand removing right hand item
