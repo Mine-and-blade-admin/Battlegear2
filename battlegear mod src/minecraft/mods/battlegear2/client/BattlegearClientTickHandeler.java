@@ -193,13 +193,12 @@ public final class BattlegearClientTickHandeler {
                 PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, j, k, l, i1, player.worldObj), offhand);
                 if (!MinecraftForge.EVENT_BUS.post(useItemEvent)){
                     BattlegearUtils.refreshAttributes(player, false);
-                    if(onPlayerPlaceBlock(mc.playerController, player, useItemEvent.offhand, j, k, l, i1, mouseOver.hitVec)) {
-                        BattlegearUtils.refreshAttributes(player, true);
+                    boolean result = onPlayerPlaceBlock(mc.playerController, player, useItemEvent.offhand, j, k, l, i1, mouseOver.hitVec);
+                    BattlegearUtils.refreshAttributes(player, true);
+                    if(result) {
                         if (useItemEvent.swingOffhand)
-                            BattlemodeHookContainerClass.sendOffSwingEvent(useItemEvent.event, null, useItemEvent.offhand);
+                            BattlegearUtils.sendOffSwingEvent(useItemEvent.event, useItemEvent.offhand);
                         flag = false;
-                    }else{
-                        BattlegearUtils.refreshAttributes(player, true);
                     }
                 }
                 if (useItemEvent.offhand.stackSize == 0){
@@ -212,16 +211,14 @@ public final class BattlegearClientTickHandeler {
         if (flag){
             offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
             PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.worldObj), offhand);
-            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent))
-            {
+            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent)){
                 BattlegearUtils.refreshAttributes(player, false);
-                if(BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT)) {
-                    BattlegearUtils.refreshAttributes(player, true);
+                flag = BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT);
+                BattlegearUtils.refreshAttributes(player, true);
+                if(flag){
                     if (useItemEvent.swingOffhand)
-                        BattlemodeHookContainerClass.sendOffSwingEvent(useItemEvent.event, null, useItemEvent.offhand);
+                        BattlegearUtils.sendOffSwingEvent(useItemEvent.event, useItemEvent.offhand);
                     ((IOffhandRender) mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
-                }else{
-                    BattlegearUtils.refreshAttributes(player, true);
                 }
             }
         }

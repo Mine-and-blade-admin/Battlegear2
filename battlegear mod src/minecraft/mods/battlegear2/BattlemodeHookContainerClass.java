@@ -208,30 +208,11 @@ public final class BattlemodeHookContainerClass {
 
     public static void sendOffSwingEvent(PlayerInteractEvent player, ItemStack mainHandItem, ItemStack offhandItem){
         PlayerEventChild.OffhandSwingEvent event = new PlayerEventChild.OffhandSwingEvent(copy(player), offhandItem);
-        onOffhandSwing(event);
+        if(event.mainHand != null && BattlegearUtils.usagePriorAttack(event.mainHand, event.getPlayer(), false)) {
+            event.setCanceled(true);
+        }
         if (!MinecraftForge.EVENT_BUS.post(event)) {
             ((IBattlePlayer) event.entityPlayer).swingOffItem();
-        }
-    }
-
-    private static void onOffhandSwing(PlayerEventChild.OffhandSwingEvent event){
-        if(event.offHand != null){
-            if(event.offHand.getItem() instanceof IOffhandDual){
-                boolean shouldSwing = true;
-                if(((PlayerInteractEvent)event.parent).action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
-                    shouldSwing = ((IOffhandDual) event.offHand.getItem()).offhandClickAir((PlayerInteractEvent)event.parent, event.mainHand, event.offHand);
-                else if(((PlayerInteractEvent)event.parent).action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK){
-                    shouldSwing = ((IOffhandDual) event.offHand.getItem()).offhandClickBlock((PlayerInteractEvent)event.parent, event.mainHand, event.offHand);
-                }
-                if(!shouldSwing){
-                    event.setCanceled(true);
-                }
-            }else if(BattlegearUtils.usagePriorAttack(event.offHand, event.getPlayer(), true) || event.offHand.getItem() instanceof IShield || event.offHand.getItem() instanceof IArrowContainer2){
-                event.setCanceled(true);
-            }
-        }
-        if(event.mainHand != null && !event.isCanceled() && BattlegearUtils.usagePriorAttack(event.mainHand, event.getPlayer(), false)) {
-            event.setCanceled(true);
         }
     }
 
@@ -286,6 +267,15 @@ public final class BattlemodeHookContainerClass {
                     offhandItemEvent.event.useBlock = Event.Result.DENY;
                 }
             }
+            if(offhandItem.getItem() instanceof IOffhandDual) {
+                if (offhandItemEvent.onBlock()) {
+                    offhandItemEvent.swingOffhand = ((IOffhandDual) offhandItem.getItem()).offhandClickBlock(copy(offhandItemEvent.event), offhandItemEvent.getPlayer().getCurrentEquippedItem(), offhandItem);
+                }else{
+                    offhandItemEvent.swingOffhand = ((IOffhandDual) offhandItem.getItem()).offhandClickAir(copy(offhandItemEvent.event), offhandItemEvent.getPlayer().getCurrentEquippedItem(), offhandItem);
+                }
+            }else if(offhandItem.getItem() instanceof IShield || offhandItem.getItem() instanceof IArrowContainer2 || BattlegearUtils.usagePriorAttack(offhandItem, offhandItemEvent.getPlayer(), true)){
+                offhandItemEvent.swingOffhand = false;
+            }
             Event.Result cancel = offhandItemEvent.swingOffhand ? Event.Result.DEFAULT : Event.Result.ALLOW;
             if (offhandItem.getItem() instanceof IHandListener) {
                 if (offhandItemEvent.onBlock()) {
@@ -298,7 +288,12 @@ public final class BattlemodeHookContainerClass {
                 offhandItemEvent.setCanceled(true);
             else if (cancel == Event.Result.DEFAULT)
                 offhandItemEvent.swingOffhand = true;
-
+        }
+        if(!offhandItemEvent.isCanceled() && offhandItemEvent.swingOffhand){
+            ItemStack mainHand = offhandItemEvent.getPlayer().getCurrentEquippedItem();
+            if(mainHand != null && BattlegearUtils.usagePriorAttack(mainHand, offhandItemEvent.getPlayer(), false)) {
+               offhandItemEvent.swingOffhand = false;
+            }
         }
     }
 
@@ -347,12 +342,12 @@ public final class BattlemodeHookContainerClass {
                         if(blockEvent.damageShield && !player.capabilities.isCreativeMode){
                             float red = ((IShield)shield.getItem()).getDamageReduction(shield, event.source);
                             if(red<dmg){
+                                player.inventory.currentItem += InventoryPlayerBattle.WEAPON_SETS;
                                 shield.damageItem(Math.round(dmg-red), player);
                                 if(shield.stackSize <= 0){
-                                    player.inventory.currentItem += InventoryPlayerBattle.WEAPON_SETS;
                                     player.destroyCurrentEquippedItem();
-                                    player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
                                 }
+                                player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
                             }
                         }
                     }
