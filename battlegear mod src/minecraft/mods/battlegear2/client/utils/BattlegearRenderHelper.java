@@ -438,10 +438,10 @@ public final class BattlegearRenderHelper {
                     }
 
                     if (par1EntityPlayer.getItemInUseCount() > 0 && var23 == EnumAction.block) {
-                        GL11.glTranslatef(0.05F, 0.0F, -0.1F);
-                        GL11.glRotatef(-50.0F, 0.0F, 1.0F, 0.0F);
-                        GL11.glRotatef(-10.0F, 1.0F, 0.0F, 0.0F);
-                        GL11.glRotatef(-60.0F, 0.0F, 0.0F, 1.0F);
+                        GL11.glTranslatef(-0.05F, 0.0F, -0.1F);
+                        GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
+                        GL11.glRotatef(10.0F, 1.0F, 0.0F, 0.0F);
+                        GL11.glRotatef(40.0F, 0.0F, 0.0F, 1.0F);
                     }
 
                     GL11.glTranslatef(0, 3*RENDER_UNIT, 0);
