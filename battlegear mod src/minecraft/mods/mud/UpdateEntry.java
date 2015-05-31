@@ -1,6 +1,6 @@
 package mods.mud;
 
-import cpw.mods.fml.common.ModContainer;
+import net.minecraftforge.fml.common.ModContainer;
 import mods.mud.exceptions.UnknownVersionFormatException;
 
 import java.net.URL;

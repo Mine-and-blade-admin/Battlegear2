@@ -1,6 +1,6 @@
 package mods.mud.gui;
 
-import cpw.mods.fml.common.Loader;
+import net.minecraftforge.fml.common.Loader;
 import mods.mud.ModUpdateDetector;
 import mods.mud.UpdateChecker;
 import mods.mud.UpdateEntry;
@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -105,7 +106,7 @@ public class GuiChangelogDownload extends GuiScreen
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) {
+    protected void actionPerformed(GuiButton button) throws IOException {
         if (button.enabled)
         {
             if(!isDownloading || (downloadFailed || downloadComplete) ){

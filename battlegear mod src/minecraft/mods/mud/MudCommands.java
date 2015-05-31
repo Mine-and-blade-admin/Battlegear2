@@ -3,8 +3,10 @@ package mods.mud;
 import mods.mud.gui.GuiChangelogDownload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.BlockPos;
 
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class MudCommands extends CommandBase{
     }
     
     @Override
-    public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr) {
+    public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
         return getListOfStringsMatchingLastWord(par2ArrayOfStr, getCommandName());
     }
     
@@ -31,7 +33,7 @@ public class MudCommands extends CommandBase{
     }
 
     @Override
-    public void processCommand(ICommandSender icommandsender, String[] astring) {
+    public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
         new Thread() {
             @Override
             public void run()

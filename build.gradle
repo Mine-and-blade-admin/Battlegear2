@@ -38,6 +38,7 @@ group = "com.github.mine-blade.battlegear"
 minecraft {
     runDir = "eclipse"
     version = config.mcversion + "-" + config.forgeversion
+	mappings = "snapshot_" + config.mapping
     replace '$version', version
 }
 archivesBaseName = config.mcversion + "-" + config.distname

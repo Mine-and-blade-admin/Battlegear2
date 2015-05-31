@@ -1,9 +1,9 @@
 package mods.mud.gui;
 
-import cpw.mods.fml.client.GuiScrollingList;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.LoaderState;
-import cpw.mods.fml.common.ModContainer;
+import net.minecraftforge.fml.client.GuiScrollingList;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.fml.common.ModContainer;
 import mods.mud.UpdateEntry;
 import mods.mud.exceptions.UnknownVersionFormatException;
 import net.minecraft.client.renderer.Tessellator;
