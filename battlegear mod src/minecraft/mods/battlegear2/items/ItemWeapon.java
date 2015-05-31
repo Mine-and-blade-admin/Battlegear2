@@ -5,6 +5,7 @@ import com.google.common.collect.Multimap;
 import mods.battlegear2.api.weapons.Attributes;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.utils.BattlegearConfig;
+import net.minecraft.block.Block;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
@@ -28,7 +29,7 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon,
 		if(material == ToolMaterial.EMERALD){
 			this.name = named+".diamond";
 		}else{
-			this.name= named+"."+material.name().toLowerCase(Locale.ENGLISH);
+			this.name = named+"."+material.name().toLowerCase(Locale.ENGLISH);
 		}
 		
 		this.setUnlocalizedName("battlegear2:"+name);
@@ -44,9 +45,15 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon,
 	@Override
 	public Multimap getAttributeModifiers(ItemStack stack) {
 		Multimap map = HashMultimap.create();
-		map.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(field_111210_e, "Weapon modifier", (double)this.baseDamage, 0));
+		map.put(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName(), new AttributeModifier(itemModifierUUID, "Weapon modifier", (double)this.baseDamage, 0));
         return map;
     }
+
+	@Override
+	public boolean canHarvestBlock(Block par1Block)
+	{
+		return false;
+	}
 
     public float getModifiedAmount(ItemStack stack, String modifierName){
         Iterator itr = stack.getAttributeModifiers().get(modifierName).iterator();

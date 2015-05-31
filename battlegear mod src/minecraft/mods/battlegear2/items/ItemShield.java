@@ -1,9 +1,9 @@
 package mods.battlegear2.items;
 
-import cpw.mods.fml.common.IFuelHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.IFuelHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mods.battlegear2.api.EnchantmentHelper;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
@@ -152,7 +152,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         par3List.add("");
 
         par3List.add(EnumChatFormatting.DARK_GREEN+
-                StatCollector.translateToLocalFormatted("attribute.shield.block.time", ItemStack.field_111284_a.format(1F / (enumShield.getDecayRate()) / 20F)));
+                StatCollector.translateToLocalFormatted("attribute.shield.block.time", ItemStack.DECIMALFORMAT.format(1F / (enumShield.getDecayRate()) / 20F)));
 
         int arrowCount = getArrowCount(par1ItemStack);
         if(arrowCount > 0){
@@ -227,7 +227,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
 	@Override
 	public boolean isEnchantable(Enchantment baseEnchantment, ItemStack stack) {
-		return baseEnchantment.type == EnumEnchantmentType.all;
+		return baseEnchantment.type == EnumEnchantmentType.ALL;
 	}
 	
 	@Override

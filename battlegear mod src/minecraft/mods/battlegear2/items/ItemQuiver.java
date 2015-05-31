@@ -1,7 +1,7 @@
 package mods.battlegear2.items;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
@@ -51,7 +51,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
             if(temp!=null){
                 EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
                 if(entityitem!=null) {
-                    entityitem.delayBeforeCanPickup = 0;
+                    entityitem.setNoPickupDelay();
                     entityitem.func_145797_a(player.getCommandSenderName());
                 }
                 setStackInSlot(stack, i, null);
@@ -151,10 +151,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     public static void writeBowNBT(ItemStack bow, ItemStack loadedArrow) {
         NBTTagCompound tags = new NBTTagCompound();
         loadedArrow.writeToNBT(tags);
-        if(!bow.hasTagCompound()){
-            bow.stackTagCompound = new NBTTagCompound();
-        }
-        bow.stackTagCompound.setTag("Battlegear2-LoadedArrow", tags);
+        bow.setTagInfo("Battlegear2-LoadedArrow", tags);
     }
 
     @Override

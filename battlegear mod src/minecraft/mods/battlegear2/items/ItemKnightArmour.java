@@ -1,8 +1,8 @@
 package mods.battlegear2.items;
 
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.IHeraldyArmour;
@@ -127,7 +127,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 		super.addInformation(armor, player, par3List, par4);
 		par3List.add(String.format("%s +%d %s", 
 				EnumChatFormatting.BLUE, this.damageReduceAmount, StatCollector.translateToLocal("tooltip.armour.points")));
-        par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + 2, ItemStack.field_111284_a.format(-motionFactor*100.0D), StatCollector.translateToLocal("attribute.name.generic.movementSpeed")));
+        par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + 2, ItemStack.DECIMALFORMAT.format(-motionFactor*100.0D), StatCollector.translateToLocal("attribute.name.generic.movementSpeed")));
 	}
 
 	@Override

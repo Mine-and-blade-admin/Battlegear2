@@ -1,7 +1,7 @@
 package mods.battlegear2.items;
 
 import com.google.common.collect.Multimap;
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.weapons.IBackStabbable;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
@@ -26,7 +26,7 @@ public class ItemDagger extends OneHandedWeapon implements IBackStabbable,IHitTi
 	}
 	
 	@Override
-	public boolean func_150897_b(Block par1Block)//Daggers can harvest tallgrass and wool
+	public boolean canHarvestBlock(Block par1Block)//Daggers can harvest tallgrass and wool
     {
         return par1Block == Blocks.tallgrass||par1Block == Blocks.wool;
     }

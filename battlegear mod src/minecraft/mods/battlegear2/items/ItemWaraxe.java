@@ -1,7 +1,7 @@
 package mods.battlegear2.items;
 
 import com.google.common.collect.Multimap;
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import mods.battlegear2.api.weapons.IPenetrateWeapon;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLog;
@@ -35,7 +35,7 @@ public class ItemWaraxe extends OneHandedWeapon implements IPenetrateWeapon{ // 
     }
 	
 	@Override
-	public boolean func_150897_b(Block par1Block)//Waraxe can harvest logs
+	public boolean canHarvestBlock(Block par1Block)//Waraxe can harvest logs
     {
         return par1Block instanceof BlockLog;
     }

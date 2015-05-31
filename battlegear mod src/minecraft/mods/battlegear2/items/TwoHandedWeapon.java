@@ -1,9 +1,9 @@
 package mods.battlegear2.items;
 
-import cpw.mods.fml.relauncher.Side;
-import mods.battlegear2.api.PlayerEventChild;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraft.world.World;
 
 public class TwoHandedWeapon extends ItemWeapon{
 
@@ -12,12 +12,12 @@ public class TwoHandedWeapon extends ItemWeapon{
 	}
 
 	@Override
-	public boolean allowOffhand(ItemStack mainhand, ItemStack offhand) {
+	public boolean allowOffhand(ItemStack mainhand, ItemStack offhand, EntityPlayer player) {
 		return offhand == null;
 	}
 
 	@Override
-	public boolean isOffhandHandDual(ItemStack off) {
+	public boolean isOffhandWieldable(ItemStack off, EntityPlayer player) {
 		return false;
 	}
 
@@ -25,28 +25,19 @@ public class TwoHandedWeapon extends ItemWeapon{
 	public boolean sheatheOnBack(ItemStack item) {
 		return true;
 	}
-	
+
 	@Override
-	public boolean offhandAttackEntity(PlayerEventChild.OffhandAttackEvent event,
-			ItemStack mainhandItem, ItemStack offhandItem) {
-		return true;
+	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer){
+		return par1ItemStack;
 	}
 
 	@Override
-	public boolean offhandClickAir(PlayerInteractEvent event,
-			ItemStack mainhandItem, ItemStack offhandItem) {
-		return true;
+	public EnumAction getItemUseAction(ItemStack par1ItemStack){
+		return EnumAction.NONE;
 	}
 
 	@Override
-	public boolean offhandClickBlock(PlayerInteractEvent event,
-			ItemStack mainhandItem, ItemStack offhandItem) {
-		return true;
+	public int getMaxItemUseDuration(ItemStack itemStack){
+		return 0;
 	}
-
-	@Override
-	public void performPassiveEffects(Side effectiveSide,
-			ItemStack mainhandItem, ItemStack offhandItem) {		
-	}
-
 }
