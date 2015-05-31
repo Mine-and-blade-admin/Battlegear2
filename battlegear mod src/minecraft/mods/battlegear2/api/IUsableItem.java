@@ -1,5 +1,6 @@
 package mods.battlegear2.api;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -25,9 +26,9 @@ import net.minecraft.item.ItemStack;
  */
 public interface IUsableItem {
     /**
-     * Note: next version will include wielding player as second argument
+     * @param player  wielding player
      * @param itemStack which contain this item
      * @return true if this item prefer being used instead of swinging/attacking
      */
-    public boolean isUsedOverAttack(ItemStack itemStack);
+    public boolean isUsedOverAttack(ItemStack itemStack, EntityPlayer player);
 }

@@ -33,7 +33,7 @@ public interface IArrowContainer2 {
      * Returns the itemStack in the currently selected slot
      * @param container The {@link ItemStack} representing this item
      * @param slot the slot index
-     * @return The {@link #ItemStack} in the given slot.
+     * @return The {@link ItemStack} in the given slot.
      */
     public ItemStack getStackInSlot(ItemStack container, int slot);
 

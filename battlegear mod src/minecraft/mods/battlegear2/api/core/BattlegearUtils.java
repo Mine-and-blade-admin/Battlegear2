@@ -2,7 +2,9 @@ package mods.battlegear2.api.core;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
-import cpw.mods.fml.common.eventhandler.EventBus;
+import net.minecraft.entity.*;
+import net.minecraft.inventory.IInventory;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 import mods.battlegear2.api.*;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.ISpecialBow;
@@ -10,10 +12,6 @@ import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityMultiPart;
-import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
@@ -143,23 +141,6 @@ public class BattlegearUtils {
     }
 
     /**
-     * @deprecated see below
-     */
-    public static boolean isMainHand(ItemStack main, ItemStack off) {
-        if(main == null)
-            return true;
-    	else if(main.getItem() instanceof IAllowItem)//An item using the API
-            return ((IAllowItem) main.getItem()).allowOffhand(main, off);//defined by the item
-        else if(main.getItem() instanceof IArrowContainer2)//A quiver
-            return true;//anything ?
-        else if(usagePriorAttack(main))//"Usable" item
-            return off == null || !usagePriorAttack(off);//With empty hand or non "usable item"
-        else if(isWeapon(main))//A generic weapon
-            return main.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isMainHand(main);//With either generic attack, or registered
-        return false;
-    }
-
-    /**
      * Defines a combination of left hand/right hand items that is valid to wield
      *
      * @param main Item to be wield in the right hand
@@ -171,28 +152,13 @@ public class BattlegearUtils {
         if(main == null)
             return true;
         else if(main.getItem() instanceof IAllowItem)//An item using the API
-            return ((IAllowItem) main.getItem()).allowOffhand(main, off);//defined by the item TODO pass through third parameter
+            return ((IAllowItem) main.getItem()).allowOffhand(main, off, wielder);//defined by the item
         else if(main.getItem() instanceof IArrowContainer2)//A quiver
             return true;//anything ?
         else if(usagePriorAttack(main, wielder, false))//"Usable" item
             return off == null || !usagePriorAttack(off, wielder, true);//With empty hand or non "usable item"
         else if(isWeapon(main))//A generic weapon
             return main.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isMainHand(main);//With either generic attack, or registered
-        return false;
-    }
-
-    /**
-     * @deprecated see below
-     */
-    public static boolean isOffHand(ItemStack off) {
-        if(off == null)
-            return true;
-    	else if(off.getItem() instanceof IOffhandDual)//An item using the API
-            return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);//defined by the item
-        else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || usagePriorAttack(off))//Shield, Quiver, or "usable"
-            return true;//always
-        else if(isWeapon(off))//A generic weapon
-            return off.getAttributeModifiers().containsKey(genericAttack) || WeaponRegistry.isOffHand(off);//with a generic attack or registered
         return false;
     }
 
@@ -205,8 +171,6 @@ public class BattlegearUtils {
     public static boolean isOffHand(ItemStack off, EntityPlayer wielder) {
         if(off == null)
             return true;
-        else if(off.getItem() instanceof IOffhandDual)//An item using the API
-            return ((IOffhandDual) off.getItem()).isOffhandHandDual(off);//defined by the item
         else if(off.getItem() instanceof IOffhandWield)//An item using the API
             return ((IOffhandWield) off.getItem()).isOffhandWieldable(off, wielder);//defined by the item
         else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || usagePriorAttack(off, wielder, true))//Shield, Quiver, or "usable"
@@ -217,29 +181,17 @@ public class BattlegearUtils {
     }
 
     /**
-     * @deprecated see below
-     */
-    public static boolean usagePriorAttack(ItemStack itemStack){
-        if(itemStack.getItem() instanceof IUsableItem)
-            return ((IUsableItem) itemStack.getItem()).isUsedOverAttack(itemStack);
-        else {
-            EnumAction useAction = itemStack.getItemUseAction();
-            return useAction == EnumAction.bow || useAction == EnumAction.drink || useAction == EnumAction.eat || isCommonlyUsable(itemStack.getItem());
-        }
-    }
-
-    /**
      * Defines a item which "use" (effect on right click) should have priority over its "attack" (effect on left click)
      * @param itemStack the item which will be "used", instead of attacking
      * @param wielder The player trying to use or attack with this item
      * @return true if such item prefer being "used"
      */
     public static boolean usagePriorAttack(ItemStack itemStack, EntityPlayer wielder, boolean off){
-        if(itemStack.getItem() instanceof IUsableItem)//TODO pass through wielding player
-            return ((IUsableItem) itemStack.getItem()).isUsedOverAttack(itemStack);
+        if(itemStack.getItem() instanceof IUsableItem)
+            return ((IUsableItem) itemStack.getItem()).isUsedOverAttack(itemStack, wielder);
         else {
             EnumAction useAction = itemStack.getItemUseAction();
-            return useAction == EnumAction.bow || useAction == EnumAction.drink || useAction == EnumAction.eat || isCommonlyUsable(itemStack.getItem()) || WeaponRegistry.useOverAttack(itemStack, off);
+            return useAction == EnumAction.BOW || useAction == EnumAction.DRINK || useAction == EnumAction.EAT || isCommonlyUsable(itemStack.getItem()) || WeaponRegistry.useOverAttack(itemStack, off);
         }
     }
 
@@ -261,13 +213,8 @@ public class BattlegearUtils {
         return item instanceof ItemBow || item instanceof ISpecialBow;
     }
 
-    @Deprecated//See method below
-    public static boolean checkForRightClickFunction(Item item, ItemStack stack){
-        return checkForRightClickFunction(stack);
-    }
-
     public static boolean checkForRightClickFunction(ItemStack stack) {
-        if (stack.getItemUseAction() == EnumAction.block || stack.getItemUseAction() == EnumAction.none) {
+        if (stack.getItemUseAction() == EnumAction.BLOCK || stack.getItemUseAction() == EnumAction.NONE) {
             Class<?> c = stack.getItem().getClass();
             while (!(c.equals(Item.class) || c.equals(ItemTool.class) || c.equals(ItemSword.class))) {
                 if(getBlackListedMethodIn(c)){
@@ -291,79 +238,6 @@ public class BattlegearUtils {
             }
         }
         return false;
-    }
-
-    /**
-     * Reads a {@link ItemStack} from the InputStream
-     */
-    public static ItemStack readItemStack(ByteArrayDataInput par0DataInputStream) throws IOException {
-        ItemStack itemstack = null;
-        int short1 = par0DataInputStream.readInt();
-
-        if (short1 >= 0) {
-            byte b0 = par0DataInputStream.readByte();
-            short short2 = par0DataInputStream.readShort();
-            itemstack = new ItemStack(Item.getItemById(short1), b0, short2);
-            itemstack.stackTagCompound = readNBTTagCompound(par0DataInputStream);
-        }
-
-        return itemstack;
-    }
-
-    /**
-     * Reads a compressed {@link NBTTagCompound} from the InputStream
-     */
-    public static NBTTagCompound readNBTTagCompound(ByteArrayDataInput par0DataInputStream) throws IOException {
-        short short1 = par0DataInputStream.readShort();
-
-        if (short1 < 0) {
-            return null;
-        } else {
-            byte[] abyte = new byte[short1];
-            par0DataInputStream.readFully(abyte);
-
-            return CompressedStreamTools.func_152457_a(abyte, NBTSizeTracker.field_152451_a);
-        }
-    }
-
-    /**
-     * Writes a {@link ItemStack} to the OutputStream
-     * @param par1DataOutputStream the output stream
-     * @param par0ItemStack to write
-     * @throws IOException
-     */
-    public static void writeItemStack(ByteArrayDataOutput par1DataOutputStream, ItemStack par0ItemStack) throws IOException {
-
-        if (par0ItemStack == null) {
-            par1DataOutputStream.writeShort(-1);
-        } else {
-            par1DataOutputStream.writeInt(Item.getIdFromItem(par0ItemStack.getItem()));
-            par1DataOutputStream.writeByte(par0ItemStack.stackSize);
-            par1DataOutputStream.writeShort(par0ItemStack.getItemDamage());
-            NBTTagCompound nbttagcompound = null;
-
-            if (par0ItemStack.getItem().isDamageable() || par0ItemStack.getItem().getShareTag()) {
-                nbttagcompound = par0ItemStack.stackTagCompound;
-            }
-
-            writeNBTTagCompound(nbttagcompound, par1DataOutputStream);
-        }
-    }
-
-    /**
-     * Writes a compressed {@link NBTTagCompound} to the output
-     * @param par0NBTTagCompound
-     * @param par1DataOutputStream
-     * @throws IOException
-     */
-    protected static void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound, ByteArrayDataOutput par1DataOutputStream) throws IOException {
-        if (par0NBTTagCompound == null) {
-            par1DataOutputStream.writeShort(-1);
-        } else {
-            byte[] abyte = CompressedStreamTools.compress(par0NBTTagCompound);
-            par1DataOutputStream.writeShort((short) abyte.length);
-            par1DataOutputStream.write(abyte);
-        }
     }
 
     /**
@@ -409,12 +283,13 @@ public class BattlegearUtils {
         if (par1Entity.canAttackWithItem()) {
             if (!par1Entity.hitByEntity(player)){
                 float f = (float)player.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
-                int i = 0;
+                int i = EnchantmentHelper.getKnockbackModifier(player);
                 float f1 = 0.0F;
 
                 if (par1Entity instanceof EntityLivingBase){
-                    f1 = EnchantmentHelper.getEnchantmentModifierLiving(player, (EntityLivingBase)par1Entity);
-                    i += EnchantmentHelper.getKnockbackModifier(player, (EntityLivingBase)par1Entity);
+                    f1 = EnchantmentHelper.func_152377_a(stack, ((EntityLivingBase) par1Entity).getCreatureAttribute());
+                }else{
+                    f1 = EnchantmentHelper.func_152377_a(stack, EnumCreatureAttribute.UNDEFINED);
                 }
                 if (player.isSprinting()){
                     ++i;
@@ -507,6 +382,12 @@ public class BattlegearUtils {
      * @return true if any interaction happened, actually bypassing subsequent PlayerInteractEvent.Action.RIGHT_CLICK_AIR and PlayerControllerMP#sendUseItem on client side
      */
     public static boolean interactWith(EntityPlayer entityPlayer, Entity entity){
+        if (entityPlayer.isSpectator()){
+            if (entity instanceof IInventory){
+                entityPlayer.displayGUIChest((IInventory)entity);
+            }
+            return false;
+        }
         final EntityInteractEvent event = new EntityInteractEvent(entityPlayer, entity);
         if (MinecraftForge.EVENT_BUS.post(event)) return false;
         ItemStack itemstack = entityPlayer.getCurrentEquippedItem();
@@ -686,7 +567,7 @@ public class BattlegearUtils {
     }
 
     /**
-     * Patch in ItemStack#damageItem() to fix bow stack weird depletion
+     * Patch in ItemStack#damageItem(int, EntityLivingBase) to fix bow stack weird depletion
      *
      * @param itemStack which item is instance of ItemBow, and size is 0
      * @param entityPlayer who has damaged and depleted the stack

@@ -3,7 +3,7 @@ package mods.battlegear2.api.weapons;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
-import cpw.mods.fml.common.event.FMLInterModComms;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import mods.battlegear2.api.ISensible;
 import mods.battlegear2.api.StackHolder;
 import net.minecraft.item.ItemStack;

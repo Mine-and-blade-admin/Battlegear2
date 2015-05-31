@@ -1,7 +1,8 @@
 package mods.battlegear2.api.core;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.command.server.CommandTestForBlock;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -124,9 +125,9 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     @Override
     @SideOnly(Side.CLIENT)
-    public void func_146030_a(Item targetItem, int targetDamage, boolean compareWithDamage, boolean forceInEmptySlots) {
+    public void setCurrentItem(Item targetItem, int targetDamage, boolean compareWithDamage, boolean forceInEmptySlots) {
         if (!isBattlemode())
-            super.func_146030_a(targetItem, targetDamage, compareWithDamage, forceInEmptySlots);
+            super.setCurrentItem(targetItem, targetDamage, compareWithDamage, forceInEmptySlots);
     }
 
     /**
@@ -161,23 +162,37 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      * Clears all slots that contain the target item with given damage
      * @param targetId if null, not specific
      * @param targetDamage if <0, not specific
+     * @param amount Number of items to remove. if 0, does not affect the inventory; if <=0, unlimited
+     * @param targetNBT if null, not specific
      * @return the total number of items cleared
      */
     @Override
-    public int clearInventory(Item targetId, int targetDamage) {
-        int stacks = 0;
-
+    public int func_174925_a(Item targetId, int targetDamage, int amount, NBTTagCompound targetNBT) {
+        int stacks = super.func_174925_a(targetId, targetDamage, amount, targetNBT);
+        if(amount > 0 && stacks >= amount){
+            return stacks;
+        }
         for (int i = 0; i < extraItems.length; i++) {
-            if (extraItems[i] != null &&
-                    (targetId == null || extraItems[i].getItem() == targetId) &&
-                    (targetDamage <= -1 || extraItems[i].getItemDamage() == targetDamage)) {
-
-                stacks += extraItems[i].stackSize;
-                extraItems[i] = null;
+            ItemStack stack = extraItems[i];
+            if (stack != null &&
+                    (targetId == null || stack.getItem() == targetId) &&
+                    (targetDamage <= -1 || stack.getMetadata() == targetDamage) &&
+                    (targetNBT == null || CommandTestForBlock.func_175775_a(targetNBT, stack.getTagCompound(), true))) {
+                int temp = amount <= 0 ? stack.stackSize : Math.min(amount - stacks, stack.stackSize);
+                stacks += temp;
+                if(amount != 0) {
+                    extraItems[i].stackSize -= temp;
+                    if(extraItems[i].stackSize == 0){
+                        extraItems[i] = null;
+                        hasChanged = true;
+                    }
+                    if(amount > 0 && stacks >= amount){
+                        return stacks;
+                    }
+                }
             }
         }
-        hasChanged = stacks > 0;
-        return super.clearInventory(targetId, targetDamage) + stacks;
+        return stacks;
     }
 
     /**
@@ -304,13 +319,13 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      * @return some action value of the current item against given block
      */
     @Override
-    public float func_146023_a(Block block) {
+    public float getStrVsBlock(Block block) {
         if (isBattlemode()) {
             ItemStack currentItemStack = getCurrentItem();
-            return currentItemStack != null ? currentItemStack.func_150997_a(block) : 1.0F;
+            return currentItemStack != null ? currentItemStack.getStrVsBlock(block) : 1.0F;
 
         } else {
-            return super.func_146023_a(block);
+            return super.getStrVsBlock(block);
         }
     }
 
@@ -414,7 +429,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     	super.dropAllItems();
         for (int i = 0; i < this.extraItems.length; ++i) {
             if (this.extraItems[i] != null) {
-                this.player.func_146097_a(this.extraItems[i], true, false);
+                this.player.dropItem(this.extraItems[i], true, false);
                 this.extraItems[i] = null;
             }
         }
@@ -434,6 +449,16 @@ public class InventoryPlayerBattle extends InventoryPlayer {
             for (int i = 0; i < extraItems.length; i++) {
                 this.extraItems[i] = ItemStack.copyItemStack(par1InventoryPlayer.getStackInSlot(i + OFFSET));
             }
+        }
+    }
+
+    @Override
+    public void clear()
+    {
+        super.clear();
+        for (int i = 0; i < this.extraItems.length; ++i)
+        {
+            this.extraItems[i] = null;
         }
     }
 
