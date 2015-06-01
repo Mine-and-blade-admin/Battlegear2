@@ -1,8 +1,7 @@
 package mods.battlegear2;
 
-import cpw.mods.fml.common.eventhandler.Event.Result;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.PlayerEventChild;
+import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.IQuiverSelection;
@@ -21,6 +20,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public final class BowHookContainerClass2 {
 
@@ -85,11 +87,23 @@ public final class BowHookContainerClass2 {
 		}
 		// only nock if allowed
 		if (canDrawBow == Result.ALLOW) {
-            int usage = mods.battlegear2.api.EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge,event.result)*20000;
-			event.entityPlayer.setItemInUse(event.result, event.result.getMaxItemUseDuration()-usage);
+			event.entityPlayer.setItemInUse(event.result, event.result.getMaxItemUseDuration());
 			event.setCanceled(true);
 		}
 	}
+
+    @SubscribeEvent
+    public void onBowStartDraw(PlayerUseItemEvent.Start use){
+        if(use.duration > 1 && BattlegearUtils.isBow(use.item.getItem())){
+            int lvl = mods.battlegear2.api.EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge, use.item);
+            if(lvl > 0){
+                use.duration -= lvl*20000;
+                if(use.duration <=0){
+                    use.duration = 1;
+                }
+            }
+        }
+    }
 
     /**
      *

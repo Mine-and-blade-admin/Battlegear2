@@ -27,6 +27,7 @@ public class EnchantmentHelper {
     private static BitSet reservedId;
     private final TreeSet<Enchantment> enchants;
     public static final int MIN_FREE_SLOT = 8, INVALID = -1;
+    private static int MAX_ENCHANTS = INVALID;
 
     public EnchantmentHelper(){
         enchants = Sets.newTreeSet(new Comparator<Enchantment>() {
@@ -72,6 +73,17 @@ public class EnchantmentHelper {
         return list;
     }
 
+    private static int getMaxEnchants(){
+        if(MAX_ENCHANTS == INVALID){
+            try {
+                MAX_ENCHANTS = ((Enchantment[])Enchantment.class.getDeclaredFields()[0].get(null)).length;
+            }catch (Exception printed){
+                printed.printStackTrace();
+            }
+        }
+        return MAX_ENCHANTS;
+    }
+
     /**
      * Get the lowest available id for a new enchantment, makes no reservation.
      *
@@ -87,12 +99,12 @@ public class EnchantmentHelper {
      * Recommended when registering lone enchantments
      *
      * @param startingId to start search from (included)
-     * @return {@link #INVALID} if no id above the given one is available, or the next available id
+     * @return {@code #INVALID} if no id above the given one is available, or the next available id
      */
     public static int getNextAvailableId(int startingId){
         int result = startingId < MIN_FREE_SLOT ? MIN_FREE_SLOT : startingId;
-        while(result < Enchantment.enchantmentsList.length) {
-            if(Enchantment.enchantmentsList[result]==null)
+        while(result < getMaxEnchants()) {
+            if(Enchantment.getEnchantmentById(result)==null)
                 return result;
             result++;
         }
@@ -104,11 +116,11 @@ public class EnchantmentHelper {
      * Can be used when searching multiple available ids
      *
      * @param startingId to start search from (included)
-     * @return {@link #INVALID} if no id above the given one is available, or the next available id
+     * @return {@code #INVALID} if no id above the given one is available, or the next available id
      */
     public static int takeNextAvailableId(int startingId){
         if(reservedId==null){
-            reservedId = new BitSet(Enchantment.enchantmentsList.length);
+            reservedId = new BitSet(getMaxEnchants());
         }
         int result = startingId < MIN_FREE_SLOT ? MIN_FREE_SLOT : startingId;
         int temp;
@@ -123,22 +135,22 @@ public class EnchantmentHelper {
                 result++;
             }else
                 break;
-        }while(result < Enchantment.enchantmentsList.length);
+        }while(result < getMaxEnchants());
         return INVALID;
     }
 
     /**
      * Get the next available id for a new enchantment, makes an internal reservation.
      * Can be used when searching multiple available ids
-     * The given argument is untouched if {@link #INVALID} is returned
+     * The given argument is untouched if {@code #INVALID} is returned
      *
      * @param property read as an int {@link Property#getInt()} and refreshed with the new available id
-     * @return {@link #INVALID} if no id above the given one is available, or the next available id
+     * @return {@code #INVALID} if no id above the given one is available, or the next available id
      */
     public static int takeNextAvailableId(Property property){
         if(property!=null && property.isIntValue()){
             int start = property.getInt();
-            if(start>=0 && start<Enchantment.enchantmentsList.length) {
+            if(start>=0 && start<getMaxEnchants()) {
                 int result = takeNextAvailableId(start);
                 property.set(result);
                 return result;
@@ -190,7 +202,7 @@ public class EnchantmentHelper {
      * Get the enchantment id from an optional enchantment.
      *
      * @param enchantmentOptional to get the id from
-     * @return {@link #INVALID} if the covered enchantment doesn't exist
+     * @return {@code #INVALID} if the covered enchantment doesn't exist
      */
     public static int getId(Optional<Enchantment> enchantmentOptional){
         if(enchantmentOptional.isPresent())
