@@ -1,44 +1,46 @@
 package mods.battlegear2.client;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-import cpw.mods.fml.common.registry.GameData;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.CommonProxy;
+import mods.battlegear2.api.DefaultMesh;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
-import mods.battlegear2.api.heraldry.IHeraldryItem;
+import mods.battlegear2.api.quiver.QuiverMesh;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
-import mods.battlegear2.client.renderer.*;
+import mods.battlegear2.client.renderer.ShieldModelLoader;
 import mods.battlegear2.client.utils.BattlegearClientUtils;
-import mods.battlegear2.heraldry.TileEntityFlagPole;
+import mods.battlegear2.heraldry.BlockFlagPole;
+import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.renderer.ItemMeshDefinition;
+import net.minecraft.client.renderer.ItemModelMesher;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.List;
 
 public final class ClientProxy extends CommonProxy {
@@ -48,8 +50,8 @@ public final class ClientProxy extends CommonProxy {
     private static Object dynLightPlayerMod;
     private static Method dynLightFromItemStack, refresh;
     public static ItemStack heldCache;
-    public static IIcon[] backgroundIcon;
-    public static IIcon[] bowIcons;
+    public static TextureAtlasSprite[] backgroundIcon;
+    public static TextureAtlasSprite[] bowIcons;
 
     @Override
     public void registerKeyHandelers() {
@@ -85,45 +87,74 @@ public final class ClientProxy extends CommonProxy {
         }
     }
 
+    //TODO: Bow, Flagpole, Heraldry renderers
     @Override
     public void registerItemRenderers() {
-    	if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "spear")  < 0){
-	        SpearRenderer spearRenderer =  new SpearRenderer();
-	        for(Item spear: BattlegearConfig.spear){
-	        	if(spear!=null)
-	        		MinecraftForgeClient.registerItemRenderer(spear, spearRenderer);
-	        }
-    	}
-
-        if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "shield")  < 0){
-        	ShieldRenderer shieldRenderer = new ShieldRenderer();
-	        for(Item shield : BattlegearConfig.shield){
-	        	if(shield!=null)
-	        		MinecraftForgeClient.registerItemRenderer(shield, shieldRenderer);
-	        }
+        if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "shield") < 0)
+            MinecraftForge.EVENT_BUS.register(new ShieldModelLoader());
+        ItemModelMesher modelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+        for (Item item : BattlegearConfig.dagger) {
+            if (item != null)
+                modelMesher.register(item, DefaultMesh.INVENTORY);
+        }
+        for (Item item : BattlegearConfig.warAxe) {
+            if (item != null)
+                modelMesher.register(item, DefaultMesh.INVENTORY);
+        }
+        for (Item item : BattlegearConfig.mace) {
+            if (item != null)
+                modelMesher.register(item, DefaultMesh.INVENTORY);
+        }
+        for (Item item : BattlegearConfig.spear) {
+            if (item != null)
+                modelMesher.register(item, DefaultMesh.INVENTORY);
+        }
+        for (Item shield : BattlegearConfig.shield) {
+            if (shield != null)
+                modelMesher.register(shield, DefaultMesh.INVENTORY);
+        }
+        for (Item armor : BattlegearConfig.knightArmor) {
+            if (armor != null)
+                modelMesher.register(armor, DefaultMesh.INVENTORY);
         }
 
-        if(Arrays.binarySearch(BattlegearConfig.disabledRenderers, "bow")  < 0)
-        	MinecraftForgeClient.registerItemRenderer(Items.bow, new BowRenderer());
-        if(BattlegearConfig.quiver!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver")  < 0)
-        	MinecraftForgeClient.registerItemRenderer(BattlegearConfig.quiver, new QuiverItremRenderer());
-        if(BattlegearConfig.banner!=null && Arrays.binarySearch(BattlegearConfig.disabledRenderers, "flagpole")  < 0){
-            MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(BattlegearConfig.banner), new FlagPoleItemRenderer());
-            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
+        //MinecraftForgeClient.registerItemRenderer(Items.bow, new BowRenderer());
+        if (BattlegearConfig.chain != null)
+            modelMesher.register(BattlegearConfig.chain, DefaultMesh.INVENTORY);
+        if (BattlegearConfig.quiver != null) {
+            modelMesher.register(BattlegearConfig.quiver, new QuiverMesh("_full", DefaultMesh.INVENTORY));
+            ModelLoader.addVariantName(BattlegearConfig.quiver, BattlegearConfig.MODID + "quiver", BattlegearConfig.MODID + "quiver_full");
         }
-        if(Battlegear.debug){
-            Item it = null;
-            for(Iterator itr = GameData.getItemRegistry().iterator(); itr.hasNext(); it = (Item) itr.next()){
-            	if(it instanceof IHeraldryItem && ((IHeraldryItem)it).useDefaultRenderer()){
-            		MinecraftForgeClient.registerItemRenderer(it, new HeraldryItemRenderer());
-            	}
+        if (BattlegearConfig.heradricItem != null)
+            modelMesher.register(BattlegearConfig.heradricItem, DefaultMesh.INVENTORY);
+        if (BattlegearConfig.MbArrows != null) {
+            String[] variants = new String[ItemMBArrow.names.length];
+            for (int i = 0; i < variants.length; i++) {
+                variants[i] = BattlegearConfig.MODID + BattlegearConfig.itemNames[9] + "." + ItemMBArrow.names[i];
             }
-            MinecraftForgeClient.registerItemRenderer(BattlegearConfig.heradricItem, new HeraldryCrestItemRenderer());
+            ModelLoader.addVariantName(BattlegearConfig.MbArrows, variants);
+            modelMesher.register(BattlegearConfig.MbArrows, DefaultMesh.INVENTORY);
+        }
+        if (BattlegearConfig.banner != null) {
+            Collection<Comparable> collec = BlockFlagPole.VARIANT.getAllowedValues();
+            final String[] variants = new String[collec.size()];
+            int i = 0;
+            for (Comparable comparable : collec) {
+                variants[i] = BattlegearConfig.MODID + BattlegearConfig.itemNames[10] + "/" + BlockFlagPole.VARIANT.getName(comparable);
+                i++;
+            }
+            ModelLoader.addVariantName(Item.getItemFromBlock(BattlegearConfig.banner), variants);
+            modelMesher.register(Item.getItemFromBlock(BattlegearConfig.banner), new ItemMeshDefinition() {
+                @Override
+                public ModelResourceLocation getModelLocation(ItemStack stack) {
+                    return new ModelResourceLocation(variants[stack.getMetadata()], "inventory");
+                }
+            });
+            //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
         }
     }
 
-    @Override
-    public IIcon getSlotIcon(int index){
+    public TextureAtlasSprite getSlotIcon(int index) {
         if(backgroundIcon != null){
             return backgroundIcon[index];
         }else{
@@ -154,46 +185,45 @@ public final class ClientProxy extends CommonProxy {
      * Finds what block or object the mouse is over at the specified partial tick time. Args: partialTickTime
      */
     @Override
-    public MovingObjectPosition getMouseOver(float tickPart, float maxDist)
+    public MovingObjectPosition getMouseOver(float tickPart, double d0)
     {
         Minecraft mc = FMLClientHandler.instance().getClient();
-        if (mc.renderViewEntity != null)
+        if (mc.getRenderViewEntity() != null)
         {
             if (mc.theWorld != null)
             {
-                mc.pointedEntity = null;
-                double d0 = (double)maxDist;
-                MovingObjectPosition objectMouseOver = mc.renderViewEntity.rayTrace(d0, tickPart);
+                MovingObjectPosition objectMouseOver = mc.getRenderViewEntity().rayTrace(d0, tickPart);
                 double d1 = d0;
-                Vec3 vec3 = mc.renderViewEntity.getPosition(tickPart);
+                Vec3 vec3 = mc.getRenderViewEntity().getPositionEyes(tickPart);
 
                 if (objectMouseOver != null)
                 {
                     d1 = objectMouseOver.hitVec.distanceTo(vec3);
                 }
 
-                Vec3 vec31 = mc.renderViewEntity.getLook(tickPart);
+                Vec3 vec31 = mc.getRenderViewEntity().getLook(tickPart);
                 Vec3 vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
+                Vec3 vec33 = null;
                 Entity pointedEntity = null;
-                float f1 = 1.0F;
-                List list = mc.theWorld.getEntitiesWithinAABBExcludingEntity(mc.renderViewEntity, mc.renderViewEntity.boundingBox.addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand((double)f1, (double)f1, (double)f1));
+                List list = mc.theWorld.getEntitiesWithinAABBExcludingEntity(mc.getRenderViewEntity(), mc.getRenderViewEntity().getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand(1.0D, 1.0D, 1.0D));
                 double d2 = d1;
 
-                for (int i = 0; i < list.size(); ++i)
+                for (Object o : list)
                 {
-                    Entity entity = (Entity)list.get(i);
+                    Entity entity = (Entity) o;
 
                     if (entity.canBeCollidedWith())
                     {
-                        float f2 = entity.getCollisionBorderSize();
-                        AxisAlignedBB axisalignedbb = entity.boundingBox.expand((double)f2, (double)f2, (double)f2);
+                        double f2 = entity.getCollisionBorderSize();
+                        AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().expand(f2, f2, f2);
                         MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
                         if (axisalignedbb.isVecInside(vec3))
                         {
-                            if (0.0D < d2 || d2 == 0.0D)
+                            if (d2 >= 0.0D)
                             {
                                 pointedEntity = entity;
+                                vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
                                 d2 = 0.0D;
                             }
                         }
@@ -203,8 +233,16 @@ public final class ClientProxy extends CommonProxy {
 
                             if (d3 < d2 || d2 == 0.0D)
                             {
-                                pointedEntity = entity;
-                                d2 = d3;
+                                if (entity == entity.ridingEntity && !entity.canRiderInteract()) {
+                                    if (d2 == 0.0D) {
+                                        pointedEntity = entity;
+                                        vec33 = movingobjectposition.hitVec;
+                                    }
+                                } else {
+                                    pointedEntity = entity;
+                                    vec33 = movingobjectposition.hitVec;
+                                    d2 = d3;
+                                }
                             }
                         }
                     }
@@ -212,7 +250,7 @@ public final class ClientProxy extends CommonProxy {
 
                 if (pointedEntity != null && (d2 < d1 || objectMouseOver == null))
                 {
-                    objectMouseOver = new MovingObjectPosition(pointedEntity);
+                    objectMouseOver = new MovingObjectPosition(pointedEntity, vec33);
                 }
 
                 return objectMouseOver;
@@ -272,5 +310,10 @@ public final class ClientProxy extends CommonProxy {
     @Override
     public EntityPlayer getClientPlayer(){
         return Minecraft.getMinecraft().thePlayer;
+    }
+
+    @Override
+    public void scheduleTask(Runnable runnable) {
+        Minecraft.getMinecraft().addScheduledTask(runnable);
     }
 }

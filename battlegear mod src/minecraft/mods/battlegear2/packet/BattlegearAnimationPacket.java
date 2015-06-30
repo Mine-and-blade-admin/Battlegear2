@@ -1,11 +1,11 @@
 package mods.battlegear2.packet;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 /**
  * User: nerd-boy
@@ -39,7 +39,7 @@ public final class BattlegearAnimationPacket extends AbstractMBPacket {
             EntityPlayer entity = player.worldObj.getPlayerEntityByName(username);
             if(entity!=null){
                 if (entity.worldObj instanceof WorldServer) {
-                    ((WorldServer) entity.worldObj).getEntityTracker().func_151247_a(entity, this.generatePacket());
+                    ((WorldServer) entity.worldObj).getEntityTracker().sendToAllTrackingEntity(entity, this.generatePacket());
                 }
                 animation.processAnimation((IBattlePlayer)entity);
             }

@@ -1,7 +1,6 @@
 package mods.battlegear2.api.heraldry;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 public interface IHeraldryItem {
 
@@ -16,15 +15,15 @@ public interface IHeraldryItem {
     /**
      * Returns the "base" icon. This icon will be coloured the primary colour
      */
-    public IIcon getBaseIcon(ItemStack stack);
+    //public IIcon getBaseIcon(ItemStack stack);
     /**
      * Returns the trim icon, This will be coloured the secondary colour
      */
-    public IIcon getTrimIcon(ItemStack stack);
+    //public IIcon getTrimIcon(ItemStack stack);
     /**
      * Returns the post render icon, this Icon will render after all other rendering passess in it's default colour
      */
-    public IIcon getPostRenderIcon(ItemStack stack);
+    //public IIcon getPostRenderIcon(ItemStack stack);
 
 
     /**

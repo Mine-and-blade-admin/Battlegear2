@@ -5,15 +5,16 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ObjectArrays;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Primitives;
-import net.minecraftforge.fml.common.FMLLog;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Property;
+import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -73,10 +74,12 @@ public class EnchantmentHelper {
         return list;
     }
 
-    private static int getMaxEnchants(){
+    public static int getMaxEnchants() {
         if(MAX_ENCHANTS == INVALID){
             try {
-                MAX_ENCHANTS = ((Enchantment[])Enchantment.class.getDeclaredFields()[0].get(null)).length;
+                Field field = Enchantment.class.getDeclaredFields()[0];
+                field.setAccessible(true);
+                MAX_ENCHANTS = ((Enchantment[]) field.get(null)).length;
             }catch (Exception printed){
                 printed.printStackTrace();
             }

@@ -1,6 +1,5 @@
 package mods.battlegear2.gui;
 
-import cpw.mods.fml.common.network.IGuiHandler;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.client.gui.BattleEquipGUI;
 import mods.battlegear2.client.gui.BattlegearSigilGUI;
@@ -9,6 +8,7 @@ import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.IGuiHandler;
 
 public final class BattlegearGUIHandeler implements IGuiHandler {
     public static final int mainID = 0;

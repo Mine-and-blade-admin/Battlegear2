@@ -1,20 +1,22 @@
 package mods.battlegear2.heraldry;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.heraldry.IFlagHolder;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.*;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -25,66 +27,79 @@ import java.util.List;
  *
  * Block class for a flag pole
  */
-public class BlockFlagPole extends Block {
+public class BlockFlagPole extends BlockRotatedPillar {
 
-    private static final float[] woodTexDims = new float[5];
-    private static final float[] ironTexDims = new float[5];
-    static{
-        woodTexDims[0] = 0F;
-        woodTexDims[1] = 4F;
-        woodTexDims[2] = 8F;
-        woodTexDims[3] = 12F;
-        woodTexDims[4] = 16F;
-
-        ironTexDims[0] = 1F;
-        ironTexDims[1] = 4.5F;
-        ironTexDims[2] = 8F;
-        ironTexDims[3] = 11.5F;
-        ironTexDims[4] = 15;
-    }
+    public static final PropertyEnum VARIANT = PropertyEnum.create("variant", Variants.class);
+    private static final float[] woodTexDims = {0F, 4F, 8F, 12F, 16F};
+    private static final float[] ironTexDims = {1F, 4.5F, 8F, 11.5F, 15F};
 
     public BlockFlagPole() {
         super(Material.wood);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(AXIS, EnumFacing.Axis.Y).withProperty(VARIANT, Variants.OAK));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
-        for(int i = 0; i < 7; i++){
+        for (int i = 0; i < Variants.values().length; i++) {
             par3List.add(new ItemStack(par1, 1, i));
         }
     }
 
     @Override
-    public int damageDropped(int par1){
-        return par1 % 7;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister par1IconRegister) {
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int par2, int par3, int par4) {
-        return getCollisionBoundingBoxFromPool(world, par2, par3, par4);
-    }
-
-    @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int par2, int par3, int par4) {
-        TileEntity te = world.getTileEntity(par2, par3, par4);
-        if(te instanceof IFlagHolder) {
-            switch (((IFlagHolder) te).getOrientation(world.getBlockMetadata(par2, par3, par4))) {
-                case 0:
-                    return AxisAlignedBB.getBoundingBox((double) par2 + 6F / 16F, (double) par3 + 0, (double) par4 + 6F / 16F, (double) par2 + 10F / 16F, (double) par3 + 1, (double) par4 + 10F / 16F);
-                case 1:
-                    return AxisAlignedBB.getBoundingBox((double) par2 + 6F / 16F, (double) par3 + 13F / 16F, (double) par4 + 0, (double) par2 + 10F / 16F, (double) par3 + 1, (double) par4 + 1);
-                case 2:
-                    return AxisAlignedBB.getBoundingBox((double) par2 + 0, (double) par3 + 13F / 16F, (double) par4 + 6F / 16F, (double) par2 + 1, (double) par3 + 1, (double) par4 + 10F / 16F);
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
+        TileEntity te = worldIn.getTileEntity(pos);
+        if (te instanceof IFlagHolder) {
+            int side = ((IFlagHolder) te).getOrientation();
+            if (side == 1) {
+                return state.withProperty(AXIS, EnumFacing.Axis.Z);
+            } else if (side == 2) {
+                return state.withProperty(AXIS, EnumFacing.Axis.X);
             }
         }
-        return super.getCollisionBoundingBoxFromPool(world, par2, par3, par4);
+        return state.withProperty(AXIS, EnumFacing.Axis.Y);
+    }
+
+    @Override
+    public int damageDropped(IBlockState state) {
+        return ((Variants) state.getValue(VARIANT)).ordinal();
+    }
+
+    @Override
+    public IBlockState getStateFromMeta(int meta) {
+        return this.getDefaultState().withProperty(VARIANT, Variants.byMetadata(meta));
+    }
+
+    @Override
+    public int getMetaFromState(IBlockState state) {
+        return ((Variants) state.getValue(VARIANT)).ordinal();
+    }
+
+    @Override
+    protected BlockState createBlockState() {
+        return new BlockState(this, new IProperty[]{AXIS, VARIANT});
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public AxisAlignedBB getSelectedBoundingBox(World world, BlockPos pos) {
+        return getCollisionBoundingBox(world, pos, null);
+    }
+
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state) {
+        TileEntity te = world.getTileEntity(pos);
+        if(te instanceof IFlagHolder) {
+            switch (((IFlagHolder) te).getOrientation()) {
+                case 0:
+                    return new AxisAlignedBB(pos.getX() + 6F / 16F, pos.getY(), pos.getZ() + 6F / 16F, pos.getX() + 10F / 16F, pos.getY() + 1, pos.getZ() + 10F / 16F);
+                case 1:
+                    return new AxisAlignedBB(pos.getX() + 6F / 16F, pos.getY() + 13F / 16F, pos.getZ(), pos.getX() + 10F / 16F, pos.getY() + 1, pos.getZ() + 1);
+                case 2:
+                    return new AxisAlignedBB(pos.getX(), pos.getY() + 13F / 16F, pos.getZ() + 6F / 16F, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 10F / 16F);
+            }
+        }
+        return super.getCollisionBoundingBox(world, pos, state);
     }
 
     public float getTextDim(int metadata, int section){
@@ -96,8 +111,14 @@ public class BlockFlagPole extends Block {
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
+    public EnumWorldBlockLayer getBlockLayer() {
+        return EnumWorldBlockLayer.CUTOUT;
+    }
+
+    @Override
     public int getRenderType() {
-        return -1;
+        return 3;
     }
 
     @Override
@@ -106,44 +127,63 @@ public class BlockFlagPole extends Block {
     }
 
     @Override
-    public boolean renderAsNormalBlock() {
+    public boolean isFullCube() {
         return false;
     }
 
     @Override
-    public boolean hasTileEntity(int i){
+    public boolean hasTileEntity(IBlockState state) {
         return true;
     }
 
     @Override
-    public TileEntity createTileEntity(World world, int i) {
+    public TileEntity createTileEntity(World world, IBlockState i) {
         return new TileEntityFlagPole();
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIcon(int par1, int meta) {
-        if(meta == 4)
-            return Blocks.iron_block.getIcon(par1, 0);
-        else if(meta < 4)
-            return Blocks.log.getIcon(par1, meta);
-        else
-            return Blocks.log2.getIcon(par1, meta - 5);
-    }
-
-    @Override
-    public void breakBlock(World par1World, int par2, int par3, int par4, Block par5, int par6) {
+    public void breakBlock(World par1World, BlockPos pos, IBlockState par5) {
         if(!par1World.isRemote){
-            TileEntity te = par1World.getTileEntity(par2, par3, par4);
+            TileEntity te = par1World.getTileEntity(pos);
             if(te instanceof IFlagHolder){
                 List<ItemStack> flags = ((IFlagHolder)te).getFlags();
 
                 for(ItemStack f : flags){
-                    par1World.spawnEntityInWorld(new EntityItem(par1World, par2, par3, par4, f));
+                    par1World.spawnEntityInWorld(new EntityItem(par1World, pos.getX(), pos.getY(), pos.getZ(), f));
                 }
                 ((IFlagHolder) te).clearFlags();
             }
         }
-        super.breakBlock(par1World, par2, par3, par4, par5, par6);
+        super.breakBlock(par1World, pos, par5);
+    }
+
+    private enum Variants implements IStringSerializable {
+        OAK("oak"),
+        SPRUCE("spruce"),
+        BIRCH("birch"),
+        JUNGLE("jungle"),
+        IRON("iron"),
+        ACACIA("acacia"),
+        DARK_OAK("dark_oak");
+        private final String name;
+
+        private Variants(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return this.name;
+        }
+
+        public static Variants byMetadata(int meta) {
+            Variants[] vals = values();
+            return vals[meta % vals.length];
+        }
+
+        @Override
+        public String getName() {
+            return this.name;
+        }
     }
 }

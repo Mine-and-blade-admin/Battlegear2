@@ -1,21 +1,12 @@
 package mods.battlegear2.client;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.EnchantmentHelper;
-import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
-import mods.battlegear2.api.quiver.IArrowContainer2;
-import mods.battlegear2.api.quiver.QuiverArrowRegistry;
+import mods.battlegear2.api.weapons.Attributes;
 import mods.battlegear2.api.weapons.IBackStabbable;
-import mods.battlegear2.api.weapons.IExtendedReachWeapon;
-import mods.battlegear2.api.weapons.IHitTimeModifier;
-import mods.battlegear2.api.weapons.IPenetrateWeapon;
 import mods.battlegear2.client.gui.BattlegearInGameGUI;
 import mods.battlegear2.client.gui.controls.GuiBGInventoryButton;
 import mods.battlegear2.client.gui.controls.GuiPlaceableButton;
@@ -23,18 +14,20 @@ import mods.battlegear2.client.gui.controls.GuiSigilButton;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.enchantments.BaseEnchantment;
-import mods.battlegear2.items.ItemWeapon;
 import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainerCreative;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
+import net.minecraft.entity.ai.attributes.BaseAttribute;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -44,28 +37,35 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public final class BattlegearClientEvents {
+public final class BattlegearClientEvents implements IResourceManagerReloadListener {
 
 	private final BattlegearInGameGUI inGameGUI;
-	private final QuiverModel quiverModel;
-	private final ResourceLocation quiverDetails;
-	private final ResourceLocation quiverBase;
+    public final QuiverModel quiverModel;
+    public final ResourceLocation quiverDetails;
+    public final ResourceLocation quiverBase;
     //public static final ResourceLocation patterns = new ResourceLocation("battlegear2", "textures/heraldry/Patterns-small.png");
     //public static int storageIndex;
 
     private static final int MAIN_INV = InventoryPlayer.getHotbarSize();
 	public static final GuiPlaceableButton[] tabsList = { new GuiBGInventoryButton(0), new GuiSigilButton(1)};
     public static final BattlegearClientEvents INSTANCE = new BattlegearClientEvents();
+    private String[] attributeNames;
 
     private BattlegearClientEvents(){
         inGameGUI = new BattlegearInGameGUI();
         quiverModel = new QuiverModel();
         quiverDetails = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverDetails.png");
         quiverBase = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverBase.png");
+        ((IReloadableResourceManager) FMLClientHandler.instance().getClient().getResourceManager()).registerReloadListener(this);
     }
 
     /**
@@ -106,8 +106,8 @@ public final class BattlegearClientEvents {
 	@SubscribeEvent(receiveCanceled = true)
 	public void postRenderOverlay(RenderGameOverlayEvent.Post event) {
 		if (event.type == RenderGameOverlayEvent.ElementType.HOTBAR && (BattlegearConfig.forceHUD || !event.isCanceled())) {
-			inGameGUI.renderGameOverlay(event.partialTicks, event.mouseX, event.mouseY);
-		}
+            inGameGUI.renderGameOverlay(event.partialTicks);
+        }
 	}
 
     /**
@@ -120,19 +120,19 @@ public final class BattlegearClientEvents {
             EntityPlayer entityPlayer = (EntityPlayer) event.entity;
             ItemStack offhand = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
             if (offhand != null && event.renderer instanceof RenderPlayer) {
-                RenderPlayer renderer = ((RenderPlayer) event.renderer);
-                renderer.modelArmorChestplate.heldItemLeft = renderer.modelArmor.heldItemLeft = renderer.modelBipedMain.heldItemLeft = 1;
+                ModelPlayer renderer = ((RenderPlayer) event.renderer).getPlayerModel();
+                renderer.heldItemLeft = 1;
                 if (entityPlayer.getItemInUseCount() > 0 && entityPlayer.getItemInUse() == offhand) {
                     EnumAction enumaction = offhand.getItemUseAction();
-                    if (enumaction == EnumAction.block) {
-                        renderer.modelArmorChestplate.heldItemLeft = renderer.modelArmor.heldItemLeft = renderer.modelBipedMain.heldItemLeft = 3;
-                    } else if (enumaction == EnumAction.bow) {
-                        renderer.modelArmorChestplate.aimedBow = renderer.modelArmor.aimedBow = renderer.modelBipedMain.aimedBow = true;
+                    if (enumaction == EnumAction.BLOCK) {
+                        renderer.heldItemLeft = 3;
+                    } else if (enumaction == EnumAction.BOW) {
+                        renderer.aimedBow = true;
                     }
                     ItemStack mainhand = entityPlayer.inventory.getCurrentItem();
-                    renderer.modelArmorChestplate.heldItemRight = renderer.modelArmor.heldItemRight = renderer.modelBipedMain.heldItemRight = mainhand != null ? 1 : 0;
+                    renderer.heldItemRight = mainhand != null ? 1 : 0;
                 }else if(((IBattlePlayer)entityPlayer).isBlockingWithShield()){
-                    renderer.modelArmorChestplate.heldItemLeft = renderer.modelArmor.heldItemLeft = renderer.modelBipedMain.heldItemLeft = 3;
+                    renderer.heldItemLeft = 3;
                 }
             }
         }
@@ -143,51 +143,8 @@ public final class BattlegearClientEvents {
      */
     @SubscribeEvent(priority = EventPriority.LOW)
     public void resetPlayerLeftHand(RenderPlayerEvent.Post event){
-        event.renderer.modelArmorChestplate.heldItemLeft = event.renderer.modelArmor.heldItemLeft = event.renderer.modelBipedMain.heldItemLeft = 0;
+        event.renderer.getPlayerModel().heldItemLeft = 0;
     }
-
-    /**
-     * Render a player left hand item, or sheathed items, and quiver on player back
-     */
-	@SubscribeEvent
-	public void render3rdPersonBattlemode(RenderPlayerEvent.Specials.Post event) {
-
-		ModelBiped biped = (ModelBiped) event.renderer.mainModel;
-		BattlegearRenderHelper.renderItemIn3rdPerson(event.entityPlayer, biped, event.partialRenderTick);
-
-		ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(event.entityPlayer);
-        if (quiverStack != null && ((IArrowContainer2) quiverStack.getItem()).renderDefaultQuiverModel(quiverStack)) {
-
-            IArrowContainer2 quiver = (IArrowContainer2) quiverStack.getItem();
-            int maxStack = quiver.getSlotCount(quiverStack);
-            int arrowCount = 0;
-            for (int i = 0; i < maxStack; i++) {
-                arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0 : 1;
-            }
-            GL11.glColor3f(1, 1, 1);
-            Minecraft.getMinecraft().getTextureManager().bindTexture(quiverDetails);
-            GL11.glPushMatrix();
-            if(event.entityPlayer.getEquipmentInSlot(3)!=null){//chest armor
-                GL11.glTranslatef(0, 0, BattlegearRenderHelper.RENDER_UNIT);
-            }
-            biped.bipedBody.postRender(BattlegearRenderHelper.RENDER_UNIT);
-            GL11.glScalef(1.05F, 1.05F, 1.05F);
-            quiverModel.render(arrowCount, BattlegearRenderHelper.RENDER_UNIT);
-
-            Minecraft.getMinecraft().getTextureManager().bindTexture(quiverBase);
-            if(quiverStack.getItem() instanceof IDyable){
-                int col = ((IDyable)quiver).getColor(quiverStack);
-                float red = (float) (col >> 16 & 255) / 255.0F;
-                float green = (float) (col >> 8 & 255) / 255.0F;
-                float blue = (float) (col & 255) / 255.0F;
-                GL11.glColor3f(red, green, blue);
-            }
-            quiverModel.render(0, BattlegearRenderHelper.RENDER_UNIT);
-            GL11.glColor3f(1, 1, 1);
-
-            GL11.glPopMatrix();
-        }
-	}
 
     private static final int SKELETON_ARROW = 5;
     /**
@@ -204,13 +161,7 @@ public final class BattlegearClientEvents {
 			GL11.glColor3f(1, 1, 1);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(quiverDetails);
 
-			double d0 = (((EntitySkeleton) event.entity).lastTickPosX + ((((EntitySkeleton) event.entity).posX - ((EntitySkeleton) event.entity).lastTickPosX) * BattlegearClientTickHandeler.getPartialTick()));
-			double d1 = (((EntitySkeleton) event.entity).lastTickPosY + ((((EntitySkeleton) event.entity).posY - ((EntitySkeleton) event.entity).lastTickPosY) * BattlegearClientTickHandeler.getPartialTick()));
-			double d2 = (((EntitySkeleton) event.entity).lastTickPosZ + (((EntitySkeleton) event.entity).posZ - ((EntitySkeleton) event.entity).lastTickPosZ)
-					* BattlegearClientTickHandeler.getPartialTick());
-
-			GL11.glTranslatef((float) (d0 - RenderManager.renderPosX), (float) (d1 - RenderManager.renderPosY),
-					(float) (d2 - RenderManager.renderPosZ));
+            GL11.glTranslatef((float) event.x, (float) event.y, (float) event.z);
 
 			GL11.glScalef(1, -1, 1);
 
@@ -319,16 +270,14 @@ public final class BattlegearClientEvents {
         if(target!=null){
             if (target.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
             {
-                int x = target.blockX;
-                int y = target.blockY;
-                int z = target.blockZ;
+                BlockPos pos = target.getBlockPos();
                 World world = player.getEntityWorld();
-                Block block = world.getBlock(x, y, z);
-                if (block.isAir(world, x, y, z))
+                Block block = world.getBlockState(pos).getBlock();
+                if (block.isAir(world, pos))
                 {
                     return null;
                 }
-                return block.getPickBlock(target, world, x, y, z);//TODO support newer version
+                return block.getPickBlock(target, world, pos);
             }
             else
             {
@@ -368,13 +317,11 @@ public final class BattlegearClientEvents {
      */
 	@SubscribeEvent
 	public void preStitch(TextureStitchEvent.Pre event) {
-		if (event.map.getTextureType() == 1) {
-			ClientProxy.backgroundIcon = new IIcon[]{event.map.registerIcon("battlegear2:slots/mainhand"),event.map.registerIcon("battlegear2:slots/offhand")};
-
-			ClientProxy.bowIcons = new IIcon[3];
-            for(int i = 0; i < ClientProxy.bowIcons.length; i++) {
-                ClientProxy.bowIcons[i] = event.map.registerIcon("battlegear2:bow_pulling_"+i);
-            }
+        {
+            ClientProxy.backgroundIcon = new TextureAtlasSprite[]{
+                    event.map.registerSprite(new ResourceLocation("battlegear2:items/slots/mainhand")),
+                    event.map.registerSprite(new ResourceLocation("battlegear2:items/slots/offhand"))
+            };
 
             //storageIndex = PatternStore.DEFAULT.buildPatternAndStore(patterns);
             /*CrestImages.initialise(Minecraft.getMinecraft().getResourceManager());
@@ -384,14 +331,21 @@ public final class BattlegearClientEvents {
 		}
 	}
 
+    /**
+     * Change attribute format when displayed on item tooltip
+     *
+     * @param event
+     */
     @SubscribeEvent
-    public void onItemTooltip(ItemTooltipEvent event){
-        if(event.itemStack.getItem() instanceof IPenetrateWeapon || event.itemStack.getItem() instanceof IHitTimeModifier || event.itemStack.getItem() instanceof IExtendedReachWeapon){
-            for(String txt:event.toolTip){
-                if(txt.startsWith(EnumChatFormatting.BLUE.toString())){
-                    if(txt.contains(StatCollector.translateToLocal("attribute.name."+ ItemWeapon.armourPenetrate.getAttributeUnlocalizedName())) || txt.contains(StatCollector.translateToLocal("attribute.name."+ ItemWeapon.attackSpeed.getAttributeUnlocalizedName())) || txt.contains(StatCollector.translateToLocal("attribute.name."+ ItemWeapon.extendedReach.getAttributeUnlocalizedName())))
-                        event.toolTip.set(event.toolTip.indexOf(txt), EnumChatFormatting.DARK_GREEN + EnumChatFormatting.getTextWithoutFormattingCodes(txt));
-                }
+    public void onItemTooltip(ItemTooltipEvent event) {
+        for (String txt : event.toolTip) {
+            if (txt.startsWith(EnumChatFormatting.BLUE.toString())) {
+                if (txt.contains(attributeNames[0]) || txt.contains(attributeNames[2]))
+                    event.toolTip.set(event.toolTip.indexOf(txt), EnumChatFormatting.DARK_GREEN + EnumChatFormatting.getTextWithoutFormattingCodes(txt));
+                else if (txt.contains(attributeNames[3]))
+                    event.toolTip.set(event.toolTip.indexOf(txt), EnumChatFormatting.DARK_GREEN + reformat(txt, 3));
+                else if (txt.contains(attributeNames[1]))
+                    event.toolTip.set(event.toolTip.indexOf(txt), EnumChatFormatting.GOLD + reformat(txt, 1));
             }
         }
         if(event.itemStack.getItem() instanceof IBackStabbable){
@@ -399,43 +353,68 @@ public final class BattlegearClientEvents {
         }
     }
 
+    //Equivalent of the ItemStack decimal formatter used in attribute tooltip display
+    private final static Pattern FLOAT = Pattern.compile("\\d.\\d+");
+
+    /**
+     * Format into "ratio" attribute localization
+     *
+     * @param txt  current attribute local
+     * @param type the attribute index
+     * @return the new localization
+     */
+    private String reformat(String txt, int type) {
+        String result = EnumChatFormatting.getTextWithoutFormattingCodes(txt);
+        Matcher matcher = FLOAT.matcher(result);
+        if (matcher.find()) {
+            int start = matcher.start();
+            int end = matcher.end();
+            String temp = result.substring(start, end).replace(",", ".");
+            try {
+                float value = Float.valueOf(temp) * 100;
+                temp = ".plus.1";
+                if (start > 0 && result.charAt(start - 1) == '-') {
+                    temp = ".take.1";
+                }
+                return StatCollector.translateToLocalFormatted("attribute.modifier" + temp, ItemStack.DECIMALFORMAT.format(value), attributeNames[type]);
+            } catch (NumberFormatException notNumber) {
+                notNumber.printStackTrace();
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Help translating attributes
+     *
+     * @param attribute
+     * @return the attribute name into the current language
+     */
+    private String toLocal(BaseAttribute attribute) {
+        return StatCollector.translateToLocal("attribute.name." + attribute.getAttributeUnlocalizedName());
+    }
+
+    /**
+     * Reload translation caches
+     */
+    @Override
+    public void onResourceManagerReload(IResourceManager resourceManager) {
+        attributeNames = new String[]{
+                toLocal(Attributes.armourPenetrate),
+                toLocal(Attributes.daze),
+                toLocal(Attributes.extendedReach),
+                toLocal(Attributes.attackSpeed)
+        };
+    }
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public void postInitGui(GuiScreenEvent.InitGuiEvent.Post event){
         if (Battlegear.battlegearEnabled && event.gui instanceof InventoryEffectRenderer) {
             if(!ClientProxy.tconstructEnabled || FMLClientHandler.instance().getClientPlayerEntity().capabilities.isCreativeMode) {
-                onOpenGui(event.buttonList, guessGuiLeft((InventoryEffectRenderer) event.gui)-30, guessGuiTop(event.gui));
+                onOpenGui(event.buttonList, ((InventoryEffectRenderer) event.gui).guiLeft-30, ((InventoryEffectRenderer) event.gui).guiTop);
             }
         }
-    }
-
-    /**
-     * Make a guess over the value of GuiContainer#guiLeft (protected)
-     * Use magic numbers !
-     * NotEnoughItems mod is also changing the gui offset, for some reason.
-     *
-     * @param guiContainer the current screen whose value is desired
-     * @return the guessed value
-     */
-    public static int guessGuiLeft(InventoryEffectRenderer guiContainer){
-        int offset = Loader.isModLoaded("NotEnoughItems") || FMLClientHandler.instance().getClientPlayerEntity().getActivePotionEffects().isEmpty() ? 0 : 60;
-        if(guiContainer instanceof GuiContainerCreative){
-            return offset + (guiContainer.width - 195)/2;
-        }
-        return offset + (guiContainer.width - 176)/2;
-    }
-
-    /**
-     * Make a guess over the value of GuiContainer#guiTop (protected)
-     * Use magic numbers !
-     *
-     * @param gui the current screen whose value is desired
-     * @return the guessed value
-     */
-    public static int guessGuiTop(GuiScreen gui){
-        if(gui instanceof GuiContainerCreative){
-            return (gui.height - 136)/2;
-        }
-        return (gui.height - 166)/2;
     }
 
     /**

@@ -1,11 +1,11 @@
 package mods.mud;
 
-import net.minecraftforge.fml.client.GuiModList;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 import mods.mud.gui.GuiModUpdateButton;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.fml.client.GuiModList;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 /**
  * Created with IntelliJ IDEA.

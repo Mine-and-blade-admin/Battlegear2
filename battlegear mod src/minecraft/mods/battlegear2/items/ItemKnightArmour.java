@@ -1,20 +1,15 @@
 package mods.battlegear2.items;
 
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mods.battlegear2.Battlegear;
-import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.IHeraldyArmour;
 import mods.battlegear2.api.heraldry.PatternStore;
 import mods.battlegear2.client.heraldry.HeraldryArmourModel;
 import mods.battlegear2.heraldry.SigilHelper;
 import mods.battlegear2.utils.BattlegearConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -25,67 +20,39 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpecialArmor{
 
-	private IIcon baseIcon[];
+	/*private IIcon baseIcon[];
 	private IIcon postRenderIcon[];
-	private IIcon trimRenderIcon;
+	private IIcon trimRenderIcon;*/
 	private Object modelObject;
     private final float motionFactor;
 
 	public ItemKnightArmour(int armourType) {
 		super(Battlegear.knightArmourMaterial, 1, armourType);
 		setCreativeTab(BattlegearConfig.customTab);
-		setUnlocalizedName("battlegear2:knights_armour."+ BattlegearConfig.armourTypes[armourType]);
-        if(armourType==1){//Chest
+		setUnlocalizedName("battlegear2:knights_armour." + BattlegearConfig.armourTypes[armourType]);
+		if(armourType==1){//Chest
             motionFactor = -0.20F;
         }else if(armourType==2){//Legs
             motionFactor = -0.15F;
         }else{
             motionFactor = -0.05F;
         }
-        GameRegistry.registerItem(this, "knights_armour."+ BattlegearConfig.armourTypes[armourType]);
+		GameRegistry.registerItem(this, "knights_armour." + BattlegearConfig.armourTypes[armourType]);
 	}
-	
-	@Override
+
+	/*@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister par1IconRegister) {
-		//super.registerIcons(par1IconRegister);
-		
-		if(armorType == 0){//Helm
-			baseIcon = new IIcon[4];
-			postRenderIcon = new IIcon[4];
-			for(int i = 0; i < 4; i ++){
-				baseIcon[i] = par1IconRegister.registerIcon("battlegear2:armours/knight-base-"+BattlegearConfig.armourTypes[armorType]+"-"+i);
-				postRenderIcon[i] =  par1IconRegister.registerIcon("battlegear2:armours/knight-post-"+BattlegearConfig.armourTypes[armorType]+"-"+i);
-			}
-		}else{
-			baseIcon = new IIcon[1];
-			postRenderIcon = new IIcon[1];
-			baseIcon[0] = par1IconRegister.registerIcon("battlegear2:armours/knight-base-"+BattlegearConfig.armourTypes[armorType]);
-			postRenderIcon[0] = par1IconRegister.registerIcon("battlegear2:armours/knight-post-"+BattlegearConfig.armourTypes[armorType]);
-		}
-	
-		if(armorType == 2){
-			trimRenderIcon = par1IconRegister.registerIcon("battlegear2:armours/knight-trim-"+BattlegearConfig.armourTypes[armorType]);
-		}
-	}
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIconIndex(ItemStack stack){
-        return getPostRenderIcon(stack);
-    }
-
-	@Override
-    @SideOnly(Side.CLIENT)
 	public IIcon getBaseIcon(ItemStack stack) {
 		if(armorType == 0){
 			return baseIcon[SigilHelper.getHelm(((IHeraldryItem) stack.getItem()).getHeraldry(stack))];
@@ -106,7 +73,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
     @SideOnly(Side.CLIENT)
 	public IIcon getTrimIcon(ItemStack stack) {
 		return trimRenderIcon;
-	}
+	}*/
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -117,17 +84,17 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
     }
 
 	@Override
-	public boolean hasHeraldry(ItemStack stack) {
-		return stack.hasTagCompound() && stack.getTagCompound().hasKey(heraldryTag);
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack armor, EntityPlayer player, List par3List, boolean par4) {
 		super.addInformation(armor, player, par3List, par4);
-		par3List.add(String.format("%s +%d %s", 
+		par3List.add(String.format("%s +%d %s",
 				EnumChatFormatting.BLUE, this.damageReduceAmount, StatCollector.translateToLocal("tooltip.armour.points")));
         par3List.add(EnumChatFormatting.RED + StatCollector.translateToLocalFormatted("attribute.modifier.take." + 2, ItemStack.DECIMALFORMAT.format(-motionFactor*100.0D), StatCollector.translateToLocal("attribute.name.generic.movementSpeed")));
+	}
+
+	@Override
+	public boolean hasHeraldry(ItemStack stack) {
+		return stack.hasTagCompound() && stack.getTagCompound().hasKey(heraldryTag);
 	}
 
 	@Override
@@ -169,6 +136,9 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String layer) {
+		if (layer != null) {
+			return Battlegear.imageFolder + "armours/knights/knights-base-" + (slot == 2 ? 1 : 0) + ".png";
+		}
 		return Battlegear.imageFolder+"armours/knights/knights-"+(slot==2?1:0)+".png";
 	}
 
@@ -183,32 +153,15 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 		HeraldryArmourModel model = (HeraldryArmourModel)modelObject;
 
 		model.setItemStack(itemStack);
-        if(armorSlot==0){
-            model.bipedHead.showModel = true;
-        }else if(armorSlot==1){
-            model.bipedBody.showModel = true;
-            model.bipedRightArm.showModel = true;
-            model.bipedLeftArm.showModel = true;
-        }else{
-            model.bipedRightLeg.showModel = true;
-            model.bipedLeftLeg.showModel = true;
-            model.bipedBody.showModel = armorSlot == 2;
-        }
 		
 		if(entityLiving != null){
             ItemStack heldRight = entityLiving.getHeldItem();
 			model.heldItemRight = heldRight == null?0:1;
-			if(entityLiving instanceof EntityPlayer)
-			{
-				Render renderer = RenderManager.instance.getEntityRenderObject(entityLiving);
-				if(renderer instanceof RenderPlayer){
-					ModelBiped modelArmor = armorSlot==2?((RenderPlayer) renderer).modelArmor:((RenderPlayer) renderer).modelArmorChestplate;
-					model.heldItemLeft = modelArmor.heldItemLeft;
-					model.heldItemRight = modelArmor.heldItemRight;
-					model.aimedBow = modelArmor.aimedBow;
-				}
-			}
 			model.isSneak = entityLiving.isSneaking();
+			Render renderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(entityLiving);
+			if (renderer instanceof RendererLivingEntity) {
+				model.setModelAttributes(((RendererLivingEntity) renderer).getMainModel());
+			}
 		}
 		
 		return model;

@@ -83,4 +83,9 @@ public final class QuiverRecipie2 implements IRecipe {
         return new ItemStack(BattlegearConfig.quiver,1,0);
     }
 
+    @Override
+    public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+        return new ItemStack[inv.getSizeInventory()];//TODO
+    }
+
 }

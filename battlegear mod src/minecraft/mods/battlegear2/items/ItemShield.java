@@ -1,9 +1,5 @@
 package mods.battlegear2.items;
 
-import net.minecraftforge.fml.common.IFuelHandler;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mods.battlegear2.api.EnchantmentHelper;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
@@ -14,7 +10,6 @@ import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.IProjectile;
@@ -25,17 +20,17 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.common.IFuelHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
 public class ItemShield extends Item implements IShield, IDyable, IEnchantable, ISheathed, IArrowCatcher, IArrowDisplay, IFuelHandler{
 
     public ShieldType enumShield;
-
-    private IIcon backIcon;
-    private IIcon trimIcon;
 
     public ItemShield(ShieldType enumShield) {
         super();
@@ -44,20 +39,11 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         this.enumShield = enumShield;
 
         this.setUnlocalizedName("battlegear2:shield."+enumShield.getName());
-        this.setTextureName("battlegear2:shield/shield."+enumShield.getName());
 
         this.setMaxDamage(enumShield.getMaxDamage());
         this.setMaxStackSize(1);
         this.setHasSubtypes(false);
         GameRegistry.registerItem(this, "shield."+enumShield.getName());
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister par1IconRegister) {
-        super.registerIcons(par1IconRegister);
-        backIcon = par1IconRegister.registerIcon("battlegear2:shield/shield."+enumShield.getName()+".back");
-        trimIcon = par1IconRegister.registerIcon("battlegear2:shield/shield."+enumShield.getName()+".trim");
     }
 
     @Override
@@ -92,14 +78,6 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         }
 
         stack.getTagCompound().setShort("arrows", (short)count);
-    }
-
-    public IIcon getBackIcon() {
-        return backIcon;
-    }
-
-    public IIcon getTrimIcon() {
-        return trimIcon;
     }
 
     @Override
@@ -160,6 +138,14 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
                     StatCollector.translateToLocalFormatted("attribute.shield.arrow.count", arrowCount));
         }
 
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack stack, int renderPass) {
+        if (renderPass == 0 || (this.enumShield == ShieldType.WOOD && renderPass < 2))
+            return getColor(stack);
+        return super.getColorFromItemStack(stack, renderPass);
     }
 
     /**

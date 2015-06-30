@@ -1,7 +1,5 @@
 package mods.battlegear2;
 
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.items.ItemMBArrow;
@@ -17,6 +15,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public final class MobHookContainerClass {
 
@@ -65,16 +65,16 @@ public final class MobHookContainerClass {
                         if (mbArrow != null) {
                             EntityLivingBase target = skeleton.getAttackTarget();
                             event.setCanceled(true);
+                            //Extracted from EntityAIArrowAttack#updateTask
+                            double d0 = skeleton.getDistanceSq(target.posX, target.getEntityBoundingBox().minY, target.posZ);
+                            float pow = MathHelper.sqrt_double(d0) / 15F;
+
+                            pow = MathHelper.clamp_float(pow, 0.1F, 1.0F);
+
                             //Extracted from EntitySkeleton#attackEntityWithRangedAttack
-                            double d0 = skeleton.getDistanceSq(target.posX, target.boundingBox.minY, target.posZ);
-                            float pow = MathHelper.sqrt_double(d0) / (15F * 15F);
-
-                            pow = Math.max(0.1F, pow);
-                            pow = Math.min(1, pow);
-
                             int i = EnchantmentHelper.getEnchantmentLevel(Enchantment.power.effectId, skeleton.getHeldItem());
                             int j = EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, skeleton.getHeldItem());
-                            mbArrow.setDamage((double) (pow * 2.0F) + skeleton.getRNG().nextGaussian() * 0.25D + (double) ((float) skeleton.worldObj.difficultySetting.getDifficultyId() * 0.11F));
+                            mbArrow.setDamage((double) (pow * 2.0F) + skeleton.getRNG().nextGaussian() * 0.25D + (double) ((float) skeleton.worldObj.getDifficulty().getDifficultyId() * 0.11F));
 
                             if (i > 0)
                                 mbArrow.setDamage(mbArrow.getDamage() + (double) i * 0.5D + 0.5D);

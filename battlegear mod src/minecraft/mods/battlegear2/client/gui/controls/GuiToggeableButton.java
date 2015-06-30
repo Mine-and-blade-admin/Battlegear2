@@ -54,7 +54,7 @@ public class GuiToggeableButton extends GuiButton {
         this.drawTexturedModalRect(start_x, start_y, 16, 16, 0, 1, 1, -1);
 
         if(par2 >= xPosition && par2 <=xPosition+width && par3 >= yPosition && par3 <=yPosition+height)
-            drawHoveringText(tooltip, par2, par3, par1Minecraft.fontRenderer);
+            drawHoveringText(tooltip, par2, par3, par1Minecraft.fontRendererObj);
     }
 
     protected void drawHoveringText(List par1List, int par2, int par3, FontRenderer font)
@@ -134,12 +134,12 @@ public class GuiToggeableButton extends GuiButton {
 
         float f = 1F;
         float f1 = 1F;
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)this.zLevel, (double)((float)(tex_x + 0) * f), (double)((float)(tex_y + tex_height) * f1));
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)this.zLevel, (double)((float)(tex_x + tex_width) * f), (double)((float)(tex_y + tex_height) * f1));
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)this.zLevel, (double)((float)(tex_x + tex_width) * f), (double)((float)(tex_y + 0) * f1));
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)this.zLevel, (double)((float)(tex_x + 0) * f), (double)((float)(tex_y + 0) * f1));
+        Tessellator tessellator = Tessellator.getInstance();
+        tessellator.getWorldRenderer().startDrawingQuads();
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + 0) * f), (double) ((float) (tex_y + tex_height) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + tex_width) * f), (double) ((float) (tex_y + tex_height) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + tex_width) * f), (double) ((float) (tex_y + 0) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + 0) * f), (double) ((float) (tex_y + 0) * f1));
         tessellator.draw();
     }
 }

@@ -1,27 +1,37 @@
 package mods.battlegear2.packet;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BattlemodeHookContainerClass;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockChest;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldSettings;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.relauncher.Side;
 
 public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
     public static final String packetName = "MB2|Place";
@@ -40,12 +50,20 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
 
     public OffhandPlaceBlockPacket() {}
 
-    public OffhandPlaceBlockPacket(int par1, int par2, int par3, int par4, ItemStack par5ItemStack, float par6, float par7, float par8){
+    public OffhandPlaceBlockPacket(ItemStack itemStack) {
+        this(-1, -1, -1, 255, itemStack, 0.0F, 0.0F, 0.0F);
+    }
+
+    public OffhandPlaceBlockPacket(BlockPos pos, EnumFacing face, ItemStack par5ItemStack, float par6, float par7, float par8) {
+        this(pos.getX(), pos.getY(), pos.getZ(), face.getIndex(), par5ItemStack, par6, par7, par8);
+    }
+
+    private OffhandPlaceBlockPacket(int par1, int par2, int par3, int par4, ItemStack par5ItemStack, float par6, float par7, float par8) {
         this.xPosition = par1;
         this.yPosition = par2;
         this.zPosition = par3;
         this.direction = par4;
-        this.itemStack = par5ItemStack != null ? par5ItemStack.copy() : null;
+        this.itemStack = ItemStack.copyItemStack(par5ItemStack);
         this.xOffset = par6;
         this.yOffset = par7;
         this.zOffset = par8;
@@ -86,58 +104,40 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             return;
         ItemStack offhandWeapon = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
         boolean flag = true;
-        int i = xPosition;
-        int j = yPosition;
-        int k = zPosition;
-        int l = direction;
-        ((EntityPlayerMP)player).func_143004_u();
+        BlockPos pos = new BlockPos(xPosition, yPosition, zPosition);
+        EnumFacing l = EnumFacing.getFront(direction);
+        ((EntityPlayerMP) player).markPlayerActive();
         if (direction == 255){
             if (offhandWeapon == null)
                 return;
-            PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.getEntityWorld());
+            PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, new BlockPos(0, 0, 0), null, player.getEntityWorld());
             MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, offhandWeapon));
             if (event.useItem != Event.Result.DENY){
-                BattlegearUtils.refreshAttributes(player, false);
-                BattlemodeHookContainerClass.tryUseItem(player, offhandWeapon, Side.SERVER);
-                BattlegearUtils.refreshAttributes(player, true);
+                if (((EntityPlayerMP) player).theItemInWorldManager.getGameType() != WorldSettings.GameType.SPECTATOR) {
+                    BattlegearUtils.refreshAttributes(player, false);
+                    BattlemodeHookContainerClass.tryUseItem(player, offhandWeapon, Side.SERVER);
+                    BattlegearUtils.refreshAttributes(player, true);
+                }
             }
             flag = false;
         }
         else {
             MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
-            if (yPosition >= mcServer.getBuildLimit() - 1 && (direction == 1 || yPosition >= mcServer.getBuildLimit())) {
+            if (yPosition >= mcServer.getBuildLimit() - 1 && (l == EnumFacing.UP || yPosition >= mcServer.getBuildLimit())) {
                 ChatComponentTranslation chat = new ChatComponentTranslation("build.tooHigh", mcServer.getBuildLimit());
                 chat.getChatStyle().setColor(EnumChatFormatting.RED);
                 ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S02PacketChat(chat));
             } else {
                 double dist = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance() + 1;
                 dist *= dist;
-                if (((EntityPlayerMP) player).playerNetServerHandler.hasMoved && player.getDistanceSq((double) i + 0.5D, (double) j + 0.5D, (double) k + 0.5D) < dist && !mcServer.isBlockProtected(player.getEntityWorld(), i, j, k, player)) {
-                    activateBlockOrUseItem((EntityPlayerMP) player, offhandWeapon, i, j, k, l, xOffset, yOffset, zOffset);
+                if (((EntityPlayerMP) player).playerNetServerHandler.hasMoved && player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D) < dist && !mcServer.isBlockProtected(player.getEntityWorld(), pos, player) && player.getEntityWorld().getWorldBorder().contains(pos)) {
+                    activateBlockOrUseItem((EntityPlayerMP) player, offhandWeapon, pos, l, xOffset, yOffset, zOffset);
                 }
             }
         }
         if (flag){
-            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(i, j, k, player.getEntityWorld()));
-            if (l == 0){
-                --j;
-            }
-            if (l == 1){
-                ++j;
-            }
-            if (l == 2){
-                --k;
-            }
-            if (l == 3){
-                ++k;
-            }
-            if (l == 4){
-                --i;
-            }
-            if (l == 5){
-                ++i;
-            }
-            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(i, j, k, player.getEntityWorld()));
+            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(player.getEntityWorld(), pos));
+            ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(player.getEntityWorld(), pos.offset(l)));
         }
         offhandWeapon = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
 
@@ -163,19 +163,39 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
      * From ItemInWorldManager:
      * Activate the clicked on block, or use the given itemStack.
      */
-    public boolean activateBlockOrUseItem(EntityPlayerMP playerMP, ItemStack itemStack, int x, int y, int z, int side, float xOffset, float yOffset, float zOffset)
+    public boolean activateBlockOrUseItem(EntityPlayerMP playerMP, ItemStack itemStack, BlockPos pos, EnumFacing side, float xOffset, float yOffset, float zOffset)
     {
         World theWorld = playerMP.getEntityWorld();
-        PlayerInteractEvent event = new PlayerInteractEvent(playerMP, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, theWorld);
+        if (playerMP.theItemInWorldManager.getGameType() == WorldSettings.GameType.SPECTATOR) {
+            TileEntity tileentity = theWorld.getTileEntity(pos);
+
+            if (tileentity instanceof ILockableContainer) {
+                Block block = theWorld.getBlockState(pos).getBlock();
+                ILockableContainer ilockablecontainer = (ILockableContainer) tileentity;
+
+                if (ilockablecontainer instanceof TileEntityChest && block instanceof BlockChest) {
+                    ilockablecontainer = ((BlockChest) block).getLockableContainer(theWorld, pos);
+                }
+                if (ilockablecontainer != null) {
+                    playerMP.displayGUIChest(ilockablecontainer);
+                    return true;
+                }
+            } else if (tileentity instanceof IInventory) {
+                playerMP.displayGUIChest((IInventory) tileentity);
+                return true;
+            }
+            return false;
+        }
+        PlayerInteractEvent event = new PlayerInteractEvent(playerMP, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, pos, side, theWorld);
         MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, itemStack));
         if (event.isCanceled())
         {
-            playerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));
+            playerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
             return false;
         }
 
         BattlegearUtils.refreshAttributes(playerMP, false);
-        if (itemStack != null && itemStack.getItem().onItemUseFirst(itemStack, playerMP, theWorld, x, y, z, side, xOffset, yOffset, zOffset))
+        if (itemStack != null && itemStack.getItem().onItemUseFirst(itemStack, playerMP, theWorld, pos, side, xOffset, yOffset, zOffset))
         {
             if (itemStack.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(playerMP, itemStack);
             BattlegearUtils.refreshAttributes(playerMP, true);
@@ -183,27 +203,27 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
         }
 
         boolean useBlock = !playerMP.isSneaking() || playerMP.getHeldItem() == null;
-        if (!useBlock) useBlock = playerMP.getHeldItem().getItem().doesSneakBypassUse(theWorld, x, y, z, playerMP);
+        if (!useBlock) useBlock = playerMP.getHeldItem().getItem().doesSneakBypassUse(theWorld, pos, playerMP);
         boolean result = false;
-
         if (useBlock)
         {
             if (event.useBlock != Event.Result.DENY)
             {
-                result = theWorld.getBlock(x, y, z).onBlockActivated(theWorld, x, y, z, playerMP, side, xOffset, yOffset, zOffset);
+                IBlockState state = theWorld.getBlockState(pos);
+                result = state.getBlock().onBlockActivated(theWorld, pos, state, playerMP, side, xOffset, yOffset, zOffset);
             }
             else
             {
-                playerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(x, y, z, theWorld));
+                playerMP.playerNetServerHandler.sendPacket(new S23PacketBlockChange(theWorld, pos));
                 result = event.useItem != Event.Result.ALLOW;
             }
         }
 
         if (itemStack != null && !result && event.useItem != Event.Result.DENY)
         {
-            final int meta = itemStack.getItemDamage();
+            final int meta = itemStack.getMetadata();
             final int size = itemStack.stackSize;
-            result = itemStack.tryPlaceItemIntoWorld(playerMP, theWorld, x, y, z, side, xOffset, yOffset, zOffset);
+            result = itemStack.onItemUse(playerMP, theWorld, pos, side, xOffset, yOffset, zOffset);
             if (playerMP.theItemInWorldManager.isCreative())
             {
                 itemStack.setItemDamage(meta);

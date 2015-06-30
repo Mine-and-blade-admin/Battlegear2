@@ -2,15 +2,15 @@ package mods.battlegear2.client.renderer;
 
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.client.utils.ImageCache;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -29,22 +29,21 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
     }
 
     @Override
-    public void renderTileEntityAt(TileEntity tileentity, double d0, double d1, double d2, float f) {
+    public void renderTileEntityAt(TileEntity tileentity, double d0, double d1, double d2, float f, int damage) {
 
         if(tileentity instanceof IFlagHolder){
+            IBlockState banner = tileentity.getWorld().getBlockState(tileentity.getPos());
+            if (banner.getBlock() instanceof BlockAir) {
+                return;
+            }
             Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-            int type = tileentity.getBlockMetadata();
-            int side = ((IFlagHolder)tileentity).getOrientation(type);
+            int type = banner.getBlock().getMetaFromState(banner);
+            int side = ((IFlagHolder) tileentity).getOrientation();
 
             GL11.glPushMatrix();
             GL11.glTranslated(d0, d1, d2);
-            GL11.glColor3f(1,1,1);
+            GL11.glColor3f(1, 1, 1);
 
-            Block banner = tileentity.getBlockType();
-            if(banner instanceof BlockAir){
-                GL11.glPopMatrix();
-                return;
-            }
             float[] dims = new float[5];
             for(int i=0; i<5; i++){
                 dims[i] = ((IFlagHolder)tileentity).getTextureDimensions(type, i);
@@ -75,30 +74,30 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         List<ItemStack> flags = tileentity.getFlags();
         if(flags.size()>0)
         {
-            Tessellator tess = Tessellator.instance;
+            Tessellator tess = Tessellator.getInstance();
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             GL11.glDisable(GL11.GL_LIGHTING);
             GL11.glMatrixMode(GL11.GL_TEXTURE);
             GL11.glPushMatrix();
-            GL11.glRotatef(-90, 0, 0 , 1);
+            GL11.glRotatef(-90, 0, 0, 1);
             for(int flagIndex = 0; flagIndex < flags.size(); flagIndex++){
                 ItemStack flag = flags.get(flagIndex);
                 ImageCache.setTexture(flag);
 
                 if(flag_sections == 0){
-                    tess.startDrawingQuads();
+                    tess.getWorldRenderer().startDrawingQuads();
 
-                    tess.addVertexWithUV(8F / 16F, -flagIndex+1-2F/16F, 0, 0, 0.001);
-                    tess.addVertexWithUV(8F /16F, -flagIndex-2F/16F,0, 1.00, 0.001);
-                    tess.addVertexWithUV(8F /16F, -flagIndex-2F/16F, 1, 1.00, 0.999);
-                    tess.addVertexWithUV(8F / 16F, -flagIndex+1-2F/16F, 1, 0, 0.999);
+                    tess.getWorldRenderer().addVertexWithUV(8F / 16F, -flagIndex + 1 - 2F / 16F, 0, 0, 0.001);
+                    tess.getWorldRenderer().addVertexWithUV(8F / 16F, -flagIndex - 2F / 16F, 0, 1.00, 0.001);
+                    tess.getWorldRenderer().addVertexWithUV(8F / 16F, -flagIndex - 2F / 16F, 1, 1.00, 0.999);
+                    tess.getWorldRenderer().addVertexWithUV(8F / 16F, -flagIndex + 1 - 2F / 16F, 1, 0, 0.999);
 
-                    tess.addVertexWithUV(8F / 16F, -flagIndex+1-2F/16F, 1, 0, 0.999);
-                    tess.addVertexWithUV(8F /16F, -flagIndex-2F/16F, 1, 1.00, 0.999);
-                    tess.addVertexWithUV(8F /16F, -flagIndex-2F/16F,0, 1.00, 0.001);
-                    tess.addVertexWithUV(8F / 16F, -flagIndex+1-2F/16F, 0, 0, 0.001);
+                    tess.getWorldRenderer().addVertexWithUV(8F / 16F, -flagIndex + 1 - 2F / 16F, 1, 0, 0.999);
+                    tess.getWorldRenderer().addVertexWithUV(8F / 16F, -flagIndex - 2F / 16F, 1, 1.00, 0.999);
+                    tess.getWorldRenderer().addVertexWithUV(8F / 16F, -flagIndex - 2F / 16F, 0, 1.00, 0.001);
+                    tess.getWorldRenderer().addVertexWithUV(8F / 16F, -flagIndex + 1 - 2F / 16F, 0, 0, 0.001);
 
 
                     tess.draw();
@@ -107,20 +106,20 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
 
                     long time = System.currentTimeMillis();
                     for(int i = 0; i < flag_sections; i++){
-                        tess.startDrawingQuads();
+                        tess.getWorldRenderer().startDrawingQuads();
 
                         double z1 = getZLevel((float)((flag_sections - i)) / (float)flag_sections + flagIndex, 5, time) / 5F;
                         double z2 = getZLevel((float)(flag_sections - i+1) / (float)flag_sections + flagIndex, 5, time) / 5F;
 
-                        tess.addVertexWithUV(8F/16F+z1, -flagIndex+(float)(i+1) / (float)flag_sections-2F/16F, 0,(float)(i+1) / (float)flag_sections, 0.999);
-                        tess.addVertexWithUV(8F/16F+z2, -flagIndex+(float)(i) / (float)flag_sections-2F/16F, 0,(float)(i) / (float)flag_sections, 0.999);
-                        tess.addVertexWithUV(8F/16F+z2, -flagIndex+(float)(i) / (float)flag_sections-2F/16F, 1,(float)(i) / (float)flag_sections, 0.001);
-                        tess.addVertexWithUV(8F/16F+z1, -flagIndex+(float)(i+1) / (float)flag_sections-2F/16F, 1,(float)(i+1) / (float)flag_sections, 0.001);
+                        tess.getWorldRenderer().addVertexWithUV(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 0, (float) (i + 1) / (float) flag_sections, 0.999);
+                        tess.getWorldRenderer().addVertexWithUV(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 0, (float) (i) / (float) flag_sections, 0.999);
+                        tess.getWorldRenderer().addVertexWithUV(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 1, (float) (i) / (float) flag_sections, 0.001);
+                        tess.getWorldRenderer().addVertexWithUV(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 1, (float) (i + 1) / (float) flag_sections, 0.001);
 
-                        tess.addVertexWithUV(8F/16F+z1, -flagIndex+(float)(i+1) / (float)flag_sections-2F/16F, 1,(float)(i+1) / (float)flag_sections, 0.001);
-                        tess.addVertexWithUV(8F/16F+z2, -flagIndex+(float)(i) / (float)flag_sections-2F/16F, 1,(float)(i) / (float)flag_sections, 0.001);
-                        tess.addVertexWithUV(8F/16F+z2, -flagIndex+(float)(i) / (float)flag_sections-2F/16F, 0,(float)(i) / (float)flag_sections, 0.999);
-                        tess.addVertexWithUV(8F/16F+z1, -flagIndex+(float)(i+1) / (float)flag_sections-2F/16F, 0,(float)(i+1) / (float)flag_sections, 0.999);
+                        tess.getWorldRenderer().addVertexWithUV(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 1, (float) (i + 1) / (float) flag_sections, 0.001);
+                        tess.getWorldRenderer().addVertexWithUV(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 1, (float) (i) / (float) flag_sections, 0.001);
+                        tess.getWorldRenderer().addVertexWithUV(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 0, (float) (i) / (float) flag_sections, 0.999);
+                        tess.getWorldRenderer().addVertexWithUV(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 0, (float) (i + 1) / (float) flag_sections, 0.999);
 
 
                         tess.draw();
@@ -137,51 +136,51 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         }
     }
 
-    private void renderZFlagPole(Block banner, float f, int type, float[] dims) {
-        IIcon icon = banner.getIcon(2, type);
-        Tessellator tess = Tessellator.instance;
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[4]));
+    private void renderZFlagPole(IBlockState banner, float f, int type, float[] dims) {
+        TextureAtlasSprite icon = getIcon(banner);//getIcon(2, type);
+        Tessellator tess = Tessellator.getInstance();
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 14F / 16F, 0F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 16F / 16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 16F / 16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 14F / 16F, 16F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 14F / 16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 14F / 16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 14F / 16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 14F / 16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 14F / 16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 16F / 16F, 16F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 16F / 16F, 0F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 14F / 16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
         tess.draw();
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 16F / 16F, 16F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 16F / 16F, 16F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 16F / 16F, 0F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 16F / 16F, 0F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
         tess.draw();
 
-        icon = banner.getIcon(0, type);
+        icon = getIcon(banner);//getIcon(0, type);
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 0F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 0F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 16F / 16F, 0F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 16F / 16F, 0F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 14F / 16F, 0F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 14F / 16F, 0F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
         tess.draw();
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
-        tess.addVertexWithUV(9F / 16F, 14F/16F, 16F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
-        tess.addVertexWithUV(9F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
-        tess.addVertexWithUV(7F / 16F, 16F/16F, 16F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 14F / 16F, 16F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 14F / 16F, 16F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 16F / 16F, 16F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 16F / 16F, 16F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
         tess.draw();
     }
 
@@ -190,7 +189,7 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         List<ItemStack> flags = tileentity.getFlags();
         if(flags.size()>0)
         {
-            Tessellator tess = Tessellator.instance;
+            Tessellator tess = Tessellator.getInstance();
             GL11.glEnable(GL11.GL_BLEND);
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
@@ -203,36 +202,36 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
 
 
                 if(flag_sections == 0){
-                    tess.startDrawingQuads();
-                    tess.addVertexWithUV(7F / 16F- flagIndex, 0, 8F / 16F, 0, 0.999);
-                    tess.addVertexWithUV(7F /16F- flagIndex - 1, 0, 8F / 16F, 1.0025, 0.999);
-                    tess.addVertexWithUV(7F /16F- flagIndex - 1, 1, 8F / 16F, 1.0025, 0.001);
-                    tess.addVertexWithUV(7F / 16F- flagIndex, 1, 8F / 16F, 0, 0.001);
+                    tess.getWorldRenderer().startDrawingQuads();
+                    tess.getWorldRenderer().addVertexWithUV(7F / 16F - flagIndex, 0, 8F / 16F, 0, 0.999);
+                    tess.getWorldRenderer().addVertexWithUV(7F / 16F - flagIndex - 1, 0, 8F / 16F, 1.0025, 0.999);
+                    tess.getWorldRenderer().addVertexWithUV(7F / 16F - flagIndex - 1, 1, 8F / 16F, 1.0025, 0.001);
+                    tess.getWorldRenderer().addVertexWithUV(7F / 16F - flagIndex, 1, 8F / 16F, 0, 0.001);
 
-                    tess.addVertexWithUV(7F / 16F- flagIndex, 1, 8F / 16F, 0, 0.001);
-                    tess.addVertexWithUV(7F /16F- flagIndex - 1, 1, 8F / 16F, 1.0025, 0.001);
-                    tess.addVertexWithUV(7F /16F- flagIndex - 1, 0, 8F / 16F, 1.0025, 0.999);
-                    tess.addVertexWithUV(7F / 16F- flagIndex, 0, 8F / 16F, 0, 0.999);
+                    tess.getWorldRenderer().addVertexWithUV(7F / 16F - flagIndex, 1, 8F / 16F, 0, 0.001);
+                    tess.getWorldRenderer().addVertexWithUV(7F / 16F - flagIndex - 1, 1, 8F / 16F, 1.0025, 0.001);
+                    tess.getWorldRenderer().addVertexWithUV(7F / 16F - flagIndex - 1, 0, 8F / 16F, 1.0025, 0.999);
+                    tess.getWorldRenderer().addVertexWithUV(7F / 16F - flagIndex, 0, 8F / 16F, 0, 0.999);
 
                     tess.draw();
 
                 }else{
                     long time = System.currentTimeMillis();
                     for(int i = 0; i < flag_sections; i++){
-                        tess.startDrawingQuads();
+                        tess.getWorldRenderer().startDrawingQuads();
 
                         double z1 = getZLevel((float)(i) / (float)flag_sections + flagIndex, 3, time);
                         double z2 = getZLevel((float)(i+1) / (float)flag_sections + flagIndex, 3, time);
 
-                        tess.addVertexWithUV(7F / 16F-(float)(i) / (float)flag_sections - flagIndex, 0, 8F / 16F+z1, (float)(i) / (float)flag_sections, 0.999);
-                        tess.addVertexWithUV(7F /16F- (float)(i+1) / (float)flag_sections- flagIndex, 0, 8F / 16F+z2, (float)(i+1) / (float)flag_sections, 0.999);
-                        tess.addVertexWithUV(7F /16F-(float)(i+1) / (float)flag_sections- flagIndex, 1.0025, 8F / 16F+z2, (float)(i+1) / (float)flag_sections, 0.001);
-                        tess.addVertexWithUV(7F / 16F- (float)(i) / (float)flag_sections- flagIndex, 1.0025, 8F / 16F+z1, (float)(i) / (float)flag_sections, 0.001);
+                        tess.getWorldRenderer().addVertexWithUV(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 0, 8F / 16F + z1, (float) (i) / (float) flag_sections, 0.999);
+                        tess.getWorldRenderer().addVertexWithUV(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 0, 8F / 16F + z2, (float) (i + 1) / (float) flag_sections, 0.999);
+                        tess.getWorldRenderer().addVertexWithUV(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z2, (float) (i + 1) / (float) flag_sections, 0.001);
+                        tess.getWorldRenderer().addVertexWithUV(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z1, (float) (i) / (float) flag_sections, 0.001);
 
-                        tess.addVertexWithUV(7F / 16F- (float)(i) / (float)flag_sections - flagIndex, 1.0025, 8F / 16F+z1, (float)(i) / (float)flag_sections, 0.001);
-                        tess.addVertexWithUV(7F /16F-(float)(i+1) / (float)flag_sections - flagIndex, 1.0025, 8F / 16F+z2, (float)(i+1) / (float)flag_sections, 0.001);
-                        tess.addVertexWithUV(7F /16F- (float)(i+1) / (float)flag_sections - flagIndex, 0, 8F / 16F+z2, (float)(i+1) / (float)flag_sections, 0.999);
-                        tess.addVertexWithUV(7F / 16F-(float)(i) / (float)flag_sections - flagIndex, 0, 8F / 16F+z1, (float)(i) / (float)flag_sections, 0.999);
+                        tess.getWorldRenderer().addVertexWithUV(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z1, (float) (i) / (float) flag_sections, 0.001);
+                        tess.getWorldRenderer().addVertexWithUV(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z2, (float) (i + 1) / (float) flag_sections, 0.001);
+                        tess.getWorldRenderer().addVertexWithUV(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 0, 8F / 16F + z2, (float) (i + 1) / (float) flag_sections, 0.999);
+                        tess.getWorldRenderer().addVertexWithUV(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 0, 8F / 16F + z1, (float) (i) / (float) flag_sections, 0.999);
 
                         tess.draw();
                     }
@@ -243,53 +242,67 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         }
     }
 
-    private void renderYFlagPole(Block banner, float f, int type, float[] dims) {
+    private void renderYFlagPole(IBlockState banner, float f, int type, float[] dims) {
 
-        IIcon icon = banner.getIcon(2, type);
-        Tessellator tess = Tessellator.instance;
+        TextureAtlasSprite icon = getIcon(banner);//getIcon(2, type);
+        Tessellator tess = Tessellator.getInstance();
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[0]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[1]),icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[1]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[3]),icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[2]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[4]), icon.getInterpolatedV(dims[0]));
-        tess.addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[4]), icon.getInterpolatedV(dims[4]));
-        tess.addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(dims[4]), icon.getInterpolatedV(dims[0]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(dims[4]), icon.getInterpolatedV(dims[4]));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(dims[3]), icon.getInterpolatedV(dims[4]));
         tess.draw();
 
-        icon = banner.getIcon(0, type);
+        icon = getIcon(banner);//getIcon(0, type);
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
-        tess.addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
-        tess.addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
-        tess.addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 0, 7F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 0, 7F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 0, 9F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 0, 9F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
         tess.draw();
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
-        tess.addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
-        tess.addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
-        tess.addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 1, 7F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(6));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 1, 7F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(6));
+        tess.getWorldRenderer().addVertexWithUV(7F / 16F, 1, 9F / 16F, icon.getInterpolatedU(10), icon.getInterpolatedV(10));
+        tess.getWorldRenderer().addVertexWithUV(9F / 16F, 1, 9F / 16F, icon.getInterpolatedU(6), icon.getInterpolatedV(10));
         tess.draw();
     }
+
+    private TextureAtlasSprite getIcon(IBlockState state) {
+        return Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getTexture(state);
+    }
+
+    /*
+    public IIcon getIcon(int par1, int meta) {
+        if(meta == 4)
+            return Blocks.iron_block.getIcon(par1, 0);
+        else if(meta < 4)
+            return Blocks.log.getIcon(par1, meta);
+        else
+            return Blocks.log2.getIcon(par1, meta - 5);
+    }*/
 }

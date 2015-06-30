@@ -1,12 +1,12 @@
 package mods.battlegear2.client.gui.controls;
 
-import cpw.mods.fml.client.config.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.config.GuiUtils;
 
 public abstract class GuiPlaceableButton extends GuiButton {
     public static final ResourceLocation CREATIVE_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
@@ -77,8 +77,8 @@ public abstract class GuiPlaceableButton extends GuiButton {
                     this.yPosition += deltaY;
                 }
             }
-            this.field_146123_n = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-            int k = this.getHoverState(this.field_146123_n);
+            this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+            int k = this.getHoverState(this.hovered);
             drawTextureBox(k);
             this.mouseDragged(mc, mouseX, mouseY);
             int color = 14737632;
@@ -90,12 +90,11 @@ public abstract class GuiPlaceableButton extends GuiButton {
             else if (!this.enabled)
             {
                 color = 10526880;
-            }
-            else if (this.field_146123_n)
+            } else if (this.hovered)
             {
                 color = 16777120;
             }
-            this.drawCenteredString(mc.fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, color);
+            this.drawCenteredString(mc.fontRendererObj, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, color);
         }
     }
 

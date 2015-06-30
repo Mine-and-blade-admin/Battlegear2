@@ -1,13 +1,14 @@
 package mods.battlegear2.recipies;
 
 import mods.battlegear2.api.IDyable;
-import net.minecraft.block.BlockColored;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 import java.util.ArrayList;
 
@@ -108,7 +109,7 @@ public final class DyeRecipie implements IRecipe
                         return null;
                     }
 
-                    float[] afloat = EntitySheep.fleeceColorTable[BlockColored.func_150032_b(stack.getItemDamage())];
+                    float[] afloat = EntitySheep.func_175513_a(EnumDyeColor.byDyeDamage(stack.getItemDamage()));
                     int j1 = (int)(afloat[0] * 255.0F);
                     int k1 = (int)(afloat[1] * 255.0F);
                     i1 = (int)(afloat[2] * 255.0F);
@@ -156,5 +157,10 @@ public final class DyeRecipie implements IRecipe
     public ItemStack getRecipeOutput()
     {
         return null;
+    }
+
+    @Override
+    public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+        return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 }

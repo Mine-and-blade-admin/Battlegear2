@@ -114,4 +114,9 @@ public class KnightArmourRecipie implements IRecipe{
 		return new ItemStack(knightArmour);
 	}
 
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+		return new ItemStack[inv.getSizeInventory()];
+	}
+
 }

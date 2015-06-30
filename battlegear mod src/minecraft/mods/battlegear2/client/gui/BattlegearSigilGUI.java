@@ -19,6 +19,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
+
 public class BattlegearSigilGUI extends GuiContainer {
 
     private static final int ADD = 0;
@@ -179,7 +181,7 @@ public class BattlegearSigilGUI extends GuiContainer {
 
 
     @Override
-    public void actionPerformed(GuiButton button) {
+    public void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
                 
         crestDirty = true;
@@ -258,12 +260,12 @@ public class BattlegearSigilGUI extends GuiContainer {
     {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)this.zLevel, (double)((float)(tex_x + 0)), (double)((float)(tex_y + tex_height)));
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)this.zLevel, (double)((float)(tex_x + tex_width)), (double)((float)(tex_y + tex_height)));
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)this.zLevel, (double)((float)(tex_x + tex_width) ), (double)((float)(tex_y + 0)));
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)this.zLevel, (double)((float)(tex_x + 0) ), (double)((float)(tex_y + 0)));
+        Tessellator tessellator = Tessellator.getInstance();
+        tessellator.getWorldRenderer().startDrawingQuads();
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + 0)), (double) ((float) (tex_y + tex_height)));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height)));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + 0)));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + 0)), (double) ((float) (tex_y + 0)));
         tessellator.draw();
     }
 

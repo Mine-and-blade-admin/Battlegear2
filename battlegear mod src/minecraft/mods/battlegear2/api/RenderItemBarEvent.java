@@ -1,8 +1,8 @@
 package mods.battlegear2.api;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
  * Events from {@link BattlegearInGameGUI} to {@link MinecraftForge.EVENT_BUS}
@@ -19,7 +19,7 @@ public abstract class RenderItemBarEvent extends RenderGameOverlayEvent{
     public int yOffset = 0;
 
     public RenderItemBarEvent(RenderGameOverlayEvent parent) {
-        super(parent.partialTicks, parent.resolution, parent.mouseX, parent.mouseY);
+        super(parent.partialTicks, parent.resolution);
     }
 
     /**

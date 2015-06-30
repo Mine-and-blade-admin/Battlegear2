@@ -1,0 +1,7 @@
+{
+  "parent": "battlegear2:block/flagpole",
+  "textures": {
+    "end": "blocks/log_acacia_top",
+    "side": "blocks/log_acacia"
+  }
+}

@@ -49,19 +49,14 @@ public class BaseEnchantment extends Enchantment {
 	}
 
 	@Override
-	public boolean canApply(ItemStack stack) {
-        if (stack.getItem() instanceof IEnchantable) {
+	public boolean canApplyAtEnchantingTable(ItemStack stack) {
+		if (stack.getItem() instanceof IEnchantable) {
             return ((IEnchantable) stack.getItem()).isEnchantable(this, stack);
         }
         if(type == EnumEnchantmentType.BOW && BattlegearUtils.isBow(stack.getItem())){
             return true;
         }
-        return type != EnumEnchantmentType.ALL && super.canApply(stack);
-    }
-
-	@Override
-	public boolean canApplyAtEnchantingTable(ItemStack stack) {
-		return canApply(stack);// Redundancy for MCPC+ fix
+		return type != EnumEnchantmentType.ALL && super.canApplyAtEnchantingTable(stack);
 	}
 
 	@Override

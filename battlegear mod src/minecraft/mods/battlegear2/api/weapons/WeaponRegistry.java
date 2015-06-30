@@ -3,10 +3,10 @@ package mods.battlegear2.api.weapons;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Sets;
-import net.minecraftforge.fml.common.event.FMLInterModComms;
 import mods.battlegear2.api.ISensible;
 import mods.battlegear2.api.StackHolder;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -52,22 +52,29 @@ public class WeaponRegistry {
 	 * Helper method to set an {@link ItemStack} as dual-wieldable
 	 */
 	public static void addDualWeapon(ItemStack stack) {
-        wielding.put(new StackHolder(stack), Pair.of(Wield.BOTH, false));
-	}
+        Wield.BOTH.setWeapon(stack);
+    }
 	
 	/**
 	 * Helper method to set an {@link ItemStack} as wieldable only in mainhand
 	 */
 	public static void addTwoHanded(ItemStack stack) {
-        wielding.put(new StackHolder(stack), Pair.of(Wield.RIGHT, false));
-	}
+        Wield.RIGHT.setWeapon(stack);
+    }
 
 	/**
 	 * Helper method to set an {@link ItemStack} as wieldable only in offhand
 	 */
 	public static void addOffhandWeapon(ItemStack stack) {
-        wielding.put(new StackHolder(stack), Pair.of(Wield.LEFT, false));
-	}
+        Wield.LEFT.setWeapon(stack);
+    }
+
+    /**
+     * Helper method to set an {@link ItemStack} as usable
+     */
+    public static void addDualUsable(ItemStack stack) {
+        Wield.BOTH.setUsable(stack);
+    }
 
     /**
      * Adds a way to compare two {@link StackHolder} in this registry

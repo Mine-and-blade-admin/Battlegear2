@@ -1,8 +1,8 @@
 package mods.battlegear2.coremod.transformers;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import mods.battlegear2.api.core.BattlegearTranslator;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
@@ -189,7 +189,7 @@ public final class NetServerHandlerTransformer extends TransformerBase {
         netServiceHandelerPlayerField = BattlegearTranslator.getMapedFieldName("field_147369_b", "playerEntity");
 
 
-        getItemSwitchId = BattlegearTranslator.getMapedMethodName("func_149614_c", "func_149614_c");
+        getItemSwitchId = BattlegearTranslator.getMapedMethodName("func_149614_c", "getSlotId");
         handleBlockSwitchMethodName = BattlegearTranslator.getMapedMethodName("func_147355_a", "processHeldItemChange");
         handleBlockSwitchMethodDesc = "(L" + packet16BlockItemSwitchClassName + ";)V";
 

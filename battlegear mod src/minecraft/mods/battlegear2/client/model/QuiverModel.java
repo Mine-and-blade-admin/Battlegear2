@@ -27,44 +27,21 @@ public class QuiverModel extends ModelBase
             arrowPos[i] = new float[]{r.nextFloat()*2F/16F, r.nextFloat()*4F, r.nextFloat() * 3F/16F};
         }
 
-        this.textureWidth = 64;
-        textureHeight = 32;
-
-        body = new ModelRenderer(this, 16, 16);
-        body.addBox(-4F, 0.0F, -2F, 8, 12, 4);
-        body.setRotationPoint(0.0F, 0.0F, 0.0F);
-        body.setTextureSize(64, 32);
-        body.showModel = true;
-        quiverBase = new ModelRenderer(this, 0, 0);
-        quiverBase.addBox(-6F, 1.0F, 2.0F, 8, 4, 3);
-        quiverBase.setRotationPoint(0.0F, 0.0F, 0.0F);
-        quiverBase.setTextureSize(64, 32);
-        quiverBase.showModel = true;
-        setRotation(quiverBase, 0.0F, 0.0F, -0.7853982F);
-        quiverRight = new ModelRenderer(this, 0, 16);
-        quiverRight.addBox(-0.6F, 0.1F, 0.0F, 1, 2, 3);
+        body = new ModelRenderer(this, 16, 16).addBox(-4F, 0.0F, -2F, 8, 12, 4);
+        quiverBase = new ModelRenderer(this, 0, 0).addBox(-6F, 1.0F, 2.0F, 8, 4, 3);
+        quiverBase.rotateAngleZ = -0.7853982F;
+        quiverRight = new ModelRenderer(this, 0, 16).addBox(-0.6F, 0.1F, 0.0F, 1, 2, 3);
         quiverRight.setRotationPoint(-3F, 5F, 2.0F);
-        quiverRight.setTextureSize(64, 32);
-        quiverRight.showModel = true;
-        setRotation(quiverRight, 0.0F, 0.0F, 0.2617994F);
-        quiverBottom = new ModelRenderer(this, 0, 11);
-        quiverBottom.addBox(0.0F, 0.0F, 0.0F, 2, 2, 3);
+        quiverRight.rotateAngleZ = 0.2617994F;
+        quiverBottom = new ModelRenderer(this, 0, 11).addBox(0.0F, 0.0F, 0.0F, 2, 2, 3);
         quiverBottom.setRotationPoint(-2.7F, 5.5F, 2.0F);
-        quiverBottom.setTextureSize(64, 32);
-        quiverBottom.showModel = true;
-        setRotation(quiverBottom, 0.0F, 0.0F, 0.7853982F);
-        quiverLeft = new ModelRenderer(this, 0, 21);
-        quiverLeft.addBox(0.0F, 0.0F, 0.0F, 1, 2, 3);
+        quiverBottom.rotateAngleZ = 0.7853982F;
+        quiverLeft = new ModelRenderer(this, 0, 21).addBox(0.0F, 0.0F, 0.0F, 1, 2, 3);
         quiverLeft.setRotationPoint(-2.7F, 8.3F, 2.0F);
-        quiverLeft.setTextureSize(64, 32);
-        quiverLeft.showModel = true;
-        setRotation(quiverLeft, 0.0F, 0.0F, -1.832596F);
-        quiverTop = new ModelRenderer(this, 0, 7);
-        quiverTop.addBox(1.0F, -3F, 0.0F, 4, 1, 3);
+        quiverLeft.rotateAngleZ = -1.832596F;
+        quiverTop = new ModelRenderer(this, 0, 7).addBox(1.0F, -3F, 0.0F, 4, 1, 3);
         quiverTop.setRotationPoint(0.0F, 0.0F, 2.0F);
-        quiverTop.setTextureSize(64, 32);
-        quiverTop.showModel = true;
-        setRotation(quiverTop, 0.0F, 0.0F, 0.7853982F);
+        quiverTop.rotateAngleZ = 0.7853982F;
     }
 
     //@Override
@@ -87,12 +64,4 @@ public class QuiverModel extends ModelBase
         }
 
     }
-
-    private void setRotation(ModelRenderer model, float x, float y, float z)
-    {
-        model.rotateAngleX = x;
-        model.rotateAngleY = y;
-        model.rotateAngleZ = z;
-    }
-
 }

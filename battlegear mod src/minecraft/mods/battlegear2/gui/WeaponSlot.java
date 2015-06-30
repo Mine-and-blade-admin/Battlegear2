@@ -1,15 +1,15 @@
 package mods.battlegear2.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.core.BattlegearUtils;
+import mods.battlegear2.client.ClientProxy;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public final class WeaponSlot extends Slot {
 
@@ -23,11 +23,8 @@ public final class WeaponSlot extends Slot {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public IIcon getBackgroundIconIndex(){
-    //MOJANG derp fixes:
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        //GL11.glEnable(GL11.GL_BLEND);
-        return Battlegear.proxy.getSlotIcon(mainHand ? 0 : 1);
+    public TextureAtlasSprite getBackgroundSprite() {
+        return ((ClientProxy) Battlegear.proxy).getSlotIcon(mainHand ? 0 : 1);
     }
 
     public WeaponSlot getPartner() {

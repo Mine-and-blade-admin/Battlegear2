@@ -28,6 +28,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.Arrays;
 
@@ -143,7 +144,7 @@ public class GuiFlagDesigner extends GuiScreen {
     }
 
     @Override
-    protected void keyTyped(char par1, int par2) {
+    protected void keyTyped(char par1, int par2) throws IOException {
         super.keyTyped(par1, par2);
 
         int x = (Mouse.getEventX() * this.width / this.mc.displayWidth -90 -guiLeft)/canvusMult;
@@ -317,7 +318,7 @@ public class GuiFlagDesigner extends GuiScreen {
     }
 
     @Override
-    protected void mouseClicked(int par1, int par2, int par3) {
+    protected void mouseClicked(int par1, int par2, int par3) throws IOException {
 
         int x = (Mouse.getEventX() * this.width / this.mc.displayWidth -(x_canvus_start))/canvusMult;
         int y = (this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1 - (y_canvus_start))/canvusMult;
@@ -350,7 +351,7 @@ public class GuiFlagDesigner extends GuiScreen {
     }
 
     @Override
-    public void handleMouseInput() {
+    public void handleMouseInput() throws IOException {
 
         super.handleMouseInput();
 
@@ -447,7 +448,7 @@ public class GuiFlagDesigner extends GuiScreen {
     }
 
     @Override
-    protected void actionPerformed(GuiButton par1GuiButton) {
+    protected void actionPerformed(GuiButton par1GuiButton) throws IOException {
         super.actionPerformed(par1GuiButton);
 
         if(par1GuiButton.id >=10 && par1GuiButton.id < 10+toggleButtons.length){
@@ -557,12 +558,12 @@ public class GuiFlagDesigner extends GuiScreen {
     {
         float f = 1F;
         float f1 = 1F;
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)this.zLevel, (double)((float)(tex_x + 0) * f), (double)((float)(tex_y + tex_height) * f1));
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)this.zLevel, (double)((float)(tex_x + tex_width) * f), (double)((float)(tex_y + tex_height) * f1));
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)this.zLevel, (double)((float)(tex_x + tex_width) * f), (double)((float)(tex_y + 0) * f1));
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)this.zLevel, (double)((float)(tex_x + 0) * f), (double)((float)(tex_y + 0) * f1));
+        Tessellator tessellator = Tessellator.getInstance();
+        tessellator.getWorldRenderer().startDrawingQuads();
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + 0) * f), (double) ((float) (tex_y + tex_height) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + tex_width) * f), (double) ((float) (tex_y + tex_height) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + tex_width) * f), (double) ((float) (tex_y + 0) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + 0) * f), (double) ((float) (tex_y + 0) * f1));
         tessellator.draw();
     }
 

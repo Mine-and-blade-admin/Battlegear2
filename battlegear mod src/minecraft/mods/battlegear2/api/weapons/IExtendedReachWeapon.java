@@ -2,6 +2,10 @@ package mods.battlegear2.api.weapons;
 
 import net.minecraft.item.ItemStack;
 
+/**
+ * {@see Attributes#extendedReach}
+ */
+@Deprecated
 public interface IExtendedReachWeapon {
 	/**
 	 * The distance the weapon will hit
@@ -9,5 +13,5 @@ public interface IExtendedReachWeapon {
 	 * @param stack
 	 * @return
 	 */
-	public float getReachModifierInBlocks(ItemStack stack);
+	float getReachModifierInBlocks(ItemStack stack);
 }

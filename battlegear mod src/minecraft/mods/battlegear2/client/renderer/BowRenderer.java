@@ -1,34 +1,7 @@
 package mods.battlegear2.client.renderer;
 
-import mods.battlegear2.MobHookContainerClass;
-import mods.battlegear2.api.quiver.IArrowContainer2;
-import mods.battlegear2.api.quiver.QuiverArrowRegistry;
-import mods.battlegear2.client.ClientProxy;
-import mods.battlegear2.client.utils.BattlegearRenderHelper;
-import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.monster.EntitySkeleton;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
-
-public class BowRenderer implements IItemRenderer {
-
-    @Override
-    public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return type == ItemRenderType.EQUIPPED || type == ItemRenderType.EQUIPPED_FIRST_PERSON;
-    }
-
-    @Override
-    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-        return false;
-    }
-
+public class BowRenderer {
+/*
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
         switch (type){
@@ -79,7 +52,7 @@ public class BowRenderer implements IItemRenderer {
         	drawArrows = true;
         }
 
-        Tessellator tessellator = Tessellator.instance;
+        Tessellator tessellator = Tessellator.getInstance();
         ItemRenderer.renderItemIn2D(tessellator, icon.getMaxU(), icon.getMinV(), icon.getMinU(), icon.getMaxV(), icon.getIconWidth(), icon.getIconHeight(), 0.0625F);
 
         if(drawArrows && QuiverArrowRegistry.isKnownArrow(arrowStack)){
@@ -92,5 +65,5 @@ public class BowRenderer implements IItemRenderer {
 
         if(item.hasEffect(0))
             BattlegearRenderHelper.renderEnchantmentEffects(tessellator);
-    }
+    }*/
 }

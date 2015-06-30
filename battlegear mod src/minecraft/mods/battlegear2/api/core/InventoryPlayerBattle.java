@@ -1,9 +1,7 @@
 package mods.battlegear2.api.core;
 
-import net.minecraft.command.server.CommandTestForBlock;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.command.server.CommandTestForBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
@@ -11,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * User: nerd-boy
@@ -86,22 +86,12 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     /**
-     * Returns a slot index in main inventory containing a specific itemID
+     * Returns a slot index in extra inventory containing a specific itemID
      */
     private int getInventorySlotContainItem(Item par1) {
         for (int j = 0; j < this.extraItems.length; ++j) {
             if (this.extraItems[j] != null && this.extraItems[j].getItem() == par1) {
                 return j;
-            }
-        }
-        return -1;
-    }
-
-    @SideOnly(Side.CLIENT)
-    private int getInventorySlotContainItemAndDamage(Item par1, int par2) {
-        for (int k = 0; k < this.extraItems.length; ++k) {
-            if (this.extraItems[k] != null && this.extraItems[k].getItem() == par1 && this.extraItems[k].getItemDamage() == par2) {
-                return k;
             }
         }
         return -1;

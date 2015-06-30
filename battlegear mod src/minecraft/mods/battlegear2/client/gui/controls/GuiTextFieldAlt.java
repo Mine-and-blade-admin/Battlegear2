@@ -13,7 +13,7 @@ import java.util.Locale;
  */
 public class GuiTextFieldAlt extends GuiTextField {
     public GuiTextFieldAlt(FontRenderer par1FontRenderer, int par2, int par3, int par4, int par5) {
-        super(par1FontRenderer, par2, par3, par4, par5);
+        super(0, par1FontRenderer, par2, par3, par4, par5);
     }
 
 
@@ -29,7 +29,7 @@ public class GuiTextFieldAlt extends GuiTextField {
 
     private String removeInvalidChars(String string){
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         string = string.toUpperCase(Locale.ENGLISH);
         for(int i = 0; i < string.length(); i++){
             char next = string.charAt(i);

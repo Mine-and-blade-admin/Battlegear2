@@ -10,5 +10,5 @@ public interface IBackStabbable {
 	 * @param entityHitting
      * @return true if it adds an hitting action
 	 */
-	public boolean onBackStab(EntityLivingBase entityHit, EntityLivingBase entityHitting);
+	boolean onBackStab(EntityLivingBase entityHit, EntityLivingBase entityHitting);
 }

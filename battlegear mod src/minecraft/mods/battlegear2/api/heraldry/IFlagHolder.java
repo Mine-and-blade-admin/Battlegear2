@@ -37,8 +37,7 @@ public interface IFlagHolder {
 
     /**
      * Called by the default {@link FlagPoleTileRenderer}
-     * @param metadata
      * @return the rendered orientation value for the flagpole and thus the flags
      */
-    public int getOrientation(int metadata);
+    public int getOrientation();
 }

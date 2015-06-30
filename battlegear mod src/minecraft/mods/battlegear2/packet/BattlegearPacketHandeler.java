@@ -1,15 +1,15 @@
 package mods.battlegear2.packet;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLEventChannel;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
-import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.Battlegear;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLEventChannel;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -32,6 +32,7 @@ public final class BattlegearPacketHandeler {
         map.put(OffhandPlaceBlockPacket.packetName, new OffhandPlaceBlockPacket());
         map.put(PickBlockPacket.packetName, new PickBlockPacket());
         map.put(WieldSetPacket.packetName, new WieldSetPacket());
+        map.put(ReachTargetPacket.packetName, new ReachTargetPacket());
     }
 
     public void register(){
@@ -44,13 +45,29 @@ public final class BattlegearPacketHandeler {
     }
 
     @SubscribeEvent
-    public void onServerPacket(FMLNetworkEvent.ServerCustomPacketEvent event) {
-        map.get(event.packet.channel()).process(event.packet.payload(), ((NetHandlerPlayServer)event.handler).playerEntity);
+    public void onServerPacket(final FMLNetworkEvent.ServerCustomPacketEvent event) {
+        final AbstractMBPacket packet = map.get(event.packet.channel());
+        if (packet != null) {
+            Battlegear.proxy.scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    packet.process(event.packet.payload(), ((NetHandlerPlayServer) event.handler).playerEntity);
+                }
+            });
+        }
     }
 
     @SubscribeEvent
-    public void onClientPacket(FMLNetworkEvent.ClientCustomPacketEvent event){
-        map.get(event.packet.channel()).process(event.packet.payload(), Battlegear.proxy.getClientPlayer());
+    public void onClientPacket(final FMLNetworkEvent.ClientCustomPacketEvent event) {
+        final AbstractMBPacket packet = map.get(event.packet.channel());
+        if (packet != null) {
+            Battlegear.proxy.scheduleTask(new Runnable() {
+                @Override
+                public void run() {
+                    packet.process(event.packet.payload(), Battlegear.proxy.getClientPlayer());
+                }
+            });
+        }
     }
 
     public void sendPacketToPlayer(FMLProxyPacket packet, EntityPlayerMP player){

@@ -1,13 +1,11 @@
 package mods.battlegear2.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mods.battlegear2.api.IDyable;
+import mods.battlegear2.api.ISheathed;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
@@ -16,19 +14,19 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
-public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
-    public IIcon quiverDetails;
-    public IIcon quiverArrows;
-
+public class ItemQuiver extends Item implements IArrowContainer2, IDyable, ISheathed {
     public ItemQuiver() {
         super();
         this.setMaxStackSize(1);
@@ -44,29 +42,21 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
     }
     
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float offX, float offY, float offZ) {
-    	boolean flag = false;
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float offX, float offY, float offZ) {
+        boolean flag = false;
         for(int i = 0; i<getSlotCount(stack);i++){
             ItemStack temp = getStackInSlot(stack, i);
             if(temp!=null){
                 EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
                 if(entityitem!=null) {
                     entityitem.setNoPickupDelay();
-                    entityitem.func_145797_a(player.getCommandSenderName());
+                    entityitem.setOwner(player.getCommandSenderName());
                 }
                 setStackInSlot(stack, i, null);
                 flag = true;
             }
     	}
         return flag;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister par1IconRegister) {
-        super.registerIcons(par1IconRegister);
-        quiverDetails = par1IconRegister.registerIcon("battlegear2:quiver/quiver-details");
-        quiverArrows = par1IconRegister.registerIcon("battlegear2:quiver/quiver-arrows");
     }
 
     @Override
@@ -172,7 +162,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
                     left_over = 0;
                 }else{
                     if(newStack.getItem() == slotStack.getItem() && newStack.getItemDamage() == slotStack.getItemDamage()){
-                        int newSize = Math.min(64, slotStack.stackSize + left_over);
+                        int newSize = Math.min(slotStack.getMaxStackSize(), slotStack.stackSize + left_over);
                         left_over = left_over - (newSize - slotStack.stackSize);
                         slotStack.stackSize = newSize;
                         setStackInSlot(container, i, slotStack);
@@ -217,6 +207,13 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
 
     }
 
+    @Override
+    @SideOnly(Side.CLIENT)
+    public int getColorFromItemStack(ItemStack stack, int renderPass) {
+        if (renderPass > 0)
+            return super.getColorFromItemStack(stack, renderPass);
+        return getColor(stack);
+    }
 
     @Override
     public boolean hasColor(ItemStack par1ItemStack)
@@ -278,5 +275,10 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable {
                 nbttagcompound.setTag("display", nbttagcompound1);
             }
             nbttagcompound1.setInteger("color", par2);
+    }
+
+    @Override
+    public boolean sheatheOnBack(ItemStack item) {
+        return false;
     }
 }

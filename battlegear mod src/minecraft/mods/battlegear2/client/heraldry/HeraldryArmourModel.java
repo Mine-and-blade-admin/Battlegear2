@@ -1,6 +1,5 @@
 package mods.battlegear2.client.heraldry;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldyArmour;
 import mods.battlegear2.api.heraldry.PatternStore;
@@ -9,11 +8,12 @@ import mods.battlegear2.heraldry.HeraldryIcon;
 import mods.battlegear2.heraldry.SigilHelper;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -49,13 +49,7 @@ public class HeraldryArmourModel extends ModelBiped{
 	
 	public void setItemStack(ItemStack stack){
 		this.stack = stack;
-        bipedHead.showModel = false;
-        bipedHeadwear.showModel = false;
-        bipedBody.showModel = false;
-        bipedRightArm.showModel = false;
-        bipedLeftArm.showModel = false;
-        bipedRightLeg.showModel = false;
-        bipedLeftLeg.showModel = false;
+		setInvisible(false);
 	}
 
 	@Override
@@ -72,14 +66,12 @@ public class HeraldryArmourModel extends ModelBiped{
 			IHeraldyArmour heraldryItem = (IHeraldyArmour)stack.getItem();
 			if(stack != null && heraldryItem.hasHeraldry(stack)){
 				byte[] code = heraldryItem.getHeraldry(stack);
-				
-				Tessellator tess = new Tessellator();
 				//if helmet
 				if(armourSlot == 0 && renderDecorations){
 					if(par1Entity == null){
-						renderHelmDecoration(tess, 0, SigilHelper.getHelm(code),0);
+						renderHelmDecoration(0, SigilHelper.getHelm(code), 0);
 					}else{
-						renderHelmDecoration(tess, par1Entity.getRotationYawHead(), SigilHelper.getHelm(code), 0);
+						renderHelmDecoration(par1Entity.getRotationYawHead(), SigilHelper.getHelm(code), 0);
 					}
 				}
 				
@@ -97,9 +89,9 @@ public class HeraldryArmourModel extends ModelBiped{
 	            
 	            if(armourSlot == 0 && renderDecorations){
 	            	if(par1Entity == null){
-						renderHelmDecoration(tess, 0, SigilHelper.getHelm(code),1);
+						renderHelmDecoration(0, SigilHelper.getHelm(code), 1);
 					}else{
-						renderHelmDecoration(tess, par1Entity.getRotationYawHead(), SigilHelper.getHelm(code), 1);
+						renderHelmDecoration(par1Entity.getRotationYawHead(), SigilHelper.getHelm(code), 1);
 					}
 				}
 	
@@ -127,9 +119,9 @@ public class HeraldryArmourModel extends ModelBiped{
 	            
 	            if(armourSlot == 0 && renderDecorations){
 	            	if(par1Entity == null){
-						renderHelmDecoration(tess, 0, SigilHelper.getHelm(code),1);
+						renderHelmDecoration(0, SigilHelper.getHelm(code), 1);
 					}else{
-						renderHelmDecoration(tess, par1Entity.getRotationYawHead(), SigilHelper.getHelm(code), 1);
+						renderHelmDecoration(par1Entity.getRotationYawHead(), SigilHelper.getHelm(code), 1);
 					}
 				}
 	            
@@ -171,13 +163,11 @@ public class HeraldryArmourModel extends ModelBiped{
 					    				colourIconPrimary[1],
 					    				colourIconPrimary[2]);
 					    	}
-					    	
-				            
-					    	renderTexturedQuad(tess,
-					    			x, yEnd, xEnd, y,
-			            			16, 16, 0.0625F);
-			            	
-					    	GL11.glPopMatrix();
+
+
+							renderTexturedQuad(x, yEnd, xEnd, y);
+
+							GL11.glPopMatrix();
 		            	}
 		            	
 		            	GL11.glMatrixMode(GL11.GL_TEXTURE);
@@ -202,12 +192,10 @@ public class HeraldryArmourModel extends ModelBiped{
 					    				colourIconPrimary[1],
 					    				colourIconPrimary[2]);
 					    	}
-					    	
-					    	renderTexturedQuad(tess,
-					    			x, yEnd, xEnd, y,
-			            			16, 16, 0.0625F);
-			            	
-					    	GL11.glPopMatrix();
+
+							renderTexturedQuad(x, yEnd, xEnd, y);
+
+							GL11.glPopMatrix();
 		            	}
 		            	
 		            	
@@ -232,24 +220,21 @@ public class HeraldryArmourModel extends ModelBiped{
 		}
 
 	}
-	
-	/**
-     * Renders an item held in hand as a 2D texture with thickness
-     */
 
-	public static void renderTexturedQuad(Tessellator par0Tessellator, float par1, float par2, float par3, float par4, int par5, int par6, float par7)
-    {
-        par0Tessellator.startDrawingQuads();
-        par0Tessellator.setNormal(0.0F, 0.0F, 1.0F);
-        par0Tessellator.addVertexWithUV(0.0D, 0.0D, 0.0D, (double)par1, (double)par4);
-        par0Tessellator.addVertexWithUV(1.0D, 0.0D, 0.0D, (double)par3, (double)par4);
-        par0Tessellator.addVertexWithUV(1.0D, 1.0D, 0.0D, (double)par3, (double)par2);
-        par0Tessellator.addVertexWithUV(0.0D, 1.0D, 0.0D, (double)par1, (double)par2);
-        par0Tessellator.draw();
+	public static void renderTexturedQuad(float par1, float par2, float par3, float par4) {
+		Tessellator par0Tessellator = Tessellator.getInstance();
+		WorldRenderer renderer = par0Tessellator.getWorldRenderer();
+		renderer.startDrawingQuads();
+		renderer.setNormal(0.0F, 0.0F, 1.0F);
+		renderer.addVertexWithUV(0.0D, 0.0D, 0.0D, (double) par1, (double) par4);
+		renderer.addVertexWithUV(1.0D, 0.0D, 0.0D, (double) par3, (double) par4);
+		renderer.addVertexWithUV(1.0D, 1.0D, 0.0D, (double) par3, (double) par2);
+		renderer.addVertexWithUV(0.0D, 1.0D, 0.0D, (double) par1, (double) par2);
+		par0Tessellator.draw();
     }
-	
-	
-	public void renderHelmDecoration(Tessellator tess, float rot, byte style, int pass){
+
+
+	public void renderHelmDecoration(float rot, byte style, int pass) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(0, helmOffset, 0);
 		switch(style){
@@ -261,7 +246,7 @@ public class HeraldryArmourModel extends ModelBiped{
 			GL11.glRotatef(90, 0, 1, 0);
 			GL11.glRotatef(180, 1, 0, 0);
 			GL11.glTranslatef(-1.25F+1F/16F, 0.5F, 0.5F/16);
-			ItemRenderer.renderItemIn2D(tess, 1, 0, 0.75F, 0.5F, 64, 32, 0.0625F);
+			renderItemIn2D(1, 0.75F, 0.5F);
 			GL11.glPopMatrix();
 			break;
 		case 2: //Plume
@@ -272,7 +257,7 @@ public class HeraldryArmourModel extends ModelBiped{
 				GL11.glRotatef(90, 0, 1, 0);
 				GL11.glRotatef(180, 1, 0, 0);
 				GL11.glTranslatef(-1.25F+1F/16F+0.5F, 1F/16F, 0.5F/16);
-				ItemRenderer.renderItemIn2D(tess, 0.75F, 0, 0.5F, 0.5F, 64, 32, 0.0625F);
+				renderItemIn2D(0.75F, 0.5F, 0.5F);
 				GL11.glPopMatrix();
 			}else{
 				GL11.glPushMatrix();
@@ -281,8 +266,8 @@ public class HeraldryArmourModel extends ModelBiped{
 				GL11.glRotatef(180, 1, 0, 0);
 				GL11.glTranslatef(-1.25F+1F/16F+0.5F, 1F/16F, 1F/16);
 				GL11.glScalef(1, 1, 2);
-				
-				ItemRenderer.renderItemIn2D(tess, 0.75F, 0, 0.5F, 0.5F, 64, 32, 0.0625F);
+
+				renderItemIn2D(0.75F, 0.5F, 0.5F);
 				GL11.glScalef(1, 1,0.5F);
 				GL11.glPopMatrix();
 			}
@@ -293,12 +278,93 @@ public class HeraldryArmourModel extends ModelBiped{
 			GL11.glRotatef(180, 1, 0, 0);
 			GL11.glScalef(1.25F, 0.5F, 1.25F);
 			GL11.glTranslatef(-0.5F, 14F/16F, 0.5F/16);
-			ItemRenderer.renderItemIn2D(tess, 0.5F, 0, 0.25F, 0.25F, 64, 32, 0.0625F);
+			renderItemIn2D(0.5F, 0.25F, 0.25F);
 			GL11.glScalef(1F/1.25F, 1F/0.5F, 1F/1.25F);
 			GL11.glPopMatrix();
 		}
 		GL11.glTranslatef(0, 0, -helmOffset);
 		GL11.glPopMatrix();
 	}
-	
+
+	/**
+	 * Renders an item held in hand as a 2D texture with thickness
+	 */
+	public static void renderItemIn2D(float p_78439_1_, float p_78439_3_, float p_78439_4_) {
+		Tessellator tess = Tessellator.getInstance();
+		WorldRenderer p_78439_0_ = tess.getWorldRenderer();
+		p_78439_0_.startDrawingQuads();
+		p_78439_0_.setNormal(0.0F, 0.0F, 1.0F);
+		p_78439_0_.addVertexWithUV(0.0D, 0.0D, 0.0D, (double) p_78439_1_, (double) p_78439_4_);
+		p_78439_0_.addVertexWithUV(1.0D, 0.0D, 0.0D, (double) p_78439_3_, (double) p_78439_4_);
+		p_78439_0_.addVertexWithUV(1.0D, 1.0D, 0.0D, (double) p_78439_3_, 0);
+		p_78439_0_.addVertexWithUV(0.0D, 1.0D, 0.0D, (double) p_78439_1_, 0);
+		tess.draw();
+		p_78439_0_.startDrawingQuads();
+		p_78439_0_.setNormal(0.0F, 0.0F, -1.0F);
+		p_78439_0_.addVertexWithUV(0.0D, 1.0D, -0.0625, (double) p_78439_1_, 0);
+		p_78439_0_.addVertexWithUV(1.0D, 1.0D, -0.0625, (double) p_78439_3_, 0);
+		p_78439_0_.addVertexWithUV(1.0D, 0.0D, -0.0625, (double) p_78439_3_, (double) p_78439_4_);
+		p_78439_0_.addVertexWithUV(0.0D, 0.0D, -0.0625, (double) p_78439_1_, (double) p_78439_4_);
+		tess.draw();
+		float f5 = 0.5F * (p_78439_1_ - p_78439_3_) / (float) 64;
+		float f6 = 0.5F * (p_78439_4_) / (float) 32;
+		p_78439_0_.startDrawingQuads();
+		p_78439_0_.setNormal(-1.0F, 0.0F, 0.0F);
+		int k;
+		float f7;
+		float f8;
+
+		for (k = 0; k < 64; ++k) {
+			f7 = (float) k / (float) 64;
+			f8 = p_78439_1_ + (p_78439_3_ - p_78439_1_) * f7 - f5;
+			p_78439_0_.addVertexWithUV((double) f7, 0.0D, -0.0625, (double) f8, (double) p_78439_4_);
+			p_78439_0_.addVertexWithUV((double) f7, 0.0D, 0.0D, (double) f8, (double) p_78439_4_);
+			p_78439_0_.addVertexWithUV((double) f7, 1.0D, 0.0D, (double) f8, 0);
+			p_78439_0_.addVertexWithUV((double) f7, 1.0D, -0.0625, (double) f8, 0);
+		}
+
+		tess.draw();
+		p_78439_0_.startDrawingQuads();
+		p_78439_0_.setNormal(1.0F, 0.0F, 0.0F);
+		float f9;
+
+		for (k = 0; k < 64; ++k) {
+			f7 = (float) k / (float) 64;
+			f8 = p_78439_1_ + (p_78439_3_ - p_78439_1_) * f7 - f5;
+			f9 = f7 + 1.0F / (float) 64;
+			p_78439_0_.addVertexWithUV((double) f9, 1.0D, -0.0625, (double) f8, 0);
+			p_78439_0_.addVertexWithUV((double) f9, 1.0D, 0.0D, (double) f8, 0);
+			p_78439_0_.addVertexWithUV((double) f9, 0.0D, 0.0D, (double) f8, (double) p_78439_4_);
+			p_78439_0_.addVertexWithUV((double) f9, 0.0D, -0.0625, (double) f8, (double) p_78439_4_);
+		}
+
+		tess.draw();
+		p_78439_0_.startDrawingQuads();
+		p_78439_0_.setNormal(0.0F, 1.0F, 0.0F);
+
+		for (k = 0; k < 32; ++k) {
+			f7 = (float) k / (float) 32;
+			f8 = p_78439_4_ - p_78439_4_ * f7 - f6;
+			f9 = f7 + 1.0F / (float) 32;
+			p_78439_0_.addVertexWithUV(0.0D, (double) f9, 0.0D, (double) p_78439_1_, (double) f8);
+			p_78439_0_.addVertexWithUV(1.0D, (double) f9, 0.0D, (double) p_78439_3_, (double) f8);
+			p_78439_0_.addVertexWithUV(1.0D, (double) f9, -0.0625, (double) p_78439_3_, (double) f8);
+			p_78439_0_.addVertexWithUV(0.0D, (double) f9, -0.0625, (double) p_78439_1_, (double) f8);
+		}
+
+		tess.draw();
+		p_78439_0_.startDrawingQuads();
+		p_78439_0_.setNormal(0.0F, -1.0F, 0.0F);
+
+		for (k = 0; k < 32; ++k) {
+			f7 = (float) k / (float) 32;
+			f8 = p_78439_4_ - p_78439_4_ * f7 - f6;
+			p_78439_0_.addVertexWithUV(1.0D, (double) f7, 0.0D, (double) p_78439_3_, (double) f8);
+			p_78439_0_.addVertexWithUV(0.0D, (double) f7, 0.0D, (double) p_78439_1_, (double) f8);
+			p_78439_0_.addVertexWithUV(0.0D, (double) f7, -0.0625, (double) p_78439_1_, (double) f8);
+			p_78439_0_.addVertexWithUV(1.0D, (double) f7, -0.0625, (double) p_78439_3_, (double) f8);
+		}
+
+		tess.draw();
+	}
 }

@@ -3,6 +3,7 @@ package mods.battlegear2.items.arrows;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 /**
@@ -36,9 +37,10 @@ public class EntityFlameArrow extends AbstractMBArrow{
 
     @Override
     public void onHitGround(int x, int y, int z) {
-        if (worldObj.isAirBlock(x, y+1, z) && Blocks.fire.canPlaceBlockAt(worldObj, x, y+1, z)){
+        BlockPos pos = new BlockPos(x, y + 1, z);
+        if (worldObj.isAirBlock(pos) && Blocks.fire.canPlaceBlockAt(worldObj, pos)) {
             worldObj.playSoundEffect((double)x + 0.5D, (double)y + 1.5D, (double)z + 0.5D, "fire.ignite", 1.0F, rand.nextFloat() * 0.4F + 0.8F);
-            worldObj.setBlock(x, y+1, z, Blocks.fire);
+            worldObj.setBlockState(pos, Blocks.fire.getDefaultState());
         }
     }
 

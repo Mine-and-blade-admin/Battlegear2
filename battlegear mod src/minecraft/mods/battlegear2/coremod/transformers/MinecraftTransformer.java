@@ -6,7 +6,7 @@ import org.objectweb.asm.tree.MethodNode;
 public final class MinecraftTransformer extends TransformerMethodProcess {
 
     public MinecraftTransformer() {
-        super("net.minecraft.client.Minecraft", "func_147121_ag", new String[]{"func_147121_ag", SIMPLEST_METHOD_DESC});
+        super("net.minecraft.client.Minecraft", "func_147121_ag", new String[]{"rightClickMouse", SIMPLEST_METHOD_DESC});
     }
 
     private String entityClientPlayerClass;
@@ -14,7 +14,7 @@ public final class MinecraftTransformer extends TransformerMethodProcess {
 
     @Override
     void processMethod(MethodNode method) {
-        sendPatchLog("Click Mouse");
+        sendPatchLog("Right Click Mouse");
 
         replaceInventoryArrayAccess(method, entityClientPlayerClass, playerInventoryFieldName, 5, 9, 10);
     }

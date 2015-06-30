@@ -1,9 +1,10 @@
 package mods.battlegear2.packet;
 
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
 /**
  * User: nerd-boy
@@ -15,7 +16,7 @@ public abstract class AbstractMBPacket {
 	public final FMLProxyPacket generatePacket() {
         ByteBuf buf = Unpooled.buffer();
         write(buf);
-        return new FMLProxyPacket(buf, getChannel());
+        return new FMLProxyPacket(new PacketBuffer(buf), getChannel());
     }
 	
 	public abstract String getChannel();

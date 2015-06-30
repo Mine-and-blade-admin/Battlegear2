@@ -1,6 +1,5 @@
 package mods.mud.gui;
 
-import net.minecraftforge.fml.common.Loader;
 import mods.mud.ModUpdateDetector;
 import mods.mud.UpdateChecker;
 import mods.mud.UpdateEntry;
@@ -9,6 +8,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 

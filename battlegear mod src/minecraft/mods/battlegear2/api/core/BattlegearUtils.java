@@ -1,29 +1,28 @@
 package mods.battlegear2.api.core;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import net.minecraft.entity.*;
-import net.minecraft.inventory.IInventory;
-import net.minecraftforge.fml.common.eventhandler.EventBus;
-import mods.battlegear2.api.*;
+import mods.battlegear2.api.IAllowItem;
+import mods.battlegear2.api.IOffhandWield;
+import mods.battlegear2.api.IUsableItem;
+import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.ISpecialBow;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.IBattlegearWeapon;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.stats.StatList;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -31,6 +30,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.EventBus;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public class BattlegearUtils {
      * Method names that are not allowed in {@link Item} subclasses for common wielding
      */
     private static String[] itemBlackListMethodNames = {
-            BattlegearTranslator.getMapedMethodName("func_77648_a", "onItemUse"),
+            BattlegearTranslator.getMapedMethodName("func_180614_a", "onItemUse"),
             BattlegearTranslator.getMapedMethodName("onItemUseFirst", "onItemUseFirst"),//Added by Forge
             BattlegearTranslator.getMapedMethodName("func_77659_a", "onItemRightClick")
     };
@@ -56,8 +56,8 @@ public class BattlegearUtils {
      * Method arguments classes that are not allowed in {@link Item} subclasses for common wielding
      */
     private static Class[][] itemBlackListMethodParams = {
-            new Class[]{ItemStack.class, EntityPlayer.class, World.class, int.class, int.class, int.class, int.class, float.class, float.class, float.class},
-            new Class[]{ItemStack.class, EntityPlayer.class, World.class, int.class, int.class, int.class, int.class, float.class, float.class, float.class},
+            new Class[]{ItemStack.class, EntityPlayer.class, World.class, BlockPos.class, EnumFacing.class, float.class, float.class, float.class},
+            new Class[]{ItemStack.class, EntityPlayer.class, World.class, BlockPos.class, EnumFacing.class, float.class, float.class, float.class},
             new Class[]{ItemStack.class, World.class, EntityPlayer.class}
     };
     private static ItemStack prevNotWieldable;
@@ -136,6 +136,7 @@ public class BattlegearUtils {
             WeaponRegistry.addDualWeapon(main);//register so as not to make that costly check again
             return true;
         }
+        WeaponRegistry.addDualUsable(main);
         prevNotWieldable = main;
         return false;
     }
@@ -224,7 +225,7 @@ public class BattlegearUtils {
                 c = c.getSuperclass();
             }
 
-            return false;
+            return stack.getMaxItemUseDuration() < 1;
         }
         return true;
     }

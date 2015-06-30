@@ -1,7 +1,5 @@
 package mods.battlegear2.heraldry;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import mods.battlegear2.api.heraldry.IFlagHolder;
 import mods.battlegear2.items.HeraldryCrest;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,8 +8,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.server.gui.IUpdatePlayerListBox;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +22,10 @@ import java.util.List;
  * Date: 2/08/13
  * Time: 2:33 PM
  */
-public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
+public class TileEntityFlagPole extends TileEntity implements IFlagHolder, IUpdatePlayerListBox {
     private static final int MAX_FLAGS = 4;
     private ArrayList<ItemStack> flags;
-    public boolean receiveUpdates = false;
+    private boolean receiveUpdates = false;
     public int side;
 
     public TileEntityFlagPole(){
@@ -35,30 +36,11 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox()
     {
-        switch (side){
-            case 0:
-                return AxisAlignedBB.getBoundingBox(
-                        xCoord - flags.size(),
-                        yCoord,
-                        zCoord,
-                        xCoord + flags.size()+1,
-                        yCoord + 1, zCoord + 1);
-            case 1:
-            case 2:
-                return AxisAlignedBB.getBoundingBox(
-                        xCoord,
-                        yCoord - flags.size(),
-                        zCoord,
-                        xCoord+1,
-                        yCoord+ flags.size()+1, zCoord + 1);
+        AxisAlignedBB axisAlignedBB = new AxisAlignedBB(pos, pos.add(1, 1, 1));
+        if (side == 1 || side == 2) {
+            return axisAlignedBB.expand(0, flags.size(), 0);
         }
-
-        return AxisAlignedBB.getBoundingBox(
-                xCoord - flags.size(),
-                yCoord,
-                zCoord,
-                xCoord + flags.size()+1,
-                yCoord + 1, zCoord + 1);
+        return axisAlignedBB.expand(flags.size(), 0, 0);
     }
 
     @Override
@@ -90,12 +72,13 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     public Packet getDescriptionPacket() {
         NBTTagCompound flagCompound = new NBTTagCompound();
         writeToNBT(flagCompound);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 0, flagCompound);
+        return new S35PacketUpdateTileEntity(pos, 0, flagCompound);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt){
-        readFromNBT(pkt.func_148857_g());
+        if (getWorld().isRemote && pkt.getTileEntityType() == 0)
+            readFromNBT(pkt.getNbtCompound());
     }
 
     @Override
@@ -123,21 +106,24 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder{
     }
 
     @Override
-    public int getOrientation(int metadata) {
+    public int getOrientation() {
         return side;
     }
 
-    @Override
     public boolean canUpdate(){
         return receiveUpdates;
     }
 
     @Override
-    public void updateEntity() {
-        if(!getWorldObj().isRemote && canUpdate() && getWorldObj().rand.nextInt(100) == 0){
-            List entities = getWorldObj().getEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(xCoord-3, yCoord, zCoord-3, xCoord + 3, yCoord + 1, zCoord + 3));
-            if(entities.isEmpty())
-                spawnUnit();
+    public void update() {
+        if (!getWorld().isRemote && canUpdate()) {
+            if (getWorld().rand.nextInt(100) == 0) {
+                List entities = getWorld().getEntitiesWithinAABB(EntityLivingBase.class, new AxisAlignedBB(pos, pos.up()).expand(3, 0, 3));
+                if (entities.isEmpty())
+                    spawnUnit();
+            }
+        } else {
+            //getWorld().tickableTileEntities.remove(this);
         }
     }
 

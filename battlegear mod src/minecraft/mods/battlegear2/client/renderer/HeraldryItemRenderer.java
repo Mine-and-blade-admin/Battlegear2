@@ -1,42 +1,11 @@
 package mods.battlegear2.client.renderer;
 
-import mods.battlegear2.api.heraldry.HeraldryData;
-import mods.battlegear2.api.heraldry.HeraldryTextureSmall;
-import mods.battlegear2.api.heraldry.IHeraldryItem;
-import mods.battlegear2.api.heraldry.RefreshableTexture;
-import mods.battlegear2.client.utils.BattlegearRenderHelper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.client.renderer.texture.ITextureObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
-
-import static org.lwjgl.opengl.GL11.*;
-
-public class HeraldryItemRenderer implements IItemRenderer{
-
+public class HeraldryItemRenderer {
+/*
     private RenderItem itemRenderer;
 
     @Override
-    public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return item.getItem() instanceof IHeraldryItem &&
-                ((IHeraldryItem)item.getItem()).hasHeraldry(item) &&
-                type == ItemRenderType.INVENTORY;
-    }
-
-    @Override
-    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-        if(itemRenderer == null){
-            itemRenderer = new RenderItem();
-        }
 
         byte[] heraldryData = ((IHeraldryItem)item.getItem()).getHeraldry(item);
 
@@ -87,5 +56,5 @@ public class HeraldryItemRenderer implements IItemRenderer{
             glPopMatrix();
         }
         itemRenderer.zLevel -=100;
-    }
+    }*/
 }

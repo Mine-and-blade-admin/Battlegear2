@@ -48,7 +48,7 @@ public class EntityLoveArrow extends AbstractMBArrow{
                 setDead();
                 return true;
             }else if(entityHit instanceof EntityCreature){
-                ((EntityCreature) entityHit).setTarget(null);
+                ((EntityCreature) entityHit).setAttackTarget(null);
                 if(((EntityCreature) entityHit).getHeldItem()==null){
                     entityHit.setCurrentItemOrArmor(0, new ItemStack(ItemMBArrow.component[5]));
                 }
@@ -57,8 +57,8 @@ public class EntityLoveArrow extends AbstractMBArrow{
             }else if(entityHit instanceof EntityPlayer){
                 EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) entityHit, ((EntityPlayer) entityHit).getCurrentEquippedItem(), true);
                 if(entityitem!=null){
-                    entityitem.delayBeforeCanPickup = PICKUP_TIME;
-                    entityitem.func_145797_a(entityHit.getCommandSenderName());
+                    entityitem.setPickupDelay(PICKUP_TIME);
+                    entityitem.setOwner(entityHit.getCommandSenderName());
                 }
                 if(!((IBattlePlayer)entityHit).isBattlemode())
                     ((EntityPlayer) entityHit).inventory.setInventorySlotContents(((EntityPlayer) entityHit).inventory.currentItem, new ItemStack(ItemMBArrow.component[5]));

@@ -1,8 +1,6 @@
 package mods.battlegear2.utils;
 
-import cpw.mods.fml.common.event.FMLMissingMappingsEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
-import mods.battlegear2.Battlegear;
+import mods.battlegear2.api.EnchantmentHelper;
 import mods.battlegear2.api.quiver.DispenseQuiverArrow;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.ShieldType;
@@ -18,7 +16,6 @@ import mods.battlegear2.recipies.QuiverRecipie2;
 import mods.battlegear2.recipies.ShieldRemoveArrowRecipie;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -29,6 +26,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -45,21 +44,18 @@ public class BattlegearConfig {
     public static boolean arrowForceRendered = true, enableSkeletonQuiver = true;
 	public static boolean enableGUIKeys = false, enableGuiButtons = true, forceHUD = false;
 	public static final String[] itemNames = {"heraldric","chain","quiver","dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow", "flagpole"};
-	public static final String[] renderNames = {"spear", "shield", "bow", "quiver", "flagpole"};
-    public static final String[] toolTypes = {"wood", "stone", "iron", "diamond", "gold"};
-    public static final String[] shieldTypes = {"wood", "hide", "iron", "diamond", "gold"};
-	public static final String[] armourTypes = {"helmet", "plate", "legs", "boots"};
-	public static final String[] enchantsName = {"BashWeight", "BashPower", "BashDamage", "ShieldUsage", "ShieldRecovery", "BowLoot", "BowCharge"};
-	public static ItemWeapon[] dagger=new ItemWeapon[toolTypes.length],warAxe=new ItemWeapon[toolTypes.length],mace=new ItemWeapon[toolTypes.length],spear=new ItemWeapon[toolTypes.length];
-    public static ItemShield[] shield=new ItemShield[shieldTypes.length];
-	public static Item chain,quiver,heradricItem,MbArrows;
+    public static final String[] renderNames = {"shield", "bow", "quiver", "flagpole"};
+    public static final String[] armourTypes = {"helmet", "plate", "legs", "boots"};
+    public static final String[] enchantsName = {"BashWeight", "BashPower", "BashDamage", "ShieldUsage", "ShieldRecovery", "BowLoot", "BowCharge"};
+    public static ItemWeapon[] dagger = new ItemWeapon[5], warAxe = new ItemWeapon[5], mace = new ItemWeapon[5], spear = new ItemWeapon[5];
+    public static ItemShield[] shield = new ItemShield[5];
+    public static Item chain,quiver,heradricItem,MbArrows;
 	public static BlockFlagPole banner;
 	public static ItemArmor[] knightArmor=new ItemArmor[armourTypes.length];
     private static String[] comments = new String[4];
 	public static String[] disabledItems = new String[0];
     public static String[] disabledRecipies = new String[0];
     public static String[] disabledRenderers = new String[0];
-
     public static double[] skeletonArrowSpawnRate = new double[ItemMBArrow.names.length];
 	public static int[] quiverBarOffset = new int[2], shieldBarOffset = new int[2], battleBarOffset = new int[4];
 	
@@ -73,6 +69,7 @@ public class BattlegearConfig {
 
         String category = "Rendering";
         config.addCustomCategoryComment(category, "This category is client side, you don't have to sync its values with server in multiplayer.");
+
         StringBuffer sb = new StringBuffer();
         sb.append("This will disable the special rendering for the provided item.\n");
         sb.append("These should all be placed on separate lines between the provided \'<\' and \'>\'.  \n");
@@ -129,25 +126,25 @@ public class BattlegearConfig {
         customTab=new CreativeTabMB_B_2("Battlegear2");
 
         if(Arrays.binarySearch(disabledItems, itemNames[0]) < 0){
-            heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName(MODID+itemNames[0]).setTextureName(MODID+"bg-icon");
+            heradricItem = new HeraldryCrest().setCreativeTab(customTab).setUnlocalizedName(MODID + itemNames[0]);
         }
 
         if(Arrays.binarySearch(disabledItems, itemNames[10]) < 0){
-            banner = (BlockFlagPole)new BlockFlagPole().setCreativeTab(customTab).setBlockName(MODID+itemNames[10]);
+            banner = (BlockFlagPole) new BlockFlagPole().setCreativeTab(customTab).setUnlocalizedName(MODID + itemNames[10]);
             GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, itemNames[10]);
             GameRegistry.registerTileEntity(TileEntityFlagPole.class, MODID+itemNames[10]);
         }
 
         if(Arrays.binarySearch(disabledItems, itemNames[1]) < 0){
-        	chain = new Item().setUnlocalizedName(MODID+itemNames[1]).setTextureName(MODID+itemNames[1]).setCreativeTab(customTab);
+            chain = new Item().setUnlocalizedName(MODID + itemNames[1]).setCreativeTab(customTab);
         }
         
         if(Arrays.binarySearch(disabledItems, itemNames[2]) < 0){
-        	quiver = new ItemQuiver().setUnlocalizedName(MODID+itemNames[2]).setTextureName(MODID+"quiver/"+itemNames[2]).setCreativeTab(customTab);
+            quiver = new ItemQuiver().setUnlocalizedName(MODID + itemNames[2]).setCreativeTab(customTab);
             BlockDispenser.dispenseBehaviorRegistry.putObject(quiver, new DispenseQuiverArrow(Items.bow, 1.0F));
         }
         if(Arrays.binarySearch(disabledItems, itemNames[9]) < 0){
-        	MbArrows = new ItemMBArrow().setUnlocalizedName(MODID+itemNames[9]).setTextureName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
+            MbArrows = new ItemMBArrow().setUnlocalizedName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
             for(int i = 0; i < ItemMBArrow.arrows.length; i++){
                 QuiverArrowRegistry.addArrowToRegistry(MbArrows, i, ItemMBArrow.arrows[i]);
             }
@@ -224,7 +221,7 @@ public class BattlegearConfig {
 	}
 
 	public static void registerRecipes() {
-        file.addCustomCategoryComment("EnchantmentsID", "Values should be between 0 and "+(Enchantment.enchantmentsList.length-1)+", or the enchantment will be disabled");
+        file.addCustomCategoryComment("EnchantmentsID", "Values should be between 0 and " + (EnchantmentHelper.getMaxEnchants() - 1) + ", or the enchantment will be disabled");
         Property[] props = new Property[enchantsName.length];
         for(int i = 0; i< enchantsName.length; i++){
             props[i] = file.get("EnchantmentsID", enchantsName[i], 125 + i).setRequiresMcRestart(true);
@@ -269,7 +266,7 @@ public class BattlegearConfig {
 		//Weapon recipes
 		String woodStack = "plankWood";
 		for(int i = 0; i < 5; i++){
-			ItemStack craftingMaterial = new ItemStack(ToolMaterial.values()[i].func_150995_f(), 1, OreDictionary.WILDCARD_VALUE);
+            ItemStack craftingMaterial = new ItemStack(ToolMaterial.values()[i].getRepairItem(), 1, OreDictionary.WILDCARD_VALUE);
             if(dagger[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[3])  < 0){
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dagger[i]), "L","S",
                         'S', "stickWood",
@@ -384,7 +381,6 @@ public class BattlegearConfig {
             file.get(file.CATEGORY_GENERAL, "Enable GUI Keys", false).set(enableGUIKeys);
             file.get(file.CATEGORY_GENERAL, "Enable GUI Buttons", true).set(enableGuiButtons);
             file.save();
-            Battlegear.proxy.registerItemRenderers();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -397,7 +393,7 @@ public class BattlegearConfig {
                 file.get("Rendering", "Quiver hotbar relative "+pos[i]+" position", 0, comments[3]).set(quiverBarOffset[i]);
                 file.get("Rendering", "Shield bar relative "+pos[i]+" position", 0, comments[3]).set(shieldBarOffset[i]);
                 file.get("Rendering", "Offhand hotbar relative "+pos[i]+" position", 0, comments[3]).set(battleBarOffset[i]);
-                file.get("Rendering", "Mainhand hotbar relative "+pos[i]+" position", 0, comments[3]).set(battleBarOffset[i+2]);
+                file.get("Rendering", "Mainhand hotbar relative "+pos[i]+" position", 0, comments[3]).set(battleBarOffset[i + 2]);
             }
             file.save();
         }catch (Exception e){
@@ -494,9 +490,6 @@ public class BattlegearConfig {
                 if(item!=null) {//Optional tags for additional variations
                     if (nbtValue.hasKey("UnlocalizedName")) {
                         item.setUnlocalizedName(nbtValue.getString("UnlocalizedName"));
-                    }
-                    if(nbtValue.hasKey("TextureName")){
-                        item.setTextureName(nbtValue.getString("TextureName"));
                     }
                     if(nbtValue.hasKey("MaxDamage")){
                         item.setMaxDamage(nbtValue.getInteger("MaxDamage"));

@@ -1,13 +1,15 @@
 package mods.battlegear2.api.heraldry;
 
+import net.minecraft.client.renderer.texture.IIconCreator;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
-public class HeraldryPattern {
+public class HeraldryPattern implements IIconCreator {
 
     public static List<HeraldryPattern> patterns = new ArrayList<HeraldryPattern>();
     public static final HeraldryPattern VERTICAL_BLOCK = new HeraldryPattern("battlegear2","patterns/pattern-0");
@@ -27,8 +29,8 @@ public class HeraldryPattern {
     public static final HeraldryPattern CROSS= new HeraldryPattern("battlegear2","patterns/pattern-14");
     public static final HeraldryPattern DIAG_CROSS= new HeraldryPattern("battlegear2","patterns/pattern-15");
 
-	private IIcon icon;
-	public final String name;
+    private TextureAtlasSprite icon;
+    public final String name;
     public final String mod;
 	
 	public HeraldryPattern(String modid, String name){
@@ -41,11 +43,11 @@ public class HeraldryPattern {
 		return "assets/"+mod+"/textures/items/heraldry/"+name+".png";
 	}
 
-	public IIcon getIcon() {
-		return icon;
+    public TextureAtlasSprite getIcon() {
+        return icon;
 	}
 
-	public void registerIcon(TextureMap map){
-		this.icon = map.registerIcon(mod+":heraldry/"+name);
-	}
+    public void registerSprites(TextureMap map) {
+        this.icon = map.registerSprite(new ResourceLocation(mod + ":heraldry/" + name));
+    }
 }

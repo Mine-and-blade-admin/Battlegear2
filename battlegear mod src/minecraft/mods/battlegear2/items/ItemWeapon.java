@@ -11,7 +11,6 @@ import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 
-import java.util.Iterator;
 import java.util.Locale;
 //Made this extend the sword class (allows them to be enchanted)
 public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon, Attributes {
@@ -33,7 +32,6 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon,
 		}
 		
 		this.setUnlocalizedName("battlegear2:"+name);
-		this.setTextureName("battlegear2:"+name);
 		
 		this.baseDamage = 4 + material.getDamageVsEntity();
 	}
@@ -54,13 +52,4 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon,
 	{
 		return false;
 	}
-
-    public float getModifiedAmount(ItemStack stack, String modifierName){
-        Iterator itr = stack.getAttributeModifiers().get(modifierName).iterator();
-        float f = 0;
-        while(itr.hasNext()){
-            f+= ((AttributeModifier)itr.next()).getAmount();
-        }
-        return f;
-    }
 }

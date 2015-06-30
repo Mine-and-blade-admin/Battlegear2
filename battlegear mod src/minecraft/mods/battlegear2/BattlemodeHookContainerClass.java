@@ -1,10 +1,9 @@
 package mods.battlegear2;
 
-import cpw.mods.fml.common.eventhandler.Event;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.relauncher.Side;
-import mods.battlegear2.api.*;
+import mods.battlegear2.api.EnchantmentHelper;
+import mods.battlegear2.api.IHandListener;
+import mods.battlegear2.api.IOffhandListener;
+import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.InventoryExceptionEvent;
@@ -14,6 +13,7 @@ import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.shield.IArrowCatcher;
 import mods.battlegear2.api.shield.IShield;
+import mods.battlegear2.api.weapons.Attributes;
 import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.packet.BattlegearShieldFlashPacket;
@@ -23,6 +23,7 @@ import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IProjectile;
+import net.minecraft.entity.ai.attributes.IAttributeInstance;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -38,6 +39,10 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.List;
 
@@ -59,7 +64,7 @@ public final class BattlemodeHookContainerClass {
     public void onEntityJoin(EntityJoinWorldEvent event){
         if (event.entity instanceof EntityPlayer && !(isFake(event.entity))) {
             if (!(((EntityPlayer) event.entity).inventory instanceof InventoryPlayerBattle) && !MinecraftForge.EVENT_BUS.post(new InventoryExceptionEvent((EntityPlayer)event.entity))) {
-                throw new RuntimeException("Player inventory has been replaced with " + ((EntityPlayer) event.entity).inventory.getClass());
+                throw new RuntimeException("Player inventory has been replaced with " + ((EntityPlayer) event.entity).inventory.getClass() + " which is incompatible with Mine & Blade:Battlegear.");
             }
             if(event.entity instanceof EntityPlayerMP){
                 Battlegear.packetHandler.sendPacketToPlayer(
@@ -67,6 +72,9 @@ public final class BattlemodeHookContainerClass {
                         (EntityPlayerMP) event.entity);
 
             }
+        }
+        if (event.entity instanceof EntityLivingBase) {
+            ((EntityLivingBase) event.entity).getAttributeMap().getAttributeInstanceByName(Attributes.daze.getAttributeUnlocalizedName()).setBaseValue(0);
         }
     }
 
@@ -81,17 +89,32 @@ public final class BattlemodeHookContainerClass {
             event.setCanceled(true);
             return;
         }
-        ItemStack mainhand = event.entityPlayer.getCurrentEquippedItem();
-        float reachMod = 0;
-        if(mainhand == null)
-            reachMod = -2.2F;//Reduce bare hands range
-        else if(mainhand.getItem() instanceof ItemBlock)
-            reachMod = -2.1F;//Reduce block in hands range too
-        else if(mainhand.getItem() instanceof IExtendedReachWeapon)
-            reachMod = ((IExtendedReachWeapon) mainhand.getItem()).getReachModifierInBlocks(mainhand);
-        if(reachMod < 0 && reachMod + (event.entityPlayer.capabilities.isCreativeMode?5.0F:4.5F) < event.entityPlayer.getDistanceToEntity(event.target)){
+        double reachMod = maxReachDistance(event.entityPlayer);
+        if (reachMod < event.entityPlayer.getDistanceToEntity(event.target)) {
             event.setCanceled(true);
         }
+    }
+
+    public double maxReachDistance(EntityPlayer player) {
+        IAttributeInstance instance = player.getEntityAttribute(Attributes.extendedReach);
+        double reachMod = 0;
+        if (instance != null) {
+            reachMod = instance.getAttributeValue();
+            ItemStack itemStack = player.getCurrentEquippedItem();
+            if (itemStack != null) {
+                if (itemStack.getItem() instanceof IExtendedReachWeapon && !itemStack.getAttributeModifiers().containsKey(Attributes.extendedReach.getAttributeUnlocalizedName()))
+                    reachMod = ((IExtendedReachWeapon) itemStack.getItem()).getReachModifierInBlocks(itemStack);
+                else if (itemStack.getItem() instanceof ItemBlock)
+                    reachMod += 0.1F;//Don't reduce block in hands range as much
+                else
+                    reachMod -= instance.getBaseValue();
+            }
+        }
+        return reachMod + defaultReachDistance(player.capabilities.isCreativeMode);
+    }
+
+    public static float defaultReachDistance(boolean creative) {
+        return creative ? 5.0F : 4.5F;
     }
 
     @SubscribeEvent
@@ -130,7 +153,7 @@ public final class BattlemodeHookContainerClass {
                 }
             }
         }else if(event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) {
-            TileEntity tile = event.entityPlayer.worldObj.getTileEntity(event.x, event.y, event.z);
+            TileEntity tile = event.entityPlayer.worldObj.getTileEntity(event.pos);
             if(tile != null && tile instanceof IFlagHolder) {
                 ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
                 if (mainHandItem == null) {
@@ -139,7 +162,7 @@ public final class BattlemodeHookContainerClass {
                         if(flags.size()>0){
                             ItemStack flag = flags.remove(flags.size() - 1);
                             event.entityPlayer.inventory.setInventorySlotContents(event.entityPlayer.inventory.currentItem, flag);
-                            event.entityPlayer.worldObj.markBlockForUpdate(event.x, event.y, event.z);
+                            event.entityPlayer.worldObj.markBlockForUpdate(event.pos);
                         }
                     }
                 } else if (mainHandItem.getItem() instanceof IHeraldryItem) {
@@ -149,7 +172,7 @@ public final class BattlemodeHookContainerClass {
                         if(!event.entityPlayer.capabilities.isCreativeMode){
                             event.entityPlayer.inventory.decrStackSize(event.entityPlayer.inventory.currentItem, 1);
                         }
-                        event.entityPlayer.worldObj.markBlockForUpdate(event.x, event.y, event.z);
+                        event.entityPlayer.worldObj.markBlockForUpdate(event.pos);
                         event.setCanceled(true);
                     }
                 }
@@ -163,7 +186,7 @@ public final class BattlemodeHookContainerClass {
      * @return the copy
      */
     private static PlayerInteractEvent copy(PlayerInteractEvent event){
-        PlayerInteractEvent copy =  new PlayerInteractEvent(event.entityPlayer, event.action, event.x, event.y, event.z, event.face, event.world);
+        PlayerInteractEvent copy = new PlayerInteractEvent(event.entityPlayer, event.action, event.pos, event.face, event.world);
         if(event.isCanceled()){
             copy.setCanceled(true);
         }
@@ -178,13 +201,13 @@ public final class BattlemodeHookContainerClass {
     public static boolean tryUseItem(EntityPlayer entityPlayer, ItemStack itemStack, Side side)
     {
         if(side.isClient()){
-            Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(-1, -1, -1, 255, itemStack, 0.0F, 0.0F, 0.0F).generatePacket());
+            Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(itemStack).generatePacket());
         }
         final int i = itemStack.stackSize;
-        final int j = itemStack.getItemDamage();
+        final int j = itemStack.getMetadata();
         ItemStack itemstack1 = itemStack.useItemRightClick(entityPlayer.getEntityWorld(), entityPlayer);
 
-        if (itemstack1 == itemStack && (itemstack1 == null || itemstack1.stackSize == i && (side.isServer()?(itemstack1.getMaxItemUseDuration() <= 0 && itemstack1.getItemDamage() == j):true)))
+        if (itemstack1 == itemStack && (itemstack1 == null || itemstack1.stackSize == i && (side.isServer() ? (itemstack1.getMaxItemUseDuration() <= 0 && itemstack1.getMetadata() == j) : true)))
         {
             return false;
         }else{
@@ -237,9 +260,7 @@ public final class BattlemodeHookContainerClass {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onOffhandAttack(PlayerEventChild.OffhandAttackEvent event){
         if(event.offHand != null){
-            if(event.offHand.getItem() instanceof IOffhandDual) {
-                event.swingOffhand = ((IOffhandDual) event.offHand.getItem()).offhandAttackEntity(event, event.mainHand, event.offHand);
-            }else if(event.offHand.getItem() instanceof IOffhandListener){
+            if (event.offHand.getItem() instanceof IOffhandListener) {
                 ((IOffhandListener) event.offHand.getItem()).onAttackEntity(event, true);
             }else if(event.offHand.getItem() instanceof IShield || BattlegearUtils.usagePriorAttack(event.offHand, event.getPlayer(), true)){
                 event.swingOffhand = false;
@@ -267,13 +288,7 @@ public final class BattlemodeHookContainerClass {
                     offhandItemEvent.event.useBlock = Event.Result.DENY;
                 }
             }
-            if(offhandItem.getItem() instanceof IOffhandDual) {
-                if (offhandItemEvent.onBlock()) {
-                    offhandItemEvent.swingOffhand = ((IOffhandDual) offhandItem.getItem()).offhandClickBlock(copy(offhandItemEvent.event), offhandItemEvent.getPlayer().getCurrentEquippedItem(), offhandItem);
-                }else{
-                    offhandItemEvent.swingOffhand = ((IOffhandDual) offhandItem.getItem()).offhandClickAir(copy(offhandItemEvent.event), offhandItemEvent.getPlayer().getCurrentEquippedItem(), offhandItem);
-                }
-            }else if(offhandItem.getItem() instanceof IShield || offhandItem.getItem() instanceof IArrowContainer2 || BattlegearUtils.usagePriorAttack(offhandItem, offhandItemEvent.getPlayer(), true)){
+            if (offhandItem.getItem() instanceof IShield || offhandItem.getItem() instanceof IArrowContainer2 || BattlegearUtils.usagePriorAttack(offhandItem, offhandItemEvent.getPlayer(), true)) {
                 offhandItemEvent.swingOffhand = false;
             }
             Event.Result cancel = offhandItemEvent.swingOffhand ? Event.Result.DEFAULT : Event.Result.ALLOW;

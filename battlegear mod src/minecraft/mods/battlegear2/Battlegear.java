@@ -1,12 +1,5 @@
 package mods.battlegear2;
 
-import cpw.mods.fml.common.*;
-import cpw.mods.fml.common.event.*;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCEvent;
-import cpw.mods.fml.common.event.FMLInterModComms.IMCMessage;
-import cpw.mods.fml.common.network.NetworkCheckHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.relauncher.Side;
 import mods.battlegear2.api.quiver.IArrowFireHandler;
 import mods.battlegear2.api.quiver.IQuiverSelection;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
@@ -20,6 +13,13 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.EnumHelper;
+import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
+import net.minecraftforge.fml.common.network.NetworkCheckHandler;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Map;
 
@@ -45,8 +45,7 @@ public class Battlegear {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        //Set up the Translator
-        knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", 25, new int[]{3, 7, 5, 3}, 15);
+        knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", "", 25, new int[]{3, 7, 5, 3}, 15);
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
 
         if((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient()){
@@ -63,11 +62,15 @@ public class Battlegear {
         logger = event.getModLog();
         proxy.registerKeyHandelers();
         proxy.registerTickHandelers();
-        proxy.registerItemRenderers();
+        //Fetch early messages
+        IMCEvent imc = new IMCEvent();
+        imc.applyModContainer(Loader.instance().activeModContainer());
+        onMessage(imc);
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        proxy.registerItemRenderers();
         BattlegearConfig.registerRecipes();
         QuiverArrowRegistry.addArrowToRegistry(Items.arrow, EntityArrow.class);
         packetHandler = new BattlegearPacketHandeler();

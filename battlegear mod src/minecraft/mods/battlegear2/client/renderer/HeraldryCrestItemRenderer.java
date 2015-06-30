@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
@@ -37,9 +36,6 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
 
     @Override
     public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-        if(itemRenderer == null){
-            itemRenderer = new RenderItem();
-        }
 
         byte[] heraldryData = ((IHeraldryItem)item.getItem()).getHeraldry(item);
 
@@ -59,14 +55,14 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
         //glEnable(GL_BLEND);
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        Tessellator tess = Tessellator.instance;
+        Tessellator tess = Tessellator.getInstance();
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(map_overlay);
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(-8,136,-.01,0,1);
-        tess.addVertexWithUV(136,136,-.01,1,1);
-        tess.addVertexWithUV(136,-8,-.01,1,0);
-        tess.addVertexWithUV(-8,-8,-.01,0,0);
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(-8, 136, -.01, 0, 1);
+        tess.getWorldRenderer().addVertexWithUV(136, 136, -.01, 1, 1);
+        tess.getWorldRenderer().addVertexWithUV(136, -8, -.01, 1, 0);
+        tess.getWorldRenderer().addVertexWithUV(-8, -8, -.01, 0, 0);
         tess.draw();
 
         //glDisable(GL_BLEND);
@@ -82,11 +78,11 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
         Minecraft.getMinecraft().getTextureManager().bindTexture(crestLocation);
 
 
-        tess.startDrawingQuads();
-        tess.addVertexWithUV(8,120,-0.015,0,1);
-        tess.addVertexWithUV(120,120,-0.015,1,1);
-        tess.addVertexWithUV(120,8,-0.015,1,0);
-        tess.addVertexWithUV(8,8,-0.015,0,0);
+        tess.getWorldRenderer().startDrawingQuads();
+        tess.getWorldRenderer().addVertexWithUV(8, 120, -0.015, 0, 1);
+        tess.getWorldRenderer().addVertexWithUV(120, 120, -0.015, 1, 1);
+        tess.getWorldRenderer().addVertexWithUV(120, 8, -0.015, 1, 0);
+        tess.getWorldRenderer().addVertexWithUV(8, 8, -0.015, 0, 0);
         tess.draw();
 
 
@@ -99,7 +95,7 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
         BattlegearRenderHelper.renderTexturedQuad(0, 0, itemRenderer.zLevel, 16, 16);
 
 
-        IIcon icon =  heraldryItem.getBaseIcon(item);
+        //IIcon icon =  heraldryItem.getBaseIcon(item);
         itemRenderer.zLevel += 100;
         glPushMatrix();
         RefreshableTexture currentCrest = new RefreshableTexture(32, 32);

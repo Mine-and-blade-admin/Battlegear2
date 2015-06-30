@@ -1,0 +1,10 @@
+{
+  "parent": "battlegear2:block/oak_flagpole",
+  "display": {
+    "thirdperson": {
+      "rotation": [ 10, -45, 170 ],
+      "translation": [ 0, 0, -2 ],
+      "scale": [ 0.75, 0.75, 0.75 ]
+    }
+  }
+}

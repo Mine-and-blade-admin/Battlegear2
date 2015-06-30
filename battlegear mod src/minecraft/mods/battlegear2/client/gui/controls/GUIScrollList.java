@@ -241,7 +241,7 @@ public abstract class GUIScrollList {
 	        this.applyScrollLimits();
 	        GL11.glDisable(GL11.GL_LIGHTING);
 	        GL11.glDisable(GL11.GL_FOG);
-	        Tessellator var18 = Tessellator.instance;
+			Tessellator var18 = Tessellator.getInstance();
 	
 
 	        var10 = this.top + 4 - (int)this.scrollDistance;
@@ -266,18 +266,18 @@ public abstract class GUIScrollList {
 	                    int var15 = boxRight;
 	                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 	                    GL11.glDisable(GL11.GL_TEXTURE_2D);
-	                    var18.startDrawingQuads();
-	                    var18.setColorOpaque_I(8421504);
-	                    var18.addVertexWithUV((double)var14, (double)(var19 + var13 + 2), 0.0D, 0.0D, 1.0D);
-	                    var18.addVertexWithUV((double)var15, (double)(var19 + var13 + 2), 0.0D, 1.0D, 1.0D);
-	                    var18.addVertexWithUV((double)var15, (double)(var19 - 2), 0.0D, 1.0D, 0.0D);
-	                    var18.addVertexWithUV((double)var14, (double)(var19 - 2), 0.0D, 0.0D, 0.0D);
-	                    var18.setColorOpaque_I(0);
-	                    var18.addVertexWithUV((double)(var14 + 1), (double)(var19 + var13 + 1), 0.0D, 0.0D, 1.0D);
-	                    var18.addVertexWithUV((double)(var15 - 1), (double)(var19 + var13 + 1), 0.0D, 1.0D, 1.0D);
-	                    var18.addVertexWithUV((double)(var15 - 1), (double)(var19 - 1), 0.0D, 1.0D, 0.0D);
-	                    var18.addVertexWithUV((double)(var14 + 1), (double)(var19 - 1), 0.0D, 0.0D, 0.0D);
-	                    var18.draw();
+						var18.getWorldRenderer().startDrawingQuads();
+						var18.getWorldRenderer().setColorOpaque_I(8421504);
+						var18.getWorldRenderer().addVertexWithUV((double) var14, (double) (var19 + var13 + 2), 0.0D, 0.0D, 1.0D);
+						var18.getWorldRenderer().addVertexWithUV((double) var15, (double) (var19 + var13 + 2), 0.0D, 1.0D, 1.0D);
+						var18.getWorldRenderer().addVertexWithUV((double) var15, (double) (var19 - 2), 0.0D, 1.0D, 0.0D);
+						var18.getWorldRenderer().addVertexWithUV((double) var14, (double) (var19 - 2), 0.0D, 0.0D, 0.0D);
+						var18.getWorldRenderer().setColorOpaque_I(0);
+						var18.getWorldRenderer().addVertexWithUV((double) (var14 + 1), (double) (var19 + var13 + 1), 0.0D, 0.0D, 1.0D);
+						var18.getWorldRenderer().addVertexWithUV((double) (var15 - 1), (double) (var19 + var13 + 1), 0.0D, 1.0D, 1.0D);
+						var18.getWorldRenderer().addVertexWithUV((double) (var15 - 1), (double) (var19 - 1), 0.0D, 1.0D, 0.0D);
+						var18.getWorldRenderer().addVertexWithUV((double) (var14 + 1), (double) (var19 - 1), 0.0D, 0.0D, 0.0D);
+						var18.draw();
 	                    GL11.glEnable(GL11.GL_TEXTURE_2D);
 	                }
 	
@@ -314,28 +314,28 @@ public abstract class GUIScrollList {
 	            {
 	                var14 = this.top;
 	            }
-	
-	            var18.startDrawingQuads();
-	            var18.setColorRGBA_I(0, 255);
-	            var18.addVertexWithUV((double)scrollBarXStart, (double)this.bottom, 0.0D, 0.0D, 1.0D);
-	            var18.addVertexWithUV((double)scrollBarXEnd, (double)this.bottom, 0.0D, 1.0D, 1.0D);
-	            var18.addVertexWithUV((double)scrollBarXEnd, (double)this.top, 0.0D, 1.0D, 0.0D);
-	            var18.addVertexWithUV((double)scrollBarXStart, (double)this.top, 0.0D, 0.0D, 0.0D);
-	            var18.draw();
-	            var18.startDrawingQuads();
-	            var18.setColorRGBA_I(8421504, 255);
-	            var18.addVertexWithUV((double)scrollBarXStart, (double)(var14 + var13), 0.0D, 0.0D, 1.0D);
-	            var18.addVertexWithUV((double)scrollBarXEnd, (double)(var14 + var13), 0.0D, 1.0D, 1.0D);
-	            var18.addVertexWithUV((double)scrollBarXEnd, (double)var14, 0.0D, 1.0D, 0.0D);
-	            var18.addVertexWithUV((double)scrollBarXStart, (double)var14, 0.0D, 0.0D, 0.0D);
-	            var18.draw();
-	            var18.startDrawingQuads();
-	            var18.setColorRGBA_I(12632256, 255);
-	            var18.addVertexWithUV((double)scrollBarXStart, (double)(var14 + var13 - 1), 0.0D, 0.0D, 1.0D);
-	            var18.addVertexWithUV((double)(scrollBarXEnd - 1), (double)(var14 + var13 - 1), 0.0D, 1.0D, 1.0D);
-	            var18.addVertexWithUV((double)(scrollBarXEnd - 1), (double)var14, 0.0D, 1.0D, 0.0D);
-	            var18.addVertexWithUV((double)scrollBarXStart, (double)var14, 0.0D, 0.0D, 0.0D);
-	            var18.draw();
+
+				var18.getWorldRenderer().startDrawingQuads();
+				var18.getWorldRenderer().setColorRGBA_I(0, 255);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) this.bottom, 0.0D, 0.0D, 1.0D);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXEnd, (double) this.bottom, 0.0D, 1.0D, 1.0D);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXEnd, (double) this.top, 0.0D, 1.0D, 0.0D);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) this.top, 0.0D, 0.0D, 0.0D);
+				var18.draw();
+				var18.getWorldRenderer().startDrawingQuads();
+				var18.getWorldRenderer().setColorRGBA_I(8421504, 255);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) (var14 + var13), 0.0D, 0.0D, 1.0D);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXEnd, (double) (var14 + var13), 0.0D, 1.0D, 1.0D);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXEnd, (double) var14, 0.0D, 1.0D, 0.0D);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) var14, 0.0D, 0.0D, 0.0D);
+				var18.draw();
+				var18.getWorldRenderer().startDrawingQuads();
+				var18.getWorldRenderer().setColorRGBA_I(12632256, 255);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) (var14 + var13 - 1), 0.0D, 0.0D, 1.0D);
+				var18.getWorldRenderer().addVertexWithUV((double) (scrollBarXEnd - 1), (double) (var14 + var13 - 1), 0.0D, 1.0D, 1.0D);
+				var18.getWorldRenderer().addVertexWithUV((double) (scrollBarXEnd - 1), (double) var14, 0.0D, 1.0D, 0.0D);
+				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) var14, 0.0D, 0.0D, 0.0D);
+				var18.draw();
 	        }
 	
 	        this.func_27257_b(mouseX, mouseY);
@@ -353,12 +353,12 @@ public abstract class GUIScrollList {
     {
         float f = 0.00390625F;
         float f1 = 0.00390625F;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)zLevel, 0F, 1F);
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)zLevel, 1F, 1F);
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)zLevel, 1F, 0F);
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)zLevel, 0F, 0F);
-        tessellator.draw();
+		tessellator.getWorldRenderer().startDrawingQuads();
+		tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + height), (double) zLevel, 0F, 1F);
+		tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + height), (double) zLevel, 1F, 1F);
+		tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + 0), (double) zLevel, 1F, 0F);
+		tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + 0), (double) zLevel, 0F, 0F);
+		tessellator.draw();
     }
 
     /**
@@ -386,17 +386,17 @@ public abstract class GUIScrollList {
         float f1 = (float)(col >> 16 & 255) / 255.0F;
         float f2 = (float)(col >> 8 & 255) / 255.0F;
         float f3 = (float)(col & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.instance;
-        GL11.glEnable(GL11.GL_BLEND);
+		Tessellator tessellator = Tessellator.getInstance();
+		GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_TEXTURE_2D);
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glColor4f(f1, f2, f3, f);
-        tessellator.startDrawingQuads();
-        tessellator.addVertex((double)x1, (double)y2, 0.0D);
-        tessellator.addVertex((double)x2, (double)y2, 0.0D);
-        tessellator.addVertex((double)x2, (double)y1, 0.0D);
-        tessellator.addVertex((double)x1, (double)y1, 0.0D);
-        tessellator.draw();
+		tessellator.getWorldRenderer().startDrawingQuads();
+		tessellator.getWorldRenderer().addVertex((double) x1, (double) y2, 0.0D);
+		tessellator.getWorldRenderer().addVertex((double) x2, (double) y2, 0.0D);
+		tessellator.getWorldRenderer().addVertex((double) x2, (double) y1, 0.0D);
+		tessellator.getWorldRenderer().addVertex((double) x1, (double) y1, 0.0D);
+		tessellator.draw();
         GL11.glEnable(GL11.GL_TEXTURE_2D);
         GL11.glDisable(GL11.GL_BLEND);
     }

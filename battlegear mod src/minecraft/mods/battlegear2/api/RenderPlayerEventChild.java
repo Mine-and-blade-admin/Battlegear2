@@ -1,8 +1,8 @@
 package mods.battlegear2.api;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
  * Those events are posted to {@link BattlegearUtils.RENDER_BUS} from {@link BattlegearRenderHelper}
@@ -28,7 +28,7 @@ public abstract class RenderPlayerEventChild extends RenderPlayerEvent{
      */
 	public final ItemStack element;
 	public RenderPlayerEventChild(RenderPlayerEvent parent, PlayerElementType type, boolean firstPerson, ItemStack item) {
-		super(parent.entityPlayer, parent.renderer, parent.partialRenderTick);
+		super(parent.entityPlayer, parent.renderer, parent.partialRenderTick, parent.x, parent.y, parent.z);
 		this.type = type;
 		this.isFirstPerson = firstPerson;
 		this.element = item;

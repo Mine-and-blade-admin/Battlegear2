@@ -1,6 +1,5 @@
 package mods.battlegear2.api;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -11,6 +10,7 @@ import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 public abstract class PlayerEventChild extends PlayerEvent{
 
@@ -157,7 +157,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
     /**
      * This event replicates the event usage of {@link PlayerInteractEvent} for the item in left hand on right click,
      * allowing support for other mods that use such event to customize item usage
-     * {@link Item#onItemUseFirst}, {@link Item#onItemRightClick} and {@link Item#onItemUse} will then get called the same way as with the item in the player right hand for PlayerInteractEvent
+     * Item#onItemUseFirst(...), Item#onItemRightClick(...) and Item#onItemUse(...) will then get called the same way as with the item in the player right hand for PlayerInteractEvent
      */
     @Cancelable
     public static class UseOffhandItemEvent extends PlayerEventChild{

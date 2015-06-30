@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "axis=y,variant=acacia": { "model": "battlegear2:acacia_flagpole" },
+    "axis=z,variant=acacia": { "model": "battlegear2:acacia_flagpole", "x": 90 },
+    "axis=x,variant=acacia": { "model": "battlegear2:acacia_flagpole", "x": 90, "y": 90 },
+    "axis=y,variant=birch": { "model": "battlegear2:birch_flagpole" },
+    "axis=z,variant=birch": { "model": "battlegear2:birch_flagpole", "x": 90 },
+    "axis=x,variant=birch": { "model": "battlegear2:birch_flagpole", "x": 90, "y": 90 },
+    "axis=y,variant=dark_oak": { "model": "battlegear2:dark_oak_flagpole" },
+    "axis=z,variant=dark_oak": { "model": "battlegear2:dark_oak_flagpole", "x": 90 },
+    "axis=x,variant=dark_oak": { "model": "battlegear2:dark_oak_flagpole", "x": 90, "y": 90 },
+    "axis=y,variant=iron": { "model": "battlegear2:iron_flagpole" },
+    "axis=z,variant=iron": { "model": "battlegear2:iron_flagpole", "x": 90 },
+    "axis=x,variant=iron": { "model": "battlegear2:iron_flagpole", "x": 90, "y": 90 },
+    "axis=y,variant=jungle": { "model": "battlegear2:jungle_flagpole" },
+    "axis=z,variant=jungle": { "model": "battlegear2:jungle_flagpole", "x": 90 },
+    "axis=x,variant=jungle": { "model": "battlegear2:jungle_flagpole", "x": 90, "y": 90 },
+    "axis=y,variant=oak": { "model": "battlegear2:oak_flagpole" },
+    "axis=z,variant=oak": { "model": "battlegear2:oak_flagpole", "x": 90 },
+    "axis=x,variant=oak": { "model": "battlegear2:oak_flagpole", "x": 90, "y": 90 },
+    "axis=y,variant=spruce": { "model": "battlegear2:spruce_flagpole" },
+    "axis=z,variant=spruce": { "model": "battlegear2:spruce_flagpole", "x": 90 },
+    "axis=x,variant=spruce": { "model": "battlegear2:spruce_flagpole", "x": 90, "y": 90 }
+  }
+}

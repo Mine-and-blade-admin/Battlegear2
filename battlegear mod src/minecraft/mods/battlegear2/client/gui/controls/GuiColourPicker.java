@@ -58,7 +58,7 @@ public class GuiColourPicker extends GuiButton {
 
         pixels = default_colours.getTextureData();
         for(int i = 0; i < pixels.length; i++){
-            pixels[i] = ItemDye.field_150922_c[i] | 0xFF000000;
+            pixels[i] = ItemDye.dyeColors[i] | 0xFF000000;
         }
     }
 
@@ -166,7 +166,7 @@ public class GuiColourPicker extends GuiButton {
 
         if(isSwitchOn(DEFAULT_COLOURS)){
             if(x >= xPosition && x < 48+xPosition && y >= yPosition && y < 12+yPosition){
-                selectColour(ItemDye.field_150922_c[((x - xPosition) / 6) + (((y - yPosition) / 6) * 8)] | 0xFF000000);
+                selectColour(ItemDye.dyeColors[((x - xPosition) / 6) + (((y - yPosition) / 6) * 8)] | 0xFF000000);
                 return true;
             }
         }
@@ -318,12 +318,12 @@ public class GuiColourPicker extends GuiButton {
 
         float f = 1F;
         float f1 = 1F;
-        Tessellator tessellator = Tessellator.instance;
-        tessellator.startDrawingQuads();
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + height), (double)this.zLevel, (double)((float)(tex_x + 0) * f), (double)((float)(tex_y + tex_height) * f1));
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + height), (double)this.zLevel, (double)((float)(tex_x + tex_width) * f), (double)((float)(tex_y + tex_height) * f1));
-        tessellator.addVertexWithUV((double)(x + width), (double)(y + 0), (double)this.zLevel, (double)((float)(tex_x + tex_width) * f), (double)((float)(tex_y + 0) * f1));
-        tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)this.zLevel, (double)((float)(tex_x + 0) * f), (double)((float)(tex_y + 0) * f1));
+        Tessellator tessellator = Tessellator.getInstance();
+        tessellator.getWorldRenderer().startDrawingQuads();
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + 0) * f), (double) ((float) (tex_y + tex_height) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + tex_width) * f), (double) ((float) (tex_y + tex_height) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + tex_width) * f), (double) ((float) (tex_y + 0) * f1));
+        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + 0) * f), (double) ((float) (tex_y + 0) * f1));
         tessellator.draw();
     }
 
@@ -350,13 +350,13 @@ public class GuiColourPicker extends GuiButton {
         float f1 = (float)(colour >> 16 & 255) / 255.0F;
         float f2 = (float)(colour >> 8 & 255) / 255.0F;
         float f3 = (float)(colour & 255) / 255.0F;
-        Tessellator tessellator = Tessellator.instance;
+        Tessellator tessellator = Tessellator.getInstance();
         GL11.glColor4f(f1, f2, f3, f);
-        tessellator.startDrawingQuads();
-        tessellator.addVertex((double)x1, (double)y2, 0.0D);
-        tessellator.addVertex((double)x2, (double)y2, 0.0D);
-        tessellator.addVertex((double)x2, (double)y1, 0.0D);
-        tessellator.addVertex((double)x1, (double)y1, 0.0D);
+        tessellator.getWorldRenderer().startDrawingQuads();
+        tessellator.getWorldRenderer().addVertex((double) x1, (double) y2, 0.0D);
+        tessellator.getWorldRenderer().addVertex((double) x2, (double) y2, 0.0D);
+        tessellator.getWorldRenderer().addVertex((double) x2, (double) y1, 0.0D);
+        tessellator.getWorldRenderer().addVertex((double) x1, (double) y1, 0.0D);
         tessellator.draw();
     }
 

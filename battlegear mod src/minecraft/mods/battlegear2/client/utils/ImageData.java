@@ -23,10 +23,10 @@ public class ImageData {
 
     static{
         defaultImage = new ImageData(
-                ItemDye.field_150922_c[0]|0xFF000000,
-                ItemDye.field_150922_c[15]|0xFF000000,
-                ItemDye.field_150922_c[15]|0xFF000000,
-                ItemDye.field_150922_c[0]|0xFF000000);
+                ItemDye.dyeColors[0] | 0xFF000000,
+                ItemDye.dyeColors[15] | 0xFF000000,
+                ItemDye.dyeColors[15] | 0xFF000000,
+                ItemDye.dyeColors[0] | 0xFF000000);
         defaultData = defaultImage.getByteArray();
     }
 

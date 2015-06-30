@@ -1,6 +1,5 @@
 package mods.battlegear2.client.gui;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.core.IBattlePlayer;
@@ -13,12 +12,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
@@ -28,7 +28,6 @@ public class BattlegearInGameGUI extends Gui {
     public static final float[] COLOUR_RED = new float[]{1, 0.1F, 0.1F};
     public static final float[] COLOUR_YELLOW = new float[]{1, 1F, 0.1F};
     public static final int SLOT_H = 22;
-    public static final RenderItem itemRenderer = new RenderItem();
     public static final ResourceLocation resourceLocation = new ResourceLocation("textures/gui/widgets.png");
     public static final ResourceLocation resourceLocationShield = new ResourceLocation("battlegear2", "textures/gui/Shield Bar.png");
     private final Minecraft mc;
@@ -38,14 +37,14 @@ public class BattlegearInGameGUI extends Gui {
         mc = FMLClientHandler.instance().getClient();
     }
 
-    public void renderGameOverlay(float frame, int mouseX, int mouseY) {
+    public void renderGameOverlay(float frame) {
 
-        if(Battlegear.battlegearEnabled && !this.mc.playerController.enableEverythingIsScrewedUpMode()){
+        if (Battlegear.battlegearEnabled && !this.mc.playerController.isSpectator() && this.mc.getRenderViewEntity() instanceof EntityPlayer) {
 
                 ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
                 int width = scaledresolution.getScaledWidth();
                 int height = scaledresolution.getScaledHeight();
-                RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution, mouseX, mouseY);
+            RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution);
                 GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
                 zLevel = -90.0F;
 
@@ -195,11 +194,11 @@ public class BattlegearInGameGUI extends Gui {
                 GL11.glTranslatef((float) (-(x + 8)), (float) (-(y + 12)), 0.0F);
             }
 
-            itemRenderer.renderItemAndEffectIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, itemstack, x, y);
+            mc.getRenderItem().renderItemAndEffectIntoGUI(itemstack, x, y);
             if (f1 > 0.0F) {
                 GL11.glPopMatrix();
             }
-            itemRenderer.renderItemOverlayIntoGUI(this.mc.fontRenderer, this.mc.renderEngine, itemstack, x, y);
+            mc.getRenderItem().renderItemOverlayIntoGUI(this.mc.fontRendererObj, itemstack, x, y, null);
         }
     }
 

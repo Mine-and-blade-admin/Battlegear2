@@ -1,6 +1,5 @@
 package mods.battlegear2.client.gui;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.client.gui.controls.GuiDrawButton;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.gui.GuiButton;
@@ -8,6 +7,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 /**
  * A gui that displays like the in-game screen, where each element is a {@link GuiDrawButton}
@@ -36,7 +36,7 @@ public final class BattlegearFakeGUI extends GuiScreen{
         this.drawGradientRect(0, 0, this.width, this.height, -1072689136, -804253680);
         super.drawScreen(mouseX, mouseY, frame);
         for(Object obj:this.buttonList)
-            if(((GuiButton)obj).func_146115_a()){
+            if (((GuiButton) obj).isMouseOver()) {
                 drawCreativeTabHoveringText(I18n.format("gui.fake.help"+((GuiButton) obj).id), mouseX, mouseY);
             }
     }

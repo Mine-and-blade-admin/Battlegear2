@@ -1,7 +1,5 @@
 package mods.battlegear2.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.IHeraldryItem;
@@ -12,9 +10,10 @@ import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
-import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
         this.setMaxStackSize(1);
     }
 
-    @Override
+    /*@Override
     public IIcon getBaseIcon(ItemStack stack) {
         return null;
     }
@@ -33,6 +32,11 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     public IIcon getTrimIcon(ItemStack stack) {
         return null;
     }
+
+    @Override
+    public IIcon getPostRenderIcon(ItemStack stack) {
+        return null;
+    }*/
 
     @Override
     public ItemStack onItemRightClick(ItemStack par1ItemStack, World world, EntityPlayer player){
@@ -53,11 +57,6 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     @Override
     public ItemStack getContainerItem(ItemStack itemStack) {
         return itemStack;
-    }
-
-    @Override
-    public IIcon getPostRenderIcon(ItemStack stack) {
-        return null;
     }
 
     @Override
@@ -95,11 +94,6 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     }
 
     @Override
-    public boolean doesContainerItemLeaveCraftingGrid(ItemStack par1ItemStack) {
-        return false;
-    }
-
-    @Override
     public boolean useDefaultRenderer() {
         return false;
     }
@@ -121,7 +115,7 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     {}
 
     @Override
-    public Packet func_150911_c(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    public Packet createMapDataPacket(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {return null;}
 
     @Override

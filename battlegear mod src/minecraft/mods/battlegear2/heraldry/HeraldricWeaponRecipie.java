@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 public class HeraldricWeaponRecipie implements IRecipe{
 
@@ -98,6 +99,11 @@ public class HeraldricWeaponRecipie implements IRecipe{
 		stack.setTagCompound(new NBTTagCompound());
 		stack.getTagCompound().setByteArray("hc2", SigilHelper.getDefault());
 		return stack;
+	}
+
+	@Override
+	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
 
 }

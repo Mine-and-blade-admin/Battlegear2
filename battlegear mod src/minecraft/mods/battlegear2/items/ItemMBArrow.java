@@ -1,19 +1,17 @@
 package mods.battlegear2.items;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import mods.battlegear2.api.quiver.DispenseArrow;
 import mods.battlegear2.items.arrows.*;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class ItemMBArrow extends Item {
         protected EntityArrow getArrowEntity(World world, ItemStack itemStack) {
             if(itemStack.getItemDamage()<arrows.length){
                 try{
-                    return arrows[itemStack.getItemDamage()].getConstructor(World.class).newInstance(world);
+                    return arrows[itemStack.getMetadata()].getConstructor(World.class).newInstance(world);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -35,31 +33,14 @@ public class ItemMBArrow extends Item {
         }
     };
 
-    public IIcon[] icons;
-
     public ItemMBArrow() {
         super();
         this.setHasSubtypes(true);
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void registerIcons(IIconRegister par1IconRegister) {
-        icons = new IIcon[names.length];
-        for(int i = 0; i < names.length; i++){
-            icons[i] = par1IconRegister.registerIcon(this.getIconString()+"."+names[i]);
-        }
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public IIcon getIconFromDamage(int par1) {
-        return icons[par1];
-    }
-
-    @Override
     public String getUnlocalizedName(ItemStack par1ItemStack) {
-        return super.getUnlocalizedName(par1ItemStack)+"."+names[par1ItemStack.getItemDamage()];
+        return super.getUnlocalizedName(par1ItemStack) + "." + names[par1ItemStack.getMetadata()];
     }
 
     @SuppressWarnings("unchecked")
@@ -76,7 +57,7 @@ public class ItemMBArrow extends Item {
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
-        int dmg = par1ItemStack.getItemDamage();
+        int dmg = par1ItemStack.getMetadata();
         if(dmg<names.length){
             par3List.add(StatCollector.translateToLocal("lore.base.arrow."+names[dmg]));
             if(par4){

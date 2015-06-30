@@ -1,13 +1,12 @@
 package mods.battlegear2.client.gui;
 
-import cpw.mods.fml.client.FMLClientHandler;
 import mods.battlegear2.client.gui.controls.GUITextList;
 import mods.battlegear2.client.gui.controls.GuiToggleButton;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 import java.util.Arrays;
 import java.util.List;
@@ -82,8 +81,6 @@ public final class BattlegearConfigGUI extends GuiScreen{
         this.fontRendererObj.drawSplitString(I18n.format("config.battlegear.warn"), this.width / 2 + 60, this.height / 2 + 20, this.width / 2 - 60, 0xFFFFFF);
         this.possibleValues.drawScreen(par1, par2, par3);
         super.drawScreen(par1, par2, par3);
-        GL11.glDisable(GL11.GL_LIGHTING);
-        GL11.glDisable(GL11.GL_BLEND);
     }
 
     @Override
