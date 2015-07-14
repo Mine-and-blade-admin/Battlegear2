@@ -1,8 +1,8 @@
 Mine and Blade : Battlegear - 2
 ===============================
 	
-Minecraft version: 1.7.10  
-Forge Version: 1.7.10-10.13.2.1230
+Minecraft version: 1.8  
+Forge Version: 1.8-11.14.2.1430
 
 This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft.
 The mod has a heavy dependency on the use of ASM (coremod) to edit the bytecode of the minecraft base classes. 
@@ -13,7 +13,7 @@ What works
 * Switching between normal and battlemode with the 'R' Key
 * Attacking entities with both the offhand and mainhand weapons
 * Rendering of dual wielding in 1st person view
-* 3rd person renderering (with sheaths)
+* 3rd person rendering (with sheaths)
 * Swinging of offhand items of other players
 * Rendering of offhand weapons on other players
 * Shift Clicking on the inventory screen
@@ -34,7 +34,7 @@ What works
 
 What doesn't work
 -----------------
-* Heraldry (great customization for shields, quivers, armors)
+* Heraldry (greater customization for shields, quivers, armors)
 
 Installation
 ------------
@@ -51,6 +51,8 @@ then import the build.gradle file.
 The files in /battlegear api folder can be used as external libraries.
 M.U.D and Battlegear are independent.
 To load them while making the addon, simply put them in the /mods folder in your mod run installation.
+
+Depending on the version of ForgeGradle, you may need to add -noCoreSearch as run configuration argument to avoid duplicated patching.
 
 Compiling the Mod
 -----------------
