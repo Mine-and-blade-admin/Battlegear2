@@ -317,8 +317,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
      */
 	@SubscribeEvent
 	public void preStitch(TextureStitchEvent.Pre event) {
-        {
-            ClientProxy.backgroundIcon = new TextureAtlasSprite[]{
+        ClientProxy.backgroundIcon = new TextureAtlasSprite[]{
                     event.map.registerSprite(new ResourceLocation("battlegear2:items/slots/mainhand")),
                     event.map.registerSprite(new ResourceLocation("battlegear2:items/slots/offhand"))
             };
@@ -328,7 +327,6 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
             for (HeraldryPattern pattern : HeraldryPattern.patterns) {
                 pattern.registerIcon(event.map);
             }*/
-		}
 	}
 
     /**

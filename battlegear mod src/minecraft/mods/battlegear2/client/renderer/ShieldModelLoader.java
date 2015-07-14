@@ -11,30 +11,28 @@ import net.minecraft.client.renderer.block.model.BlockPart;
 import net.minecraft.client.renderer.block.model.BlockPartFace;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ModelBlock;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
-import net.minecraftforge.client.model.*;
+import net.minecraftforge.client.model.IFlexibleBakedModel;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.client.model.IRetexturableModel;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.vecmath.Vector3f;
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Pattern;
 
 /**
  * Created by Olivier on 01/06/2015.
  */
-public class ShieldModelLoader {
-    private ModelLoader manager;
+public class ShieldModelLoader extends BaseModelLoader{
     private final Vector3f backTranslation, trimTranslation;
     private final static Pattern NUMBER = Pattern.compile("\\d");
-    private final static String LAYER = "layer", BASE_LAYER = "layer0", BACK_EXTENSION = ".back", TRIM_EXTENSION = ".trim";
+    private final static String BACK_EXTENSION = ".back", TRIM_EXTENSION = ".trim";
 
     public ShieldModelLoader(){
         this(1/16, 0.5F);
@@ -65,12 +63,12 @@ public class ShieldModelLoader {
 
     @SubscribeEvent
     public void onModelBaked(ModelBakeEvent modelBakeEvent){
-        manager = modelBakeEvent.modelLoader;
+        setLoader(modelBakeEvent.modelLoader);
         for(Item shield : BattlegearConfig.shield) {
             if(shield!=null) {
                 ResourceLocation mainLoc = DefaultMesh.INVENTORY.getModelLocation(new ItemStack(shield));
                 ResourceLocation itemLoc = new ResourceLocation(mainLoc.getResourceDomain(), "item/" + mainLoc.getResourcePath());
-                IModel originalModel = manager.getModel(itemLoc);
+                IModel originalModel = getModel(itemLoc);
                 if(originalModel instanceof IRetexturableModel){
                     ModelBlock internalFrontModel = getInternalModel(originalModel);
                     if (internalFrontModel != null) {
@@ -83,7 +81,7 @@ public class ShieldModelLoader {
                 }
             }
         }
-        manager = null;
+        setLoader(null);
     }
 
     @SuppressWarnings("unchecked")
@@ -166,32 +164,5 @@ public class ShieldModelLoader {
         }
 
         return new ModelBlock(null, elements, ImmutableMap.copyOf(front.textures), false, false, new ItemCameraTransforms(front.getThirdPersonTransform(), front.getFirstPersonTransform(), front.getHeadTransform(), front.getInGuiTransform()));
-    }
-
-    private ModelBlock getInternalModel(IModel model){
-        try {
-            Field[] fields = model.getClass().getDeclaredFields();
-            for (Field f : fields) {
-                if (f.getType() == ModelBlock.class) {
-                    f.setAccessible(true);
-                    return (ModelBlock) f.get(model);
-                }
-            }
-        }catch (ReflectiveOperationException e){
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    private IFlexibleBakedModel wrap(ModelBlock model){
-        return new IFlexibleBakedModel.Wrapper(bakeModel(model), Attributes.DEFAULT_BAKED_FORMAT);
-    }
-
-    private IBakedModel bakeModel(ModelBlock model) {
-        return manager.bakeModel(model, ModelRotation.X0_Y0, false);
-    }
-
-    private ModelBlock makeItem(ModelBlock model){
-        return manager.makeItemModel(model);
     }
 }

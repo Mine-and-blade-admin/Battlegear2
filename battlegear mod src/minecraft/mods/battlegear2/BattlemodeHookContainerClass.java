@@ -124,7 +124,7 @@ public final class BattlemodeHookContainerClass {
         if(((IBattlePlayer) event.entityPlayer).getSpecialActionTimer() > 0){
             event.setCanceled(true);
             event.entityPlayer.isSwingInProgress = false;
-        }else if(((IBattlePlayer) event.entityPlayer).isBattlemode()) {
+        }else if(BattlegearUtils.isPlayerInBattlemode(event.entityPlayer)) {
             if(event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK) {//Left click
                 ItemStack mainHandItem = event.entityPlayer.getCurrentEquippedItem();
                 if(mainHandItem!=null && mainHandItem.getItem() instanceof IHandListener){
@@ -314,7 +314,7 @@ public final class BattlemodeHookContainerClass {
 
     @SubscribeEvent
     public void shieldHook(LivingHurtEvent event){
-        if(isFake(event.entity))
+        if (isFake(event.entity))
             return;
         if(event.entity instanceof IBattlePlayer){
             EntityPlayer player = (EntityPlayer)event.entity;
@@ -401,7 +401,7 @@ public final class BattlemodeHookContainerClass {
     		ItemStack stack = ((EntityLivingBase) event.source.getEntity()).getHeldItem();
     		if(!addLootFromEnchant(stack, event.drops) && event.recentlyHit && event.source.getEntity() instanceof IBattlePlayer && !isFake(event.source.getEntity())){
                 EntityPlayer player = (EntityPlayer) event.source.getEntity();
-                if(((IBattlePlayer)player).isBattlemode()) {
+                if(BattlegearUtils.isPlayerInBattlemode(player)) {
                     stack = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
                     addLootFromEnchant(stack, event.drops);
                 }
