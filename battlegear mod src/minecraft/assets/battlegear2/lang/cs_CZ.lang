@@ -1,0 +1,140 @@
+tab.battle.title=M&B Battlegear 2
+config.battlegear.title=Nastavení Mine&Blade Battlegear 2
+config.battlegear.category=Volitelné vykreslovače předmětů zakázány
+config.battlegear.warn=Pro viditelnost změn je třeba provést restart
+use.gui.buttons=Povolit tlačítka inventáře
+use.gui.keys=Povolit tlačítka inventáře
+render.quiver.skeleton=Vykreslit toulec na kostlivcích
+render.arrow.bow=Vykreslit vybraný šíp nebo luk
+render.sheathed=Defaultní vykreslování pláště hráče : %s
+render.hud.forced=Nucené HUD vykreslování
+gui.open.fake=Otevřít nastavení úpravy obrazu
+gui.fake.help1=Přesuň komponenty obrazu kliknutím a tažením
+gui.fake.help2=Sloty toulce
+gui.fake.help3=Panel štítové výdrže
+gui.fake.help4=Sloty sekundární zbraně
+gui.fake.help5=Sloty primární zbraně
+flag.design.save=Uložit
+flag.design.load=Načíst
+flag.design.load.sections=Načíst sekci
+
+item.battlegear2:heraldric.name=Heraldická ikona
+item.battlegear2:chain.name=Řetěz
+item.battlegear2:quiver.name=Toulec
+
+item.battlegear2:mb.arrow.ender.name=Enderový šíp
+item.battlegear2:mb.arrow.explosive.name=Výbušný šíp
+item.battlegear2:mb.arrow.flame.name=Zápalný šíp
+item.battlegear2:mb.arrow.piercing.name=Průrazný šíp
+item.battlegear2:mb.arrow.poison.name=Jedovatý šíp
+item.battlegear2:mb.arrow.mystery.name=Záhadný šíp
+item.battlegear2:mb.arrow.leech.name=Pijavičí šíp
+
+item.battlegear2:dagger.wood.name=Dřevěná dýka
+item.battlegear2:dagger.stone.name=Kamenná dýka
+item.battlegear2:dagger.iron.name=Železná dýka
+item.battlegear2:dagger.diamond.name=Diamantová dýka
+item.battlegear2:dagger.gold.name=Zlatá dýka
+
+item.battlegear2:waraxe.wood.name=Dřevěná válečná sekera
+item.battlegear2:waraxe.stone.name=Kamenná válečná sekera
+item.battlegear2:waraxe.iron.name=Železná válečná sekera
+item.battlegear2:waraxe.diamond.name=Diamantová válečná sekera
+item.battlegear2:waraxe.gold.name=Zlatá válečná sekera
+
+item.battlegear2:mace.wood.name=Dřevěná palice
+item.battlegear2:mace.stone.name=Kamenná palice
+item.battlegear2:mace.iron.name=Železná palice
+item.battlegear2:mace.diamond.name=Diamantová palice
+item.battlegear2:mace.gold.name=Zlatá palice
+
+item.battlegear2:spear.wood.name=Dřevěný oštěp
+item.battlegear2:spear.stone.name=Kamenný oštěp
+item.battlegear2:spear.iron.name=Železný oštěp
+item.battlegear2:spear.diamond.name=Diamantový oštěp
+item.battlegear2:spear.gold.name=Zlatý oštěp
+
+item.battlegear2:shield.wood.name=Dřevěný štít
+item.battlegear2:shield.hide.name=Kožený štít
+item.battlegear2:shield.iron.name=Železný štít
+item.battlegear2:shield.diamond.name=Diamantový štít
+item.battlegear2:shield.gold.name=Zlatý štít
+
+item.battlegear2:knights_armour.helmet.name=Rytířova helma
+item.battlegear2:knights_armour.plate.name=Rytířova vesta
+item.battlegear2:knights_armour.legs.name=Rytířovy kalhoty
+item.battlegear2:knights_armour.boots.name=Rytířovy boty
+
+item.battlegear2:cloak.name=Kápě
+
+enchantment.bash.weightless=Tíha rány
+enchantment.bash.power=Síla rány
+enchantment.bash.damage=Poškození ránou
+enchantment.shield.usage=Efektivita štítu
+enchantment.shield.recover=Obnovení štítu
+enchantment.bow.loot=Štěstí luku
+enchantment.bow.charge=Zpětný ráz luku
+
+tile.battlegear2:flagpole.oak.name=Dubová vlajková tyč
+tile.battlegear2:flagpole.spruce.name=Smrková vlajková tyč
+tile.battlegear2:flagpole.birch.name=Březová vlajková tyč
+tile.battlegear2:flagpole.jungle.name=Džunglová vlajková tyč
+tile.battlegear2:flagpole.iron.name=Železná vlajková tyč
+tile.battlegear2:flagpole.acacia.name=Akátová vlajková tyč
+tile.battlegear2:flagpole.big_oak.name=Tmavodubová vlajková tyč
+
+sigil.pattern.title=Plánek
+sigil.icon.title=Znamení
+sigil.icon_pos.title=Místo znamení
+sigil.colour1.title=Barva 1
+sigil.colour2.title=Barva 2
+sigil.icon_colour1.title=Znamení%nBarva 1
+sigil.icon_colour2.title=Znamení%nBarva 2
+sigil.banner.title=Prapor
+sigil.helm.title=Helma
+sigil.colour.select=Vybrat
+
+gui.sigil.add=Přidat
+gui.sigil.remove=Odstranit
+gui.sigil.crest=Znak
+gui.sigil.pattern=Pozadí
+
+
+attribute.name.weapon.penetrateArmor=Průnik brněním
+attribute.name.weapon.daze=Omámení
+attribute.name.weapon.extendedReach=Dosah
+attribute.name.weapon.attackSpeed=Rychlost útoku
+attribute.name.weapon.backstab=Zadní útok
+attribute.name.weapon.mountedBonus=Poškození při jízdě
+attribute.shield.block.time=%s s blokace
+attribute.shield.arrow.count=%s Šípů
+attribute.quiver.arrow.empty=Prázdný
+attribute.quiver.arrow.count=Šípy
+
+lore.base.arrow.explosive=Sbal si nějakou výbušnou sílu
+lore.base.arrow.ender=Toto endeří oko vypadá, jako kdyby se bálo...
+lore.base.arrow.flame=Zapalovač ? Není třeba
+lore.base.arrow.piercing=Neobvyklá sekací schopnost
+lore.base.arrow.poison=Drahé, heh ?
+lore.base.arrow.mystery=Každý miluje sušenku !
+lore.base.arrow.leech=Udělá tě slabým a smutným
+lore.advanced.arrow.explosive=Síla útoku závisí na kritickém zásahu šípu
+lore.advanced.arrow.ender=Okamžité cestování nebo přenos bloku
+lore.advanced.arrow.flame=Podpálí příšery, hráče a bloky
+lore.advanced.arrow.piercing=Ostříhá ovce ve stylu
+lore.advanced.arrow.poison=Dává witcheří efekt
+lore.advanced.arrow.mystery=Hlásá mít a zamilované zprávy
+lore.advanced.arrow.leech=Má dotek upíra
+
+tooltip.armour.points=Brnění
+
+commands.weaponwield.usage=/weaponwield current <ruka> [hráč] [použití] NEBO /weaponwield name <ruka> <jméno předmětu> [použití] NEBO /weaponwield sensitivity <add|remove|get> <ruda|typ|id|poškození|nbt>
+commands.weaponwield.set=%1$s si úspěšně nastavil nositelnou zbraň
+commands.weaponwield.sensitivity=Porovnávač zbraní má následující citlivosti: %1$s
+commands.weaponwield.sensitivity.added=Citlivost přidána do porovnávače zbraní: %1$s
+commands.weaponwield.sensitivity.removed=Citlivost odebrána z porovnávače zbraní: %1$s
+
+death.attack.battlegearExtra.backstab=%1$s byl bodnut ze zadu od %2$s
+death.attack.battlegearExtra.backstab.item=%1$s byl bodnut ze zadu of %2$s s použitím %3$s
+death.attack.battlegearExtra.mounted=%1$s byl propíchnut od %2$s a jeho koněm
+death.attack.battlegearExtra.mounted.item=%1$s byl propíchnut od %2$s a jeho koněm s použitím %3$s

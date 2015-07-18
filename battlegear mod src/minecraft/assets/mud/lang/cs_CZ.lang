@@ -1,0 +1,22 @@
+mud.name=Mód update detekor
+message.checking=Kontroluji pro aktualizované verze módů.
+message.check.done=Kontrola dokončena
+message.you.have.outdated=Používáš %s zastaralých módů
+message.type.to.view=Použij příkaz pro zobrazení zastaralých módů
+message.up.to.date=Všechny módy jsou aktuální
+
+button.download.latest=Stáhnout poslední verzi
+gui.downloading=Stahuji
+mud.disable=Zakázat MUD
+button.ok=Ok
+button.url=Otevřít webovou stránku
+gui.download.complete=Stahování úspěšně dokončeno
+gui.download.failed=Stahování selhalo
+gui.restart=Prosím restartuj Minecraft
+gui.md5.fail=Narušené nebo chybné stažení
+log.message.none=Seznam změn nebyl poskytnut
+log.message.loading=Načítám seznam změn ze serveru
+log.message.fail=Nepodařilo se stáhnout seznam změt
+mud.version.out=Zastaralá verze
+mud.version.latest=Poslední verze
+
