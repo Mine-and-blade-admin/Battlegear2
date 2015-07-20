@@ -17,15 +17,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
+import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -512,6 +512,36 @@ public final class BattlegearRenderHelper {
 
     public static void renderItemAllPasses(EntityLivingBase livingBase, ItemStack itemStack) {
         Minecraft.getMinecraft().getItemRenderer().renderItem(livingBase, itemStack, livingBase != null ? ItemCameraTransforms.TransformType.THIRD_PERSON : ItemCameraTransforms.TransformType.NONE);
+    }
+
+    public static IBakedModel getItemModel(ItemStack itemStack, EntityLivingBase livingBase){
+        ItemModelMesher modelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+        if(livingBase != null && itemStack.getItem() == Items.bow){
+            if(livingBase instanceof EntityPlayer){
+                EntityPlayer entityPlayer = (EntityPlayer) livingBase;
+                String bow = "bow";
+                if(entityPlayer.getItemInUse() == itemStack) {
+                    int i = itemStack.getMaxItemUseDuration() - entityPlayer.getItemInUseCount();
+                    if (i > 0) {
+                        bow = getDefaultBowModel(i);
+                    }
+                    return modelMesher.getModelManager().getModel(new ModelResourceLocation(bow, "inventory"));
+                }
+
+            }else if(livingBase instanceof EntitySkeleton){
+
+            }
+        }
+        return modelMesher.getItemModel(itemStack);
+    }
+
+    private static String getDefaultBowModel(int usage){
+        if (usage >= 18){
+            return "bow_pulling_2";
+        }else if (usage > 13){
+            return "bow_pulling_1";
+        }
+        return "bow_pulling_0";
     }
 
     public static void applyColorFromItemStack(ItemStack itemStack, int pass){

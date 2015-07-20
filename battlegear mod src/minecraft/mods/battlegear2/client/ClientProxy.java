@@ -8,6 +8,7 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.QuiverMesh;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
+import mods.battlegear2.client.renderer.BowRenderer;
 import mods.battlegear2.client.renderer.ShieldModelLoader;
 import mods.battlegear2.client.utils.BattlegearClientUtils;
 import mods.battlegear2.heraldry.BlockFlagPole;
@@ -26,7 +27,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
@@ -51,7 +54,6 @@ public final class ClientProxy extends CommonProxy {
     private static Method dynLightFromItemStack, refresh;
     public static ItemStack heldCache;
     public static TextureAtlasSprite[] backgroundIcon;
-    public static TextureAtlasSprite[] bowIcons;
 
     @Override
     public void registerKeyHandelers() {
@@ -93,6 +95,14 @@ public final class ClientProxy extends CommonProxy {
         if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "shield") < 0)
             MinecraftForge.EVENT_BUS.register(new ShieldModelLoader());
         ItemModelMesher modelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+        if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "bow") < 0){
+            ModelLoader.addVariantName(Items.bow, "bow");
+            for(int i = 0; i < ItemBow.bowPullIconNameArray.length; i++) {
+                ModelLoader.addVariantName(Items.bow, BattlegearConfig.MODID + "bow_" + ItemBow.bowPullIconNameArray[i]);
+                //modelMesher.register(Items.bow, i + 1, new ModelResourceLocation(, "inventory"));
+            }
+            MinecraftForge.EVENT_BUS.register(new BowRenderer());
+        }
         for (Item item : BattlegearConfig.dagger) {
             if (item != null)
                 modelMesher.register(item, DefaultMesh.INVENTORY);
@@ -118,7 +128,6 @@ public final class ClientProxy extends CommonProxy {
                 modelMesher.register(armor, DefaultMesh.INVENTORY);
         }
 
-        //MinecraftForgeClient.registerItemRenderer(Items.bow, new BowRenderer());
         if (BattlegearConfig.chain != null)
             modelMesher.register(BattlegearConfig.chain, DefaultMesh.INVENTORY);
         if (BattlegearConfig.quiver != null) {
