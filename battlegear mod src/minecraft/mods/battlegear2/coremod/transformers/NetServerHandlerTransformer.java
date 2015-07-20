@@ -97,9 +97,9 @@ public final class NetServerHandlerTransformer extends TransformerBase {
                     newList.add(new MethodInsnNode(INVOKESTATIC,
                             UTILITY_CLASS,
                             "setPlayerCurrentItem", "(L" + entityPlayerClassName + ";L" + itemStackClassName + ";)V"));
-
-                    // MCPC and Minecraft Forkage already add fixes for this
-                    if (!FMLCommonHandler.instance().getModName().contains("mcpc") && !Launch.blackboard.containsKey("IsForkage")) {
+                    String fml = FMLCommonHandler.instance().getModName();
+                    // MCPC and Minecraft Forkage already add fixes for this, (but not Cauldron ?)
+                    if (fml.contains("cauldron") || (!fml.contains("mcpc") && !Launch.blackboard.containsKey("IsForkage"))) {
                         int slotIndex = 0;
                         while (it.hasNext()) {
                             nextNode = it.next();
