@@ -1,7 +1,7 @@
 tab.battle.title=M&B Battlegear 2
 config.battlegear.title=Mine&Blade Battlegear 2 Configuration
 config.battlegear.category=Disabled Custom Item Renderers
-config.battlegear.warn=A restart is needed for changes to take effect
+config.battlegear.warn=May need a restart for changes to take effect
 use.gui.buttons=Enable buttons for inventory
 use.gui.keys=Enable keys for inventory
 render.quiver.skeleton=Render quiver on skeletons
