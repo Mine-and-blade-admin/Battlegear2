@@ -287,7 +287,7 @@ public class BattlegearUtils {
             try {
                 c.getDeclaredMethod(itemBlackListMethodNames[i], itemBlackListMethodParams[i]);
                 return true;
-            } catch (NoSuchMethodException ignored) {
+            } catch (Exception ignored) {
             }
         }
         return false;
