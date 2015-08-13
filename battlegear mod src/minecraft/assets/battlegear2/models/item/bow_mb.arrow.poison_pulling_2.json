@@ -1,7 +1,8 @@
 {
     "parent": "builtin/generated",
     "textures": {
-        "layer0": "items/arrow"
+        "layer0": "battlegear2:items/bow_pulling_2",
+        "layer1": "battlegear2:items/bow&arrow/poison_pulling_2"
     },
     "display": {
         "thirdperson": {
@@ -10,7 +11,7 @@
             "scale": [ 1, 1, 1 ]
         },
         "firstperson": {
-            "rotation": [ 0, -135, 100 ],
+            "rotation": [ 0, -135, 25 ],
             "translation": [ 0, 4, 2 ],
             "scale": [ 1.7, 1.7, 1.7 ]
         }

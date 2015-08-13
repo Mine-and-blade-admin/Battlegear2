@@ -70,9 +70,9 @@ public class Battlegear {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        QuiverArrowRegistry.addArrowToRegistry(Items.arrow, EntityArrow.class);
         proxy.registerItemRenderers();
         BattlegearConfig.registerRecipes();
-        QuiverArrowRegistry.addArrowToRegistry(Items.arrow, EntityArrow.class);
         packetHandler = new BattlegearPacketHandeler();
         packetHandler.register();
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new BattlegearGUIHandeler());

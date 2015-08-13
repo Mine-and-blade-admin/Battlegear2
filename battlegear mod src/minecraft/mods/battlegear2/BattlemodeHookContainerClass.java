@@ -18,7 +18,6 @@ import mods.battlegear2.api.weapons.IExtendedReachWeapon;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.packet.BattlegearShieldFlashPacket;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
-import mods.battlegear2.packet.OffhandPlaceBlockPacket;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -200,9 +199,6 @@ public final class BattlemodeHookContainerClass {
      */
     public static boolean tryUseItem(EntityPlayer entityPlayer, ItemStack itemStack, Side side)
     {
-        if(side.isClient()){
-            Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(itemStack).generatePacket());
-        }
         final int i = itemStack.stackSize;
         final int j = itemStack.getMetadata();
         ItemStack itemstack1 = itemStack.useItemRightClick(entityPlayer.getEntityWorld(), entityPlayer);

@@ -5,12 +5,13 @@ import mods.battlegear2.CommonProxy;
 import mods.battlegear2.api.DefaultMesh;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.quiver.QuiverMesh;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
-import mods.battlegear2.client.renderer.BowRenderer;
 import mods.battlegear2.client.renderer.ShieldModelLoader;
 import mods.battlegear2.client.utils.BattlegearClientUtils;
+import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
@@ -29,7 +30,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
@@ -89,19 +89,13 @@ public final class ClientProxy extends CommonProxy {
         }
     }
 
-    //TODO: Bow, Flagpole, Heraldry renderers
     @Override
     public void registerItemRenderers() {
         if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "shield") < 0)
             MinecraftForge.EVENT_BUS.register(new ShieldModelLoader());
         ItemModelMesher modelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
         if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "bow") < 0){
-            ModelLoader.addVariantName(Items.bow, "bow");
-            for(int i = 0; i < ItemBow.bowPullIconNameArray.length; i++) {
-                ModelLoader.addVariantName(Items.bow, BattlegearConfig.MODID + "bow_" + ItemBow.bowPullIconNameArray[i]);
-                //modelMesher.register(Items.bow, i + 1, new ModelResourceLocation(, "inventory"));
-            }
-            MinecraftForge.EVENT_BUS.register(new BowRenderer());
+            registerArrows();
         }
         for (Item item : BattlegearConfig.dagger) {
             if (item != null)
@@ -144,6 +138,7 @@ public final class ClientProxy extends CommonProxy {
             ModelLoader.addVariantName(BattlegearConfig.MbArrows, variants);
             modelMesher.register(BattlegearConfig.MbArrows, DefaultMesh.INVENTORY);
         }
+        //TODO: Flagpole, Heraldry renderers
         if (BattlegearConfig.banner != null) {
             Collection<Comparable> collec = BlockFlagPole.VARIANT.getAllowedValues();
             final String[] variants = new String[collec.size()];
@@ -163,6 +158,18 @@ public final class ClientProxy extends CommonProxy {
         }
     }
 
+    private void registerArrows(){
+        ModelLoader.addVariantName(Items.bow, "bow", "bow_pulling_0", "bow_pulling_1", "bow_pulling_2");
+        for (ItemStack itemStack : QuiverArrowRegistry.getKnownArrows()) {
+            String location = BattlegearRenderHelper.getArrowLocation(itemStack);
+            if(BattlegearConfig.arrowForceRendered){
+                ModelLoader.addVariantName(Items.bow, location);
+            }
+            location += "_pulling_";
+            ModelLoader.addVariantName(Items.bow, location + "0", location + "1", location + "2");
+        }
+    }
+
     public TextureAtlasSprite getSlotIcon(int index) {
         if(backgroundIcon != null){
             return backgroundIcon[index];
@@ -175,7 +182,7 @@ public final class ClientProxy extends CommonProxy {
     public void doSpecialAction(EntityPlayer entityPlayer, ItemStack itemStack) {
         MovingObjectPosition mop = null;
         if(itemStack != null && itemStack.getItem() instanceof IShield){
-            mop = getMouseOver(1, 4);
+            mop = getMouseOver(4);
         }
 
         FMLProxyPacket p;
@@ -194,13 +201,14 @@ public final class ClientProxy extends CommonProxy {
      * Finds what block or object the mouse is over at the specified partial tick time. Args: partialTickTime
      */
     @Override
-    public MovingObjectPosition getMouseOver(float tickPart, double d0)
+    public MovingObjectPosition getMouseOver(double d0)
     {
         Minecraft mc = FMLClientHandler.instance().getClient();
         if (mc.getRenderViewEntity() != null)
         {
             if (mc.theWorld != null)
             {
+                float tickPart = BattlegearClientTickHandeler.getPartialTick();
                 MovingObjectPosition objectMouseOver = mc.getRenderViewEntity().rayTrace(d0, tickPart);
                 double d1 = d0;
                 Vec3 vec3 = mc.getRenderViewEntity().getPositionEyes(tickPart);

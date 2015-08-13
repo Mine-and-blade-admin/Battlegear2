@@ -23,7 +23,7 @@ public class CommonProxy {
 
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {}
 
-    public MovingObjectPosition getMouseOver(float i, double v) {
+    public MovingObjectPosition getMouseOver(double v) {
         return null;
     }
 

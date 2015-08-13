@@ -1,5 +1,6 @@
 package mods.battlegear2.client.utils;
 
+import mods.battlegear2.MobHookContainerClass;
 import mods.battlegear2.api.IBackSheathedRender;
 import mods.battlegear2.api.ISheathed;
 import mods.battlegear2.api.RenderPlayerEventChild.*;
@@ -7,6 +8,8 @@ import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.IArrowDisplay;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.BattlegearClientTickHandeler;
@@ -40,6 +43,8 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
+
+import java.util.Arrays;
 
 public final class BattlegearRenderHelper {
 
@@ -121,7 +126,7 @@ public final class BattlegearRenderHelper {
 	        		}
 
 	        		GL11.glRotatef(25, 0, 0, 1);
-                    GL11.glRotatef(325 - 35 * MathHelper.sin(swingProgress * (float) Math.PI), 0, 1, 0);
+                    GL11.glRotatef(145 - 35 * MathHelper.sin(swingProgress * (float) Math.PI), 0, 1, 0);
 
 	        		if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender())))
                         itemRenderer.renderItem(player, offhandRender.getItemToRender(), ItemCameraTransforms.TransformType.FIRST_PERSON);
@@ -520,28 +525,47 @@ public final class BattlegearRenderHelper {
             if(livingBase instanceof EntityPlayer){
                 EntityPlayer entityPlayer = (EntityPlayer) livingBase;
                 String bow = "bow";
-                if(entityPlayer.getItemInUse() == itemStack) {
+                if(entityPlayer.getItemInUse() == itemStack || BattlegearConfig.arrowForceRendered) {
+                    ItemStack quiver = QuiverArrowRegistry.getArrowContainer(itemStack, (EntityPlayer) livingBase);
+                    if(quiver != null){
+                        ItemStack arrowStack = ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, ((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver));
+                        if(QuiverArrowRegistry.isKnownArrow(arrowStack)){
+                            bow = getArrowLocation(arrowStack);
+                        }
+                    }
                     int i = itemStack.getMaxItemUseDuration() - entityPlayer.getItemInUseCount();
                     if (i > 0) {
-                        bow = getDefaultBowModel(i);
+                        bow += getPullBowModel(i);
                     }
                     return modelMesher.getModelManager().getModel(new ModelResourceLocation(bow, "inventory"));
                 }
 
             }else if(livingBase instanceof EntitySkeleton){
-
+                String bow = getArrowLocation(MobHookContainerClass.INSTANCE.getArrowForMob((EntitySkeleton) livingBase));
+                return modelMesher.getModelManager().getModel(new ModelResourceLocation(bow, "inventory"));
             }
         }
         return modelMesher.getItemModel(itemStack);
     }
 
-    private static String getDefaultBowModel(int usage){
-        if (usage >= 18){
-            return "bow_pulling_2";
-        }else if (usage > 13){
-            return "bow_pulling_1";
+    public static String getArrowLocation(ItemStack arrowStack){
+        if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "bow") < 0) {
+            if (arrowStack.getItem() == Items.arrow) {
+                return BattlegearConfig.MODID + "bow_arrow";
+            }
+            ResourceLocation location = new ResourceLocation(arrowStack.getUnlocalizedName().replace("item.", ""));
+            return location.getResourceDomain() + ":bow_" + location.getResourcePath();
         }
-        return "bow_pulling_0";
+        return "bow";
+    }
+
+    private static String getPullBowModel(int usage){
+        if (usage >= 18){
+            return "_pulling_2";
+        }else if (usage > 13){
+            return "_pulling_1";
+        }
+        return "_pulling_0";
     }
 
     public static void applyColorFromItemStack(ItemStack itemStack, int pass){

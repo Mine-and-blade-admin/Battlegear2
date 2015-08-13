@@ -41,6 +41,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
@@ -249,9 +250,12 @@ public final class BattlegearClientTickHandeler {
             PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, new BlockPos(0, 0, 0), null, player.worldObj), offhand);
             if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent)){
                 if (!mc.playerController.isSpectatorMode()) {
-                    BattlegearUtils.refreshAttributes(player, false);
-                    flag = BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT);
-                    BattlegearUtils.refreshAttributes(player, true);
+                    Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(useItemEvent.offhand).generatePacket());
+                    if(useItemEvent.event.useItem != Event.Result.DENY) {
+                        BattlegearUtils.refreshAttributes(player, false);
+                        flag = BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT);
+                        BattlegearUtils.refreshAttributes(player, true);
+                    }
                     if (flag) {
                         if (useItemEvent.swingOffhand)
                             BattlegearUtils.sendOffSwingEvent(useItemEvent.event, useItemEvent.offhand);
@@ -353,7 +357,7 @@ public final class BattlegearClientTickHandeler {
         if (player.swingProgressInt == 1 && !player.isSpectator()) {
             double extendedReach = BattlemodeHookContainerClass.INSTANCE.maxReachDistance(player);
             if (extendedReach > BattlemodeHookContainerClass.defaultReachDistance(player.capabilities.isCreativeMode)) {
-                MovingObjectPosition mouseOver = Battlegear.proxy.getMouseOver(partialTick, extendedReach);
+                MovingObjectPosition mouseOver = Battlegear.proxy.getMouseOver(extendedReach);
                 if (mouseOver != null && mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
                     Entity target = mouseOver.entityHit;
                     if (target instanceof EntityLivingBase && target != player && player.getDistanceToEntity(target) > mc.playerController.getBlockReachDistance()) {

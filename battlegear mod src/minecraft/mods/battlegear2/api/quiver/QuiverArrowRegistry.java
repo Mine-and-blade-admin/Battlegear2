@@ -228,6 +228,21 @@ public class QuiverArrowRegistry {
     }
 
     /**
+     * The complete collection of registered arrows
+     * @return a copy of all the registered arrows
+     */
+    public static List<ItemStack> getKnownArrows(){
+        List<ItemStack> list = new ArrayList<ItemStack>();
+        for(Item item : itemToClasses.keySet()){
+            list.add(new ItemStack(item));
+        }
+        for(ItemStack stack : stackToClasses.keySet()){
+            list.add(stack.copy());
+        }
+        return list;
+    }
+
+    /**
      * Tool class to compare ItemStack, since this class is final but doesn't implement the necessary method
      */
     static class StackComparator implements Comparator<ItemStack> {
