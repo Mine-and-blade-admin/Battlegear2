@@ -1,3 +1,7 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.8.1 ==
+* Minor client side inconsistency in battlemode API handling
+* Stop possible server crash when trying to insert modded items in battle inventory
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.8.0 ==
 * "MinecraftForkage" support
 * More languages (thanks to our contributors)
