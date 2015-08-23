@@ -2,6 +2,7 @@ package mods.battlegear2.client;
 
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.network.internal.FMLProxyPacket;
@@ -211,10 +212,13 @@ public final class BattlegearClientTickHandeler {
         if (flag){
             offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
             PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.worldObj), offhand);
-            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent)){
-                BattlegearUtils.refreshAttributes(player, false);
-                flag = BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT);
-                BattlegearUtils.refreshAttributes(player, true);
+            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent)){                
+				Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(-1, -1, -1, 255, useItemEvent.offhand, 0.0F, 0.0F, 0.0F).generatePacket());
+				if(useItemEvent.event.useItem != Event.Result.DENY){
+					BattlegearUtils.refreshAttributes(player, false);
+					flag = BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT);
+					BattlegearUtils.refreshAttributes(player, true);
+				}
                 if(flag){
                     if (useItemEvent.swingOffhand)
                         BattlegearUtils.sendOffSwingEvent(useItemEvent.event, useItemEvent.offhand);
