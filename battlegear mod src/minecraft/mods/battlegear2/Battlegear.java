@@ -171,7 +171,7 @@ public class Battlegear {
                     return true;
                 else{
                     internalVersion = internalVersion.substring(0, internalVersion.lastIndexOf("."));
-                    remoteVersion = remoteVersion.substring(0, internalVersion.lastIndexOf("."));
+                    remoteVersion = remoteVersion.substring(0, remoteVersion.lastIndexOf("."));
                     return remoteVersion.equals(internalVersion);
                 }
             }
