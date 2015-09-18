@@ -1,3 +1,7 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.8.1 ==
+* Quick patch for Cauldron support
+* Quick fix handling some item crashes on server side
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.8.0 ==
 * "MinecraftForkage" support
 * More languages (thanks to our contributors)
