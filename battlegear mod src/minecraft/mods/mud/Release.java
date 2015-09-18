@@ -2,9 +2,9 @@ package mods.mud;
 
 import java.util.Arrays;
 
-public  class Release implements Comparable<Release>{
-    public int[] version;
-    public EnumReleaseType type;
+public class Release implements Comparable<Release>{
+    public final int[] version;
+    public final EnumReleaseType type;
     public String url;
     public String download;
     public String md5;
@@ -36,10 +36,9 @@ public  class Release implements Comparable<Release>{
     }
 
     public String getVersionString(){
-        StringBuffer newVersionString = new StringBuffer();
-        for(int i = 0; i < version.length; i++){
-            newVersionString.append(version[i]);
-            newVersionString.append(".");
+        StringBuilder newVersionString = new StringBuilder();
+        for (int i : version) {
+            newVersionString.append(i).append(".");
         }
         newVersionString.deleteCharAt(newVersionString.lastIndexOf("."));
         return newVersionString.toString();
@@ -47,11 +46,9 @@ public  class Release implements Comparable<Release>{
 
     @Override
     public String toString() {
-        return "Release{" +
-                "type=" + type +
+        return "Release{type=" + type +
                 ", version=" + Arrays.toString(version) +
-                ", url='" + url + '\'' +
-                '}';
+                ", url='" + url + '\'' + '}';
     }
 
 

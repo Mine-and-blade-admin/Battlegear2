@@ -7,7 +7,7 @@ message.up.to.date=Všechny módy jsou aktuální
 
 button.download.latest=Stáhnout poslední verzi
 gui.downloading=Stahuji
-mud.disable=Zakázat MUD
+mud.disable=Zakázat MUD: %b
 button.ok=Ok
 button.url=Otevřít webovou stránku
 gui.download.complete=Stahování úspěšně dokončeno

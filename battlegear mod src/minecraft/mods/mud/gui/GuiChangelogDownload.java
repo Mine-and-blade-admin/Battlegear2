@@ -1,6 +1,7 @@
 package mods.mud.gui;
 
 import mods.mud.ModUpdateDetector;
+import mods.mud.Release;
 import mods.mud.UpdateChecker;
 import mods.mud.UpdateEntry;
 import net.minecraft.client.Minecraft;
@@ -76,7 +77,7 @@ public class GuiChangelogDownload extends GuiScreen
         for(int i= 0; i < bullets.length; i++){
             bulletWidth[i] = fontRendererObj.getStringWidth(bullets[i]+" ");
         }
-        disable = new GuiButton(3, 15, 10, 125, 20, StatCollector.translateToLocal("mud.disable")+": "+Boolean.toString(!ModUpdateDetector.enabled));
+        disable = new GuiButton(3, 15, 10, 125, 20, StatCollector.translateToLocalFormatted("mud.disable", !ModUpdateDetector.enabled));
         download = new GuiButton(4, 15, height-35, 125, 20, StatCollector.translateToLocal("button.download.latest"));
         download.enabled = false;
         close1 = new GuiButton(5, width-140, height-35, 125, 20, StatCollector.translateToLocal("gui.done"));
@@ -116,21 +117,21 @@ public class GuiChangelogDownload extends GuiScreen
                         isDownloading = false;
                         close1.enabled = true;
                         ModUpdateDetector.toggleState();
-                        disable.displayString = StatCollector.translateToLocal("mud.disable")+":"+Boolean.toString(!ModUpdateDetector.enabled);
+                        disable.displayString = StatCollector.translateToLocalFormatted("mud.disable", !ModUpdateDetector.enabled);
                         return;
                     case 4:
-                        File mcSource = selectedMod.getMc().getSource();
-                        String filename = selectedMod.getFileName(Loader.MC_VERSION);
-                        File newFile = new File(mcSource.getParent(), filename);
-                        Thread t = new Thread(new Downloader(selectedMod.getLatest().download,
-                                newFile, mcSource, selectedMod.getLatest().md5
-                        ));
-                        t.start();
-                        isDownloading = true;
-                        ok.visible = true;
-                        close1.enabled = false;
-                        download.enabled = false;
-                        urlButton.enabled = false;
+                        if(selectedMod.getLatest() != null) {
+                            File mcSource = selectedMod.getMc().getSource();
+                            String filename = selectedMod.getFileName(Loader.MC_VERSION);
+                            File newFile = new File(mcSource.getParent(), filename);
+                            Thread t = new Thread(new Downloader(selectedMod.getLatest(), newFile, mcSource));
+                            t.start();
+                            isDownloading = true;
+                            ok.visible = true;
+                            close1.enabled = false;
+                            download.enabled = false;
+                            urlButton.enabled = false;
+                        }
                         return;
                     case 5:
                         this.mc.displayGuiScreen(parent);
@@ -147,7 +148,7 @@ public class GuiChangelogDownload extends GuiScreen
                         if(selectedMod != null && selectedMod.getLatest() != null && selectedMod.getLatest().url != null){
                             try {
                                 Desktop.getDesktop().browse(new URI(selectedMod.getLatest().url));
-                            } catch (Exception e) {
+                            } catch (Throwable e) {
                                 e.printStackTrace();
                             }
                         }
@@ -344,7 +345,8 @@ public class GuiChangelogDownload extends GuiScreen
         private final URL changelogURL;
 
         private ChangelogLoader(URL changelogURL) {
-            assert changelogURL!=null : "URL can't be null";
+            if(changelogURL == null)
+                throw new IllegalArgumentException("Changelog URL can't be null");
             this.changelogURL = changelogURL;
         }
 
@@ -360,7 +362,7 @@ public class GuiChangelogDownload extends GuiScreen
                 }
                 lines.trimToSize();
                 changelog = lines.toArray(new String[lines.size()]);
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
                 changelog = new String[]{StatCollector.translateToLocal("log.message.fail")};
             }
@@ -375,8 +377,14 @@ public class GuiChangelogDownload extends GuiScreen
         private byte[] expectedMd5;
         private final boolean sameName;
 
+        public Downloader(Release latest, File location, File originalFile){
+            this(latest.download, location, originalFile, latest.md5);
+        }
+
         public Downloader(String url, File location, File originalFile, String md5){
-            assert url!=null && location !=null && originalFile!=null: "Download url or file locations can't be null";
+            if(url == null || location == null || originalFile == null){
+                throw new IllegalArgumentException("Download url or file locations can't be null");
+            }
             this.downloadUrl = url;
             this.file = location;
             this.original = originalFile;
@@ -384,7 +392,7 @@ public class GuiChangelogDownload extends GuiScreen
             if(md5 != null){
                 try{
                     this.expectedMd5 = DatatypeConverter.parseHexBinary(md5.toUpperCase(Locale.ENGLISH));
-                }catch (Exception e){
+                }catch (Throwable e){
                     e.printStackTrace();
                     this.expectedMd5 = null;
                 }
@@ -468,7 +476,7 @@ public class GuiChangelogDownload extends GuiScreen
                     forceDeleting(file, original.getAbsolutePath());
                 }
 
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
                 message = StatCollector.translateToLocal(e.getLocalizedMessage());
                 downloadFailed = true;
@@ -506,11 +514,11 @@ public class GuiChangelogDownload extends GuiScreen
             java.io.BufferedReader br = null;
             try {
                 br = new java.io.BufferedReader(new java.io.InputStreamReader(stream));
-                String line = "";
+                String line;
                 while ((line = br.readLine()) != null) {
                     System.out.println(line);
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 System.out.println(e.getLocalizedMessage());
             } finally {
                 if(br!=null)

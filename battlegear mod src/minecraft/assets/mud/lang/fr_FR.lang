@@ -2,12 +2,12 @@ mud.name=Detecteur de version de mods
 message.checking=Recherche de nouvelles versions de mods.
 message.check.done=Recherche terminee
 message.you.have.outdated=Vous avez %s mises a jour de mod en attente
-message.type.to.view=Utiliser la commande pour voir les mises a jour disponibles
+message.type.to.view=Utiliser la commande /mud pour voir les mises a jour disponibles
 message.up.to.date=Tous vos mods sont a jour
 
 button.download.latest=Telecharger la plus recente version
 gui.downloading=Telechargement
-mud.disable=Desactiver MUD
+mud.disable=Desactiver MUD: %b
 button.ok=Ok
 button.url=Ouvrir page officielle du mod
 gui.download.complete=Telechargement reussi

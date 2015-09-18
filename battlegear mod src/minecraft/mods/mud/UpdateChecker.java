@@ -79,7 +79,7 @@ public class UpdateChecker implements Runnable{
                 return releases.last();
             }
 
-        }catch (Exception e){
+        }catch (Throwable e){
             e.printStackTrace();
         }
 
