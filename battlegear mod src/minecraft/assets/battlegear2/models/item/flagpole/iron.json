@@ -1,5 +1,9 @@
 {
-  "parent": "battlegear2:block/iron_flagpole",
+  "parent": "battlegear2:block/flagpole",
+  "textures": {
+    "end": "blocks/iron_block",
+    "side": "blocks/iron_block"
+  },
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],

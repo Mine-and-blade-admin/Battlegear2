@@ -1,25 +1,56 @@
 {
+  "forge_marker": 1,
+  "defaults":{
+    "model": "battlegear2:flagpole_hor",
+    "uvlock": true
+  },
   "variants": {
-    "axis=y,variant=acacia": { "model": "battlegear2:acacia_flagpole" },
-    "axis=z,variant=acacia": { "model": "battlegear2:acacia_flagpole", "x": 90 },
-    "axis=x,variant=acacia": { "model": "battlegear2:acacia_flagpole", "x": 90, "y": 90 },
-    "axis=y,variant=birch": { "model": "battlegear2:birch_flagpole" },
-    "axis=z,variant=birch": { "model": "battlegear2:birch_flagpole", "x": 90 },
-    "axis=x,variant=birch": { "model": "battlegear2:birch_flagpole", "x": 90, "y": 90 },
-    "axis=y,variant=dark_oak": { "model": "battlegear2:dark_oak_flagpole" },
-    "axis=z,variant=dark_oak": { "model": "battlegear2:dark_oak_flagpole", "x": 90 },
-    "axis=x,variant=dark_oak": { "model": "battlegear2:dark_oak_flagpole", "x": 90, "y": 90 },
-    "axis=y,variant=iron": { "model": "battlegear2:iron_flagpole" },
-    "axis=z,variant=iron": { "model": "battlegear2:iron_flagpole", "x": 90 },
-    "axis=x,variant=iron": { "model": "battlegear2:iron_flagpole", "x": 90, "y": 90 },
-    "axis=y,variant=jungle": { "model": "battlegear2:jungle_flagpole" },
-    "axis=z,variant=jungle": { "model": "battlegear2:jungle_flagpole", "x": 90 },
-    "axis=x,variant=jungle": { "model": "battlegear2:jungle_flagpole", "x": 90, "y": 90 },
-    "axis=y,variant=oak": { "model": "battlegear2:oak_flagpole" },
-    "axis=z,variant=oak": { "model": "battlegear2:oak_flagpole", "x": 90 },
-    "axis=x,variant=oak": { "model": "battlegear2:oak_flagpole", "x": 90, "y": 90 },
-    "axis=y,variant=spruce": { "model": "battlegear2:spruce_flagpole" },
-    "axis=z,variant=spruce": { "model": "battlegear2:spruce_flagpole", "x": 90 },
-    "axis=x,variant=spruce": { "model": "battlegear2:spruce_flagpole", "x": 90, "y": 90 }
+    "axis":{
+      "x":{},
+      "y":{
+        "model": "battlegear2:flagpole"
+      },
+      "z":{
+        "y": 90
+      }
+    },
+    "variant":{
+      "acacia": {
+        "textures": {
+          "end": "blocks/log_acacia_top",
+          "side": "blocks/log_acacia"
+        }
+      },"birch": {
+        "textures": {
+          "end": "blocks/log_birch_top",
+          "side": "blocks/log_birch"
+        }
+      },"dark_oak": {
+        "textures": {
+          "end": "blocks/log_big_oak_top",
+          "side": "blocks/log_big_oak"
+        }
+      },"iron": {
+        "textures": {
+          "end": "blocks/iron_block",
+          "side": "blocks/iron_block"
+        }
+      },"jungle": {
+        "textures": {
+          "end": "blocks/log_jungle_top",
+          "side": "blocks/log_jungle"
+        }
+      },"oak": {
+        "textures": {
+          "end": "blocks/log_oak_top",
+          "side": "blocks/log_oak"
+        }
+      },"spruce": {
+        "textures": {
+          "end": "blocks/log_spruce_top",
+          "side": "blocks/log_spruce"
+        }
+      }
+    }
   }
 }

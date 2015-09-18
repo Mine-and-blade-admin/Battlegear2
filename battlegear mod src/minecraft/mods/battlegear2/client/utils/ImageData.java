@@ -20,7 +20,6 @@ public class ImageData {
     public static final ImageData defaultImage;
     public static byte[] defaultData;
 
-
     static{
         defaultImage = new ImageData(
                 ItemDye.dyeColors[0] | 0xFF000000,

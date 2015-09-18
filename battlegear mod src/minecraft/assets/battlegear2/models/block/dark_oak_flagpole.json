@@ -1,7 +1,0 @@
-{
-  "parent": "battlegear2:block/flagpole",
-  "textures": {
-    "end": "blocks/log_big_oak_top",
-    "side": "blocks/log_big_oak"
-  }
-}

@@ -21,12 +21,12 @@ import java.util.List;
  */
 public class GuiColourPicker extends GuiButton {
 
-    public static final int RES = 128;
+    private static final int RES = 128;
 
-    public static final DynamicTexture sb_buffer = new DynamicTexture(RES, RES);
-    public static final DynamicTexture hue_buffer = new DynamicTexture(1, RES);
-    public static final DynamicTexture background_buffer = new DynamicTexture(2, 2);
-    public static final DynamicTexture default_colours = new DynamicTexture(8, 2);
+    private static final DynamicTexture sb_buffer = new DynamicTexture(RES, RES);
+    private static final DynamicTexture hue_buffer = new DynamicTexture(1, RES);
+    private static final DynamicTexture background_buffer = new DynamicTexture(2, 2);
+    private static final DynamicTexture default_colours = new DynamicTexture(8, 2);
 
     public static final int DEFAULT_COLOURS = 1;
     public static final int ALPHA_SELECTION = 2;
@@ -38,10 +38,6 @@ public class GuiColourPicker extends GuiButton {
     private static final int DRAG_SB = 1;
     private static final int DRAG_HUE = 2;
     private static final int DRAG_ALPHA = 3;
-    
-    
-    public List<IControlListener> listeners = new ArrayList<IControlListener>();
-
 
     static{
         int[] pixels = hue_buffer.getTextureData();
@@ -57,7 +53,7 @@ public class GuiColourPicker extends GuiButton {
         pixels[2] = 0xFF999999;
 
         pixels = default_colours.getTextureData();
-        for(int i = 0; i < pixels.length; i++){
+        for(int i = 0; i < ItemDye.dyeColors.length; i++){
             pixels[i] = ItemDye.dyeColors[i] | 0xFF000000;
         }
     }
@@ -75,6 +71,7 @@ public class GuiColourPicker extends GuiButton {
 
     private int type;
 
+    public List<IControlListener> listeners = new ArrayList<IControlListener>();
 
     public GuiColourPicker(int id, int x, int y, int rgb, int type){
         super(id, x, y,
@@ -100,6 +97,12 @@ public class GuiColourPicker extends GuiButton {
     }
 
     private void calculateBuffers() {
+
+        if(enabled && visible){
+            for(IControlListener l:listeners){
+                l.actionPreformed(this);
+            }
+        }
         int[] pixels = sb_buffer.getTextureData();
         for(int s = 0; s < RES; s++){
             for(int b = 0; b < RES; b++){
@@ -114,12 +117,15 @@ public class GuiColourPicker extends GuiButton {
         dragState = DRAG_NONE;
     }
 
+    private float bound(float val){
+        return Math.min(Math.max(val, 0), 1);
+    }
+
     @Override
     public boolean mousePressed(Minecraft par1Minecraft, int x, int y) {
         if(x >= hue_start_x && x < 12+hue_start_x && y >= sb_start_y && y < 48+sb_start_y){
             float hue = ((float)(y-sb_start_y) / 48F);
-            hue = Math.max(hue, 0);
-            hue = Math.min(hue, 1);
+            hue = bound(hue);
 
             selectColour(hue, selectedHSB[1], selectedHSB[2], selected_alpha);
 
@@ -127,19 +133,13 @@ public class GuiColourPicker extends GuiButton {
             return true;
         }
 
-
-        if( x >= sb_start_x &&
-                x < sb_start_x+48 &&
-                y >= sb_start_y &&
-                y < sb_start_y+48){
+        if(x >= sb_start_x && x < sb_start_x+48 && y >= sb_start_y && y < sb_start_y+48){
 
             float sat = 1-((float)(y-sb_start_y) / 48F);
-            sat = Math.max(sat, 0);
-            sat = Math.min(sat, 1);
+            sat = bound(sat);
 
             float bright = (float)(x-sb_start_x) / 48F;
-            bright = Math.max(bright, 0);
-            bright = Math.min(bright, 1);
+            bright = bound(bright);
 
             selectColour(selectedHSB[0], sat, bright, selected_alpha);
 
@@ -148,13 +148,10 @@ public class GuiColourPicker extends GuiButton {
             return true;
         }
 
-
-
         if(isSwitchOn(ALPHA_SELECTION) &&
                 x >= alpha_start_x && x < 12+alpha_start_x && y >= sb_start_y && y < 48+sb_start_y){
                 float alpha = 1 - ((float)(y-sb_start_y) / 48F);
-                alpha = Math.max(alpha, 0);
-                alpha = Math.min(alpha, 1);
+                alpha = bound(alpha);
 
                 selectColour(selectedHSB[0], selectedHSB[1], selectedHSB[2], alpha);
 
@@ -186,27 +183,27 @@ public class GuiColourPicker extends GuiButton {
 	
 	        //Draw the saturation / brightness square
 	        sb_buffer.updateDynamicTexture();
-	        this.drawTexturedModalRect(sb_start_x, sb_start_y, 48, 48, 0,0, 1,1);
+	        this.drawTexturedModalRect(sb_start_x, sb_start_y, 48, 48, 0, 0, 1, 1);
 	
 	        //Draw the hue square
 	        hue_buffer.updateDynamicTexture();
-	        this.drawTexturedModalRect(hue_start_x, sb_start_y, 12, 48, 0,0, 1,1);
+	        this.drawTexturedModalRect(hue_start_x, sb_start_y, 12, 48, 0, 0, 1, 1);
 	
 	        if(isSwitchOn(ALPHA_SELECTION)){
 	            background_buffer.updateDynamicTexture();
-	            this.drawTexturedModalRect(alpha_start_x, sb_start_y, 12, 48, 0,0, 2, 8);
+	            this.drawTexturedModalRect(alpha_start_x, sb_start_y, 12, 48, 0, 0, 2, 8);
 	
 	            this.drawGradientRect(alpha_start_x, sb_start_y, alpha_start_x+12, sb_start_y+48, selectedRGB | 0xFF000000, selectedRGB & 0x00FFFFFF);
 	        }
 	
 	        if(isSwitchOn(DEFAULT_COLOURS)){
 	            default_colours.updateDynamicTexture();
-	            this.drawTexturedModalRect(xPosition, yPosition, 48, 12, 0,0, 1, 1 );
+	            this.drawTexturedModalRect(xPosition, yPosition, 48, 12, 0, 0, 1, 1);
 	        }
 	
 	        if(isSwitchOn(COLOUR_DISPLAY)){
 	            background_buffer.updateDynamicTexture();
-	            this.drawTexturedModalRect(sb_start_x, sb_start_y+52, 48, 12, 0,0, 8, 2);
+	            this.drawTexturedModalRect(sb_start_x, sb_start_y+52, 48, 12, 0, 0, 8, 2);
 	
 	            drawRect(sb_start_x, sb_start_y+52, sb_start_x+48, sb_start_y+64, selectedRGB);
 	            GL11.glColor3f(1,1,1);
@@ -242,26 +239,22 @@ public class GuiColourPicker extends GuiButton {
 	            switch (dragState){
 	                case DRAG_HUE:
 	                    float hue = ((float)(mouse_y-sb_start_y) / 48F);
-	                    hue = Math.max(hue, 0);
-	                    hue = Math.min(hue, 1);
+	                    hue = bound(hue);
 	
 	                    selectColour(hue, selectedHSB[1], selectedHSB[2], selected_alpha);
 	                    break;
 	                case DRAG_ALPHA:
 	                    float alpha = 1-((float)(mouse_y-sb_start_y) / 48F);
-	                    alpha = Math.max(alpha, 0);
-	                    alpha = Math.min(alpha, 1);
+	                    alpha = bound(alpha);
 	
 	                    selectColour(selectedHSB[0], selectedHSB[1], selectedHSB[2], alpha);
 	                    break;
 	                case DRAG_SB:
 	                    float sat = 1-((float)(mouse_y-sb_start_y) / 48F);
-	                    sat = Math.max(sat, 0);
-	                    sat = Math.min(sat, 1);
+	                    sat = bound(sat);
 	
 	                    float bright = (float)(mouse_x-sb_start_x) / 48F;
-	                    bright = Math.max(bright, 0);
-	                    bright = Math.min(bright, 1);
+	                    bright = bound(bright);
 	
 	                    selectColour(selectedHSB[0], sat, bright, selected_alpha);
 	                    break;
@@ -278,12 +271,6 @@ public class GuiColourPicker extends GuiButton {
         this.selectedRGB = rgb;
         this.selectedHSB = Color.RGBtoHSB((rgb&0x00FF0000) >> 16, (rgb&0x0000FF00) >> 8, (rgb&0x000000FF), new float[3]);
         selected_alpha = ((float)((rgb & 0xFF000000) >>> 24)) / 255F;
-
-        if(enabled && visible){
-	        for(IControlListener l:listeners){
-	        	l.actionPreformed(this);
-	        }
-        }
         
         calculateBuffers();
 
@@ -293,12 +280,6 @@ public class GuiColourPicker extends GuiButton {
         this.selectedHSB = new float[]{hue, sat, bright};
         this.selected_alpha = alpha;
         this.selectedRGB = (Color.HSBtoRGB(hue, sat, bright) & 0x00FFFFFF) | (((int)(alpha * 255)) << 24);
-
-        if(enabled && visible){
-	        for(IControlListener l:listeners){
-	        	l.actionPreformed(this);
-	        }
-        }
         
         calculateBuffers();
     }

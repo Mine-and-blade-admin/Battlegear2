@@ -1,5 +1,9 @@
 {
-  "parent": "battlegear2:block/jungle_flagpole",
+  "parent": "battlegear2:block/flagpole",
+  "textures": {
+    "end": "blocks/log_jungle_top",
+    "side": "blocks/log_jungle"
+  },
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],

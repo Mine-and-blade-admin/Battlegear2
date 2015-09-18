@@ -9,10 +9,12 @@ import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.quiver.QuiverMesh;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
+import mods.battlegear2.client.renderer.FlagPoleTileRenderer;
 import mods.battlegear2.client.renderer.ShieldModelLoader;
 import mods.battlegear2.client.utils.BattlegearClientUtils;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.heraldry.BlockFlagPole;
+import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.items.ItemMBArrow;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
@@ -37,6 +39,7 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
@@ -138,7 +141,7 @@ public final class ClientProxy extends CommonProxy {
             ModelLoader.addVariantName(BattlegearConfig.MbArrows, variants);
             modelMesher.register(BattlegearConfig.MbArrows, DefaultMesh.INVENTORY);
         }
-        //TODO: Flagpole, Heraldry renderers
+        //TODO: Heraldry renderers
         if (BattlegearConfig.banner != null) {
             Collection<Comparable> collec = BlockFlagPole.VARIANT.getAllowedValues();
             final String[] variants = new String[collec.size()];
@@ -154,7 +157,7 @@ public final class ClientProxy extends CommonProxy {
                     return new ModelResourceLocation(variants[stack.getMetadata()], "inventory");
                 }
             });
-            //ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
+            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFlagPole.class, new FlagPoleTileRenderer());
         }
     }
 

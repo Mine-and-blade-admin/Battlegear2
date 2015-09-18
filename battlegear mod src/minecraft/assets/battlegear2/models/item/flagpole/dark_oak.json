@@ -1,5 +1,9 @@
 {
-  "parent": "battlegear2:block/dark_oak_flagpole",
+  "parent": "battlegear2:block/flagpole",
+  "textures": {
+    "end": "blocks/log_big_oak_top",
+    "side": "blocks/log_big_oak"
+  },
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],

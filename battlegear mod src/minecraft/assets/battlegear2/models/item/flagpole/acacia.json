@@ -1,5 +1,9 @@
 {
-  "parent": "battlegear2:block/acacia_flagpole",
+  "parent": "battlegear2:block/flagpole",
+  "textures": {
+    "end": "blocks/log_acacia_top",
+    "side": "blocks/log_acacia"
+  },
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],

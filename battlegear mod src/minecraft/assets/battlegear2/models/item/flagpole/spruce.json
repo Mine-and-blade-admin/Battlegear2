@@ -1,5 +1,9 @@
 {
-  "parent": "battlegear2:block/spruce_flagpole",
+  "parent": "battlegear2:block/flagpole",
+  "textures": {
+    "end": "blocks/log_spruce_top",
+    "side": "blocks/log_spruce"
+  },
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 170 ],
