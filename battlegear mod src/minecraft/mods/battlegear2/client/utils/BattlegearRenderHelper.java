@@ -85,8 +85,8 @@ public final class BattlegearRenderHelper {
 
             float rotation = player.prevRotationPitch + (player.rotationPitch - player.prevRotationPitch) * frame;
             GL11.glPushMatrix();
-            GL11.glRotatef(rotation, 1.0F, 0.0F, 0.0F);
-            GL11.glRotatef(player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * frame, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef(rotation, 1, 0, 0);
+            GL11.glRotatef(player.prevRotationYaw + (player.rotationYaw - player.prevRotationYaw) * frame, 0, 1, 0);
             RenderHelper.enableStandardItemLighting();
             GL11.glPopMatrix();
 
@@ -97,8 +97,8 @@ public final class BattlegearRenderHelper {
 
             var6 = player.prevRenderArmPitch + (player.renderArmPitch - player.prevRenderArmPitch) * frame;
             var7 = player.prevRenderArmYaw + (player.renderArmYaw - player.prevRenderArmYaw) * frame;
-            GL11.glRotatef((player.rotationPitch - var6) * 0.1F, 1.0F, 0.0F, 0.0F);
-            GL11.glRotatef((player.rotationYaw - var7) * 0.1F, 0.0F, 1.0F, 0.0F);
+            GL11.glRotatef((player.rotationPitch - var6) * 0.1F, 1, 0, 0);
+            GL11.glRotatef((player.rotationYaw - var7) * 0.1F, 0, 1, 0);
 
             float var10;
             float var21;
@@ -116,17 +116,17 @@ public final class BattlegearRenderHelper {
                             (float)((IBattlePlayer)player).getSpecialActionTimer() / (
                                     float)((IShield)offhandRender.getItemToRender().getItem()).getBashTimer(
                                     offhandRender.getItemToRender());
-                    var7 = 0.8F;
-                    GL11.glTranslatef(-0.7F * var7 + 0.25F * MathHelper.sin(swingProgress * (float) Math.PI),
-                            -0.65F * var7 - (1.0F - progress) * 0.6F - 0.4F,
-                            -0.9F * var7 + 0.1F - 0.25F * MathHelper.sin(swingProgress * (float) Math.PI));
+                    swingProgress = MathHelper.sin(swingProgress * (float) Math.PI);
+                    GL11.glTranslatef(-0.95F + 0.25F * swingProgress,
+                            -1.3F - (1F - progress) * 0.6F,
+                            -0.8F - 0.25F * swingProgress);
 
 	        		if(((IBattlePlayer)player).isBlockingWithShield()){
 	        			GL11.glTranslatef(0.25F, 0.15F, 0);
 	        		}
 
-	        		GL11.glRotatef(25, 0, 0, 1);
-                    GL11.glRotatef(145 - 35 * MathHelper.sin(swingProgress * (float) Math.PI), 0, 1, 0);
+	        		GL11.glRotatef(-25, 0, 0, 1);
+                    GL11.glRotatef(145 - 35 * swingProgress, 0, 1, 0);
 
 	        		if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender())))
                         itemRenderer.renderItem(player, offhandRender.getItemToRender(), ItemCameraTransforms.TransformType.FIRST_PERSON);
@@ -138,32 +138,32 @@ public final class BattlegearRenderHelper {
                         EnumAction action = offhandRender.getItemToRender().getItemUseAction();
 
                         if (action == EnumAction.EAT || action == EnumAction.DRINK) {
-                            var21 = player.getItemInUseCount() - frame + 1.0F;
+                            var21 = player.getItemInUseCount() - frame + 1;
                             float var11 = var21 / (float) offhandRender.getItemToRender().getMaxItemUseDuration();
                             if (var11 < 0.8F) {
-                                var10 = MathHelper.abs(MathHelper.cos(var21 / 4.0F * (float) Math.PI) * 0.1F);
+                                var10 = MathHelper.abs(MathHelper.cos(var21 / 4 * (float) Math.PI) * 0.1F);
                             } else {
                                 var10 = 0;
                             }
-                            float var12 = 1.0F - (float) Math.pow((double) var11, 27);
-                            GL11.glTranslatef(0.0F, var10, 0.0F);
-                            GL11.glTranslatef(var12 * 0.6F, -var12 * 0.5F, 0.0F);
-                            GL11.glRotatef(var12 * 90.0F, 0.0F, 1.0F, 0.0F);
-                            GL11.glRotatef(var12 * 10.0F, 1.0F, 0.0F, 0.0F);
-                            GL11.glRotatef(var12 * 30.0F, 0.0F, 0.0F, 1.0F);
+                            float var12 = 1 - (float) Math.pow((double) var11, 27);
+                            GL11.glTranslatef(0, var10, 0);
+                            GL11.glTranslatef(var12 * 0.6F, -var12 * 0.5F, 0);
+                            GL11.glRotatef(var12 * 90, 0, 1, 0);
+                            GL11.glRotatef(var12 * 10, 1, 0, 0);
+                            GL11.glRotatef(var12 * 30, 0, 0, 1);
                         }
                     } else {
                         var20 = ((IBattlePlayer)player).getOffSwingProgress(frame);
                         var21 = MathHelper.sin(var20 * (float) Math.PI);
                         var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI);
                         //Flip the (x direction)
-                        GL11.glTranslatef(var10 * 0.4F, MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI * 2.0F) * 0.2F, -var21 * 0.2F);
+                        GL11.glTranslatef(var10 * 0.4F, MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI * 2) * 0.2F, -var21 * 0.2F);
                     }
                     //Translate x in the opposite direction
-                    GL11.glTranslatef(-0.56F, -0.52F - (1.0F - progress) * 0.6F, -0.72F);
+                    GL11.glTranslatef(-0.56F, -0.52F - (1 - progress) * 0.6F, -0.72F);
 
                     //Rotate y in the opposite direction
-                    GL11.glRotatef(-45.0F, 0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(-45, 0, 1, 0);
 
                     GL11.glEnable(GL12.GL_RESCALE_NORMAL);
                     var20 = ((IBattlePlayer)player).getOffSwingProgress(frame);
@@ -172,13 +172,13 @@ public final class BattlegearRenderHelper {
                     var21 = MathHelper.sin(var20 * var20 * (float) Math.PI);
                     var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI);
 
-                    GL11.glRotatef(-var21 * 20.0F, 0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(-var21 * 20, 0, 1, 0);
                     //Rotate z in the opposite direction
-                    GL11.glRotatef(var10 * 20.0F, 0.0F, 0.0F, 1.0F);
-                    GL11.glRotatef(-var10 * 80.0F, 1.0F, 0.0F, 0.0F);
+                    GL11.glRotatef(var10 * 20, 0, 0, 1);
+                    GL11.glRotatef(-var10 * 80, 1, 0, 0);
 
                     //Rotate y back to original position + 45
-                    GL11.glRotatef(90.0F, 0.0F, 1.0F, 0.0F);
+                    GL11.glRotatef(90, 0, 1, 0);
 
                     GL11.glScalef(0.4F, 0.4F, 0.4F);
 
@@ -186,40 +186,40 @@ public final class BattlegearRenderHelper {
                         EnumAction action = offhandRender.getItemToRender().getItemUseAction();
 
                         if (action == EnumAction.BLOCK) {
-                            GL11.glTranslatef(0.0F, 0.2F, 0.0F);
-                            GL11.glRotatef(30.0F, 0.0F, 1.0F, 0.0F);
-                            GL11.glRotatef(30.0F, 1.0F, 0.0F, 0.0F);
-                            GL11.glRotatef(60.0F, 0.0F, 1.0F, 0.0F);
+                            GL11.glTranslatef(0, 0.2F, 0);
+                            GL11.glRotatef(30, 0, 1, 0);
+                            GL11.glRotatef(30, 1, 0, 0);
+                            GL11.glRotatef(60, 0, 1, 0);
                         } else if (action == EnumAction.BOW) {
-                            GL11.glRotatef(-18.0F, 0.0F, 0.0F, 1.0F);
-                            GL11.glRotatef(-12.0F, 0.0F, 1.0F, 0.0F);
-                            GL11.glRotatef(-8.0F, 1.0F, 0.0F, 0.0F);
-                            GL11.glTranslatef(-0.9F, 0.2F, 0.0F);
-                            float var13 = (float) offhandRender.getItemToRender().getMaxItemUseDuration() - ((float) player.getItemInUseCount() - frame + 1.0F);
-                            float var14 = var13 / 20.0F;
-                            var14 = (var14 * var14 + var14 * 2.0F) / 3.0F;
+                            GL11.glRotatef(-18, 0, 0, 1);
+                            GL11.glRotatef(-12, 0, 1, 0);
+                            GL11.glRotatef(-8, 1, 0, 0);
+                            GL11.glTranslatef(-0.9F, 0.2F, 0);
+                            float var13 = (float) offhandRender.getItemToRender().getMaxItemUseDuration() - ((float) player.getItemInUseCount() - frame + 1);
+                            float var14 = var13 / 20;
+                            var14 = (var14 * var14 + var14 * 2) / 3;
 
-                            if (var14 > 1.0F) {
-                                var14 = 1.0F;
+                            if (var14 > 1) {
+                                var14 = 1;
                             }
 
                             if (var14 > 0.1F) {
-                                GL11.glTranslatef(0.0F, MathHelper.sin((var13 - 0.1F) * 1.3F) * 0.01F * (var14 - 0.1F), 0.0F);
+                                GL11.glTranslatef(0, MathHelper.sin((var13 - 0.1F) * 1.3F) * 0.01F * (var14 - 0.1F), 0);
                             }
 
-                            GL11.glTranslatef(0.0F, 0.0F, var14 * 0.1F);
-                            GL11.glRotatef(-335.0F, 0.0F, 0.0F, 1.0F);
-                            GL11.glRotatef(-50.0F, 0.0F, 1.0F, 0.0F);
-                            GL11.glTranslatef(0.0F, 0.5F, 0.0F);
-                            GL11.glScalef(1.0F, 1.0F, 1.0F + var14 * 0.2F);
-                            GL11.glTranslatef(0.0F, -0.5F, 0.0F);
-                            GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
-                            GL11.glRotatef(335.0F, 0.0F, 0.0F, 1.0F);
+                            GL11.glTranslatef(0, 0, var14 * 0.1F);
+                            GL11.glRotatef(-335, 0, 0, 1);
+                            GL11.glRotatef(-50, 0, 1, 0);
+                            GL11.glTranslatef(0, 0.5F, 0);
+                            GL11.glScalef(1, 1, 1 + var14 * 0.2F);
+                            GL11.glTranslatef(0, -0.5F, 0);
+                            GL11.glRotatef(50, 0, 1, 0);
+                            GL11.glRotatef(335, 0, 0, 1);
                         }
                     }
 
                     if (offhandRender.getItemToRender().getItem().shouldRotateAroundWhenRendering()) {
-                        GL11.glRotatef(180.0F, 0.0F, 1.0F, 0.0F);
+                        GL11.glRotatef(180, 0, 1, 0);
                     }
                     if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.ItemOffhand, offhandRender.getItemToRender()))){
 
@@ -232,30 +232,30 @@ public final class BattlegearRenderHelper {
             } else if (!player.isInvisible()) {
                 GL11.glPushMatrix();
 
-                GL11.glScalef(-1.0F, 1.0F, 1.0F);
+                GL11.glScalef(-1, 1, 1);
 
                 var20 = ((IBattlePlayer)player).getOffSwingProgress(frame);
                 var21 = MathHelper.sin(var20 * (float) Math.PI);
                 var10 = MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI);
-                GL11.glTranslatef(-var10 * 0.3F, MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI * 2.0F) * 0.4F, -var21 * 0.4F);
-                GL11.glTranslatef(0.64F, -0.6F - (1.0F - progress) * 0.6F, -0.72F);
+                GL11.glTranslatef(-var10 * 0.3F, MathHelper.sin(MathHelper.sqrt_float(var20) * (float) Math.PI * 2) * 0.4F, -var21 * 0.4F);
+                GL11.glTranslatef(0.64F, -0.6F - (1 - progress) * 0.6F, -0.72F);
 
-                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(45, 0, 1, 0);
 
                 GL11.glEnable(GL12.GL_RESCALE_NORMAL);
                 var21 = MathHelper.sin(var20 * var20 * (float) Math.PI);
-                GL11.glRotatef(var10 * 70.0F, 0.0F, 1.0F, 0.0F);
-                GL11.glRotatef(var21 * 20.0F, 0.0F, 0.0F, 1.0F);
+                GL11.glRotatef(var10 * 70, 0, 1, 0);
+                GL11.glRotatef(var21 * 20, 0, 0, 1);
 
                 mc.getTextureManager().bindTexture(player.getLocationSkin());
-                GL11.glTranslatef(-1.0F, 3.6F, 3.5F);
-                GL11.glRotatef(120.0F, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(200.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(-135.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glTranslatef(-1, 3.6F, 3.5F);
+                GL11.glRotatef(120, 0, 0, 1);
+                GL11.glRotatef(200, 1, 0, 0);
+                GL11.glRotatef(-135, 0, 1, 0);
 
-                GL11.glScalef(1.0F, 1.0F, -1.0F);
-                GL11.glTranslatef(5.6F, 0.0F, 0.0F);
-                GL11.glScalef(1.0F, 1.0F, 1.0F);
+                GL11.glScalef(1, 1, -1);
+                GL11.glTranslatef(5.6F, 0, 0);
+                GL11.glScalef(1, 1, 1);
                 if(!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, true, PlayerElementType.Offhand, null))) {
                     var26.renderRightArm(player);
                 }
@@ -284,7 +284,7 @@ public final class BattlegearRenderHelper {
             sameItem = offhandRender.getItemToRender().getIsItemStackEqual(var2);
         }
 
-        float increment = (sameItem ? 1.0F : 0.0F) - offhandRender.getEquippedProgress();
+        float increment = (sameItem ? 1 : 0) - offhandRender.getEquippedProgress();
 
         if (increment < -PROGRESS_INCREMENT_LIMIT) {
             increment = -PROGRESS_INCREMENT_LIMIT;
@@ -305,7 +305,7 @@ public final class BattlegearRenderHelper {
     public static void moveOffHandArm(Entity entity, ModelBiped biped, float frame) {
         if (entity instanceof IBattlePlayer) {
             IBattlePlayer player = (IBattlePlayer) entity;
-            float offhandSwing = 0.0F;
+            float offhandSwing = 0;
 
             if(player.isBattlemode()){
                 ItemStack offhand = ((InventoryPlayerBattle)((EntityPlayer) entity).inventory).getCurrentOffhandWeapon();
@@ -316,27 +316,27 @@ public final class BattlegearRenderHelper {
                 }
             }
 
-            if (offhandSwing > 0.0F) {
-                if(biped.bipedBody.rotateAngleY!=0.0F){
+            if (offhandSwing > 0) {
+                if(biped.bipedBody.rotateAngleY!=0){
                     biped.bipedLeftArm.rotateAngleY -= biped.bipedBody.rotateAngleY;
                     biped.bipedLeftArm.rotateAngleX -= biped.bipedBody.rotateAngleY;
                 }
-                biped.bipedBody.rotateAngleY = -MathHelper.sin(MathHelper.sqrt_float(offhandSwing) * (float)Math.PI * 2.0F) * 0.2F;
+                biped.bipedBody.rotateAngleY = -MathHelper.sin(MathHelper.sqrt_float(offhandSwing) * (float)Math.PI * 2) * 0.2F;
 
-                //biped.bipedRightArm.rotationPointZ = MathHelper.sin(biped.bipedBody.rotateAngleY) * 5.0F;
-                //biped.bipedRightArm.rotationPointX = -MathHelper.cos(biped.bipedBody.rotateAngleY) * 5.0F;
+                //biped.bipedRightArm.rotationPointZ = MathHelper.sin(biped.bipedBody.rotateAngleY) * 5;
+                //biped.bipedRightArm.rotationPointX = -MathHelper.cos(biped.bipedBody.rotateAngleY) * 5;
 
-                biped.bipedLeftArm.rotationPointZ = -MathHelper.sin(biped.bipedBody.rotateAngleY) * 5.0F;
-                biped.bipedLeftArm.rotationPointX = MathHelper.cos(biped.bipedBody.rotateAngleY) * 5.0F;
+                biped.bipedLeftArm.rotationPointZ = -MathHelper.sin(biped.bipedBody.rotateAngleY) * 5;
+                biped.bipedLeftArm.rotationPointX = MathHelper.cos(biped.bipedBody.rotateAngleY) * 5;
 
                 //biped.bipedRightArm.rotateAngleY += biped.bipedBody.rotateAngleY;
                 //biped.bipedRightArm.rotateAngleX += biped.bipedBody.rotateAngleY;
-                float f6 = 1.0F - offhandSwing;
-                f6 = 1.0F - f6*f6*f6;
+                float f6 = 1 - offhandSwing;
+                f6 = 1 - f6*f6*f6;
                 double f8 = MathHelper.sin(f6 * (float)Math.PI) * 1.2D;
                 double f10 = MathHelper.sin(offhandSwing * (float)Math.PI) * -(biped.bipedHead.rotateAngleX - 0.7F) * 0.75F;
                 biped.bipedLeftArm.rotateAngleX -= f8 + f10;
-                biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY * 3.0F;
+                biped.bipedLeftArm.rotateAngleY += biped.bipedBody.rotateAngleY * 3;
                 biped.bipedLeftArm.rotateAngleZ = MathHelper.sin(offhandSwing * (float)Math.PI) * -0.4F;
             }
         }
@@ -347,63 +347,72 @@ public final class BattlegearRenderHelper {
         ItemStack var21 = ((InventoryPlayerBattle) par1EntityPlayer.inventory).getCurrentOffhandWeapon();
 
         if (var21 != null) {
-            float var7;
-            RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
-            RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
             
             GL11.glPushMatrix();
+
+            if (render.getMainModel().isChild)
+            {
+                GL11.glTranslatef(0, 10*RENDER_UNIT, 0);
+                GL11.glRotatef(-20, -1, 0, 0);
+                GL11.glScalef(0.5F, 0.5F, 0.5F);
+            }
             render.getPlayerModel().bipedLeftArm.postRender(RENDER_UNIT);
 
             GL11.glTranslatef(RENDER_UNIT, 7*RENDER_UNIT, RENDER_UNIT);
 
             if (par1EntityPlayer.fishEntity != null) {
+                if(par1EntityPlayer.getHeldItem()!=null)
+                    return;
                 var21 = new ItemStack(Items.fishing_rod, 0);
             }
 
+            float var7;
             if (var21.getItem() instanceof ItemBlock && Block.getBlockFromItem(var21.getItem()).getRenderType() == 2) {
-                GL11.glTranslatef(0.0F, 3 * RENDER_UNIT, -5 * RENDER_UNIT);
+                GL11.glTranslatef(0, 3 * RENDER_UNIT, -5 * RENDER_UNIT);
                 var7 = 0.375F;
-                GL11.glRotatef(20.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(20, 1, 0, 0);
+                GL11.glRotatef(45, 0, 1, 0);
                 GL11.glScalef(-var7, -var7, var7);
-            } /*else if (BattlegearUtils.isBow(var21.getItem())) {
+            }/* else if (BattlegearUtils.isBow(var21.getItem())) {
                 var7 = 10*RENDER_UNIT;
                 GL11.glTranslatef(0, 2*RENDER_UNIT, 5*RENDER_UNIT);
-                GL11.glRotatef(-20.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(-20, 0, 1, 0);
                 GL11.glScalef(var7, -var7, var7);
-                GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(-100, 1, 0, 0);
+                GL11.glRotatef(45, 0, 1, 0);
             } else if (var21.getItem().isFull3D()) {
                 var7 = 10*RENDER_UNIT;
 
                 if (var21.getItem().shouldRotateAroundWhenRendering()) {
-                    GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+                    GL11.glRotatef(180, 0, 0, 1);
                     GL11.glTranslatef(0, -2*RENDER_UNIT, 0);
                 }
 
                 if (par1EntityPlayer.getItemInUseCount() > 0 && var21.getItemUseAction() == EnumAction.BLOCK) {
-                    GL11.glTranslatef(-0.05F, 0.0F, -0.1F);
-                    GL11.glRotatef(50.0F, 0.0F, 1.0F, 0.0F);
-                    GL11.glRotatef(10.0F, 1.0F, 0.0F, 0.0F);
-                    GL11.glRotatef(40.0F, 0.0F, 0.0F, 1.0F);
+                    GL11.glTranslatef(-0.05F, 0, -0.1F);
+                    GL11.glRotatef(50, 0, 1, 0);
+                    GL11.glRotatef(10, 1, 0, 0);
+                    GL11.glRotatef(40, 0, 0, 1);
                 }
 
                 GL11.glTranslatef(0, 3*RENDER_UNIT, 0);
                 GL11.glScalef(var7, -var7, var7);
-                GL11.glRotatef(-100.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(45.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(-100, 1, 0, 0);
+                GL11.glRotatef(45, 0, 1, 0);
             } else {
                 var7 = 6*RENDER_UNIT;
                 GL11.glTranslatef(4*RENDER_UNIT, 3*RENDER_UNIT, -3*RENDER_UNIT);
                 GL11.glScalef(var7, var7, var7);
-                GL11.glRotatef(60.0F, 0.0F, 0.0F, 1.0F);
-                GL11.glRotatef(-90.0F, 1.0F, 0.0F, 0.0F);
-                GL11.glRotatef(20.0F, 0.0F, 0.0F, 1.0F);
+                GL11.glRotatef(60, 0, 0, 1);
+                GL11.glRotatef(-90, 1, 0, 0);
+                GL11.glRotatef(20, 0, 0, 1);
             }*/
 
+            RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
             if (!BattlegearUtils.RENDER_BUS.post(new PreRenderPlayerElement(preRender, false, PlayerElementType.ItemOffhand, var21))) {
                 renderItemAllPasses(par1EntityPlayer, var21);
             }
+            RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
             BattlegearUtils.RENDER_BUS.post(new PostRenderPlayerElement(postRender, false, PlayerElementType.ItemOffhand, var21));
             GL11.glPopMatrix();
         } else if (!((IBattlePlayer) par1EntityPlayer).isBattlemode()) {
@@ -435,7 +444,7 @@ public final class BattlegearRenderHelper {
             if(onBack){
                 GL11.glScalef(0.6F, 0.6F, 0.6F);
                 GL11.glTranslatef(0, 10 * RENDER_UNIT, 4 * RENDER_UNIT + backCount * RENDER_UNIT);
-                GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(180, 0, 1, 0);
                 if(mainhandSheathed.getItem() instanceof IBackSheathedRender){
                     ((IBackSheathedRender)mainhandSheathed.getItem()).preRenderBackSheathed(mainhandSheathed, backCount, preRender, true);
                 }
@@ -446,7 +455,7 @@ public final class BattlegearRenderHelper {
                 if (chest.getLeft() || legs.getLeft()) {
                     GL11.glTranslatef(2*RENDER_UNIT, 0, 0);
                 }
-                GL11.glRotatef(270.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(270, 0, 1, 0);
             }
 
             if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, true, mainhandSheathed))){
@@ -472,8 +481,8 @@ public final class BattlegearRenderHelper {
                 if(offhandSheathed.getItem() instanceof IBackSheathedRender){
                     ((IBackSheathedRender)offhandSheathed.getItem()).preRenderBackSheathed(offhandSheathed, backCount, preRender, false);
                 }else if(offhandSheathed.getItem() instanceof IShield){
-                    GL11.glRotatef(180F, 0.0F, 1.0F, 0.0F);
-                    GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+                    GL11.glRotatef(180F, 0, 1, 0);
+                    GL11.glRotatef(180F, 0, 0, 1);
                 }
                 backCount++;
             }else{
@@ -482,7 +491,7 @@ public final class BattlegearRenderHelper {
                 if (chest.getLeft() || legs.getLeft()) {
                     GL11.glTranslatef(-2*RENDER_UNIT, 0, 0);
                 }
-                GL11.glRotatef(270.0F, 0.0F, 1.0F, 0.0F);
+                GL11.glRotatef(270, 0, 1, 0);
             }
             if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, false, offhandSheathed))){
                 renderItemAllPasses(null, offhandSheathed);
@@ -570,10 +579,10 @@ public final class BattlegearRenderHelper {
 
     public static void applyColorFromItemStack(ItemStack itemStack, int pass){
         int col = itemStack.getItem().getColorFromItemStack(itemStack, pass);
-        float r = (float) (col >> 16 & 255) / 255.0F;
-        float g = (float) (col >> 8 & 255) / 255.0F;
-        float b = (float) (col & 255) / 255.0F;
-        GL11.glColor4f(r, g, b, 1.0F);
+        float r = (float) (col >> 16 & 255) / 255;
+        float g = (float) (col >> 8 & 255) / 255;
+        float b = (float) (col & 255) / 255;
+        GL11.glColor4f(r, g, b, 1);
     }
 
     private static boolean isBackSheathed(ItemStack sheathed) {
@@ -623,7 +632,7 @@ public final class BattlegearRenderHelper {
         GL11.glNormal3f(f10, 0, 0);
 
         double f2 = 12F/32F * depth;
-        double f5 = 5 / 32.0F;
+        double f5 = 5F/32F;
         Tessellator tessellator = Tessellator.getInstance();
         for (int i = 0; i < 2; ++i)
         {

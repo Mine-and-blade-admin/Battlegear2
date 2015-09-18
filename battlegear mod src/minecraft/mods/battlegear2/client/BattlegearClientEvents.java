@@ -118,21 +118,23 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
     public void renderPlayerLeftItemUsage(RenderLivingEvent.Pre event){
         if(event.entity instanceof EntityPlayer) {
             EntityPlayer entityPlayer = (EntityPlayer) event.entity;
-            ItemStack offhand = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
-            if (offhand != null && event.renderer instanceof RenderPlayer) {
-                ModelPlayer renderer = ((RenderPlayer) event.renderer).getPlayerModel();
-                renderer.heldItemLeft = 1;
-                if (entityPlayer.getItemInUseCount() > 0 && entityPlayer.getItemInUse() == offhand) {
-                    EnumAction enumaction = offhand.getItemUseAction();
-                    if (enumaction == EnumAction.BLOCK) {
+            if(event.renderer instanceof RenderPlayer && entityPlayer.inventory instanceof InventoryPlayerBattle) {
+                ItemStack offhand = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
+                if (offhand != null) {
+                    ModelPlayer renderer = ((RenderPlayer) event.renderer).getPlayerModel();
+                    renderer.heldItemLeft = 1;
+                    if (entityPlayer.getItemInUseCount() > 0 && entityPlayer.getItemInUse() == offhand) {
+                        EnumAction enumaction = offhand.getItemUseAction();
+                        if (enumaction == EnumAction.BLOCK) {
+                            renderer.heldItemLeft = 3;
+                        } else if (enumaction == EnumAction.BOW) {
+                            renderer.aimedBow = true;
+                        }
+                        ItemStack mainhand = entityPlayer.inventory.getCurrentItem();
+                        renderer.heldItemRight = mainhand != null ? 1 : 0;
+                    } else if (((IBattlePlayer) entityPlayer).isBlockingWithShield()) {
                         renderer.heldItemLeft = 3;
-                    } else if (enumaction == EnumAction.BOW) {
-                        renderer.aimedBow = true;
                     }
-                    ItemStack mainhand = entityPlayer.inventory.getCurrentItem();
-                    renderer.heldItemRight = mainhand != null ? 1 : 0;
-                }else if(((IBattlePlayer)entityPlayer).isBlockingWithShield()){
-                    renderer.heldItemLeft = 3;
                 }
             }
         }
