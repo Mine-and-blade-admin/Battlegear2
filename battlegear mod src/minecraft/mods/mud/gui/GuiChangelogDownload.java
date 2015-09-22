@@ -8,10 +8,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
 
 import javax.xml.bind.DatatypeConverter;
 import java.awt.*;
@@ -239,27 +239,27 @@ public class GuiChangelogDownload extends GuiScreen
             String main = line.substring(2, line.lastIndexOf("==")).trim();
 
             float scale = 1F;
-            GL11.glScalef(1/scale, 1/scale, 1/scale);
+            GlStateManager.scale(1 / scale, 1 / scale, 1 / scale);
             this.drawString(fontRendererObj, main.replaceAll("=", "").trim(), (int)((startX)*scale), (int)(start*scale), 0xFFFFFF00);
-            GL11.glScalef(scale, scale, scale);
+            GlStateManager.scale(scale, scale, scale);
 
             if(line.lastIndexOf("==")+2 <= line.length()){
                 String sub = line.substring(line.lastIndexOf("==")+2, line.length()).trim();
-                GL11.glScalef(1/scale, 1/scale, 1/scale);
+                GlStateManager.scale(1 / scale, 1 / scale, 1 / scale);
                 this.drawString(fontRendererObj, sub.replaceAll("=", "").trim(), (int)((startX+fontRendererObj.getStringWidth(main+"   "))*scale), (int)(start*scale), 0xFF2222FF);
-                GL11.glScalef(scale, scale, scale);
+                GlStateManager.scale(scale, scale, scale);
             }
 
             return (int)(1F/scale * 10)+start;
         }else if(line.trim().startsWith("**") && line.trim().endsWith("**")){
             float scale = 1.1F;
-            GL11.glScalef(1/scale, 1/scale, 1/scale);
+            GlStateManager.scale(1 / scale, 1 / scale, 1 / scale);
             this.drawString(fontRendererObj, line.replaceAll("\\*\\*", "").trim(), (int)((startX)*scale), (int)(start*scale), 0xFFFFFFFF);
-            GL11.glScalef(scale, scale, scale);
+            GlStateManager.scale(scale, scale, scale);
             return (int)(1F/scale * 10)+start;
         }else{
             float scale = 1.2F;
-            GL11.glScalef(1/scale, 1/scale, 1/scale);
+            GlStateManager.scale(1 / scale, 1 / scale, 1 / scale);
 
             int bullet = -1;
             while(line.startsWith("*")){
@@ -287,7 +287,7 @@ public class GuiChangelogDownload extends GuiScreen
             }
 
 
-            GL11.glScalef(scale, scale, scale);
+            GlStateManager.scale(scale, scale, scale);
             return start;
         }
     }

@@ -20,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
@@ -40,7 +41,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -157,19 +157,19 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
 
 		if (BattlegearConfig.enableSkeletonQuiver && event.entity instanceof EntitySkeleton && event.renderer instanceof RenderSkeleton) {
 
-			GL11.glPushMatrix();
-			GL11.glDisable(GL11.GL_CULL_FACE);
+            GlStateManager.pushMatrix();
+            GlStateManager.disableCull();
 
-			GL11.glColor3f(1, 1, 1);
+            GlStateManager.color(1, 1, 1);
 			Minecraft.getMinecraft().getTextureManager().bindTexture(quiverDetails);
 
-            GL11.glTranslatef((float) event.x, (float) event.y, (float) event.z);
+            GlStateManager.translate((float) event.x, (float) event.y, (float) event.z);
 
-			GL11.glScalef(1, -1, 1);
+            GlStateManager.scale(1, -1, 1);
 
 			float f2 = interpolateRotation(event.entity.prevRenderYawOffset, event.entity.renderYawOffset, 0);
 
-			GL11.glRotatef(180.0F - f2, 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate(180.0F - f2, 0.0F, 1.0F, 0.0F);
 
 			if (event.entity.deathTime > 0) {
 				float f3 = ((float) event.entity.deathTime
@@ -180,27 +180,27 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
 					f3 = 1.0F;
 				}
 
-				GL11.glRotatef(-f3 * 90, 0.0F, 0.0F, 1.0F);
+                GlStateManager.rotate(-f3 * 90, 0.0F, 0.0F, 1.0F);
 			}
 
-			GL11.glTranslatef(0, -1.5F, 0);
+            GlStateManager.translate(0, -1.5F, 0);
 
-			GL11.glRotatef(event.entity.rotationPitch, 0, 1, 0);
+            GlStateManager.rotate(event.entity.rotationPitch, 0, 1, 0);
 
             if(event.entity.getEquipmentInSlot(3)!=null){//chest armor
-                GL11.glTranslatef(0, 0, BattlegearRenderHelper.RENDER_UNIT);
+                GlStateManager.translate(0, 0, BattlegearRenderHelper.RENDER_UNIT);
             }
             ((ModelBiped)event.renderer.mainModel).bipedBody.postRender(BattlegearRenderHelper.RENDER_UNIT);
-			GL11.glScalef(1.05F, 1.05F, 1.05F);
+            GlStateManager.scale(1.05F, 1.05F, 1.05F);
 			quiverModel.render(SKELETON_ARROW, BattlegearRenderHelper.RENDER_UNIT);
 
 			Minecraft.getMinecraft().getTextureManager().bindTexture(quiverBase);
-			GL11.glColor3f(0.10F, 0.10F, 0.10F);
+            GlStateManager.color(0.10F, 0.10F, 0.10F);
 			quiverModel.render(0, BattlegearRenderHelper.RENDER_UNIT);
-			GL11.glColor3f(1, 1, 1);
+            GlStateManager.color(1, 1, 1);
 
-			GL11.glEnable(GL11.GL_CULL_FACE);
-			GL11.glPopMatrix();
+            GlStateManager.enableCull();
+            GlStateManager.popMatrix();
 		}
 	}
 

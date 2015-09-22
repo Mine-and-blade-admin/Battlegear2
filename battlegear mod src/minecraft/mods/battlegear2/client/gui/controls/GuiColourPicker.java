@@ -2,6 +2,7 @@ package mods.battlegear2.client.gui.controls;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.item.ItemDye;
@@ -177,9 +178,9 @@ public class GuiColourPicker extends GuiButton {
         //super.drawButton(mc, mouse_x, mouse_y);
 
     	if(visible){
-	        GL11.glColor3f(1,1,1);
+	        GlStateManager.color(1,1,1);
 	
-	        GL11.glPushMatrix();
+	        GlStateManager.pushMatrix();
 	
 	        //Draw the saturation / brightness square
 	        sb_buffer.updateDynamicTexture();
@@ -206,14 +207,14 @@ public class GuiColourPicker extends GuiButton {
 	            this.drawTexturedModalRect(sb_start_x, sb_start_y+52, 48, 12, 0, 0, 8, 2);
 	
 	            drawRect(sb_start_x, sb_start_y+52, sb_start_x+48, sb_start_y+64, selectedRGB);
-	            GL11.glColor3f(1,1,1);
+	            GlStateManager.color(1,1,1);
 	        }
 	
-	        GL11.glPushMatrix();
-	        GL11.glColor3f(1,1,1);
+	        GlStateManager.pushMatrix();
+	        GlStateManager.color(1,1,1);
 	
-	        GL11.glEnable(GL11.GL_BLEND);
-	        GL11.glBlendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ZERO);
+	        GlStateManager.enableBlend();
+	        GlStateManager.blendFunc(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ZERO);
 	        //Saturation Line (Horiz)
 	        drawRect2(sb_start_x, sb_start_y + (int)((1-selectedHSB[1]) * 48),sb_start_x+48, sb_start_y + (int)((1-selectedHSB[1]) * 48)+1, 0xFFFFFFFF);
 	
@@ -228,10 +229,10 @@ public class GuiColourPicker extends GuiButton {
 	        	drawRect2(alpha_start_x, sb_start_y + (int)((1-selected_alpha) * 48), alpha_start_x+12, sb_start_y + (int)((1-selected_alpha) * 48)+1, 0xFFFFFFFF);
 	        }
 	        
-	        GL11.glDisable(GL11.GL_BLEND);
-	        GL11.glPopMatrix();
+	        GlStateManager.disableBlend();
+	        GlStateManager.popMatrix();
 	
-	        GL11.glPopMatrix();
+	        GlStateManager.popMatrix();
 	
 	
 	        if(Mouse.isButtonDown(0) && enabled){
@@ -332,7 +333,7 @@ public class GuiColourPicker extends GuiButton {
         float f2 = (float)(colour >> 8 & 255) / 255.0F;
         float f3 = (float)(colour & 255) / 255.0F;
         Tessellator tessellator = Tessellator.getInstance();
-        GL11.glColor4f(f1, f2, f3, f);
+        GlStateManager.color(f1, f2, f3, f);
         tessellator.getWorldRenderer().startDrawingQuads();
         tessellator.getWorldRenderer().addVertex((double) x1, (double) y2, 0.0D);
         tessellator.getWorldRenderer().addVertex((double) x2, (double) y2, 0.0D);

@@ -3,8 +3,8 @@ package mods.battlegear2.client.gui.controls;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 public class GuiToggleButton extends GuiButton{
 	public static final ResourceLocation resourceLocation = new ResourceLocation("battlegear2", "textures/gui/widgets-extra.png");
@@ -38,7 +38,7 @@ public class GuiToggleButton extends GuiButton{
         {
             FontRenderer fontrenderer = par1Minecraft.fontRendererObj;
             par1Minecraft.getTextureManager().bindTexture(resourceLocation);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
             int k = this.getHoverState(this.hovered);
             this.drawTexturedModalRect(this.xPosition, this.yPosition, 0, k * 20, this.width / 2, this.height);

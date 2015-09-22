@@ -5,10 +5,10 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.client.BattlegearClientEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Render a quiver on player back
@@ -30,14 +30,14 @@ public class LayerQuiver extends LayerPlayerBase{
             for (int i = 0; i < maxStack; i++) {
                 arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0 : 1;
             }
-            GL11.glPushMatrix();
-            GL11.glColor3f(1, 1, 1);
+            GlStateManager.pushMatrix();
+            GlStateManager.color(1, 1, 1);
             Minecraft.getMinecraft().getTextureManager().bindTexture(BattlegearClientEvents.INSTANCE.quiverDetails);
             if(player.getEquipmentInSlot(3)!=null){//chest armor
-                GL11.glTranslatef(0, 0, scale);
+                GlStateManager.translate(0, 0, scale);
             }
             renderer.getPlayerModel().bipedBody.postRender(scale);
-            GL11.glScalef(1.05F, 1.05F, 1.05F);
+            GlStateManager.scale(1.05F, 1.05F, 1.05F);
             BattlegearClientEvents.INSTANCE.quiverModel.render(arrowCount, scale);
 
             Minecraft.getMinecraft().getTextureManager().bindTexture(BattlegearClientEvents.INSTANCE.quiverBase);
@@ -46,12 +46,12 @@ public class LayerQuiver extends LayerPlayerBase{
                 float red = (float) (col >> 16 & 255) / 255.0F;
                 float green = (float) (col >> 8 & 255) / 255.0F;
                 float blue = (float) (col & 255) / 255.0F;
-                GL11.glColor3f(red, green, blue);
+                GlStateManager.color(red, green, blue);
             }
             BattlegearClientEvents.INSTANCE.quiverModel.render(0, scale);
-            GL11.glColor3f(1, 1, 1);
+            GlStateManager.color(1, 1, 1);
 
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
         }
     }
 }

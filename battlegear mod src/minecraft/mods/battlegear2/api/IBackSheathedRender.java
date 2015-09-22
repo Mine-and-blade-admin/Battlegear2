@@ -9,7 +9,7 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
  * Flag an item instance for pre-process of rendering sheathed "on back"
  * @see ISheathed
  * @see RenderPlayerEventChild.PreRenderSheathed
- * Used by ItemSpear to render flipped (GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);)
+ * Used by ItemSpear to render flipped (GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);)
  */
 public interface IBackSheathedRender{
 

@@ -21,7 +21,7 @@
      private static final ResourceLocation RES_UNDERWATER_OVERLAY = new ResourceLocation("textures/misc/underwater.png");
 @@ -551,6 +561,7 @@
  
-         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+         GlStateManager.disableRescaleNormal();
          RenderHelper.disableStandardItemLighting();
 +        mods.battlegear2.client.utils.BattlegearRenderHelper.renderItemInFirstPerson(p_78440_1_, mc, this);//-----MB-Edited-----
      }

@@ -11,6 +11,7 @@ import mods.battlegear2.utils.FileExtension;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
@@ -432,17 +433,17 @@ public class GuiFlagDesigner extends GuiScreen {
 
         colourTextField.drawTextBox();
 
-        GL11.glColor3f(1, 1, 1);
+        GlStateManager.color(1, 1, 1);
 
         //Draw Canvas
         canvus_back.updateDynamicTexture();
         drawTexturedModalRect(x_canvus_start, y_canvus_start, canvusSize, canvusSize, 0, 0, 32, 32);
 
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         overlay.updateDynamicTexture();
         drawTexturedModalRect(x_canvus_start, y_canvus_start, canvusSize, canvusSize, 0, 0, 1, 1);
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.disableBlend();
 
         super.drawScreen(par1, par2, par3);
     }

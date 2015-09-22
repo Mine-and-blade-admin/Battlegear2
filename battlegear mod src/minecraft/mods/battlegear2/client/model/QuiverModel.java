@@ -1,10 +1,9 @@
 package mods.battlegear2.client.model;
 
-
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 import java.util.Random;
 
@@ -56,11 +55,11 @@ public class QuiverModel extends ModelBase
         quiverTop.render(par7);
 
         for(int i = 0; i < arrowCount && i < arrowPos.length; i++){
-            GL11.glPushMatrix();
+            GlStateManager.pushMatrix();
             quiverBase.postRender(par7);
-            GL11.glTranslatef(-14F/16F + arrowPos[i][2], -3F/16F, 2.5F/16F+arrowPos[i][0]);
+            GlStateManager.translate(-14F/16F + arrowPos[i][2], -3F/16F, 2.5F/16F+arrowPos[i][0]);
             BattlegearRenderHelper.renderArrow(true, 0, -arrowPos[i][1], 1, 0, 0);
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
         }
 
     }

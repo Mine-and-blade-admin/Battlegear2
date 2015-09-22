@@ -31,9 +31,6 @@ import java.util.List;
 
 public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpecialArmor{
 
-	/*private IIcon baseIcon[];
-	private IIcon postRenderIcon[];
-	private IIcon trimRenderIcon;*/
 	private Object modelObject;
     private final float motionFactor;
 
@@ -50,30 +47,6 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
         }
 		GameRegistry.registerItem(this, "knights_armour." + BattlegearConfig.armourTypes[armourType]);
 	}
-
-	/*@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getBaseIcon(ItemStack stack) {
-		if(armorType == 0){
-			return baseIcon[SigilHelper.getHelm(((IHeraldryItem) stack.getItem()).getHeraldry(stack))];
-		}else
-			return baseIcon[0];
-	}
-
-	@Override
-    @SideOnly(Side.CLIENT)
-	public IIcon getPostRenderIcon(ItemStack stack) {
-		if(armorType == 0){
-			return postRenderIcon[SigilHelper.getHelm(((IHeraldryItem)stack.getItem()).getHeraldry(stack))];
-		}else
-			return postRenderIcon[0];
-	}
-	
-	@Override
-    @SideOnly(Side.CLIENT)
-	public IIcon getTrimIcon(ItemStack stack) {
-		return trimRenderIcon;
-	}*/
 
     @Override
     @SideOnly(Side.CLIENT)
@@ -136,10 +109,11 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 
 	@Override
 	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String layer) {
+		String model = (slot - 1) + ".png";
 		if (layer != null) {
-			return Battlegear.imageFolder + "armours/knights/knights-base-" + (slot == 2 ? 1 : 0) + ".png";
+			model = "base-" + model;
 		}
-		return Battlegear.imageFolder+"armours/knights/knights-"+(slot==2?1:0)+".png";
+		return Battlegear.imageFolder + "armours/knights/knights-" + model;
 	}
 
 	@Override

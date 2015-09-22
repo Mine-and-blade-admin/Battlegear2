@@ -7,12 +7,12 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Arrays;
 
@@ -47,7 +47,7 @@ public final class BattlegearClientUtils {
      */
     private void onRenderSheathedItem(ItemStack stack){
         if (stack.getItem() instanceof ItemBucket || stack.getItem() instanceof ItemPotion || stack.getItem() instanceof IArrowContainer2) {
-            GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+            GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
         }
     }
 

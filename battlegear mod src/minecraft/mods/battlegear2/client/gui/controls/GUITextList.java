@@ -1,6 +1,7 @@
 package mods.battlegear2.client.gui.controls;
 
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.opengl.GL11;
 
@@ -40,13 +41,13 @@ public class GUITextList extends GUIScrollList{
 
     @Override
     protected void drawSlot(int index, int var2, int var3, int var4, Tessellator var5) {
-        GL11.glColor3f(1F, 1F, 1F);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GlStateManager.color(1F, 1F, 1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableAlpha();
         font.drawStringWithShadow(texts[index].text, left, var3, isSelected(index)?14737632:7368816);
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.enableAlpha();
+        GlStateManager.disableBlend();
     }
 
     public static class Box{

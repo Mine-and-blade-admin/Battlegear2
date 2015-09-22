@@ -5,6 +5,7 @@ import mods.battlegear2.api.heraldry.PatternStore;
 import mods.battlegear2.api.heraldry.RefreshableTexture;
 import mods.battlegear2.client.gui.BattlegearSigilGUI;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -64,10 +65,10 @@ public class GuiPatternScrollList extends GUIScrollList{
 			dirtyTextures = false;
 		}
 		
-        GL11.glColor3f(1F, 1F, 1F);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GlStateManager.color(1F, 1F, 1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableAlpha();
 
 
         dynamicTextures[var1].updateDynamicTexture();
@@ -75,8 +76,8 @@ public class GuiPatternScrollList extends GUIScrollList{
         Minecraft.getMinecraft().getTextureManager().bindTexture(rl);
         drawTexturedModalRect(var5, var2-listWidth/2-8, var3, 16, 16, 0);
 
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.enableAlpha();
+        GlStateManager.disableBlend();
 		
 	}
 

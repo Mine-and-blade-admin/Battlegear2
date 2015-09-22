@@ -5,8 +5,8 @@ import mods.battlegear2.client.utils.ImageCache;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
@@ -40,9 +40,9 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
             int type = banner.getBlock().getMetaFromState(banner);
             int side = ((IFlagHolder) tileentity).getOrientation();
 
-            GL11.glPushMatrix();
-            GL11.glTranslated(d0, d1, d2);
-            GL11.glColor3f(1, 1, 1);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(d0, d1, d2);
+            GlStateManager.color(1, 1, 1);
 
             float[] dims = new float[5];
             for(int i=0; i<5; i++){
@@ -56,13 +56,13 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
                     renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type);
                     break;
                 case 2:
-                    GL11.glRotatef(90, 0, 1, 0);
-                    GL11.glTranslatef(-1, 0, 0);
+                    GlStateManager.rotate(90, 0, 1, 0);
+                    GlStateManager.translate(-1, 0, 0);
                     renderZFlag((IFlagHolder)tileentity, d0, d1, d2, f, type);
                     break;
             }
 
-            GL11.glPopMatrix();
+            GlStateManager.popMatrix();
         }
     }
 
@@ -72,13 +72,13 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         if(flags.size()>0)
         {
             Tessellator tess = Tessellator.getInstance();
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-            GL11.glDisable(GL11.GL_LIGHTING);
-            GL11.glMatrixMode(GL11.GL_TEXTURE);
-            GL11.glPushMatrix();
-            GL11.glRotatef(-90, 0, 0, 1);
+            GlStateManager.disableLighting();
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+            GlStateManager.pushMatrix();
+            GlStateManager.rotate(-90, 0, 0, 1);
             for(int flagIndex = 0; flagIndex < flags.size(); flagIndex++){
                 ItemStack flag = flags.get(flagIndex);
                 ImageCache.setTexture(flag);
@@ -126,10 +126,10 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
 
             }
 
-            GL11.glPopMatrix();
-            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.popMatrix();
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+            GlStateManager.enableLighting();
+            GlStateManager.disableBlend();
         }
     }
 
@@ -139,12 +139,10 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
         if(flags.size()>0)
         {
             Tessellator tess = Tessellator.getInstance();
-            GL11.glEnable(GL11.GL_BLEND);
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+            GlStateManager.enableBlend();
+            GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
-
-
-            GL11.glDisable(GL11.GL_LIGHTING);
+            GlStateManager.disableLighting();
             for(int flagIndex = 0; flagIndex < flags.size(); flagIndex++){
                 ItemStack flag = flags.get(flagIndex);
                 ImageCache.setTexture(flag);
@@ -186,8 +184,8 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer {
                     }
                 }
             }
-            GL11.glEnable(GL11.GL_LIGHTING);
-            GL11.glDisable(GL11.GL_BLEND);
+            GlStateManager.enableLighting();
+            GlStateManager.disableBlend();
         }
     }
 }

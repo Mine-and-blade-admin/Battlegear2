@@ -11,6 +11,7 @@ import mods.battlegear2.client.BattlegearClientTickHandeler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -20,7 +21,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 public class BattlegearInGameGUI extends Gui {
 
@@ -41,58 +41,58 @@ public class BattlegearInGameGUI extends Gui {
 
         if (Battlegear.battlegearEnabled && !this.mc.playerController.isSpectator() && this.mc.getRenderViewEntity() instanceof EntityPlayer) {
 
-                ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
-                int width = scaledresolution.getScaledWidth();
-                int height = scaledresolution.getScaledHeight();
+            ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+            int width = scaledresolution.getScaledWidth();
+            int height = scaledresolution.getScaledHeight();
             RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution);
-                GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-                zLevel = -90.0F;
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            zLevel = -90.0F;
 
-                RenderItemBarEvent event = new RenderItemBarEvent.BattleSlots(renderEvent, true);
-                if(!MinecraftForge.EVENT_BUS.post(event)){
-                    renderBattleSlots(width / 2 + 121 + event.xOffset, height - 22 + event.yOffset, frame, true);
-                }
-                event = new RenderItemBarEvent.BattleSlots(renderEvent, false);
-                if(!MinecraftForge.EVENT_BUS.post(event)){
-                    renderBattleSlots(width / 2 - 184 + event.xOffset, height - 22 + event.yOffset, frame, false);
-                }
+            RenderItemBarEvent event = new RenderItemBarEvent.BattleSlots(renderEvent, true);
+            if(!MinecraftForge.EVENT_BUS.post(event)){
+                renderBattleSlots(width / 2 + 121 + event.xOffset, height - 22 + event.yOffset, frame, true);
+            }
+            event = new RenderItemBarEvent.BattleSlots(renderEvent, false);
+            if(!MinecraftForge.EVENT_BUS.post(event)){
+                renderBattleSlots(width / 2 - 184 + event.xOffset, height - 22 + event.yOffset, frame, false);
+            }
 
-                ItemStack offhand = ((InventoryPlayerBattle) mc.thePlayer.inventory).getCurrentOffhandWeapon();
-                if(offhand!= null && offhand.getItem() instanceof IShield){
-                    event = new RenderItemBarEvent.ShieldBar(renderEvent, offhand);
+            ItemStack offhand = ((InventoryPlayerBattle) mc.thePlayer.inventory).getCurrentOffhandWeapon();
+            if(offhand!= null && offhand.getItem() instanceof IShield){
+                event = new RenderItemBarEvent.ShieldBar(renderEvent, offhand);
+                if(!MinecraftForge.EVENT_BUS.post(event))
+                    renderBlockBar(width / 2 - 91 + event.xOffset, height - 35 + event.yOffset);
+            }
+
+            ItemStack mainhand = mc.thePlayer.getCurrentEquippedItem();
+            boolean quiverFound = false;
+            if(mainhand != null){
+                ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, mc.thePlayer);
+                if(quiver != null){
+                    event = new RenderItemBarEvent.QuiverSlots(renderEvent, mainhand, quiver);
                     if(!MinecraftForge.EVENT_BUS.post(event))
-                        renderBlockBar(width / 2 - 91 + event.xOffset, height - 35 + event.yOffset);
+                        renderQuiverBar(quiver, frame, event.xOffset+width/2, event.yOffset);
+                    quiverFound = true;
                 }
-
-                ItemStack mainhand = mc.thePlayer.getCurrentEquippedItem();
-                boolean quiverFound = false;
-                if(mainhand != null){
+            }
+            if(!quiverFound) {
+                mainhand = ((InventoryPlayerBattle) mc.thePlayer.inventory).getCurrentOffhandWeapon();
+                if (mainhand != null) {
                     ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, mc.thePlayer);
-                    if(quiver != null){
+                    if (quiver != null) {
                         event = new RenderItemBarEvent.QuiverSlots(renderEvent, mainhand, quiver);
-                        if(!MinecraftForge.EVENT_BUS.post(event))
-                            renderQuiverBar(quiver, frame, event.xOffset+width/2, event.yOffset);
-                        quiverFound = true;
+                        if (!MinecraftForge.EVENT_BUS.post(event))
+                            renderQuiverBar(quiver, frame, event.xOffset + width / 2, event.yOffset);
                     }
                 }
-                if(!quiverFound) {
-                    mainhand = ((InventoryPlayerBattle) mc.thePlayer.inventory).getCurrentOffhandWeapon();
-                    if (mainhand != null) {
-                        ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, mc.thePlayer);
-                        if (quiver != null) {
-                            event = new RenderItemBarEvent.QuiverSlots(renderEvent, mainhand, quiver);
-                            if (!MinecraftForge.EVENT_BUS.post(event))
-                                renderQuiverBar(quiver, frame, event.xOffset + width / 2, event.yOffset);
-                        }
-                    }
-                }
+            }
         }
     }
 
     public void renderBattleSlots(int x, int y, float frame, boolean isMainHand) {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(resourceLocation);
 
         drawTexturedModalRect(x, y, 0, 0, 31, SLOT_H);
@@ -102,7 +102,7 @@ public class BattlegearInGameGUI extends Gui {
             if(((IBattlePlayer) mc.thePlayer).isBattlemode())
                 this.drawTexturedModalRect(x + (mc.thePlayer.inventory.currentItem - InventoryPlayerBattle.OFFSET) * 20-1,
                         y - 1, 0, 22, 24, SLOT_H);
-            GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+            GlStateManager.enableRescaleNormal();
             RenderHelper.enableGUIStandardItemLighting();
             for (int i = 0; i < InventoryPlayerBattle.WEAPON_SETS; ++i) {
                 int varx = x + i * 20 + 3;
@@ -110,15 +110,15 @@ public class BattlegearInGameGUI extends Gui {
                         varx, y+3, frame);
             }
             RenderHelper.disableStandardItemLighting();
-            GL11.glDisable(GL12.GL_RESCALE_NORMAL);
+            GlStateManager.disableRescaleNormal();
         }
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.disableBlend();
     }
 
     public void renderQuiverBar(ItemStack quiver, float frame, int xOffset, int yOffset) {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(resourceLocation);
 
         int maxSlots = ((IArrowContainer2)quiver.getItem()).getSlotCount(quiver)*10;
@@ -130,7 +130,7 @@ public class BattlegearInGameGUI extends Gui {
 
         drawTexturedModalRect(xOffset -(2 + maxSlots) + 20*selectedSlot, yOffset-1, 0, 22, 24, SLOT_H);
 
-        GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+        GlStateManager.enableRescaleNormal();
         RenderHelper.enableGUIStandardItemLighting();
 
         for (int i = 0; i < maxSlots/10; ++i) {
@@ -139,14 +139,14 @@ public class BattlegearInGameGUI extends Gui {
         }
 
         RenderHelper.disableStandardItemLighting();
-        GL11.glDisable(GL12.GL_RESCALE_NORMAL);
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableBlend();
     }
 
     public void renderBlockBar(int x, int y) {
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(resourceLocationShield);
 
         if(mc.thePlayer!=null){
@@ -171,10 +171,10 @@ public class BattlegearInGameGUI extends Gui {
         if(BattlegearClientTickHandeler.getFlashTimer() > 0 && (System.currentTimeMillis() / 250) % 2 == 0){
             colour = COLOUR_YELLOW;
         }
-        GL11.glColor3f(colour[0], colour[1], colour[2]);
+        GlStateManager.color(colour[0], colour[1], colour[2]);
         this.drawTexturedModalRect(x, y, 0, 9, (int) (182 * BattlegearClientTickHandeler.getBlockTime()), 9);
 
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.disableBlend();
     }
 
     private void renderInventorySlot(int par1, int par2, int par3, float par4) {
@@ -187,16 +187,16 @@ public class BattlegearInGameGUI extends Gui {
             float f1 = (float) itemstack.animationsToGo - frame;
 
             if (f1 > 0.0F) {
-                GL11.glPushMatrix();
+                GlStateManager.pushMatrix();
                 float f2 = 1.0F + f1 / 5.0F;
-                GL11.glTranslatef((float) (x + 8), (float) (y + 12), 0.0F);
-                GL11.glScalef(1.0F / f2, (f2 + 1.0F) / 2.0F, 1.0F);
-                GL11.glTranslatef((float) (-(x + 8)), (float) (-(y + 12)), 0.0F);
+                GlStateManager.translate((float) (x + 8), (float) (y + 12), 0.0F);
+                GlStateManager.scale(1.0F / f2, (f2 + 1.0F) / 2.0F, 1.0F);
+                GlStateManager.translate((float) (-(x + 8)), (float) (-(y + 12)), 0.0F);
             }
 
             mc.getRenderItem().renderItemAndEffectIntoGUI(itemstack, x, y);
             if (f1 > 0.0F) {
-                GL11.glPopMatrix();
+                GlStateManager.popMatrix();
             }
             mc.getRenderItem().renderItemOverlayIntoGUI(this.mc.fontRendererObj, itemstack, x, y, null);
         }

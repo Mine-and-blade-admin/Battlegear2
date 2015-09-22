@@ -3,6 +3,7 @@ package mods.battlegear2.items;
 import com.google.common.collect.Multimap;
 import mods.battlegear2.api.IBackSheathedRender;
 import mods.battlegear2.api.shield.IShield;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,7 +11,6 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.opengl.GL11;
 
 public class ItemSpear extends TwoHandedWeapon implements IBackSheathedRender {
 
@@ -43,6 +43,6 @@ public class ItemSpear extends TwoHandedWeapon implements IBackSheathedRender {
     @Override
     @SideOnly(Side.CLIENT)
     public void preRenderBackSheathed(ItemStack itemStack, int amountOnBack, RenderPlayerEvent event, boolean inMainHand) {
-        GL11.glRotatef(180F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(180F, 0.0F, 0.0F, 1.0F);
     }
 }

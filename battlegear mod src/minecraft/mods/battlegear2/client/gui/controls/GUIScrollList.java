@@ -1,6 +1,7 @@
 package mods.battlegear2.client.gui.controls;
 
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -239,8 +240,8 @@ public abstract class GUIScrollList {
 	        }
 	
 	        this.applyScrollLimits();
-	        GL11.glDisable(GL11.GL_LIGHTING);
-	        GL11.glDisable(GL11.GL_FOG);
+	        GlStateManager.disableLighting();
+	        GlStateManager.disableFog();
 			Tessellator var18 = Tessellator.getInstance();
 	
 
@@ -264,8 +265,8 @@ public abstract class GUIScrollList {
 	                {
 	                    var14 = boxLeft;
 	                    int var15 = boxRight;
-	                    GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	                    GL11.glDisable(GL11.GL_TEXTURE_2D);
+	                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+	                    GlStateManager.disableTexture2D();
 						var18.getWorldRenderer().startDrawingQuads();
 						var18.getWorldRenderer().setColorOpaque_I(8421504);
 						var18.getWorldRenderer().addVertexWithUV((double) var14, (double) (var19 + var13 + 2), 0.0D, 0.0D, 1.0D);
@@ -278,19 +279,19 @@ public abstract class GUIScrollList {
 						var18.getWorldRenderer().addVertexWithUV((double) (var15 - 1), (double) (var19 - 1), 0.0D, 1.0D, 0.0D);
 						var18.getWorldRenderer().addVertexWithUV((double) (var14 + 1), (double) (var19 - 1), 0.0D, 0.0D, 0.0D);
 						var18.draw();
-	                    GL11.glEnable(GL11.GL_TEXTURE_2D);
+	                    GlStateManager.enableTexture2D();
 	                }
 	
 	                this.drawSlot(var11, boxRight, var19, var13, var18);
 	            }
 	        }
 	
-	        GL11.glDisable(GL11.GL_DEPTH_TEST);
-	        GL11.glEnable(GL11.GL_BLEND);
-	        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	        GL11.glDisable(GL11.GL_ALPHA_TEST);
-	        GL11.glShadeModel(GL11.GL_SMOOTH);
-	        GL11.glDisable(GL11.GL_TEXTURE_2D);
+	        GlStateManager.disableDepth();
+	        GlStateManager.enableBlend();
+	        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	        GlStateManager.disableAlpha();
+			GlStateManager.shadeModel(GL11.GL_SMOOTH);
+	        GlStateManager.disableTexture2D();
 	
 	        var19 = this.getContentHeight() - (this.bottom - this.top - 4);
 	
@@ -339,10 +340,10 @@ public abstract class GUIScrollList {
 	        }
 	
 	        this.func_27257_b(mouseX, mouseY);
-	        GL11.glEnable(GL11.GL_TEXTURE_2D);
-	        GL11.glShadeModel(GL11.GL_FLAT);
-	        GL11.glEnable(GL11.GL_ALPHA_TEST);
-	        GL11.glDisable(GL11.GL_BLEND);
+	        GlStateManager.enableTexture2D();
+			GlStateManager.shadeModel(GL11.GL_FLAT);
+	        GlStateManager.enableAlpha();
+	        GlStateManager.disableBlend();
 	    }
     }
     
@@ -387,18 +388,18 @@ public abstract class GUIScrollList {
         float f2 = (float)(col >> 8 & 255) / 255.0F;
         float f3 = (float)(col & 255) / 255.0F;
 		Tessellator tessellator = Tessellator.getInstance();
-		GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glColor4f(f1, f2, f3, f);
+		GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.color(f1, f2, f3, f);
 		tessellator.getWorldRenderer().startDrawingQuads();
 		tessellator.getWorldRenderer().addVertex((double) x1, (double) y2, 0.0D);
 		tessellator.getWorldRenderer().addVertex((double) x2, (double) y2, 0.0D);
 		tessellator.getWorldRenderer().addVertex((double) x2, (double) y1, 0.0D);
 		tessellator.getWorldRenderer().addVertex((double) x1, (double) y1, 0.0D);
 		tessellator.draw();
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
     }
 
 

@@ -8,6 +8,7 @@ import mods.battlegear2.heraldry.HeraldryIcon;
 import mods.battlegear2.heraldry.SigilHelper;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
@@ -20,23 +21,23 @@ import java.util.List;
 
 public class HeraldryArmourModel extends ModelBiped{
 
-	ItemStack stack;
-	int armourSlot;
+	private ItemStack stack;
+	private final int armourSlot;
 	
-	public boolean renderDecorations = true;
-	public float helmOffset;
+	private boolean renderDecorations = false;
+	private float helmOffset;
 	
 	public HeraldryArmourModel(int par1) {
 		super(par1==2 ? 0.4F : 1F);
 		this.armourSlot = par1;
-		
+		bipedHeadwear.cubeList.clear();
 		if(armourSlot == 2){
 			//bipedRightLeg = bipedRightLeg.setTextureOffset(40, 16);
-			
-			List<ModelBox> legBoxlist = bipedLeftLeg.cubeList;
+
 			bipedRightLeg.cubeList.clear();
 			bipedRightLeg.setTextureOffset(40, 16);
 			bipedRightLeg.mirror = true;
+			List<ModelBox> legBoxlist = bipedLeftLeg.cubeList;
 			for (ModelBox modelBox : legBoxlist) {
 				bipedRightLeg.addBox(modelBox.posX1, modelBox.posY1, modelBox.posZ1, 
 						(int)(modelBox.posX2 - modelBox.posX1),
@@ -61,10 +62,10 @@ public class HeraldryArmourModel extends ModelBiped{
 		//Allows for proper enchantment rendering
 		if(GL11.glIsEnabled(GL11.GL_BLEND)){
 			
-		}else{
-			GL11.glPushMatrix();
+		}else if(stack != null){
+			GlStateManager.pushMatrix();
 			IHeraldyArmour heraldryItem = (IHeraldyArmour)stack.getItem();
-			if(stack != null && heraldryItem.hasHeraldry(stack)){
+			if(heraldryItem.hasHeraldry(stack)){
 				byte[] code = heraldryItem.getHeraldry(stack);
 				//if helmet
 				if(armourSlot == 0 && renderDecorations){
@@ -78,7 +79,7 @@ public class HeraldryArmourModel extends ModelBiped{
 				
 				FMLClientHandler.instance().getClient().renderEngine.bindTexture(new ResourceLocation(heraldryItem.getBaseArmourPath(armourSlot)));//.bindTexture(heraldryItem.getBaseArmourPath(armourSlot));
 				float[] colour = SigilHelper.getPrimaryColourArray(code);
-				GL11.glColor3f(colour[0], colour[1], colour[2]);
+				GlStateManager.color(colour[0], colour[1], colour[2]);
 				this.bipedHead.render(par7);
 	            this.bipedBody.render(par7);
 	            this.bipedRightArm.render(par7);
@@ -96,19 +97,19 @@ public class HeraldryArmourModel extends ModelBiped{
 				}
 	
 	            colour = SigilHelper.getSecondaryColourArray(code);
-	            GL11.glColor3f(colour[0], colour[1], colour[2]);
-	            
-	            GL11.glEnable(GL11.GL_BLEND);
-	            GL11.glDepthFunc(GL11.GL_LEQUAL);
-	            //GL11.glDisable(GL11.GL_LIGHTING);
-	            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	            GL11.glMatrixMode(GL11.GL_TEXTURE);
+				GlStateManager.color(colour[0], colour[1], colour[2]);
+
+				GlStateManager.enableBlend();
+				GlStateManager.depthFunc(GL11.GL_LEQUAL);
+	            //GlStateManager.disableLighting();
+				GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+				GlStateManager.matrixMode(GL11.GL_TEXTURE);
 	            
 	            FMLClientHandler.instance().getClient().renderEngine.bindTexture(
                         new ResourceLocation(heraldryItem.getPatternArmourPath(PatternStore.DEFAULT, new HeraldryData(code).getPatternIndex(), armourSlot)));
-	            GL11.glLoadIdentity();
-	            
-	            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+				GlStateManager.loadIdentity();
+
+				GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 	            this.bipedHead.render(par7);
 	            this.bipedBody.render(par7);
 	            this.bipedRightArm.render(par7);
@@ -124,30 +125,30 @@ public class HeraldryArmourModel extends ModelBiped{
 						renderHelmDecoration(par1Entity.getRotationYawHead(), SigilHelper.getHelm(code), 1);
 					}
 				}
-	            
-	            GL11.glDisable(GL11.GL_LIGHTING);
+
+				GlStateManager.disableLighting();
 	            //If chestplate
 	            if(armourSlot == 1){
 	            	HeraldryIcon sigil = SigilHelper.getSigil(code);
 	            	if(!sigil.equals(HeraldryIcon.Blank)){
 		            	float[] colourIconPrimary = SigilHelper.getSigilPrimaryColourArray(code);
 		            	float[] colourIconSecondary = SigilHelper.getSigilSecondaryColourArray(code);
-		            	
-		            	GL11.glPushMatrix();
+
+						GlStateManager.pushMatrix();
 		            	HelaldyArmourPositions pos = HelaldyArmourPositions.values()[SigilHelper.getSigilPosition(code).ordinal()];
 		            	
 		            	bipedBody.postRender(0.0625F);
-		            	GL11.glTranslatef(-5*0.0625F, 0.0625F, -3*0.0625F-0.001F);
-		            	GL11.glScalef(0.6F, 0.6F, 1F);
-		            	
-		            	
-		            	GL11.glMatrixMode(GL11.GL_TEXTURE);
+						GlStateManager.translate(-5 * 0.0625F, 0.0625F, -3 * 0.0625F - 0.001F);
+						GlStateManager.scale(0.6F, 0.6F, 1F);
+
+
+						GlStateManager.matrixMode(GL11.GL_TEXTURE);
 				    	FMLClientHandler.instance().getClient().renderEngine.bindTexture(sigil.getForegroundImage());
-				    	GL11.glLoadIdentity();
-			            GL11.glMatrixMode(GL11.GL_MODELVIEW);
+						GlStateManager.loadIdentity();
+						GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 			            
-		            	for(int pass = 0; pass < pos.getPassess(); pass++){	
-		            		GL11.glPushMatrix();
+		            	for(int pass = 0; pass < pos.getPassess(); pass++){
+							GlStateManager.pushMatrix();
 			            	float x = pos.getSourceX(pass);
 					    	float y = pos.getSourceY(pass);
 					    	float xEnd = pos.getXEnd(pass);
@@ -155,28 +156,28 @@ public class HeraldryArmourModel extends ModelBiped{
 					    	boolean flipColours = pos.getAltColours(pass);
 					    	
 					    	if(flipColours){
-					    		GL11.glColor3f(colourIconSecondary[0],
-					    				colourIconSecondary[1],
-					    				colourIconSecondary[2]);
+								GlStateManager.color(colourIconSecondary[0],
+										colourIconSecondary[1],
+										colourIconSecondary[2]);
 					    	}else{
-					    		GL11.glColor3f(colourIconPrimary[0],
-					    				colourIconPrimary[1],
-					    				colourIconPrimary[2]);
+								GlStateManager.color(colourIconPrimary[0],
+										colourIconPrimary[1],
+										colourIconPrimary[2]);
 					    	}
 
 
 							renderTexturedQuad(x, yEnd, xEnd, y);
 
-							GL11.glPopMatrix();
+							GlStateManager.popMatrix();
 		            	}
-		            	
-		            	GL11.glMatrixMode(GL11.GL_TEXTURE);
+
+						GlStateManager.matrixMode(GL11.GL_TEXTURE);
 		    	    	FMLClientHandler.instance().getClient().renderEngine.bindTexture(sigil.getBackgroundImage());
-		    	    	GL11.glLoadIdentity();
-		                GL11.glMatrixMode(GL11.GL_MODELVIEW);
+						GlStateManager.loadIdentity();
+						GlStateManager.matrixMode(GL11.GL_MODELVIEW);
 		            	
-		            	for(int pass = 0; pass < pos.getPassess(); pass++){	
-		            		GL11.glPushMatrix();
+		            	for(int pass = 0; pass < pos.getPassess(); pass++){
+							GlStateManager.pushMatrix();
 			            	float x = pos.getSourceX(pass);
 					    	float y = pos.getSourceY(pass);
 					    	float xEnd = pos.getXEnd(pass);
@@ -184,39 +185,39 @@ public class HeraldryArmourModel extends ModelBiped{
 					    	boolean flipColours = pos.getAltColours(pass);
 					    	
 					    	if(!flipColours){
-					    		GL11.glColor3f(colourIconSecondary[0],
-					    				colourIconSecondary[1],
-					    				colourIconSecondary[2]);
+								GlStateManager.color(colourIconSecondary[0],
+										colourIconSecondary[1],
+										colourIconSecondary[2]);
 					    	}else{
-					    		GL11.glColor3f(colourIconPrimary[0],
-					    				colourIconPrimary[1],
-					    				colourIconPrimary[2]);
+								GlStateManager.color(colourIconPrimary[0],
+										colourIconPrimary[1],
+										colourIconPrimary[2]);
 					    	}
 
 							renderTexturedQuad(x, yEnd, xEnd, y);
 
-							GL11.glPopMatrix();
+							GlStateManager.popMatrix();
 		            	}
-		            	
-		            	
-		            	GL11.glPopMatrix();
+
+
+						GlStateManager.popMatrix();
 	            	}
 	            }
-	            
-	            
-	
-	            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-	            GL11.glMatrixMode(GL11.GL_TEXTURE);
-	            GL11.glDepthMask(true);
-	            GL11.glLoadIdentity();
-	            GL11.glMatrixMode(GL11.GL_MODELVIEW);
-	            GL11.glEnable(GL11.GL_LIGHTING);
-	            GL11.glDisable(GL11.GL_BLEND);
-	            GL11.glDepthFunc(GL11.GL_LEQUAL);
+
+
+
+				GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+				GlStateManager.matrixMode(GL11.GL_TEXTURE);
+				GlStateManager.depthMask(true);
+				GlStateManager.loadIdentity();
+				GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+				GlStateManager.enableLighting();
+				GlStateManager.disableBlend();
+				GlStateManager.depthFunc(GL11.GL_LEQUAL);
 	
 			}
-			
-			GL11.glPopMatrix();
+
+			GlStateManager.popMatrix();
 		}
 
 	}
@@ -235,55 +236,55 @@ public class HeraldryArmourModel extends ModelBiped{
 
 
 	public void renderHelmDecoration(float rot, byte style, int pass) {
-		GL11.glPushMatrix();
-		GL11.glTranslatef(0, helmOffset, 0);
+		GlStateManager.pushMatrix();
+		GlStateManager.translate(0, helmOffset, 0);
 		switch(style){
 		case 0: //None
 			break;
 		case 1:
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			bipedHead.postRender(0.0625F);	
-			GL11.glRotatef(90, 0, 1, 0);
-			GL11.glRotatef(180, 1, 0, 0);
-			GL11.glTranslatef(-1.25F+1F/16F, 0.5F, 0.5F/16);
+			GlStateManager.rotate(90, 0, 1, 0);
+			GlStateManager.rotate(180, 1, 0, 0);
+			GlStateManager.translate(-1.25F+1F/16F, 0.5F, 0.5F/16);
 			renderItemIn2D(1, 0.75F, 0.5F);
-			GL11.glPopMatrix();
+			GlStateManager.popMatrix();
 			break;
 		case 2: //Plume
 			
 			if(pass == 0){
-				GL11.glPushMatrix();
+				GlStateManager.pushMatrix();
 				bipedHead.postRender(0.0625F);	
-				GL11.glRotatef(90, 0, 1, 0);
-				GL11.glRotatef(180, 1, 0, 0);
-				GL11.glTranslatef(-1.25F+1F/16F+0.5F, 1F/16F, 0.5F/16);
+				GlStateManager.rotate(90, 0, 1, 0);
+				GlStateManager.rotate(180, 1, 0, 0);
+				GlStateManager.translate(-1.25F+1F/16F+0.5F, 1F/16F, 0.5F/16);
 				renderItemIn2D(0.75F, 0.5F, 0.5F);
-				GL11.glPopMatrix();
+				GlStateManager.popMatrix();
 			}else{
-				GL11.glPushMatrix();
+				GlStateManager.pushMatrix();
 				bipedHead.postRender(0.0625F);	
-				GL11.glRotatef(90, 0, 1, 0);
-				GL11.glRotatef(180, 1, 0, 0);
-				GL11.glTranslatef(-1.25F+1F/16F+0.5F, 1F/16F, 1F/16);
-				GL11.glScalef(1, 1, 2);
+				GlStateManager.rotate(90, 0, 1, 0);
+				GlStateManager.rotate(180, 1, 0, 0);
+				GlStateManager.translate(-1.25F+1F/16F+0.5F, 1F/16F, 1F/16);
+				GlStateManager.scale(1, 1, 2);
 
 				renderItemIn2D(0.75F, 0.5F, 0.5F);
-				GL11.glScalef(1, 1,0.5F);
-				GL11.glPopMatrix();
+				GlStateManager.scale(1, 1,0.5F);
+				GlStateManager.popMatrix();
 			}
 			break;
 		case 3: //Horns
-			GL11.glPushMatrix();
+			GlStateManager.pushMatrix();
 			bipedHead.postRender(0.0625F);	
-			GL11.glRotatef(180, 1, 0, 0);
-			GL11.glScalef(1.25F, 0.5F, 1.25F);
-			GL11.glTranslatef(-0.5F, 14F/16F, 0.5F/16);
+			GlStateManager.rotate(180, 1, 0, 0);
+			GlStateManager.scale(1.25F, 0.5F, 1.25F);
+			GlStateManager.translate(-0.5F, 14F/16F, 0.5F/16);
 			renderItemIn2D(0.5F, 0.25F, 0.25F);
-			GL11.glScalef(1F/1.25F, 1F/0.5F, 1F/1.25F);
-			GL11.glPopMatrix();
+			GlStateManager.scale(1F/1.25F, 1F/0.5F, 1F/1.25F);
+			GlStateManager.popMatrix();
 		}
-		GL11.glTranslatef(0, 0, -helmOffset);
-		GL11.glPopMatrix();
+		GlStateManager.translate(0, 0, -helmOffset);
+		GlStateManager.popMatrix();
 	}
 
 	/**

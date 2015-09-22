@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -224,7 +225,7 @@ public class BattlegearSigilGUI extends GuiContainer {
 	}
 
 	private void drawCrest(){
-		GL11.glColor4f(1, 1, 1, 1);
+		GlStateManager.color(1, 1, 1, 1);
 		Minecraft.getMinecraft().renderEngine.bindTexture(HeraldryCrestItemRenderer.map_overlay);
 		
 
@@ -235,10 +236,10 @@ public class BattlegearSigilGUI extends GuiContainer {
         	crestDirty = false;
         }
         
-        GL11.glColor3f(1F, 1F, 1F);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GlStateManager.color(1F, 1F, 1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableAlpha();
 
 
         currentCrest.updateDynamicTexture();
@@ -247,8 +248,8 @@ public class BattlegearSigilGUI extends GuiContainer {
         drawTexturedModalRect((width-400)/2 + 16, 50+16, 96, 96, 0, 0, 1, 1);
 
 
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.enableAlpha();
+        GlStateManager.disableBlend();
 
 	}
 	

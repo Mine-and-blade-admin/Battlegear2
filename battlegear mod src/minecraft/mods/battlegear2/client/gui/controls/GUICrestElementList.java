@@ -5,6 +5,7 @@ import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.RefreshableTexture;
 import mods.battlegear2.client.gui.BattlegearSigilGUI;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -79,10 +80,10 @@ public class GUICrestElementList extends GUIScrollList {
             dirtyTextures[listIndex] = false;
         }
 
-        GL11.glColor3f(1F, 1F, 1F);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glDisable(GL11.GL_ALPHA_TEST);
+        GlStateManager.color(1F, 1F, 1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GL11.GL_ONE, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GlStateManager.disableAlpha();
 
 
         dynamicTextures[listIndex].updateDynamicTexture();
@@ -97,8 +98,8 @@ public class GUICrestElementList extends GUIScrollList {
         }
 
 
-        GL11.glEnable(GL11.GL_ALPHA_TEST);
-        GL11.glDisable(GL11.GL_BLEND);
+        GlStateManager.enableAlpha();
+        GlStateManager.disableBlend();
 
     }
 

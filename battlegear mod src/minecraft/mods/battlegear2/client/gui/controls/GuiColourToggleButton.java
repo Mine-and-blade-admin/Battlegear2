@@ -2,7 +2,7 @@ package mods.battlegear2.client.gui.controls;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiColourToggleButton extends GuiToggleButton{
 
@@ -26,16 +26,16 @@ public class GuiColourToggleButton extends GuiToggleButton{
         {
 			FontRenderer fontrenderer = par1Minecraft.fontRendererObj;
 			par1Minecraft.getTextureManager().bindTexture(GuiToggleButton.resourceLocation);
-            GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;
 			int k = this.getHoverState(this.hovered);
 			this.drawTexturedModalRect(this.xPosition, this.yPosition, 200, k*15, this.width, this.height);
             
-            GL11.glColor4f(
-            		((float)((colour >> 16) & 0x000000FF)/255F),
-            		((float)((colour >>  8) & 0x000000FF)/255F),
-            		((float)((colour >>  0) & 0x000000FF)/255F),
-            		((float)((colour >>  24) & 0x000000FF)/255F));
+            GlStateManager.color(
+					((float) ((colour >> 16) & 0x000000FF) / 255F),
+					((float) ((colour >> 8) & 0x000000FF) / 255F),
+					((float) ((colour >> 0) & 0x000000FF) / 255F),
+					((float) ((colour >> 24) & 0x000000FF) / 255F));
             
             
             
