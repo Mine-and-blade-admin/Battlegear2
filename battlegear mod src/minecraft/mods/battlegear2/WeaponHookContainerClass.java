@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -15,6 +16,7 @@ import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -176,6 +178,13 @@ public final class WeaponHookContainerClass {
             if (!entityHit.isPotionActive(effect.getKey().getPotionID()) && effect.getValue() > roll) {
                 entityHit.addPotionEffect(new PotionEffect(effect.getKey()));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlock(PlayerUseItemEvent.Start use) {
+        if (use.duration > 0 && use.item.getItemUseAction() == EnumAction.BLOCK) {
+            use.setCanceled(true);
         }
     }
 }
