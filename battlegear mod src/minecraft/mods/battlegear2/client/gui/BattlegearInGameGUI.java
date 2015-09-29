@@ -2,6 +2,7 @@ package mods.battlegear2.client.gui;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.RenderItemBarEvent;
+import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.IArrowContainer2;
@@ -18,7 +19,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 
@@ -49,18 +49,18 @@ public class BattlegearInGameGUI extends Gui {
             zLevel = -90.0F;
 
             RenderItemBarEvent event = new RenderItemBarEvent.BattleSlots(renderEvent, true);
-            if(!MinecraftForge.EVENT_BUS.post(event)){
+            if(!BattlegearUtils.RENDER_BUS.post(event)){
                 renderBattleSlots(width / 2 + 121 + event.xOffset, height - 22 + event.yOffset, frame, true);
             }
             event = new RenderItemBarEvent.BattleSlots(renderEvent, false);
-            if(!MinecraftForge.EVENT_BUS.post(event)){
+            if(!BattlegearUtils.RENDER_BUS.post(event)){
                 renderBattleSlots(width / 2 - 184 + event.xOffset, height - 22 + event.yOffset, frame, false);
             }
 
             ItemStack offhand = ((InventoryPlayerBattle) mc.thePlayer.inventory).getCurrentOffhandWeapon();
             if(offhand!= null && offhand.getItem() instanceof IShield){
                 event = new RenderItemBarEvent.ShieldBar(renderEvent, offhand);
-                if(!MinecraftForge.EVENT_BUS.post(event))
+                if(!BattlegearUtils.RENDER_BUS.post(event))
                     renderBlockBar(width / 2 - 91 + event.xOffset, height - 35 + event.yOffset);
             }
 
@@ -70,7 +70,7 @@ public class BattlegearInGameGUI extends Gui {
                 ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, mc.thePlayer);
                 if(quiver != null){
                     event = new RenderItemBarEvent.QuiverSlots(renderEvent, mainhand, quiver);
-                    if(!MinecraftForge.EVENT_BUS.post(event))
+                    if(!BattlegearUtils.RENDER_BUS.post(event))
                         renderQuiverBar(quiver, frame, event.xOffset+width/2, event.yOffset);
                     quiverFound = true;
                 }
@@ -81,7 +81,7 @@ public class BattlegearInGameGUI extends Gui {
                     ItemStack quiver = QuiverArrowRegistry.getArrowContainer(mainhand, mc.thePlayer);
                     if (quiver != null) {
                         event = new RenderItemBarEvent.QuiverSlots(renderEvent, mainhand, quiver);
-                        if (!MinecraftForge.EVENT_BUS.post(event))
+                        if (!BattlegearUtils.RENDER_BUS.post(event))
                             renderQuiverBar(quiver, frame, event.xOffset + width / 2, event.yOffset);
                     }
                 }

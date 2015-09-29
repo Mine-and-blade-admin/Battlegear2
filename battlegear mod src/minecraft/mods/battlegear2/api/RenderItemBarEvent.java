@@ -5,7 +5,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
- * Events from {@link BattlegearInGameGUI} to {@link MinecraftForge.EVENT_BUS}
+ * Events from {@link BattlegearInGameGUI} to {@link BattlegearUtils.RENDER_BUS}
  * helping display HUD elements added to the in-game screen
  */
 public abstract class RenderItemBarEvent extends RenderGameOverlayEvent{
