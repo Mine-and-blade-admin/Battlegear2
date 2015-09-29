@@ -2,7 +2,6 @@ package mods.battlegear2.client;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.EnchantmentHelper;
-import mods.battlegear2.api.RenderItemBarEvent;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.weapons.Attributes;
@@ -18,6 +17,7 @@ import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -34,6 +34,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
@@ -66,38 +70,6 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
         quiverDetails = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverDetails.png");
         quiverBase = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverBase.png");
         ((IReloadableResourceManager) FMLClientHandler.instance().getClient().getResourceManager()).registerReloadListener(this);
-    }
-
-    /**
-     * Offset battle slots rendering according to config values
-     */
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void postRenderBar(RenderItemBarEvent.BattleSlots event) {
-        if(!event.isMainHand){
-            event.xOffset += BattlegearConfig.battleBarOffset[0];
-            event.yOffset += BattlegearConfig.battleBarOffset[1];
-        }else{
-            event.xOffset += BattlegearConfig.battleBarOffset[2];
-            event.yOffset += BattlegearConfig.battleBarOffset[3];
-        }
-    }
-
-    /**
-     * Offset quiver slots rendering according to config values
-     */
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void postRenderQuiver(RenderItemBarEvent.QuiverSlots event) {
-        event.xOffset += BattlegearConfig.quiverBarOffset[0];
-        event.yOffset += BattlegearConfig.quiverBarOffset[1];
-    }
-
-    /**
-     * Offset shield stamina rendering according to config values
-     */
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void postRenderShield(RenderItemBarEvent.ShieldBar event) {
-        event.xOffset += BattlegearConfig.shieldBarOffset[0];
-        event.yOffset += BattlegearConfig.shieldBarOffset[1];
     }
 
     /**
@@ -275,18 +247,27 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
                 BlockPos pos = target.getBlockPos();
                 World world = player.getEntityWorld();
                 Block block = world.getBlockState(pos).getBlock();
-                if (block.isAir(world, pos))
-                {
-                    return null;
+                if (!block.isAir(world, pos)) {
+                    ItemStack temp = block.getPickBlock(target, world, pos);
+                    if (temp!=null && player.capabilities.isCreativeMode && GuiScreen.isCtrlKeyDown()) {
+                        TileEntity te = world.getTileEntity(pos);
+                        if(te!=null){
+                            NBTTagCompound nbt = new NBTTagCompound();
+                            te.writeToNBT(nbt);
+                            temp.setTagInfo("BlockEntityTag", nbt);
+
+                            NBTTagList lore = new NBTTagList();
+                            lore.appendTag(new NBTTagString("(+NBT)"));
+                            NBTTagCompound display = new NBTTagCompound();
+                            display.setTag("Lore", lore);
+                            temp.setTagInfo("display", display);
+                        }
+                    }
+                    return temp;
                 }
-                return block.getPickBlock(target, world, pos);
             }
-            else
+            else if(target.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY && target.entityHit != null && player.capabilities.isCreativeMode)
             {
-                if (target.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY || target.entityHit == null || !player.capabilities.isCreativeMode)
-                {
-                    return null;
-                }
                 return target.entityHit.getPickedResult(target);
             }
         }
