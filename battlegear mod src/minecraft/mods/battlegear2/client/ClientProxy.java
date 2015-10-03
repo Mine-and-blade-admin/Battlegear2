@@ -201,7 +201,7 @@ public final class ClientProxy extends CommonProxy {
     }
 
     /**
-     * Finds what block or object the mouse is over at the specified partial tick time. Args: partialTickTime
+     * Finds what block or object the mouse is over at the specified distance. Args: distance
      */
     @Override
     public MovingObjectPosition getMouseOver(double d0)

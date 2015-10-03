@@ -70,6 +70,8 @@ public interface Attributes {
     UUID mountedBonusUUID = UUID.fromString("fd234540-d099-4a05-a4ac-0ad7c11a8b65");
     /**
      * Additional damage applied when a living attacker is riding
+     * Base value is 0, so at least one modifier with "add" (ie index=0) operation is required
+     * for other modifiers to do anything
      */
     RangedAttribute mountedBonus = new RangedAttribute(null, "weapon.mountedBonus", 0.0D, 0.0D, Double.MAX_VALUE);
 }
