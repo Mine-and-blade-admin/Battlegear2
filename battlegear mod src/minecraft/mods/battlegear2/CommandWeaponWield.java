@@ -115,9 +115,10 @@ public final class CommandWeaponWield extends CommandBase{
                         result = true;
                 }
             }
-            if(result)
+            if(result) {
+                var1.setCommandStat(CommandResultStats.Type.AFFECTED_ITEMS, itemStack.stackSize);
                 notifyOperators(var1, this, "commands.weaponwield.set", itemStack);
-            else
+            }else
                 throw new WrongUsageException(getCommandUsage(var1), itemStack);
         }
     }
