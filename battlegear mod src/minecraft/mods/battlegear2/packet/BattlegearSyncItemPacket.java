@@ -47,7 +47,7 @@ public final class BattlegearSyncItemPacket extends AbstractMBPacket {
                 if(!ItemStack.areItemStacksEqual(this.player.getCurrentEquippedItem(), temp))
                     BattlegearUtils.setPlayerCurrentItem(this.player, temp);
 
-                for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
+                for (int i = 0; i < ((InventoryPlayerBattle) this.player.inventory).extraItems.length; i++) {
                     ItemStack stack = ByteBufUtils.readItemStack(inputStream);
                     if(!ItemStack.areItemStacksEqual(this.player.inventory.getStackInSlot(InventoryPlayerBattle.OFFSET + i), stack))
                         ((InventoryPlayerBattle) this.player.inventory).setInventorySlotContents(InventoryPlayerBattle.OFFSET + i, stack, false);
@@ -76,7 +76,7 @@ public final class BattlegearSyncItemPacket extends AbstractMBPacket {
         if(!player.worldObj.isRemote) {
             ByteBufUtils.writeItemStack(out, inventory.getCurrentItem());
 
-            for (int i = 0; i < InventoryPlayerBattle.EXTRA_INV_SIZE; i++) {
+            for (int i = 0; i < ((InventoryPlayerBattle) this.player.inventory).extraItems.length; i++) {
                 ByteBufUtils.writeItemStack(out, inventory.getStackInSlot(i + InventoryPlayerBattle.OFFSET));
             }
         }

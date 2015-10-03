@@ -27,13 +27,12 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     public static int WEAPON_SETS = 3;
 
     public static int EXTRA_ITEMS = WEAPON_SETS * 2;
-    public static int EXTRA_INV_SIZE = EXTRA_ITEMS + 6 + 6;
     //The "battle" extra slots
     public ItemStack[] extraItems;
 
     public InventoryPlayerBattle(EntityPlayer entityPlayer) {
         super(entityPlayer);
-        extraItems = new ItemStack[EXTRA_INV_SIZE];
+        extraItems = new ItemStack[EXTRA_ITEMS];
     }
 
     /**
@@ -41,6 +40,15 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     public boolean isBattlemode() {
         return this.currentItem >= OFFSET && this.currentItem < OFFSET + EXTRA_ITEMS;
+    }
+
+    /**
+     * Resize currentItem "battle" upper bound for all players to fit this player's.
+     */
+    private void resizeExtra(){
+        if(EXTRA_ITEMS < extraItems.length){
+            EXTRA_ITEMS = extraItems.length;
+        }
     }
 
     /**
@@ -71,6 +79,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
                 temp = new ItemStack[extraItems.length+1];
                 System.arraycopy(extraItems, 0, temp, 0, extraItems.length);
                 extraItems = temp;
+                resizeExtra();
                 return OFFSET + extraItems.length - 1;
         }
         return Integer.MIN_VALUE;//Impossible because of byte cast in inventory NBT
@@ -122,7 +131,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
     /**
      * Scroll the currentItem possible values
-     * @param direction if >0: in the natural order, if <0: in the opposite order
+     * @param direction if <0: in the natural order, if >0: in the opposite order
      */
     @Override
     @SideOnly(Side.CLIENT)
@@ -130,17 +139,15 @@ public class InventoryPlayerBattle extends InventoryPlayer {
         if (isBattlemode()) {
 
         	if (direction > 0){
-        		direction = 1;
+                currentItem--;
+                if (currentItem < OFFSET) {
+                    currentItem = OFFSET + WEAPON_SETS - 1;
+                }
             }else if (direction != 0){
-            	direction = -1;
-            }
-
-            //noinspection StatementWithEmptyBody
-            for (currentItem -= direction; currentItem < OFFSET; currentItem += WEAPON_SETS) {
-            }
-
-            while (currentItem >= OFFSET + WEAPON_SETS) {
-                currentItem -= WEAPON_SETS;
+                currentItem++;
+                if (currentItem >= OFFSET + WEAPON_SETS) {
+                    currentItem = OFFSET;
+                }
             }
 
         } else {
@@ -264,17 +271,15 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     }
 
     /**
-     * Get the stack in given slot, when closing the container
+     * Remove the stack in given slot, and return it
      * @param slot to get the content from
      * @return the stack that is stored in given slot
      */
     @Override
     public ItemStack getStackInSlotOnClosing(int slot) {
-        if (slot >= OFFSET) {
-            return extraItems[slot - OFFSET];
-        } else {
-            return super.getStackInSlotOnClosing(slot);
-        }
+        ItemStack result = getStackInSlot(slot);
+        setInventorySlotContents(slot, null);
+        return result;
     }
 
     /**
@@ -385,6 +390,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
                 }
             }
         }
+        resizeExtra();
     }
 
     /**
