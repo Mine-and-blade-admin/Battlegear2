@@ -67,8 +67,8 @@ public final class BattlegearClientTickHandeler {
     public static final BattlegearClientTickHandeler INSTANCE = new BattlegearClientTickHandeler();
 
     private BattlegearClientTickHandeler(){
-        drawWeapons = new KeyBinding("Draw Weapons", Keyboard.KEY_R, "key.categories.gameplay");
-        special = new KeyBinding("Special", Keyboard.KEY_Z, "key.categories.gameplay");
+        drawWeapons = new KeyBinding("key.drawWeapons", Keyboard.KEY_R, "key.categories.gameplay");
+        special = new KeyBinding("key.special", Keyboard.KEY_Z, "key.categories.gameplay");
         ClientRegistry.registerKeyBinding(drawWeapons);
         ClientRegistry.registerKeyBinding(special);
         mc = FMLClientHandler.instance().getClient();
