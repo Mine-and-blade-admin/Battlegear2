@@ -114,7 +114,9 @@ public final class WeaponHookContainerClass {
             if (source.getRNG().nextDouble() < chance) {
                 for (int effect : dazeEffects) {
                     if (!hurt.entityLiving.isPotionActive(effect)) {
-                        hurt.entityLiving.addPotionEffect(new PotionEffect(effect, 3 * 20, 100));
+                        PotionEffect potion = new PotionEffect(effect, 3 * 20, 100);
+                        potion.getCurativeItems().clear();
+                        hurt.entityLiving.addPotionEffect(potion);
                     }
                 }
             }
