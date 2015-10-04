@@ -45,7 +45,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
     /**
      * Resize currentItem "battle" upper bound for all players to fit this player's.
      */
-    private void resizeExtra(){
+    public void resizeExtra(){
         if(EXTRA_ITEMS < extraItems.length){
             EXTRA_ITEMS = extraItems.length;
         }
