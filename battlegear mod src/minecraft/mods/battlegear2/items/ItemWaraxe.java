@@ -1,23 +1,17 @@
 package mods.battlegear2.items;
 
 import com.google.common.collect.Multimap;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import mods.battlegear2.api.weapons.IPenetrateWeapon;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLog;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 //Should we make this also use the heraldry? It actually doesn't look as good as the sword (and makes the sword a little more special)
-public class ItemWaraxe extends OneHandedWeapon implements IPenetrateWeapon{ // implements IHeraldyItem{ Don't know if we want to do this or not
+public class ItemWaraxe extends OneHandedWeapon { // implements IHeraldyItem{ Don't know if we want to do this or not
 	
 	private final int ignoreDamageAmount;
-	
-	/*
-	private Icon baseIcon;
-	private Icon trimIcon;
-	private Icon postRenderIcon;
-	 */
+
 	public ItemWaraxe(ToolMaterial material, String name, int ignoreDamageAmount) {
 		super(material,name);
 		this.ignoreDamageAmount = ignoreDamageAmount;
@@ -38,10 +32,5 @@ public class ItemWaraxe extends OneHandedWeapon implements IPenetrateWeapon{ // 
 	public boolean canHarvestBlock(Block par1Block)//Waraxe can harvest logs
     {
         return par1Block instanceof BlockLog;
-    }
-
-    @Override
-    public int getPenetratingPower(ItemStack stack) {
-        return ignoreDamageAmount;
     }
 }

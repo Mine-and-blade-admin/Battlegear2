@@ -6,7 +6,7 @@ import net.minecraft.potion.PotionEffect;
 import java.util.Map;
 
 /**
- * Also @see Attributes#daze
+ * Also {@see Attributes#daze}
  */
 public interface IPotionEffect {
 

@@ -4,7 +4,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 
 /**
- * See Attributes#attackSpeed
+ * {@see Attributes#attackSpeed}
  */
 @Deprecated
 public interface IHitTimeModifier {

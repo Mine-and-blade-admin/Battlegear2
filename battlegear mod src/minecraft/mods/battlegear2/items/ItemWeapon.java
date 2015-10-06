@@ -8,8 +8,11 @@ import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.world.World;
 
 import java.util.Locale;
 //Made this extend the sword class (allows them to be enchanted)
@@ -51,5 +54,20 @@ public abstract class ItemWeapon extends ItemSword implements IBattlegearWeapon,
 	public boolean canHarvestBlock(Block par1Block)
 	{
 		return false;
+	}
+
+	@Override
+	public final ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer){
+		return par1ItemStack;
+	}
+
+	@Override
+	public final EnumAction getItemUseAction(ItemStack par1ItemStack){
+		return EnumAction.NONE;
+	}
+
+	@Override
+	public final int getMaxItemUseDuration(ItemStack itemStack){
+		return 0;
 	}
 }

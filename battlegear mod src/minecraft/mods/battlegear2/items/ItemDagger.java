@@ -6,12 +6,9 @@ import mods.battlegear2.api.weapons.IBackStabbable;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ItemDagger extends OneHandedWeapon implements IBackStabbable {
@@ -42,20 +39,5 @@ public class ItemDagger extends OneHandedWeapon implements IBackStabbable {
 	@Override//Here we simply cause more damage (hit will touch twice, one here and the other called vanilla)
 	public boolean onBackStab(EntityLivingBase entityHit, EntityLivingBase entityHitting){
         return entityHit.attackEntityFrom(new EntityDamageSource(Battlegear.CUSTOM_DAMAGE_SOURCE + ".backstab", entityHitting), this.baseDamage);
-    }
-
-    @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer){
-        return par1ItemStack;
-    }
-
-    @Override
-    public EnumAction getItemUseAction(ItemStack par1ItemStack){
-        return EnumAction.NONE;
-    }
-
-    @Override
-    public int getMaxItemUseDuration(ItemStack itemStack){
-        return 0;
     }
 }

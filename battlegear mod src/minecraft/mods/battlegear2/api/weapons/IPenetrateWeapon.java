@@ -3,8 +3,9 @@ package mods.battlegear2.api.weapons;
 import net.minecraft.item.ItemStack;
 
 /**
- * Also {@see Attributes#armourPenetrate}
+ * {@see Attributes#armourPenetrate}
  */
+@Deprecated
 public interface IPenetrateWeapon {
 	/**
 	 * The amount of damage bypassing armor

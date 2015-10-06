@@ -203,7 +203,7 @@ public final class BattlemodeHookContainerClass {
         final int j = itemStack.getMetadata();
         ItemStack itemstack1 = itemStack.useItemRightClick(entityPlayer.getEntityWorld(), entityPlayer);
 
-        if (itemstack1 == itemStack && (itemstack1 == null || itemstack1.stackSize == i && (side.isServer() ? (itemstack1.getMaxItemUseDuration() <= 0 && itemstack1.getMetadata() == j) : true)))
+        if (itemstack1 == itemStack && (itemstack1 == null || itemstack1.stackSize == i && (side.isClient() || (itemstack1.getMaxItemUseDuration() <= 0 && itemstack1.getMetadata() == j))))
         {
             return false;
         }else{

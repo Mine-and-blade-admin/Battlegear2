@@ -14,9 +14,11 @@ import net.minecraft.entity.*;
 import net.minecraft.entity.ai.attributes.BaseAttributeMap;
 import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
+import net.minecraft.network.play.server.S12PacketEntityVelocity;
 import net.minecraft.potion.Potion;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.stats.StatList;
@@ -25,6 +27,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -217,15 +220,17 @@ public class BattlegearUtils {
     public static boolean checkForRightClickFunction(ItemStack stack) {
         if (stack.getItemUseAction() == EnumAction.BLOCK || stack.getItemUseAction() == EnumAction.NONE) {
             Class<?> c = stack.getItem().getClass();
-            while (!(c.equals(Item.class) || c.equals(ItemTool.class) || c.equals(ItemSword.class))) {
+            while (!c.equals(Item.class)) {
+                if(c.equals(ItemTool.class) || c.equals(ItemSword.class)){
+                    return false;
+                }
                 if(getBlackListedMethodIn(c)){
                     return true;
                 }
-
                 c = c.getSuperclass();
             }
 
-            return stack.getMaxItemUseDuration() < 1;
+            return stack.getMaxItemUseDuration() > 0;
         }
         return true;
     }
@@ -235,7 +240,7 @@ public class BattlegearUtils {
             try {
                 c.getDeclaredMethod(itemBlackListMethodNames[i], itemBlackListMethodParams[i]);
                 return true;
-            } catch (Exception ignored) {
+            } catch (Throwable ignored) {
             }
         }
         return false;
@@ -268,107 +273,113 @@ public class BattlegearUtils {
      * Reset everything back if the attack is cancelled by {@link AttackEntityEvent} or {@link Item#onLeftClickEntity(ItemStack, EntityPlayer, Entity)}
      * Used as a hook by {@link IBattlePlayer}
      * @param player the attacker
-     * @param par1Entity the attacked
+     * @param target the attacked
      */
-    public static void attackTargetEntityWithCurrentOffItem(EntityPlayer player, Entity par1Entity){
+    public static void attackTargetEntityWithCurrentOffItem(EntityPlayer player, Entity target){
         refreshAttributes(player, false);
-        if (MinecraftForge.EVENT_BUS.post(new AttackEntityEvent(player, par1Entity))){
+        if (!ForgeHooks.onPlayerAttackTarget(player, target)){
             refreshAttributes(player, true);
             return;
         }
-        ItemStack stack = player.getCurrentEquippedItem();
-        if (stack != null && stack.getItem().onLeftClickEntity(stack, player, par1Entity)){
-            refreshAttributes(player, true);
-            return;
-        }
-        if (par1Entity.canAttackWithItem()) {
-            if (!par1Entity.hitByEntity(player)){
-                float f = (float)player.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
-                int i = EnchantmentHelper.getKnockbackModifier(player);
-                float f1 = 0.0F;
+        if (target.canAttackWithItem() && !target.hitByEntity(player)){
+            float f = (float)player.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
+            int i = EnchantmentHelper.getKnockbackModifier(player);
+            float f1 = 0.0F;
 
-                if (par1Entity instanceof EntityLivingBase){
-                    f1 = EnchantmentHelper.func_152377_a(stack, ((EntityLivingBase) par1Entity).getCreatureAttribute());
-                }else{
-                    f1 = EnchantmentHelper.func_152377_a(stack, EnumCreatureAttribute.UNDEFINED);
+            if (target instanceof EntityLivingBase){
+                f1 = EnchantmentHelper.func_152377_a(player.getHeldItem(), ((EntityLivingBase) target).getCreatureAttribute());
+            }else{
+                f1 = EnchantmentHelper.func_152377_a(player.getHeldItem(), EnumCreatureAttribute.UNDEFINED);
+            }
+            if (player.isSprinting()){
+                ++i;
+            }
+
+            if (f > 0.0F || f1 > 0.0F){
+                boolean flag = player.fallDistance > 0.0F && !player.onGround && !player.isOnLadder() && !player.isInWater() && !player.isPotionActive(Potion.blindness) && player.ridingEntity == null && target instanceof EntityLivingBase;
+
+                if (flag && f > 0.0F){
+                    f *= 1.5F;
                 }
-                if (player.isSprinting()){
-                    ++i;
+                f += f1;
+                boolean flag1 = false;
+                int j = EnchantmentHelper.getFireAspectModifier(player);
+
+                if (target instanceof EntityLivingBase && j > 0 && !target.isBurning()){
+                    flag1 = true;
+                    target.setFire(1);
                 }
 
-                if (f > 0.0F || f1 > 0.0F){
-                    boolean flag = player.fallDistance > 0.0F && !player.onGround && !player.isOnLadder() && !player.isInWater() && !player.isPotionActive(Potion.blindness) && player.ridingEntity == null && par1Entity instanceof EntityLivingBase;
+                double d0 = target.motionX;
+                double d1 = target.motionY;
+                double d2 = target.motionZ;
+                boolean flag2 = target.attackEntityFrom(DamageSource.causePlayerDamage(player), f);
 
-                    if (flag && f > 0.0F){
-                        f *= 1.5F;
+                if (flag2){
+                    if (i > 0){
+                        target.addVelocity((double)(-MathHelper.sin(player.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F), 0.1D, (double)(MathHelper.cos(player.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F));
+                        player.motionX *= 0.6D;
+                        player.motionZ *= 0.6D;
+                        player.setSprinting(false);
                     }
-                    f += f1;
-                    boolean flag1 = false;
-                    int j = EnchantmentHelper.getFireAspectModifier(player);
-
-                    if (par1Entity instanceof EntityLivingBase && j > 0 && !par1Entity.isBurning()){
-                        flag1 = true;
-                        par1Entity.setFire(1);
+                    if (target instanceof EntityPlayerMP && target.velocityChanged)
+                    {
+                        ((EntityPlayerMP)target).playerNetServerHandler.sendPacket(new S12PacketEntityVelocity(target));
+                        target.velocityChanged = false;
+                        target.motionX = d0;
+                        target.motionY = d1;
+                        target.motionZ = d2;
                     }
 
-                    boolean flag2 = par1Entity.attackEntityFrom(DamageSource.causePlayerDamage(player), f);
+                    if (flag){
+                        player.onCriticalHit(target);
+                    }
 
-                    if (flag2){
-                        if (i > 0){
-                            par1Entity.addVelocity((double)(-MathHelper.sin(player.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F), 0.1D, (double)(MathHelper.cos(player.rotationYaw * (float)Math.PI / 180.0F) * (float)i * 0.5F));
-                            player.motionX *= 0.6D;
-                            player.motionZ *= 0.6D;
-                            player.setSprinting(false);
-                        }
+                    if (f1 > 0.0F){
+                        player.onEnchantmentCritical(target);
+                    }
 
-                        if (flag){
-                            player.onCriticalHit(par1Entity);
-                        }
+                    if (f >= 18.0F){
+                        player.triggerAchievement(AchievementList.overkill);
+                    }
 
-                        if (f1 > 0.0F){
-                            player.onEnchantmentCritical(par1Entity);
-                        }
+                    player.setLastAttacker(target);
 
-                        if (f >= 18.0F){
-                            player.triggerAchievement(AchievementList.overkill);
-                        }
+                    if (target instanceof EntityLivingBase){
+                        EnchantmentHelper.func_151384_a((EntityLivingBase)target, player);
+                    }
 
-                        player.setLastAttacker(par1Entity);
+                    EnchantmentHelper.func_151385_b(player, target);
+                    ItemStack itemstack = player.getCurrentEquippedItem();
+                    if(itemstack != null) {
+                        Object object = target;
 
-                        if (par1Entity instanceof EntityLivingBase){
-                            EnchantmentHelper.func_151384_a((EntityLivingBase)par1Entity, player);
-                        }
-
-                        EnchantmentHelper.func_151385_b(player, par1Entity);
-                        ItemStack itemstack = player.getCurrentEquippedItem();
-                        Object object = par1Entity;
-
-                        if (par1Entity instanceof EntityDragonPart){
-                            IEntityMultiPart ientitymultipart = ((EntityDragonPart)par1Entity).entityDragonObj;
-                            if (ientitymultipart != null && ientitymultipart instanceof EntityLivingBase){
+                        if (target instanceof EntityDragonPart) {
+                            IEntityMultiPart ientitymultipart = ((EntityDragonPart) target).entityDragonObj;
+                            if (ientitymultipart != null && ientitymultipart instanceof EntityLivingBase) {
                                 object = ientitymultipart;
                             }
                         }
 
-                        if (itemstack != null && object instanceof EntityLivingBase){
-                            itemstack.hitEntity((EntityLivingBase)object, player);
-                            if (itemstack.stackSize <= 0){
+                        if (object instanceof EntityLivingBase) {
+                            itemstack.hitEntity((EntityLivingBase) object, player);
+                            if (itemstack.stackSize <= 0) {
                                 player.destroyCurrentEquippedItem();
                             }
                         }
+                    }
 
-                        if (par1Entity instanceof EntityLivingBase){
-                            player.addStat(StatList.damageDealtStat, Math.round(f * 10.0F));
-                            if (j > 0){
-                                par1Entity.setFire(j * 4);
-                            }
+                    if (target instanceof EntityLivingBase){
+                        player.addStat(StatList.damageDealtStat, Math.round(f * 10.0F));
+                        if (j > 0){
+                            target.setFire(j * 4);
                         }
+                    }
 
-                        player.addExhaustion(0.3F);
-                    }
-                    else if (flag1){
-                        par1Entity.extinguish();
-                    }
+                    player.addExhaustion(0.3F);
+                }
+                else if (flag1){
+                    target.extinguish();
                 }
             }
         }
@@ -396,7 +407,7 @@ public class BattlegearUtils {
         ItemStack copyStack = itemstack != null ? itemstack.copy() : null;
         boolean entityInteract = entity.interactFirst(entityPlayer);
         if(!entityInteract){//Entity interaction didn't happen
-            if(BattlegearUtils.isPlayerInBattlemode(entityPlayer)){//We can try left hand
+            if(isPlayerInBattlemode(entityPlayer)){//We can try left hand
                 offset = true;
                 itemstack = refreshAttributes(entityPlayer, false);
                 copyStack = itemstack != null ? itemstack.copy() : null;
@@ -410,7 +421,7 @@ public class BattlegearUtils {
                     itemstack = copyStack;
                 }
                 itemInteract = itemstack.interactWithEntity(entityPlayer, (EntityLivingBase) entity);
-                if(!itemInteract && !offset && BattlegearUtils.isPlayerInBattlemode(entityPlayer)){//No interaction with right hand item
+                if(!itemInteract && !offset && isPlayerInBattlemode(entityPlayer)){//No interaction with right hand item
                     offset = true;
                     itemstack = refreshAttributes(entityPlayer, false);
                     if(itemstack != null) {//Try left hand item
@@ -426,15 +437,15 @@ public class BattlegearUtils {
             if(offset){//Hand was swapped, unswap
                 refreshAttributes(entityPlayer, true);
             }
-            if(!itemInteract && BattlegearUtils.isPlayerInBattlemode(entityPlayer)){
-                ItemStack offhandItem = ((InventoryPlayerBattle)event.entityPlayer.inventory).getCurrentOffhandWeapon();
+            if(!itemInteract && isPlayerInBattlemode(entityPlayer)){
+                ItemStack offhandItem = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
                 PlayerEventChild.OffhandAttackEvent offAttackEvent = new PlayerEventChild.OffhandAttackEvent(event, offhandItem);
                 if(!MinecraftForge.EVENT_BUS.post(offAttackEvent)){
                     if (offAttackEvent.swingOffhand){
                         sendOffSwingEvent(event, offAttackEvent.offHand);
                     }
                     if (offAttackEvent.shouldAttack) {
-                        ((IBattlePlayer) event.entityPlayer).attackTargetEntityWithCurrentOffItem(offAttackEvent.getTarget());
+                        ((IBattlePlayer) entityPlayer).attackTargetEntityWithCurrentOffItem(offAttackEvent.getTarget());
                     }
                     if(offAttackEvent.cancelParent){
                         return true;
@@ -521,8 +532,8 @@ public class BattlegearUtils {
      * @param entityPlayer the {@link EntityPlayer} who finished using the itemInUse
      * @param itemInUse the {@link ItemStack} which finished being used
      * @param itemInUseCount the {@link EntityPlayer} item use count
-     * @param previousStackSize the itemInUse {@link ItemStack#stackSize} before {@link ItemStack#onFoodEaten(World, EntityPlayer)}
-     * @param result from itemInUse#onFoodEaten(entityPlayer.worldObj, entityPlayer)
+     * @param previousStackSize the itemInUse {@link ItemStack#stackSize} before {@link ItemStack#onItemUseFinish(World, EntityPlayer)}
+     * @param result from itemInUse#onItemUseFinish(entityPlayer.worldObj, entityPlayer)
      * @return the final resulting {@link ItemStack}
      */
     public static ItemStack beforeFinishUseEvent(EntityPlayer entityPlayer, ItemStack itemInUse, int itemInUseCount, ItemStack result, int previousStackSize) {
