@@ -2,6 +2,7 @@ package mods.mud;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.event.ClickEvent;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
@@ -117,10 +118,10 @@ public class ModUpdateDetector {
 	        config = new Configuration(new File(Loader.instance().getConfigDir(), "MUD.cfg"));
 	        Timer = config.get(Configuration.CATEGORY_GENERAL, "Update Time", 60, "The time in minutes between update checks").getInt() * 60 * 20;
             check = config.get(Configuration.CATEGORY_GENERAL, "Update Check Enabled", true, "Should MUD automatically check for updates");
-	        verbose = config.get(Configuration.CATEGORY_GENERAL, "Chat stats", false, "Should MUD print in chat its status").getBoolean();
+	        verbose = config.getBoolean("Chat stats", Configuration.CATEGORY_GENERAL, false, "Should MUD print in chat its status");
             enabled = check.getBoolean();
-            deleteOld = config.get(Configuration.CATEGORY_GENERAL, "Remove old file", true, "Should MUD try to remove old file when download is complete").getBoolean();
-            deleteFailed = config.get(Configuration.CATEGORY_GENERAL, "Remove failed download", true, "Should MUD try to remove the new file created if download is failed").getBoolean();
+            deleteOld = config.getBoolean("Remove old file", Configuration.CATEGORY_GENERAL, true, "Should MUD try to remove old file when download is complete");
+            deleteFailed = config.getBoolean("Remove failed download", Configuration.CATEGORY_GENERAL, true, "Should MUD try to remove the new file created if download is failed");
 	        if(config.hasChanged()){
 	            config.save();
 	        }
@@ -181,7 +182,7 @@ public class ModUpdateDetector {
                 chat.getChatStyle().setColor(EnumChatFormatting.RED);
                 sender.addChatMessage(chat);
                 chat = new ChatComponentTranslation("message.type.to.view");
-                chat.getChatStyle().setColor(EnumChatFormatting.RED);
+                chat.getChatStyle().setColor(EnumChatFormatting.RED).setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mud"));
                 sender.addChatMessage(chat);
             }
         }else if (verbose){
