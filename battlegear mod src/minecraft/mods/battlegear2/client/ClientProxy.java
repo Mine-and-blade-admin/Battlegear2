@@ -59,15 +59,11 @@ public final class ClientProxy extends CommonProxy {
     public static TextureAtlasSprite[] backgroundIcon;
 
     @Override
-    public void registerKeyHandelers() {
+    public void registerHandlers() {
         if(BattlegearConfig.enableGUIKeys){
             FMLCommonHandler.instance().bus().register(BattlegearGuiKeyHandler.INSTANCE);
         }
-    }
-
-    @Override
-    public void registerTickHandelers() {
-        super.registerTickHandelers();
+        super.registerHandlers();
         MinecraftForge.EVENT_BUS.register(BattlegearClientEvents.INSTANCE);
         FMLCommonHandler.instance().bus().register(BattlegearClientTickHandeler.INSTANCE);
         BattlegearUtils.RENDER_BUS.register(new BattlegearClientUtils());

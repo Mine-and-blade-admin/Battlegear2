@@ -45,6 +45,7 @@ public class Battlegear {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        logger = event.getModLog();
         knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", "", 25, new int[]{3, 7, 5, 3}, 15);
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
 
@@ -59,9 +60,7 @@ public class Battlegear {
                 e.printStackTrace();
             }
         }
-        logger = event.getModLog();
-        proxy.registerKeyHandelers();
-        proxy.registerTickHandelers();
+        proxy.registerHandlers();
         //Fetch early messages
         IMCEvent imc = new IMCEvent();
         imc.applyModContainer(Loader.instance().activeModContainer());

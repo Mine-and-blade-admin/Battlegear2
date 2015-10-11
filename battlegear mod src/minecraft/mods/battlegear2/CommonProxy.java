@@ -10,9 +10,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 
 public class CommonProxy {
 
-    public void registerKeyHandelers() {}
-
-    public void registerTickHandelers(){
+    public void registerHandlers(){
         FMLCommonHandler.instance().bus().register(BattlegearTickHandeler.INSTANCE);
         FMLCommonHandler.instance().bus().register(BgPlayerTracker.INSTANCE);
         MinecraftForge.EVENT_BUS.register(BattlemodeHookContainerClass.INSTANCE);
