@@ -41,6 +41,7 @@ import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -48,7 +49,6 @@ import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 public final class BattlegearClientTickHandeler {
@@ -149,31 +149,15 @@ public final class BattlegearClientTickHandeler {
 
     public void tickStart(EntityPlayer player) {
         if (renderPlayer.isEmpty()) {
-            Field[] fields = RenderManager.class.getDeclaredFields();
-            for (Field f : fields) {
-                if (Map.class.isAssignableFrom(f.getType())) {
-                    boolean changed = false;
-                    if (!f.isAccessible()) {
-                        f.setAccessible(true);
-                        changed = true;
-                    }
-                    try {
-                        Map map = (Map) f.get(mc.getRenderManager());
-                        Object object = map.keySet().iterator().next();
-                        if (object instanceof String) {
-                            renderPlayer.addAll(map.values());
-                            for (RenderPlayer render : renderPlayer) {
-                                render.layerRenderers.add(new LayerOffhandItem(render));
-                                if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver") < 0)
-                                    render.layerRenderers.add(new LayerQuiver(render));
-                            }
-                            break;
-                        } else if (changed) {
-                            f.setAccessible(false);
-                        }
-                    } catch (Throwable ignored) {
-                    }
+            try {
+                Map<String, RenderPlayer> map = ObfuscationReflectionHelper.getPrivateValue(RenderManager.class, mc.getRenderManager(), "skinMap", "field_178636_l");
+                renderPlayer.addAll(map.values());
+                for (RenderPlayer render : renderPlayer) {
+                    render.layerRenderers.add(new LayerOffhandItem(render));
+                    if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver") < 0)
+                        render.layerRenderers.add(new LayerQuiver(render));
                 }
+            } catch (Throwable ignored) {
             }
         }
         if(((IBattlePlayer)player).isBattlemode()){
