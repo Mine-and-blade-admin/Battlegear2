@@ -224,19 +224,21 @@ public final class ClientProxy extends CommonProxy {
     @Override
     public void tryUseTConstruct() {
     	try {
-            Class tabRegistry = Class.forName("tconstruct.client.tabs.TabRegistry");
-            Class abstractTab = Class.forName("tconstruct.client.tabs.AbstractTab");
-            Method registerTab = tabRegistry.getMethod("registerTab", abstractTab);
-            updateTab = tabRegistry.getMethod("updateTabValues", int.class, int.class, Class.class);
-            addTabs = tabRegistry.getMethod("addTabsToList", List.class);
-            registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab").newInstance());
-            if(Battlegear.debug){
-                registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.SigilTab").newInstance());
+            Object tcManager = Class.forName("tconstruct.TConstruct").getField("pulsar").get(null);
+            if((Boolean)tcManager.getClass().getMethod("isPulseLoaded", String.class).invoke(tcManager, "Tinkers' Armory")) {
+                Class<?> tabRegistry = Class.forName("tconstruct.client.tabs.TabRegistry");
+                Class abstractTab = Class.forName("tconstruct.client.tabs.AbstractTab");
+                Method registerTab = tabRegistry.getMethod("registerTab", abstractTab);
+                updateTab = tabRegistry.getMethod("updateTabValues", int.class, int.class, Class.class);
+                addTabs = tabRegistry.getMethod("addTabsToList", List.class);
+                registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab").newInstance());
+                if (Battlegear.debug) {
+                    registerTab.invoke(null, Class.forName("mods.battlegear2.client.gui.controls.SigilTab").newInstance());
+                }
+                tconstructEnabled = true;
             }
-		} catch (Exception e) {
-			return;
+		} catch (Throwable ignored) {
 		}
-    	tconstructEnabled = true;
 	}
 
     @Override
