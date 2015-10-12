@@ -46,10 +46,10 @@ archivesBaseName = config.mcversion + "-" + config.distname
 sourceSets {
     main {
         resources {
-            srcDirs 'battlegear mod src/minecraft' include('assets/**', '*.cfg', '*.png', '*.mcmeta', '*.info')
+            srcDir 'battlegear mod src/minecraft' include('assets/**', '*.cfg', '*.png', '*.mcmeta', '*.info')
         }
 	    java {
-	        srcDirs 'battlegear mod src/minecraft' include('mods/**')
+	        srcDir 'battlegear mod src/minecraft' include('mods/**')
 	    }
     }
 }
@@ -74,9 +74,8 @@ processResources {
     }
 }
 //The coremod manifest attributes
-def coremodManifest = {
-    attributes 'FMLCorePlugin': config.loadingPlugin
-    attributes 'FMLCorePluginContainsFMLMod': config.containsMod
+def coremodManifest = project.manifest {
+    attributes('FMLCorePlugin': config.loadingPlugin ,'FMLCorePluginContainsFMLMod': config.containsMod)
 }
 jar {
     //Place jar into distribution folder
@@ -85,7 +84,7 @@ jar {
     includeEmptyDirs = false
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     // Add Coremod Manifest
-    manifest coremodManifest
+    manifest = coremodManifest
 }
 //Perform checksum and add it next to the jar
 jar.doLast { task ->
@@ -134,7 +133,7 @@ task jarBGBin(type:Jar) {
         include 'LICENCE'
     }
     // Add Coremod Manifest
-    manifest coremodManifest
+    manifest = coremodManifest
 }
 
 task jarMUDBin(type:Jar){
@@ -151,6 +150,9 @@ task jarMUDBin(type:Jar){
     // Add license
     from(projectDir) {
         include 'LICENCE'
+    }
+    manifest{
+        attributes('Main-Class': 'mods.mud.utils.FileDeleter')
     }
 }
 tasks.build.dependsOn('jarMUDSrc','jarBGSrc','jarMUDBin','jarBGBin')
