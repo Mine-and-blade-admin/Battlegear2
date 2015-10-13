@@ -1,3 +1,9 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.9.0 ==
+* Implemented all attributes
+* Converted items and 'bow with arrow' to model system
+* Removed sword blocking
+* Support TinkersConstruct Armory module loading for inventory tabs
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.8.1 ==
 * Quick patch for Cauldron support
 * Quick fix handling some item crashes on server side

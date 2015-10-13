@@ -1,4 +1,11 @@
 <mod modid="battlegear2">
+    <mcVersion version="1.8">
+        <release type="release" version="1.0.9.0"
+                 url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
+                 download="NONE"
+                 md5="e33a00484f8b351b983c5763839135b4"
+                />
+    </mcVersion>
     <mcVersion version="1.7.10">
         <release type="release" version="1.0.8.1"
                  url="http://minecraft.curseforge.com/mc-mods/mb-battlegear-2/"
