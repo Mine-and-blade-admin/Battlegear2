@@ -1,3 +1,6 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.8.2 ==
+* Improved TinkersConstruct support for inventory tabs
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.8.1 ==
 * Minor client side inconsistency in battlemode API handling
 * Stop possible server crash when trying to insert modded items in battle inventory
