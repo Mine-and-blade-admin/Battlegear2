@@ -12,7 +12,7 @@ import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.inventory.CreativeTabMB_B_2;
 import mods.battlegear2.items.*;
 import mods.battlegear2.recipies.DyeRecipie;
-import mods.battlegear2.recipies.QuiverRecipie2;
+import mods.battlegear2.recipies.QuiverRecipe;
 import mods.battlegear2.recipies.ShieldRemoveArrowRecipie;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.creativetab.CreativeTabs;
@@ -253,13 +253,13 @@ public class BattlegearConfig {
 
 		if(quiver!=null){
 	        //Quiver recipes :
-	        if(Arrays.binarySearch(disabledRecipies, itemNames[2])  < 0)
+	        if(Arrays.binarySearch(disabledRecipies, itemNames[2]) < 0)
 	            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(quiver),
 	                "X X", "X X","XXX",'X', Items.leather));
-
-            RecipeSorter.register("battlegear:quiverfilling", QuiverRecipie2.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-	        GameRegistry.addRecipe(new QuiverRecipie2());
 		}
+
+        RecipeSorter.register("battlegear:quiverfilling", QuiverRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+        GameRegistry.addRecipe(new QuiverRecipe());
         RecipeSorter.register("battlegear:dyeing", DyeRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
         GameRegistry.addRecipe(new DyeRecipie());
 

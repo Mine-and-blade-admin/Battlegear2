@@ -1,13 +1,22 @@
 package mods.battlegear2.recipies;
 
 import mods.battlegear2.api.quiver.IArrowContainer2;
-import mods.battlegear2.utils.BattlegearConfig;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
-public final class QuiverRecipie2 implements IRecipe {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+/**
+ * Recipe to fill item instances of IArrowContainer2 with compatible arrows
+ * {@see IArrowContainer2#isCraftableWithArrows(ItemStack,ItemStack)}
+ */
+public final class QuiverRecipe implements IRecipe {
 
     @Override
     public boolean matches(InventoryCrafting inventorycrafting, World world) {
@@ -63,17 +72,61 @@ public final class QuiverRecipie2 implements IRecipe {
 
     @Override
     public int getRecipeSize() {
-        return 9;
+        return 10;
     }
 
     @Override
     public ItemStack getRecipeOutput() {
-        return new ItemStack(BattlegearConfig.quiver,1,0);
+        return null;
     }
 
     @Override
     public ItemStack[] getRemainingItems(InventoryCrafting inv) {
-        return new ItemStack[inv.getSizeInventory()];
+        int slot = getNextQuiver(inv, 0);
+        if(slot == -1){
+            return new ItemStack[0];
+        }
+        ItemStack quiver = inv.getStackInSlot(slot).copy();
+        List<ItemStack> arrows = new ArrayList<ItemStack>();
+        int i = 0;
+        for(; i < inv.getSizeInventory(); i++){
+            if(slot == i)
+                continue;
+            ItemStack stack = inv.getStackInSlot(i);
+            if(stack != null){
+                if(((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack)){
+                    arrows.add(stack);
+                }
+                else
+                    break;
+            }
+        }
+        if(!arrows.isEmpty())
+        {
+            Iterator<ItemStack> itr = arrows.iterator();
+            EntityPlayer player = ForgeHooks.getCraftingPlayer();
+            while(itr.hasNext()) {
+                ItemStack temp = itr.next();
+                ItemStack drop = ((IArrowContainer2)quiver.getItem()).addArrows(quiver, temp);
+                if(drop != null && drop.stackSize > 0) {
+                    temp = drop.copy();
+                    if(!player.inventory.addItemStackToInventory(temp)){
+                        player.dropPlayerItemWithRandomChoice(temp, false);
+                    }
+                }
+                itr.remove();
+            }
+            for(int index = 0; index < i; index++){
+                inv.setInventorySlotContents(index, null);
+            }
+            for(;i < inv.getSizeInventory(); i++){
+                ItemStack stack = inv.getStackInSlot(i);
+                if(stack != null){
+                    stack.stackSize++;
+                }
+            }
+        }
+        return new ItemStack[i];
     }
 
 }

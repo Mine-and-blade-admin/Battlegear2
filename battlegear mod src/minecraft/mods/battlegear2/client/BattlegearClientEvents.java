@@ -42,7 +42,6 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -69,7 +68,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
         quiverModel = new QuiverModel();
         quiverDetails = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverDetails.png");
         quiverBase = new ResourceLocation("battlegear2", "textures/armours/quiver/QuiverBase.png");
-        ((IReloadableResourceManager) FMLClientHandler.instance().getClient().getResourceManager()).registerReloadListener(this);
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
     }
 
     /**
@@ -90,7 +89,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
     public void renderPlayerLeftItemUsage(RenderLivingEvent.Pre event){
         if(event.entity instanceof EntityPlayer) {
             EntityPlayer entityPlayer = (EntityPlayer) event.entity;
-            if(event.renderer instanceof RenderPlayer && entityPlayer.inventory instanceof InventoryPlayerBattle) {
+            if(!entityPlayer.isSpectator() && event.renderer instanceof RenderPlayer && entityPlayer.inventory instanceof InventoryPlayerBattle) {
                 ItemStack offhand = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
                 if (offhand != null) {
                     ModelPlayer renderer = ((RenderPlayer) event.renderer).getPlayerModel();
@@ -200,7 +199,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void replacePickBlock(MouseEvent event){
         if(event.buttonstate){
-            Minecraft mc = FMLClientHandler.instance().getClient();
+            Minecraft mc = Minecraft.getMinecraft();
             if (mc.thePlayer != null) {
                 if(event.button-100 == mc.gameSettings.keyBindPickBlock.getKeyCode()){
                     event.setCanceled(true);
@@ -392,7 +391,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
     @SubscribeEvent(priority = EventPriority.LOW)
     public void postInitGui(GuiScreenEvent.InitGuiEvent.Post event){
         if (Battlegear.battlegearEnabled && event.gui instanceof InventoryEffectRenderer) {
-            if(!ClientProxy.tconstructEnabled || FMLClientHandler.instance().getClientPlayerEntity().capabilities.isCreativeMode) {
+            if(!ClientProxy.tconstructEnabled || Minecraft.getMinecraft().thePlayer.capabilities.isCreativeMode) {
                 onOpenGui(event.buttonList, ((InventoryEffectRenderer) event.gui).guiLeft-30, ((InventoryEffectRenderer) event.gui).guiTop);
             }
         }

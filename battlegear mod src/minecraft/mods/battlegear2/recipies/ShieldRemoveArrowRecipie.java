@@ -1,8 +1,6 @@
 package mods.battlegear2.recipies;
 
 import mods.battlegear2.api.shield.IArrowDisplay;
-import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
@@ -58,44 +56,36 @@ public final class ShieldRemoveArrowRecipie implements IRecipe{
 
     @Override
     public ItemStack getRecipeOutput() {
-        return new ItemStack(BattlegearConfig.shield[2], 1, 0);
+        return null;
     }
 
     @Override
     public ItemStack[] getRemainingItems(InventoryCrafting craftMatrix) {
         ItemStack[] result = new ItemStack[craftMatrix.getSizeInventory()];
-        ItemStack shield = null;
+        ItemStack shield;
         for (int i = 0; i < craftMatrix.getSizeInventory(); i++) {
             shield = craftMatrix.getStackInSlot(i);
             if (shield != null && shield.getItem() instanceof IArrowDisplay) {
-                break;
-            }
-            shield = null;
-        }
 
-        if (shield != null) {
+                int arrowCount = ((IArrowDisplay) shield.getItem()).getArrowCount(shield);
+                int j = 0;
+                while (arrowCount > 0) {
 
-            int arrowCount = ((IArrowDisplay) shield.getItem()).getArrowCount(shield);
-            int i = 0;
-            while (arrowCount > 0) {
-
-                int nextStackSize = Math.min(arrowCount, Items.arrow.getItemStackLimit());
-                arrowCount -= nextStackSize;
-                ItemStack temp = new ItemStack(Items.arrow, nextStackSize);
-                if (i < craftMatrix.getSizeInventory()) {
-                    result[i] = temp;
-                    i++;
-                } else {
-                    EntityPlayer player = ForgeHooks.getCraftingPlayer();
-                    if (!player.inventory.addItemStackToInventory(temp)) {
-                        EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
-                        if (entityitem != null) {
-                            entityitem.setNoPickupDelay();
-                            entityitem.setOwner(player.getCommandSenderName());
+                    int nextStackSize = Math.min(arrowCount, Items.arrow.getItemStackLimit());
+                    arrowCount -= nextStackSize;
+                    ItemStack temp = new ItemStack(Items.arrow, nextStackSize);
+                    if (j < craftMatrix.getSizeInventory()) {
+                        result[j] = temp;
+                        j++;
+                    } else {
+                        EntityPlayer player = ForgeHooks.getCraftingPlayer();
+                        if (!player.inventory.addItemStackToInventory(temp)) {
+                            player.dropPlayerItemWithRandomChoice(temp, false);
                         }
                     }
-                }
 
+                }
+                break;
             }
 
         }

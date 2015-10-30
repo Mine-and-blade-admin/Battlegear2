@@ -5,11 +5,14 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.packet.BattlegearSyncItemPacket;
+import mods.battlegear2.packet.LoginPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public final class BattlegearTickHandeler {
@@ -23,6 +26,13 @@ public final class BattlegearTickHandeler {
             tickStart(event.player);
         }else{
             tickEnd(event.player);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if(event.player instanceof EntityPlayerMP){
+            Battlegear.packetHandler.sendPacketToPlayer(new LoginPacket().generatePacket(), (EntityPlayerMP)event.player);
         }
     }
 
