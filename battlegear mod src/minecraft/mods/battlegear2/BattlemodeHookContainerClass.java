@@ -272,6 +272,12 @@ public final class BattlemodeHookContainerClass {
                 event.cancelParent = false;
             }
         }
+        if(event.shouldAttack && !event.entityPlayer.capabilities.isCreativeMode && !event.entityPlayer.isUsingItem()){
+            if(Battlegear.proxy.handleAttack(event.entityPlayer)){
+                event.shouldAttack = false;
+                event.swingOffhand = false;
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

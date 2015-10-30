@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,7 +39,6 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
@@ -196,13 +196,24 @@ public final class ClientProxy extends CommonProxy {
         Battlegear.packetHandler.sendPacketToServer(p);
     }
 
+    @Override
+    public boolean handleAttack(EntityPlayer entityPlayer) {
+        if(Minecraft.getMinecraft().thePlayer == entityPlayer && super.handleAttack(entityPlayer)){
+            KeyBinding use = Minecraft.getMinecraft().gameSettings.keyBindUseItem;
+            KeyBinding.setKeyBindState(use.getKeyCode(), false);
+            while(use.isPressed());
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Finds what block or object the mouse is over at the specified distance. Args: distance
      */
     @Override
     public MovingObjectPosition getMouseOver(double d0)
     {
-        Minecraft mc = FMLClientHandler.instance().getClient();
+        Minecraft mc = Minecraft.getMinecraft();
         if (mc.getRenderViewEntity() != null)
         {
             if (mc.theWorld != null)
