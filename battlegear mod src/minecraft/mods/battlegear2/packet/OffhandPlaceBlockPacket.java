@@ -100,7 +100,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
         }catch(Exception io){
             return;
         }
-        if(player == null || !(player instanceof EntityPlayerMP))
+        if(player == null || !(player instanceof EntityPlayerMP) || !BattlegearUtils.isPlayerInBattlemode(player))
             return;
         ItemStack offhandWeapon = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
         boolean flag = true;

@@ -14,9 +14,9 @@ import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 public abstract class AbstractMBPacket {
 
 	public final FMLProxyPacket generatePacket() {
-        ByteBuf buf = Unpooled.buffer();
+        PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
         write(buf);
-        return new FMLProxyPacket(new PacketBuffer(buf), getChannel());
+        return new FMLProxyPacket(buf, getChannel());
     }
 	
 	public abstract String getChannel();
