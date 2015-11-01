@@ -12,7 +12,7 @@ import net.minecraftforge.client.model.ModelLoader;
 import java.lang.reflect.Field;
 
 /**
- * Created by Olivier on 08/07/2015.
+ * Manipulate item models.
  */
 public class BaseModelLoader {
     protected final static String LAYER = "layer", BASE_LAYER = "layer0";
@@ -35,14 +35,21 @@ public class BaseModelLoader {
                     return (ModelBlock) f.get(model);
                 }
             }
-        }catch (ReflectiveOperationException e){
+        }catch (SecurityException e){
+            e.printStackTrace();
+        }catch (IllegalAccessException e){
             e.printStackTrace();
         }
         return null;
     }
 
     protected final IFlexibleBakedModel wrap(ModelBlock model){
-        return new IFlexibleBakedModel.Wrapper(bakeModel(model), Attributes.DEFAULT_BAKED_FORMAT);
+        try {
+            return new IFlexibleBakedModel.Wrapper(bakeModel(model), Attributes.DEFAULT_BAKED_FORMAT);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     protected final IBakedModel bakeModel(ModelBlock model) {

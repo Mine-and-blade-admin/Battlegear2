@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Created by Olivier on 01/06/2015.
+ * Handle shield model format.
  */
 public class ShieldModelLoader extends BaseModelLoader{
     private final Vector3f backTranslation, trimTranslation;
@@ -75,7 +75,8 @@ public class ShieldModelLoader extends BaseModelLoader{
                         ModelBlock front = makeItem(internalFrontModel);
                         if (front != null) {
                             IFlexibleBakedModel baked = wrap(join((IRetexturableModel) originalModel, front));
-                            modelBakeEvent.modelRegistry.putObject(mainLoc, baked);
+                            if(baked != null)
+                                modelBakeEvent.modelRegistry.putObject(mainLoc, baked);
                         }
                     }
                 }
@@ -102,14 +103,13 @@ public class ShieldModelLoader extends BaseModelLoader{
                 }
             }
         }
-        List elements = new ArrayList();
+        List<BlockPart> elements = new ArrayList<BlockPart>();
         if(trimIndex!=-1) {
             String trimTexture = copy.get(BASE_LAYER);
             for(String key : temp.keySet()){
                 copy.put(key, trimTexture);
             }
-            IRetexturableModel trimmed = (IRetexturableModel) model.retexture(ImmutableMap.copyOf(copy));
-            ModelBlock internaltrim = getInternalModel(trimmed);
+            ModelBlock internaltrim = getInternalModel(model.retexture(ImmutableMap.copyOf(copy)));
             if (internaltrim != null) {
                 ModelBlock trim = makeItem(internaltrim);
                 if(trim!=null) {
