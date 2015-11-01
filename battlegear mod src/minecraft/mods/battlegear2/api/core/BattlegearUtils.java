@@ -240,7 +240,10 @@ public class BattlegearUtils {
             try {
                 c.getDeclaredMethod(itemBlackListMethodNames[i], itemBlackListMethodParams[i]);
                 return true;
-            } catch (Throwable ignored) {
+            } catch(NoSuchMethodException noMethod){
+                continue;
+            } catch(Throwable ignored) {
+                return true;
             }
         }
         return false;
