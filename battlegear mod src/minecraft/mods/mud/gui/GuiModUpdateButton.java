@@ -12,7 +12,7 @@ import java.util.List;
 
 public class GuiModUpdateButton extends GuiButton{
 
-    ItemStack icon = new ItemStack(Blocks.farmland);
+    ItemStack icon = new ItemStack(Blocks.grass);
     List<String> text = null;
     private GuiScreen parent;
     public GuiModUpdateButton(int id, int x, int y, GuiScreen parent) {
