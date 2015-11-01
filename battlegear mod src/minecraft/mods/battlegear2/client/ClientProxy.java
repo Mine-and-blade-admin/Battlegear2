@@ -21,7 +21,7 @@ import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityClientPlayerMP;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -71,8 +71,8 @@ public final class ClientProxy extends CommonProxy {
 
     @Override
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {
-        if (entityPlayer instanceof EntityClientPlayerMP) {
-            ((EntityClientPlayerMP) entityPlayer).sendQueue.addToSendQueue(
+        if (entityPlayer instanceof EntityPlayerSP) {
+            ((EntityPlayerSP) entityPlayer).sendQueue.addToSendQueue(
                     new BattlegearAnimationPacket(animation, entityPlayer).generatePacket());
         }
     }
