@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
-import java.util.Arrays;
 import java.util.List;
 
 public final class BattlegearConfigGUI extends GuiScreen{
@@ -30,7 +29,7 @@ public final class BattlegearConfigGUI extends GuiScreen{
             if(this.fontRendererObj.getStringWidth(txt)>listWidth){
                 listWidth = this.fontRendererObj.getStringWidth(txt);
             }
-            renders[i] = new GUITextList.Box(txt, Arrays.binarySearch(BattlegearConfig.disabledRenderers, txt)>=0);
+            renders[i] = new GUITextList.Box(txt, !BattlegearConfig.hasRender(txt));
         }
         this.possibleValues = new GUITextList(this.fontRendererObj,listWidth+10,this.height / 2,this.height / 2 + 60,this.width / 2,12,renders);
         this.buttonList.add(new GuiButton(1, this.width / 2 - 75, this.height - 38, I18n.format("gui.done")));
@@ -87,9 +86,7 @@ public final class BattlegearConfigGUI extends GuiScreen{
     public void onGuiClosed(){
         super.onGuiClosed();
         List<String> temp = this.possibleValues.getActivated();
-        String[] disabled = new String[temp.size()];
-        System.arraycopy(temp.toArray(), 0, disabled, 0, temp.size());
-        BattlegearConfig.disabledRenderers = disabled;
-        BattlegearConfig.refreshConfig();
+        String[] disabled = temp.toArray(new String[temp.size()]);
+        BattlegearConfig.refreshConfig(disabled);
     }
 }

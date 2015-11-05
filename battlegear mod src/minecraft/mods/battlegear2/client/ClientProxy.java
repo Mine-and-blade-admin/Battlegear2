@@ -45,7 +45,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -90,10 +89,10 @@ public final class ClientProxy extends CommonProxy {
 
     @Override
     public void registerItemRenderers() {
-        if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "shield") < 0)
+        if (BattlegearConfig.hasRender("shield"))
             MinecraftForge.EVENT_BUS.register(new ShieldModelLoader());
         ItemModelMesher modelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-        if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "bow") < 0){
+        if (BattlegearConfig.hasRender("bow")){
             registerArrows();
         }
         for (Item item : BattlegearConfig.dagger) {

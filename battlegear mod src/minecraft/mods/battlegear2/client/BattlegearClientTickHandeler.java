@@ -50,7 +50,10 @@ import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public final class BattlegearClientTickHandeler {
     private static final int FLASH_MAX = 30;
@@ -160,7 +163,7 @@ public final class BattlegearClientTickHandeler {
                 renderPlayer.addAll(map.values());
                 for (RenderPlayer render : renderPlayer) {
                     render.layerRenderers.add(new LayerOffhandItem(render));
-                    if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver") < 0)
+                    if (BattlegearConfig.hasRender("quiver"))
                         render.layerRenderers.add(new LayerQuiver(render));
                 }
             } catch (Throwable ignored) {

@@ -53,9 +53,9 @@ public class BattlegearConfig {
 	public static BlockFlagPole banner;
 	public static ItemArmor[] knightArmor=new ItemArmor[armourTypes.length];
     private static String[] comments = new String[4];
-	public static String[] disabledItems = new String[0];
-    public static String[] disabledRecipies = new String[0];
-    public static String[] disabledRenderers = new String[0];
+	private static String[] disabledItems = new String[0];
+    private static String[] disabledRecipies = new String[0];
+    private static String[] disabledRenderers = new String[0];
     public static double[] skeletonArrowSpawnRate = new double[ItemMBArrow.names.length];
 	public static int[] quiverBarOffset = new int[2], shieldBarOffset = new int[2], battleBarOffset = new int[4];
 	
@@ -234,12 +234,12 @@ public class BattlegearConfig {
 		//2 Iron ingots = 3 chain. This is because the chain armour has increased in damage resistance
 
 		if(chain!=null){
-	        if(Arrays.binarySearch(disabledRecipies, itemNames[1]) < 0)
+	        if(hasRecipe(itemNames[1]))
 	            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(chain, 3),
                         "I", "I", 'I', "ingotIron"
                 ));
-	        if(Arrays.binarySearch(disabledRecipies, "chain.armour") < 0){
-	            //Chain armor recipes
+	        if(hasRecipe("chain.armour")){
+                //Chain armor recipes
 	            GameRegistry.addRecipe(new ItemStack(Items.chainmail_helmet),
 	                    "LLL","L L",'L',chain);
 	            GameRegistry.addRecipe(new ItemStack(Items.chainmail_chestplate),
@@ -253,7 +253,7 @@ public class BattlegearConfig {
 
 		if(quiver!=null){
 	        //Quiver recipes :
-	        if(Arrays.binarySearch(disabledRecipies, itemNames[2]) < 0)
+	        if(hasRecipe(itemNames[2]))
 	            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(quiver),
 	                "X X", "X X","XXX",'X', Items.leather));
 		}
@@ -267,23 +267,23 @@ public class BattlegearConfig {
 		String woodStack = "plankWood";
 		for(int i = 0; i < 5; i++){
             ItemStack craftingMaterial = new ItemStack(ToolMaterial.values()[i].getRepairItem(), 1, OreDictionary.WILDCARD_VALUE);
-            if(dagger[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[3])  < 0){
+            if(dagger[i]!=null && hasRecipe(itemNames[3])){
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(dagger[i]), "L","S",
                         'S', "stickWood",
                         'L', i!=0?craftingMaterial:woodStack));
             }
-            if(warAxe[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[4])  < 0){
+            if(warAxe[i]!=null && hasRecipe(itemNames[4])){
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(warAxe[i]), "L L","LSL"," S ",
                             'S', "stickWood",
                             'L', i!=0?craftingMaterial:woodStack));
             }
-            if(mace[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[5])  < 0) {
+            if(mace[i]!=null && hasRecipe(itemNames[5])) {
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(mace[i]), " LL"," LL","S  ",
                                 'S', "stickWood",
                                 'L', i!=0?craftingMaterial:woodStack));
             }
-            if(spear[i]!=null && Arrays.binarySearch(disabledRecipies, itemNames[6])  < 0){
-                if(i == 0){
+            if(spear[i]!=null && hasRecipe(itemNames[6])){
+                if (i == 0){
                     GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(spear[i]), "  S"," S ","S  ",
                                     'S', "stickWood"));
                 }else{
@@ -294,7 +294,7 @@ public class BattlegearConfig {
             }
 		}
 
-        if(Arrays.binarySearch(disabledItems, itemNames[7]) < 0 && Arrays.binarySearch(disabledRecipies, itemNames[7]) < 0){
+        if(Arrays.binarySearch(disabledItems, itemNames[7]) < 0 && hasRecipe(itemNames[7])){
             //Wood Shield
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[0]), " W ","WWW", " W ",
                             'W', woodStack));
@@ -318,7 +318,7 @@ public class BattlegearConfig {
             GameRegistry.addRecipe(new ShieldRemoveArrowRecipie());
         }
 
-        if(Arrays.binarySearch(disabledItems, itemNames[8]) < 0 && Arrays.binarySearch(disabledRecipies, itemNames[8]) < 0) {
+        if(Arrays.binarySearch(disabledItems, itemNames[8]) < 0 && hasRecipe(itemNames[8])) {
             RecipeSorter.register("battlegear:knightarmor", KnightArmourRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
             for (int i = 0; i < 4; i++) {
                 GameRegistry.addRecipe(new KnightArmourRecipie(i));
@@ -327,7 +327,7 @@ public class BattlegearConfig {
 
         if(MbArrows!=null){
 	        for(int i=0;i<ItemMBArrow.component.length;i++){
-		        if(Arrays.binarySearch(disabledRecipies, itemNames[9]+"."+ItemMBArrow.names[i]) < 0){
+		        if(hasRecipe(itemNames[9]+"."+ItemMBArrow.names[i])){
 		            GameRegistry.addRecipe(new ItemStack(MbArrows, 1, i), "G","A",
 		                            'G', ItemMBArrow.component[i],
 		                            'A', Items.arrow
@@ -339,7 +339,7 @@ public class BattlegearConfig {
 	        }
         }
 
-        if(banner!=null && Arrays.binarySearch(disabledRecipies, itemNames[10]) < 0){
+        if(banner!=null && hasRecipe(itemNames[10])){
             for(int i = 0; i < 7; i++){
                 Object temp = i < 4 ? new ItemStack(Blocks.log, 1, i):i==4?"ingotIron":new ItemStack(Blocks.log2, 1, i-5);
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(banner, 4, i), "W", "W", "W", 'W', temp));
@@ -370,8 +370,9 @@ public class BattlegearConfig {
 
 	}
 
-    public static void refreshConfig(){
+    public static void refreshConfig(String[] disabled){
         try{
+            disabledRenderers = disabled;
             Arrays.sort(disabledRenderers);
             file.get("Rendering", "Disabled Renderers", new String[0], comments[2]).set(disabledRenderers);
             file.get("Rendering", "Render arrow with bow uncharged", true).set(arrowForceRendered);
@@ -527,5 +528,13 @@ public class BattlegearConfig {
                     return i;
         }
         return Items.bow;//If that is null, we are screwed anyway
+    }
+
+    public static boolean hasRecipe(String name){
+        return Arrays.binarySearch(BattlegearConfig.disabledRecipies, name) < 0;
+    }
+
+    public static boolean hasRender(String name){
+        return Arrays.binarySearch(BattlegearConfig.disabledRenderers, name) < 0;
     }
 }
