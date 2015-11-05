@@ -2,7 +2,7 @@ Mine and Blade : Battlegear - 2
 ===============================
 	
 Minecraft version: 1.8  
-Forge Version: 1.8-11.14.2.1430
+Forge Version: 1.8-11.14.3.1450
 
 This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft.
 The mod has a heavy dependency on the use of ASM (coremod) to edit the bytecode of the minecraft base classes. 
