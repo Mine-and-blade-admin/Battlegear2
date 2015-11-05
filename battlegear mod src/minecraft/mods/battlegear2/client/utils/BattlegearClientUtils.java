@@ -15,8 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-import java.util.Arrays;
-
 public final class BattlegearClientUtils {
     /**
      * Patch over EntityOtherPlayerMP#onUpdate() to update isItemInUse field
@@ -54,16 +52,22 @@ public final class BattlegearClientUtils {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void onRenderOffhandItem(RenderPlayerEventChild.PreRenderPlayerElement preRender){
-        if(preRender.element!=null) {
+        if(preRender.element != null) {
             if (preRender instanceof RenderPlayerEventChild.PreRenderSheathed) {
                 onRenderSheathedItem(preRender.element);
-            } else if(preRender.element.getItem() instanceof IArrowContainer2 && ((IArrowContainer2) preRender.element.getItem()).renderDefaultQuiverModel(preRender.element)){
-
-                if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "quiver") < 0) {
-                    ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(preRender.entityPlayer);
-                    if (preRender.element == quiverStack) {
-                        preRender.setCanceled(true);
+            } else {
+                if(preRender.element.getItem() instanceof IArrowContainer2 && ((IArrowContainer2) preRender.element.getItem()).renderDefaultQuiverModel(preRender.element)) {
+                    if (BattlegearConfig.hasRender("quiver")) {
+                        ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(preRender.entityPlayer);
+                        if (preRender.element == quiverStack) {
+                            preRender.setCanceled(true);
+                            return;
+                        }
                     }
+                }
+                ItemStack inUse = preRender.entityPlayer.getItemInUse();
+                if(preRender.element != inUse && inUse != null && BattlegearUtils.isBow(inUse.getItem())) {
+                    preRender.setCanceled(true);
                 }
             }
         }
