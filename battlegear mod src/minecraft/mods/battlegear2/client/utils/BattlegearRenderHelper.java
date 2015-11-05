@@ -43,8 +43,6 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
-import java.util.Arrays;
-
 public final class BattlegearRenderHelper {
 
     private static final ItemStack dummyStack = new ItemStack(Blocks.flowing_lava);
@@ -441,21 +439,20 @@ public final class BattlegearRenderHelper {
             GlStateManager.pushMatrix();
             target.bipedBody.postRender(RENDER_UNIT);
             if(onBack){
-                GlStateManager.scale(0.6F, 0.6F, 0.6F);
-                GlStateManager.translate(0, 10 * RENDER_UNIT, 4 * RENDER_UNIT + backCount * RENDER_UNIT);
+                GlStateManager.translate(0, 5 * RENDER_UNIT, (2.5 + backCount) * RENDER_UNIT);
                 GlStateManager.rotate(180, 0, 1, 0);
                 if(mainhandSheathed.getItem() instanceof IBackSheathedRender){
                     ((IBackSheathedRender)mainhandSheathed.getItem()).preRenderBackSheathed(mainhandSheathed, backCount, preRender, true);
                 }
                 backCount++;
             }else{
-                GlStateManager.scale(0.6F, 0.6F, 0.6F);
-                GlStateManager.translate(7 * RENDER_UNIT, 20 * RENDER_UNIT, 0);
+                GlStateManager.translate(4 * RENDER_UNIT, 10 * RENDER_UNIT, 0);
                 if (chest.getLeft() || legs.getLeft()) {
-                    GlStateManager.translate(2 * RENDER_UNIT, 0, 0);
+                    GlStateManager.translate(RENDER_UNIT, 0, 0);
                 }
                 GlStateManager.rotate(270, 0, 1, 0);
             }
+            GlStateManager.scale(0.8F, 0.8F, 0.8F);
 
             if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, true, mainhandSheathed))){
                 renderItemAllPasses(null, mainhandSheathed);
@@ -475,8 +472,7 @@ public final class BattlegearRenderHelper {
             target.bipedBody.postRender(RENDER_UNIT);
 
             if(onBack){
-                GlStateManager.scale(0.6F, 0.6F, 0.6F);
-                GlStateManager.translate(0, 10 * RENDER_UNIT, 4 * RENDER_UNIT + backCount * RENDER_UNIT);
+                GlStateManager.translate(0, 5 * RENDER_UNIT, (2.5 + backCount) * RENDER_UNIT);
                 if(offhandSheathed.getItem() instanceof IBackSheathedRender){
                     ((IBackSheathedRender)offhandSheathed.getItem()).preRenderBackSheathed(offhandSheathed, backCount, preRender, false);
                 }else if(offhandSheathed.getItem() instanceof IShield){
@@ -485,13 +481,13 @@ public final class BattlegearRenderHelper {
                 }
                 backCount++;
             }else{
-                GlStateManager.scale(0.6F, 0.6F, 0.6F);
-                GlStateManager.translate(-7 * RENDER_UNIT, 20 * RENDER_UNIT, 0);
+                GlStateManager.translate(-4 * RENDER_UNIT, 10 * RENDER_UNIT, 0);
                 if (chest.getLeft() || legs.getLeft()) {
-                    GlStateManager.translate(-2 * RENDER_UNIT, 0, 0);
+                    GlStateManager.translate(- RENDER_UNIT, 0, 0);
                 }
                 GlStateManager.rotate(270, 0, 1, 0);
             }
+            GlStateManager.scale(0.8F, 0.8F, 0.8F);
             if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, false, offhandSheathed))){
                 renderItemAllPasses(null, offhandSheathed);
             }
@@ -557,7 +553,7 @@ public final class BattlegearRenderHelper {
     }
 
     public static String getArrowLocation(ItemStack arrowStack){
-        if (Arrays.binarySearch(BattlegearConfig.disabledRenderers, "bow") < 0) {
+        if (BattlegearConfig.hasRender("bow")) {
             if (arrowStack.getItem() == Items.arrow) {
                 return BattlegearConfig.MODID + "bow_arrow";
             }
