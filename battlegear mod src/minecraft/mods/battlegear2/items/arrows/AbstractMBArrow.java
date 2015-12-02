@@ -84,18 +84,41 @@ public abstract class AbstractMBArrow extends EntityArrow {
     public boolean tryPickArrow(EntityPlayer player){
         ItemStack arrow = getPickedUpItem();
         if(arrow!=null){
-            ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
-            if(offhand!=null && offhand.getItem() instanceof IArrowContainer2){
-                final int size = arrow.stackSize;
-                ItemStack arrowLeft = ((IArrowContainer2) offhand.getItem()).addArrows(offhand, arrow);
-                if(arrowLeft==null||arrowLeft.stackSize<size){
-                    if(arrowLeft!=null && arrowLeft.stackSize>0)
-                        worldObj.spawnEntityInWorld(new EntityItem(worldObj, posX, posY, posZ, arrowLeft));
-                    return true;
-                }
+            boolean hasPickUp = false;
+            ItemStack temp = addInQuiver(player.getCurrentEquippedItem(), arrow);
+            if(temp == null){
+                return true;
+            }else if(temp != arrow){
+                hasPickUp = true;
+                arrow = temp;
+            }
+            temp = addInQuiver(((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon(), arrow);
+            if(temp == null){
+                return true;
+            }else if(temp != arrow){
+                hasPickUp = true;
+                arrow = temp;
+            }
+            if(hasPickUp){
+                if(arrow.stackSize>0)
+                    worldObj.spawnEntityInWorld(new EntityItem(worldObj, posX, posY, posZ, arrow));
+                return true;
             }
         }
         return player.inventory.addItemStackToInventory(arrow);
+    }
+
+    private ItemStack addInQuiver(ItemStack quiver, ItemStack arrow){
+        if(quiver != null && quiver.getItem() instanceof IArrowContainer2){
+            final int size = arrow.stackSize;
+            ItemStack arrowLeft = ((IArrowContainer2) quiver.getItem()).addArrows(quiver, arrow);
+            if(arrowLeft == null){
+                return null;
+            }else if(arrowLeft.stackSize < size){
+                return arrowLeft.copy();
+            }
+        }
+        return arrow;
     }
 
     /**
