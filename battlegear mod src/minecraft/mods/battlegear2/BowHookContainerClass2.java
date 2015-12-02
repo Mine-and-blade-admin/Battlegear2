@@ -38,7 +38,7 @@ public final class BowHookContainerClass2 {
 
         @Override
         public ItemStack getQuiverFor(ItemStack bow, EntityPlayer player) {
-            ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
+            ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOppositeHand();
             if(bow!=offhand)
                 return isLoadedContainer(offhand, bow, player)?offhand:null;
             else{

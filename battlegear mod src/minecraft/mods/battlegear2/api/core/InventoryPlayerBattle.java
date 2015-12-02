@@ -464,7 +464,25 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     public ItemStack getCurrentOffhandWeapon(){
         if(isBattlemode()){
-            return getStackInSlot(currentItem+WEAPON_SETS);
+            if(currentItem + WEAPON_SETS < OFFSET + EXTRA_ITEMS)
+                return getStackInSlot(currentItem + WEAPON_SETS);
+            return getStackInSlot(currentItem);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * Get the item in the opposite hand
+     * If currentItem is set to right hand, return the left hand
+     * If currentItem is set to left hand, return the right hand
+     * If not in battle mode, return null
+     */
+    public ItemStack getCurrentOppositeHand(){
+        if(isBattlemode()){
+            if(currentItem + WEAPON_SETS < OFFSET + EXTRA_ITEMS)
+                return getStackInSlot(currentItem + WEAPON_SETS);
+            return getStackInSlot(currentItem - WEAPON_SETS);
         }else{
             return null;
         }
