@@ -34,6 +34,7 @@ public final class WeaponHookContainerClass {
     public static final WeaponHookContainerClass INSTANCE = new WeaponHookContainerClass();
     private static final float backstabFuzzy = 0.01F;
     private static final int[] dazeEffects = {Potion.moveSlowdown.getId(), Potion.confusion.getId(), Potion.blindness.getId(), Potion.weakness.getId()};
+    public boolean doBlocking = false;
 
     private WeaponHookContainerClass(){}
 
@@ -185,7 +186,7 @@ public final class WeaponHookContainerClass {
 
     @SubscribeEvent
     public void onBlock(PlayerUseItemEvent.Start use) {
-        if (use.duration > 0 && use.item.getItemUseAction() == EnumAction.BLOCK) {
+        if (!doBlocking && use.duration > 0 && use.item.getItemUseAction() == EnumAction.BLOCK) {
             use.setCanceled(true);
         }
     }

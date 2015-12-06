@@ -2,6 +2,7 @@ package mods.battlegear2.packet;
 
 import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
+import mods.battlegear2.WeaponHookContainerClass;
 import net.minecraft.entity.player.EntityPlayer;
 
 public final class LoginPacket extends AbstractMBPacket{
@@ -11,6 +12,7 @@ public final class LoginPacket extends AbstractMBPacket{
     public void process(ByteBuf inputStream, EntityPlayer player) {
         if(player.worldObj.isRemote){
             Battlegear.battlegearEnabled = true;
+            WeaponHookContainerClass.INSTANCE.doBlocking = inputStream.readBoolean();
         }
     }
 
@@ -24,6 +26,6 @@ public final class LoginPacket extends AbstractMBPacket{
 
 	@Override
 	public void write(ByteBuf out) {
-		out.writeBytes(new byte[0]);
+		out.writeBoolean(WeaponHookContainerClass.INSTANCE.doBlocking);
 	}
 }

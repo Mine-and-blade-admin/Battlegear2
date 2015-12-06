@@ -1,5 +1,6 @@
 package mods.battlegear2.utils;
 
+import mods.battlegear2.WeaponHookContainerClass;
 import mods.battlegear2.api.EnchantmentHelper;
 import mods.battlegear2.api.quiver.DispenseQuiverArrow;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
@@ -118,7 +119,7 @@ public class BattlegearConfig {
         }
         comments[0] = sb.toString();
         disabledItems = config.get(config.CATEGORY_GENERAL, "Disabled Items", new String[0], comments[0]).setRequiresMcRestart(true).getStringList();
-
+        WeaponHookContainerClass.INSTANCE.doBlocking = config.getBoolean("Let Items Block", config.CATEGORY_GENERAL, false, "Set to true to let items with block animation do their thing. Note blocking will be removed by Mojang in 1.9 anyway.");
         if(Arrays.deepEquals(disabledItems, itemNames)){
             return;//No point in going further if all items are disabled
         }
