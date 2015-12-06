@@ -1,3 +1,9 @@
+== Mine & Blade: Battlegear 2 - Bullseye 1.0.10.0 ==
+* Fixed crash when using bow in battlemode
+* Fixed and improved API for dual wielding
+* Added option to re-enable sword blocking (synced to clients on login)
+* Made quiver pick up arrows in left hand
+
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.9.0 ==
 * Implemented all attributes
 * Converted items and 'bow with arrow' to model system
