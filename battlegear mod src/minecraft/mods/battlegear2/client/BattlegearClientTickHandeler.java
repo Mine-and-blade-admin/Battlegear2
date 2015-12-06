@@ -222,9 +222,9 @@ public final class BattlegearClientTickHandeler {
                 EnumFacing i1 = mouseOver.sideHit;
                 PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, pos, i1, player.worldObj), offhand);
                 if (!MinecraftForge.EVENT_BUS.post(useItemEvent)){
-                    BattlegearUtils.refreshAttributes(player, false);
+                    BattlegearUtils.refreshAttributes(player);
                     boolean result = onPlayerPlaceBlock(mc.playerController, player, useItemEvent.offhand, pos, i1, mouseOver.hitVec);
-                    BattlegearUtils.refreshAttributes(player, true);
+                    BattlegearUtils.refreshAttributes(player);
                     if(result) {
                         if (useItemEvent.swingOffhand)
                             BattlegearUtils.sendOffSwingEvent(useItemEvent.event, useItemEvent.offhand);
@@ -245,9 +245,9 @@ public final class BattlegearClientTickHandeler {
                 if (!mc.playerController.isSpectatorMode()) {
                     Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(useItemEvent.offhand).generatePacket());
                     if(useItemEvent.event.useItem != Event.Result.DENY) {
-                        BattlegearUtils.refreshAttributes(player, false);
+                        BattlegearUtils.refreshAttributes(player);
                         flag = BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT);
-                        BattlegearUtils.refreshAttributes(player, true);
+                        BattlegearUtils.refreshAttributes(player);
                     }
                     if (flag) {
                         if (useItemEvent.swingOffhand)

@@ -114,9 +114,9 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, offhandWeapon));
             if (event.useItem != Event.Result.DENY){
                 if (((EntityPlayerMP) player).theItemInWorldManager.getGameType() != WorldSettings.GameType.SPECTATOR) {
-                    BattlegearUtils.refreshAttributes(player, false);
+                    BattlegearUtils.refreshAttributes(player);
                     BattlemodeHookContainerClass.tryUseItem(player, offhandWeapon, Side.SERVER);
-                    BattlegearUtils.refreshAttributes(player, true);
+                    BattlegearUtils.refreshAttributes(player);
                 }
             }
             flag = false;
@@ -194,11 +194,11 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             return false;
         }
 
-        BattlegearUtils.refreshAttributes(playerMP, false);
+        BattlegearUtils.refreshAttributes(playerMP);
         if (itemStack != null && itemStack.getItem().onItemUseFirst(itemStack, playerMP, theWorld, pos, side, xOffset, yOffset, zOffset))
         {
             if (itemStack.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(playerMP, itemStack);
-            BattlegearUtils.refreshAttributes(playerMP, true);
+            BattlegearUtils.refreshAttributes(playerMP);
             return true;
         }
 
@@ -231,7 +231,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             }
             if (itemStack.stackSize <= 0) ForgeEventFactory.onPlayerDestroyItem(playerMP, itemStack);
         }
-        BattlegearUtils.refreshAttributes(playerMP, true);
+        BattlegearUtils.refreshAttributes(playerMP);
         return result;
     }
 

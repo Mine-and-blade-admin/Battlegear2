@@ -464,9 +464,9 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     public ItemStack getCurrentOffhandWeapon(){
         if(isBattlemode()){
-            if(currentItem + WEAPON_SETS < OFFSET + EXTRA_ITEMS)
-                return getStackInSlot(currentItem + WEAPON_SETS);
-            return getStackInSlot(currentItem);
+            if(isOffset())
+                return getStackInSlot(currentItem);
+            return getStackInSlot(currentItem + WEAPON_SETS);
         }else{
             return null;
         }
@@ -480,11 +480,33 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      */
     public ItemStack getCurrentOppositeHand(){
         if(isBattlemode()){
-            if(currentItem + WEAPON_SETS < OFFSET + EXTRA_ITEMS)
-                return getStackInSlot(currentItem + WEAPON_SETS);
-            return getStackInSlot(currentItem - WEAPON_SETS);
+            if(isOffset())
+                return getStackInSlot(currentItem - WEAPON_SETS);
+            return getStackInSlot(currentItem + WEAPON_SETS);
         }else{
             return null;
         }
+    }
+
+    /**
+     * Swap the currentItem to the opposite hand
+     * WARNING Calling this <strong>twice</strong> is required to put the game back on its feet
+     * @return the new currentItem value
+     */
+    public int swapHandItem(){
+        if(isBattlemode()){
+            if(isOffset())
+                currentItem -= WEAPON_SETS;
+            else
+                currentItem += WEAPON_SETS;
+        }
+        return currentItem;
+    }
+
+    /**
+     * @return true if the currentItem is in the left hand
+     */
+    public boolean isOffset(){
+        return currentItem + WEAPON_SETS >= OFFSET + EXTRA_ITEMS;
     }
 }

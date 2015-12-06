@@ -38,13 +38,19 @@ public class APIItemsTest {
         log.info("Registered:" + temp);
         if(BattlegearUtils.checkForRightClickFunction(temp))
             log.info("Detected use item method override");
-        if(BattlegearUtils.isMainHand(temp, null, null)) {
-            boolean use = BattlegearUtils.usagePriorAttack(temp, null, false);
-            log.info("Will " + (use ? "use" : "attack") + " in main hand");
+        try {
+            if(BattlegearUtils.isMainHand(temp, null, null)) {
+                boolean use = BattlegearUtils.usagePriorAttack(temp, null, false);
+                log.info("Will " + (use ? "use" : "attack") + " in main hand");
+            }
+        } catch (Exception e) {
         }
-        if(BattlegearUtils.isOffHand(temp, null)) {
-            boolean use = BattlegearUtils.usagePriorAttack(temp, null, true);
-            log.info("Will " + (use ? "use" : "attack") + " in off hand");
+        try {
+            if(BattlegearUtils.isOffHand(temp, null, null)) {
+                boolean use = BattlegearUtils.usagePriorAttack(temp, null, true);
+                log.info("Will " + (use ? "use" : "attack") + " in off hand");
+            }
+        } catch (Exception e) {
         }
     }
 
@@ -114,6 +120,8 @@ public class APIItemsTest {
 
         @Override
         public boolean isOffhandWieldable(ItemStack offhandStack, EntityPlayer wielder) {
+            if(wielder!=null)
+                log.info("Holding " + wielder.getCurrentEquippedItem());
             return isOffhand;
         }
     }

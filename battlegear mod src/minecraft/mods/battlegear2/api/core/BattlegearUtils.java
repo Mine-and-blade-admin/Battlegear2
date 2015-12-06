@@ -1,9 +1,6 @@
 package mods.battlegear2.api.core;
 
-import mods.battlegear2.api.IAllowItem;
-import mods.battlegear2.api.IOffhandWield;
-import mods.battlegear2.api.IUsableItem;
-import mods.battlegear2.api.PlayerEventChild;
+import mods.battlegear2.api.*;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.ISpecialBow;
 import mods.battlegear2.api.shield.IShield;
@@ -155,8 +152,12 @@ public class BattlegearUtils {
     public static boolean isMainHand(ItemStack main, ItemStack off, EntityPlayer wielder) {
         if(main == null)
             return true;
-        else if(main.getItem() instanceof IAllowItem)//An item using the API
+        if(main.getItem() instanceof IWield && !((IWield) main.getItem()).getWieldStyle(main, wielder).isMainhand())
+            return false;
+        if(main.getItem() instanceof IAllowItem)//An item using the API
             return ((IAllowItem) main.getItem()).allowOffhand(main, off, wielder);//defined by the item
+        else if(main.getItem() instanceof IShield)//A shield
+            return false;
         else if(main.getItem() instanceof IArrowContainer2)//A quiver
             return true;//anything ?
         else if(usagePriorAttack(main, wielder, false))//"Usable" item
@@ -169,14 +170,19 @@ public class BattlegearUtils {
     /**
      * Defines a item which can be wield in the left hand
      * @param off The item to be wield in left hand
+     * @param main Item to be wield in the right hand
      * @param wielder The player trying to wield this item
      * @return true if the item is allowed in left hand
      */
-    public static boolean isOffHand(ItemStack off, EntityPlayer wielder) {
+    public static boolean isOffHand(ItemStack off, ItemStack main, EntityPlayer wielder) {
         if(off == null)
             return true;
-        else if(off.getItem() instanceof IOffhandWield)//An item using the API
-            return ((IOffhandWield) off.getItem()).isOffhandWieldable(off, wielder);//defined by the item
+        if(off.getItem() instanceof IWield && !((IWield) off.getItem()).getWieldStyle(off, wielder).isOffhand())
+            return false;
+        if(off.getItem() instanceof IOffhandWield && !((IOffhandWield) off.getItem()).isOffhandWieldable(off, wielder))
+            return false;
+        if(off.getItem() instanceof IAllowItem)//An item using the API
+            return ((IAllowItem) off.getItem()).allowOffhand(off, main, wielder);//defined by the item
         else if(off.getItem() instanceof IShield || off.getItem() instanceof IArrowContainer2 || usagePriorAttack(off, wielder, true))//Shield, Quiver, or "usable"
             return true;//always
         else if(isWeapon(off))//A generic weapon
@@ -279,9 +285,9 @@ public class BattlegearUtils {
      * @param target the attacked
      */
     public static void attackTargetEntityWithCurrentOffItem(EntityPlayer player, Entity target){
-        refreshAttributes(player, false);
+        refreshAttributes(player);
         if (!ForgeHooks.onPlayerAttackTarget(player, target)){
-            refreshAttributes(player, true);
+            refreshAttributes(player);
             return;
         }
         if (target.canAttackWithItem() && !target.hitByEntity(player)){
@@ -386,7 +392,7 @@ public class BattlegearUtils {
                 }
             }
         }
-        refreshAttributes(player, true);
+        refreshAttributes(player);
     }
 
     /**
@@ -412,7 +418,7 @@ public class BattlegearUtils {
         if(!entityInteract){//Entity interaction didn't happen
             if(isPlayerInBattlemode(entityPlayer)){//We can try left hand
                 offset = true;
-                itemstack = refreshAttributes(entityPlayer, false);
+                itemstack = refreshAttributes(entityPlayer);
                 copyStack = itemstack != null ? itemstack.copy() : null;
                 entityInteract = entity.interactFirst(entityPlayer);
             }
@@ -426,7 +432,7 @@ public class BattlegearUtils {
                 itemInteract = itemstack.interactWithEntity(entityPlayer, (EntityLivingBase) entity);
                 if(!itemInteract && !offset && isPlayerInBattlemode(entityPlayer)){//No interaction with right hand item
                     offset = true;
-                    itemstack = refreshAttributes(entityPlayer, false);
+                    itemstack = refreshAttributes(entityPlayer);
                     if(itemstack != null) {//Try left hand item
                         itemInteract = itemstack.interactWithEntity(entityPlayer, (EntityLivingBase) entity);
                     }
@@ -438,7 +444,7 @@ public class BattlegearUtils {
                 }
             }
             if(offset){//Hand was swapped, unswap
-                refreshAttributes(entityPlayer, true);
+                refreshAttributes(entityPlayer);
             }
             if(!itemInteract && isPlayerInBattlemode(entityPlayer)){
                 ItemStack offhandItem = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
@@ -466,7 +472,7 @@ public class BattlegearUtils {
                 }
             }
             if(offset){//Hand was swapped, unswap
-                refreshAttributes(entityPlayer, true);
+                refreshAttributes(entityPlayer);
             }
             return true;
         }
@@ -485,19 +491,12 @@ public class BattlegearUtils {
 
     /**
      * Refresh the player attribute map by swapping the wielding hand
-     * Warning: does NOT check if battlemode!
-     *
-     * @param fromOffhand if true, sets from left hand to right hand, else, the opposite
+     * WARNING Calling this <strong>twice</strong> is required to put the game back on its feet
      * @return the currently equipped stack, after swapping
-     *
      */
-    public static ItemStack refreshAttributes(EntityPlayer entityPlayer, boolean fromOffhand){
+    public static ItemStack refreshAttributes(EntityPlayer entityPlayer){
         final ItemStack oldItem = entityPlayer.getCurrentEquippedItem();
-        if(fromOffhand){
-            entityPlayer.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
-        }else{
-            entityPlayer.inventory.currentItem += InventoryPlayerBattle.WEAPON_SETS;
-        }
+        ((InventoryPlayerBattle)entityPlayer.inventory).swapHandItem();
         final ItemStack newStack = entityPlayer.getCurrentEquippedItem();
         refreshAttributes(entityPlayer.getAttributeMap(), oldItem, newStack);
         return newStack;

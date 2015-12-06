@@ -359,12 +359,12 @@ public final class BattlemodeHookContainerClass {
                         if(blockEvent.damageShield && !player.capabilities.isCreativeMode){
                             float red = ((IShield)shield.getItem()).getDamageReduction(shield, event.source);
                             if(red<dmg){
-                                player.inventory.currentItem += InventoryPlayerBattle.WEAPON_SETS;
+                                ((InventoryPlayerBattle)player.inventory).swapHandItem();
                                 shield.damageItem(Math.round(dmg-red), player);
                                 if(shield.stackSize <= 0){
                                     player.destroyCurrentEquippedItem();
                                 }
-                                player.inventory.currentItem -= InventoryPlayerBattle.WEAPON_SETS;
+                                ((InventoryPlayerBattle)player.inventory).swapHandItem();
                             }
                         }
                     }
