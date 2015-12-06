@@ -6,6 +6,11 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+/**
+ * To implement in Item instances that manage arrows
+ * Is by default wieldable in both hands in "battlemode"
+ * @see IAllowItem to change this behavior
+ */
 public interface IArrowContainer2 {
 
     /**

@@ -14,6 +14,10 @@ public class TwoHandedWeapon extends ItemWeapon{
 		return offhand == null;
 	}
 
+	/**
+	 * Breaks the symmetry of wielding by returning false
+	 * (Make this item instance right-hand only)
+	 */
 	@Override
 	public boolean isOffhandWieldable(ItemStack off, EntityPlayer player) {
 		return false;

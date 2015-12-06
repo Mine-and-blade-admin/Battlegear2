@@ -15,7 +15,7 @@ public interface IArrowFireHandler {
      * Called from QuiverArrowRegistry.getArrowType,
      * to decide if it is worth trying to build an EntityArrow
      * @param arrow the stack which should define the arrow as item
-     * @param world
+     * @param world the world where the arrow would fire
      * @param player player using a bow to fire an arrow
      * @param charge amount of charge in the bow
      * @return true to get called for #getFireArrow
@@ -27,7 +27,7 @@ public interface IArrowFireHandler {
      * return null if the EntityArrow couldn't be built,
      * let pass to another IArrowFireHandler
      * @param arrow the stack which should define the arrow as item
-     * @param world
+     * @param world the world where the arrow would fire
      * @param player player using a bow to fire an arrow
      * @param charge amount of charge in the bow
      * @return the arrow to fire, or null if it couldn't be built

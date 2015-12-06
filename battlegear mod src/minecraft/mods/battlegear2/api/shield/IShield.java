@@ -5,8 +5,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 
 /**
- * Defines a common shield:
+ * To implement in Item instance that define a common shield:
  * can be held and used in left hand, has a special movement, reduce or block incoming damage, consume a battlegear defined "stamina" value
+ * {@see IAllowItem} ; {@see IWield} to change wield behavior
  */
 public interface IShield {
 
