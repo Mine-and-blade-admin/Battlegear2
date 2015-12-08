@@ -43,6 +43,8 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
+import javax.vecmath.Vector3f;
+
 public final class BattlegearRenderHelper {
 
     private static final ItemStack dummyStack = new ItemStack(Blocks.flowing_lava);
@@ -452,7 +454,8 @@ public final class BattlegearRenderHelper {
                 }
                 GlStateManager.rotate(270, 0, 1, 0);
             }
-            GlStateManager.scale(0.8F, 0.8F, 0.8F);
+            Vector3f scale = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(offhandSheathed).getItemCameraTransforms().thirdPerson.scale;
+            GlStateManager.scale(scale.getX(), scale.getY(), scale.getZ());
 
             if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, true, mainhandSheathed))){
                 renderItemAllPasses(null, mainhandSheathed);
@@ -487,7 +490,8 @@ public final class BattlegearRenderHelper {
                 }
                 GlStateManager.rotate(270, 0, 1, 0);
             }
-            GlStateManager.scale(0.8F, 0.8F, 0.8F);
+            Vector3f scale = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(offhandSheathed).getItemCameraTransforms().thirdPerson.scale;
+            GlStateManager.scale(scale.getX(), scale.getY(), scale.getZ());
             if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, false, offhandSheathed))){
                 renderItemAllPasses(null, offhandSheathed);
             }
