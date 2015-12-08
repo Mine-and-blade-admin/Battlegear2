@@ -140,14 +140,13 @@ public class InventoryPlayerBattle extends InventoryPlayer {
 
         	if (direction > 0){
                 currentItem--;
-                if (currentItem < OFFSET) {
-                    currentItem = OFFSET + WEAPON_SETS - 1;
-                }
             }else if (direction != 0){
                 currentItem++;
-                if (currentItem >= OFFSET + WEAPON_SETS) {
-                    currentItem = OFFSET;
-                }
+            }
+            if (currentItem < OFFSET) {
+                currentItem = OFFSET + WEAPON_SETS - 1;
+            }else if (currentItem >= OFFSET + WEAPON_SETS) {
+                currentItem = OFFSET;
             }
 
         } else {
