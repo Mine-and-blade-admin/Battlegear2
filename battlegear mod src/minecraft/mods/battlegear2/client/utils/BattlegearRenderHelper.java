@@ -422,8 +422,6 @@ public final class BattlegearRenderHelper {
     private static void renderSheathedItems(EntityPlayer par1EntityPlayer, RenderPlayer render, float frame) {
         if(BattlegearConfig.forceSheath==Sheath.NONE)
             return;
-        ItemStack mainhandSheathed = BattlegearClientTickHandeler.getPreviousMainhand(par1EntityPlayer);
-        ItemStack offhandSheathed = BattlegearClientTickHandeler.getPreviousOffhand(par1EntityPlayer);
 
         Pair<Boolean, ModelBase> chest = getEquippedModel(par1EntityPlayer, render, 3);
         Pair<Boolean, ModelBase> legs = getEquippedModel(par1EntityPlayer, render, 2);
@@ -431,10 +429,11 @@ public final class BattlegearRenderHelper {
         int backCount = chest.getLeft() ? 1 : 0;
         RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
         RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
-        
-        if(mainhandSheathed != null && !(mainhandSheathed.getItem() instanceof ItemBlock)){
 
-            boolean onBack = isBackSheathed(mainhandSheathed);
+        ItemStack sheathed = BattlegearClientTickHandeler.getPreviousMainhand(par1EntityPlayer);
+        if(sheathed != null && !(sheathed.getItem() instanceof ItemBlock)){
+
+            boolean onBack = isBackSheathed(sheathed);
 
             ModelBiped target = getTarget(render, chest.getRight(), legs.getRight(), onBack);
 
@@ -443,8 +442,8 @@ public final class BattlegearRenderHelper {
             if(onBack){
                 GlStateManager.translate(0, 5 * RENDER_UNIT, (2.5 + backCount) * RENDER_UNIT);
                 GlStateManager.rotate(180, 0, 1, 0);
-                if(mainhandSheathed.getItem() instanceof IBackSheathedRender){
-                    ((IBackSheathedRender)mainhandSheathed.getItem()).preRenderBackSheathed(mainhandSheathed, backCount, preRender, true);
+                if(sheathed.getItem() instanceof IBackSheathedRender){
+                    ((IBackSheathedRender)sheathed.getItem()).preRenderBackSheathed(sheathed, backCount, preRender, true);
                 }
                 backCount++;
             }else{
@@ -454,20 +453,20 @@ public final class BattlegearRenderHelper {
                 }
                 GlStateManager.rotate(270, 0, 1, 0);
             }
-            Vector3f scale = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(offhandSheathed).getItemCameraTransforms().thirdPerson.scale;
+            Vector3f scale = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(sheathed).getItemCameraTransforms().thirdPerson.scale;
             GlStateManager.scale(scale.getX(), scale.getY(), scale.getZ());
 
-            if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, true, mainhandSheathed))){
-                renderItemAllPasses(null, mainhandSheathed);
+            if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, true, sheathed))){
+                renderItemAllPasses(null, sheathed);
             }
 
-            BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, true, mainhandSheathed));
-            
+            BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, true, sheathed));
             GlStateManager.popMatrix();
         }
 
-        if(offhandSheathed != null && !(offhandSheathed.getItem() instanceof ItemBlock)){
-            boolean onBack = isBackSheathed(offhandSheathed);
+        sheathed = BattlegearClientTickHandeler.getPreviousOffhand(par1EntityPlayer);
+        if(sheathed != null && !(sheathed.getItem() instanceof ItemBlock)){
+            boolean onBack = isBackSheathed(sheathed);
 
             ModelBiped target = getTarget(render, chest.getRight(), legs.getRight(), onBack);
 
@@ -476,9 +475,9 @@ public final class BattlegearRenderHelper {
 
             if(onBack){
                 GlStateManager.translate(0, 5 * RENDER_UNIT, (2.5 + backCount) * RENDER_UNIT);
-                if(offhandSheathed.getItem() instanceof IBackSheathedRender){
-                    ((IBackSheathedRender)offhandSheathed.getItem()).preRenderBackSheathed(offhandSheathed, backCount, preRender, false);
-                }else if(offhandSheathed.getItem() instanceof IShield){
+                if(sheathed.getItem() instanceof IBackSheathedRender){
+                    ((IBackSheathedRender)sheathed.getItem()).preRenderBackSheathed(sheathed, backCount, preRender, false);
+                }else if(sheathed.getItem() instanceof IShield){
                     GlStateManager.rotate(180F, 0, 1, 0);
                     GlStateManager.rotate(180F, 0, 0, 1);
                 }
@@ -490,13 +489,13 @@ public final class BattlegearRenderHelper {
                 }
                 GlStateManager.rotate(270, 0, 1, 0);
             }
-            Vector3f scale = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(offhandSheathed).getItemCameraTransforms().thirdPerson.scale;
+            Vector3f scale = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(sheathed).getItemCameraTransforms().thirdPerson.scale;
             GlStateManager.scale(scale.getX(), scale.getY(), scale.getZ());
-            if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, false, offhandSheathed))){
-                renderItemAllPasses(null, offhandSheathed);
+            if(!BattlegearUtils.RENDER_BUS.post(new PreRenderSheathed(preRender, onBack, backCount, false, sheathed))){
+                renderItemAllPasses(null, sheathed);
             }
 
-            BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, false, offhandSheathed));
+            BattlegearUtils.RENDER_BUS.post(new PostRenderSheathed(postRender, onBack, backCount, false, sheathed));
             GlStateManager.popMatrix();
         }
     }
