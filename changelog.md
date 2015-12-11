@@ -1,13 +1,16 @@
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.10.0 ==
-* Fixed crash when using bow in battlemode
+* Fixed crash when using some items in battlemode
 * Fixed and improved API for dual wielding
-* Added option to re-enable sword blocking (synced to clients on login)
+* Added option to re-enable "sword" blocking (synced to clients on login)
 * Made quiver pick up arrows in left hand
+* Made sheathed items scale according to third-person view (json)
+
+Known issue:Using other Forge version than 11.14.3.1450 may have display issues.
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.9.0 ==
 * Implemented all attributes
 * Converted items and 'bow with arrow' to model system
-* Removed sword blocking
+* Removed "sword" blocking
 
 == Mine & Blade: Battlegear 2 - Bullseye 1.0.8.2 ==
 * Support TinkersConstruct Armory module loading for inventory tabs
