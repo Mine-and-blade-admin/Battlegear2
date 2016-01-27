@@ -9,6 +9,7 @@ import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 
 /**
@@ -23,7 +24,11 @@ public class BaseModelLoader {
     }
 
     protected final IModel getModel(ResourceLocation location){
-        return manager.getModel(location);
+        try {
+            return manager.getModel(location);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     protected final ModelBlock getInternalModel(IModel model){
@@ -35,9 +40,7 @@ public class BaseModelLoader {
                     return (ModelBlock) f.get(model);
                 }
             }
-        }catch (SecurityException e){
-            e.printStackTrace();
-        }catch (IllegalAccessException e){
+        }catch (Exception e){
             e.printStackTrace();
         }
         return null;
@@ -47,7 +50,6 @@ public class BaseModelLoader {
         try {
             return new IFlexibleBakedModel.Wrapper(bakeModel(model), Attributes.DEFAULT_BAKED_FORMAT);
         }catch (Exception e){
-            e.printStackTrace();
         }
         return null;
     }
