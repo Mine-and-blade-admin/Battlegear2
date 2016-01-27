@@ -1,21 +1,6 @@
-buildscript {
-    repositories {
-    mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-    }
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
-
-apply plugin: 'forge'
 sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
@@ -35,6 +20,7 @@ minecraft {
     version = config.mcversion + "-" + config.forgeversion
 	mappings = "snapshot_" + config.mapping
     replace '$version', version
+	makeObfSourceJar = false
 }
 archivesBaseName = config.mcversion + "-" + config.distname
 //Set the workspace

@@ -281,6 +281,13 @@ public final class BattlegearRenderHelper {
             sameItem = true;
         } else if (var2 != null && offhandRender.getItemToRender() != null) {
             sameItem = offhandRender.getItemToRender().getIsItemStackEqual(var2);
+            if(!sameItem){
+                if(!offhandRender.getItemToRender().getItem().shouldCauseReequipAnimation(offhandRender.getItemToRender(), var2, offhandRender.getEquippedItemSlot() != slot)){
+                    offhandRender.setItemToRender(var2);
+                    offhandRender.setEquippedItemSlot(slot);
+                    return;
+                }
+            }
         }
 
         float increment = (sameItem ? 1 : 0) - offhandRender.getEquippedProgress();

@@ -41,7 +41,7 @@ public final class ItemRendererTransformer extends TransformerBase {
 
     private void processUpdateEquippedMethod(MethodNode mn) {
         sendPatchLog("updateEquippedItem");
-        AbstractInsnNode insnNode = getReturnNode(mn);
+        AbstractInsnNode insnNode = mn.instructions.getFirst();
         if (insnNode != null) {
             InsnList newList = new InsnList();
             newList.add(new VarInsnNode(ALOAD, 0));

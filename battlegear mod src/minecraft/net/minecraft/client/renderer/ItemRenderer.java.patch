@@ -1,5 +1,5 @@
-@@ -37,8 +37,18 @@
- import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.*;
+@@ -28,8 +28,18 @@
+ import org.lwjgl.opengl.GL11;
  
  @SideOnly(Side.CLIENT)
 -public class ItemRenderer
@@ -16,29 +16,29 @@
 +	 * Because rendering the offhand item is quite complex the edits only defer the actual rendering to
 +	 * another method in BattlegearRenderHelper. This makes the coremod infinitely simpler.
 +	 */
-     private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
      private static final ResourceLocation RES_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
      private static final ResourceLocation RES_UNDERWATER_OVERLAY = new ResourceLocation("textures/misc/underwater.png");
-@@ -551,6 +561,7 @@
- 
+     /** A reference to the Minecraft object. */
+@@ -368,6 +378,7 @@
+         GlStateManager.popMatrix();
          GlStateManager.disableRescaleNormal();
          RenderHelper.disableStandardItemLighting();
-+        mods.battlegear2.client.utils.BattlegearRenderHelper.renderItemInFirstPerson(p_78440_1_, mc, this);//-----MB-Edited-----
++        mods.battlegear2.client.utils.BattlegearRenderHelper.renderItemInFirstPerson(partialTicks, mc, this);//-----MB-Edited-----
      }
  
      /**
-@@ -756,6 +767,7 @@
-             this.itemToRender = itemstack;
-             this.equippedItemSlot = entityclientplayermp.inventory.currentItem;
-         }
-+        mods.battlegear2.client.utils.BattlegearRenderHelper.updateEquippedItem(this, mc);//-----MB-Edited-----
-     }
+@@ -529,6 +540,7 @@
  
-     /**
-@@ -772,5 +784,43 @@
-     public void resetEquippedProgress2()
+     public void updateEquippedItem()
      {
-         this.equippedProgress = 0.0F;
++        mods.battlegear2.client.utils.BattlegearRenderHelper.updateEquippedItem(this, mc);//-----MB-Edited-----
+         this.prevEquippedProgress = this.equippedProgress;
+         EntityPlayerSP entityplayersp = this.mc.thePlayer;
+         ItemStack itemstack = entityplayersp.inventory.getCurrentItem();
+@@ -639,5 +651,43 @@
+                 ;
+             }
+         }
 +    }
 +    /* ===================================== Battlegear2 START =====================================*/
 +    //-----MB-AddFields-----(4)
