@@ -6,23 +6,17 @@ import mods.battlegear2.BattlemodeHookContainerClass;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockChest;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.network.play.server.S23PacketBlockChange;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSettings;
 import net.minecraftforge.common.MinecraftForge;
@@ -103,7 +97,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
         if(player == null || !(player instanceof EntityPlayerMP) || !BattlegearUtils.isPlayerInBattlemode(player))
             return;
         ItemStack offhandWeapon = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
-        boolean flag = true;
+        boolean placeResult = true;
         BlockPos pos = new BlockPos(xPosition, yPosition, zPosition);
         EnumFacing l = EnumFacing.getFront(direction);
         ((EntityPlayerMP) player).markPlayerActive();
@@ -119,7 +113,6 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
                     BattlegearUtils.refreshAttributes(player);
                 }
             }
-            flag = false;
         }
         else {
             MinecraftServer mcServer = FMLCommonHandler.instance().getMinecraftServerInstance();
@@ -131,11 +124,9 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
                 double dist = ((EntityPlayerMP) player).theItemInWorldManager.getBlockReachDistance() + 1;
                 dist *= dist;
                 if (((EntityPlayerMP) player).playerNetServerHandler.hasMoved && player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D) < dist && !mcServer.isBlockProtected(player.getEntityWorld(), pos, player) && player.getEntityWorld().getWorldBorder().contains(pos)) {
-                    activateBlockOrUseItem((EntityPlayerMP) player, offhandWeapon, pos, l, xOffset, yOffset, zOffset);
+                    placeResult = activateBlockOrUseItem((EntityPlayerMP) player, offhandWeapon, pos, l, xOffset, yOffset, zOffset);
                 }
             }
-        }
-        if (flag){
             ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(player.getEntityWorld(), pos));
             ((EntityPlayerMP) player).playerNetServerHandler.sendPacket(new S23PacketBlockChange(player.getEntityWorld(), pos.offset(l)));
         }
@@ -152,7 +143,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             player.openContainer.detectAndSendChanges();
             ((EntityPlayerMP) player).isChangingQuantityOnly = false;
 
-            if (!ItemStack.areItemStacksEqual(((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon(), this.itemStack))
+            if (!ItemStack.areItemStacksEqual(((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon(), this.itemStack) || !placeResult)
             {
                 Battlegear.packetHandler.sendPacketToPlayer(new BattlegearSyncItemPacket(player).generatePacket(), (EntityPlayerMP) player);
             }
@@ -167,24 +158,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
     {
         World theWorld = playerMP.getEntityWorld();
         if (playerMP.theItemInWorldManager.getGameType() == WorldSettings.GameType.SPECTATOR) {
-            TileEntity tileentity = theWorld.getTileEntity(pos);
-
-            if (tileentity instanceof ILockableContainer) {
-                Block block = theWorld.getBlockState(pos).getBlock();
-                ILockableContainer ilockablecontainer = (ILockableContainer) tileentity;
-
-                if (ilockablecontainer instanceof TileEntityChest && block instanceof BlockChest) {
-                    ilockablecontainer = ((BlockChest) block).getLockableContainer(theWorld, pos);
-                }
-                if (ilockablecontainer != null) {
-                    playerMP.displayGUIChest(ilockablecontainer);
-                    return true;
-                }
-            } else if (tileentity instanceof IInventory) {
-                playerMP.displayGUIChest((IInventory) tileentity);
-                return true;
-            }
-            return false;
+            return playerMP.theItemInWorldManager.activateBlockOrUseItem(playerMP, theWorld, itemStack, pos, side, xOffset, yOffset, zOffset);
         }
         PlayerInteractEvent event = new PlayerInteractEvent(playerMP, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, pos, side, theWorld);
         MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, itemStack));
