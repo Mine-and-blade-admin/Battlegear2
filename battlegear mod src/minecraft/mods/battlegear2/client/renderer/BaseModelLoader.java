@@ -1,6 +1,10 @@
 package mods.battlegear2.client.renderer;
 
+import com.google.common.base.Function;
+import mods.battlegear2.Battlegear;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelBlock;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelRotation;
 import net.minecraft.util.ResourceLocation;
@@ -10,6 +14,7 @@ import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
 
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 
 /**
@@ -49,7 +54,25 @@ public class BaseModelLoader {
     protected final IFlexibleBakedModel wrap(ModelBlock model){
         try {
             return new IFlexibleBakedModel.Wrapper(bakeModel(model), Attributes.DEFAULT_BAKED_FORMAT);
-        }catch (Exception e){
+        }catch (Throwable vanillaIssue){//Vanilla failed, try the "Forge" way
+            Battlegear.logger.warn(vanillaIssue.toString());
+            Battlegear.logger.warn("Encountered issue while trying to load model, trying fallback.");
+            try {
+                Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
+                    @Override
+                    public TextureAtlasSprite apply(ResourceLocation location) {
+                        return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
+                    }
+                };
+                Constructor ctor = Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper").getDeclaredConstructor(ModelLoader.class, ResourceLocation.class, ModelBlock.class);
+                ctor.setAccessible(true);
+                Object bakeable = ctor.newInstance(manager, null, model);
+                ctor.setAccessible(false);
+                return ((IModel)bakeable).bake(ModelRotation.X0_Y0, Attributes.DEFAULT_BAKED_FORMAT, textureGetter);
+            }catch (Throwable forgeIssue){//Well everything is broken
+                Battlegear.logger.warn(forgeIssue.toString());
+                Battlegear.logger.warn("Encountered issue while trying model loading fallback. Last fallback: crappy vanilla model. Sorry :(");
+            }
         }
         return null;
     }
