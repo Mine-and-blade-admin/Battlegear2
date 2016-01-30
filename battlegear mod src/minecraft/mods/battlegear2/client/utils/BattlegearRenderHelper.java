@@ -281,7 +281,7 @@ public final class BattlegearRenderHelper {
             sameItem = true;
         } else if (var2 != null && offhandRender.getItemToRender() != null) {
             sameItem = offhandRender.getItemToRender().getIsItemStackEqual(var2);
-            if(!sameItem){
+            if(!sameItem && offhandRender.getItemToRender().getItem() != null){
                 if(!offhandRender.getItemToRender().getItem().shouldCauseReequipAnimation(offhandRender.getItemToRender(), var2, offhandRender.getEquippedItemSlot() != slot)){
                     offhandRender.setItemToRender(var2);
                     offhandRender.setEquippedItemSlot(slot);
