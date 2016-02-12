@@ -1,8 +1,36 @@
 tab.battle.title=M&B Battlegear 2
+config.battlegear.title=Mine&Blade Battlegear 2 Einstellungen
+config.battlegear.category=Andere Itemrenderer deaktiviert
+config.battlegear.warn=Neustart benötigt um Änderungen zu übernehmen
+key.drawWeapons=Waffen ziehen
+key.special=Spezial
+use.gui.buttons=Knöpfe für das Inventar aktivieren
+use.gui.keys=Tasten für das Inventar aktivieren
+render.quiver.skeleton=Köcher auf Skeletten rendern
+render.arrow.bow=Ausgewählten Pfeil auf Bogen rendern
+render.sheathed=Standard Rendering auf Spieler: %s
+render.hud.forced=HUD-Rendering erzwingen
+gui.open.fake=Bildschirmoptimierer öffnen
+gui.fake.help1=Bildschirmkomponenten per Drag'n'Drop bewegen
+gui.fake.help2=Köcherslots
+gui.fake.help3=Schildstamina-Leiste
+gui.fake.help4=Linke-Hand-Slots
+gui.fake.help5=Rechte-Hand-Slots
+flag.design.save=Speichern
+flag.design.load=Ladem
+flag.design.load.sections=Lade Sektion
 
 item.battlegear2:heraldric.name=Wappenzeichen
 item.battlegear2:chain.name=Kette
 item.battlegear2:quiver.name=Köcher
+
+item.battlegear2:mb.arrow.ender.name=Enderpfeil
+item.battlegear2:mb.arrow.explosive.name=Explosivonspfeil
+item.battlegear2:mb.arrow.flame.name=Flammenpfeil
+item.battlegear2:mb.arrow.piercing.name=Durchbohrender Pfeil
+item.battlegear2:mb.arrow.poison.name=Giftpfeil
+item.battlegear2:mb.arrow.mystery.name=Geheimnispfeil
+item.battlegear2:mb.arrow.leech.name=Blutegelpfeil
 
 item.battlegear2:dagger.wood.name=Hölzerner Dolch
 item.battlegear2:dagger.stone.name=Steinerner Dolch
@@ -41,10 +69,21 @@ item.battlegear2:knights_armour.boots.name=Ritterstiefel
 
 item.battlegear2:cloak.name=Umhang
 
-enchantment.slow_fall=Langsamer Fall
-enchantment.super_jump=Supersprung
+enchantment.bash.weightless=Gewichtsloser Schlag
+enchantment.bash.power=Schlagkraft
+enchantment.bash.damage=Schlagschaden
+enchantment.shield.usage=Schildeffizienz
+enchantment.shield.recover=Schildwiederherstellung
+enchantment.bow.loot=Bogenglück
+enchantment.bow.charge=Bogenrückzug
 
-tile.battlegear2:banner.name=Banner
+tile.battlegear2:flagpole.oak.name=Eichenflaggenhalter
+tile.battlegear2:flagpole.spruce.name=Fichtenflaggenhalter
+tile.battlegear2:flagpole.birch.name=Birkenflaggenhalter
+tile.battlegear2:flagpole.jungle.name=Tropenflaggenhalter
+tile.battlegear2:flagpole.iron.name=Eisenflaggenhalter
+tile.battlegear2:flagpole.acacia.name=Akazienflaggenhalter
+tile.battlegear2:flagpole.big_oak.name=Schwarzeichenflaggenhalter
 
 sigil.pattern.title=Schablone
 sigil.icon.title=Siegel
@@ -57,8 +96,12 @@ sigil.banner.title=Banner
 sigil.helm.title=Helm
 sigil.colour.select=Wählen
 
+gui.sigil.add=Hinzufügen
+gui.sigil.remove=Entfernen
+gui.sigil.crest=Krone
+gui.sigil.pattern=Hintergrund
 
-attribute.name.weapon.penetrateArmor=Rüstung Durchschlagen
+attribute.name.weapon.penetrateArmor=Rüstung durchschlagen
 attribute.name.weapon.daze=Betäubung
 attribute.name.weapon.extendedReach=Reichweite
 attribute.name.weapon.attackSpeed=Attacken-Geschwindigkeit
@@ -68,3 +111,31 @@ attribute.shield.block.time=%s s Block
 attribute.shield.arrow.count=%s Pfeile
 attribute.quiver.arrow.empty=Leer
 attribute.quiver.arrow.count=Pfeile
+
+lore.base.arrow.explosive=Besitzt gewisse Sprengkraft
+lore.base.arrow.ender=Dieses Enderauge sieht sehr böse aus...
+lore.base.arrow.flame=Feuerzeug? Nein danke
+lore.base.arrow.piercing=Ungewöhnliche Schneidfähigkeit
+lore.base.arrow.poison=Teuer, ne?
+lore.base.arrow.mystery=Jeder liebt Kekse!
+lore.base.arrow.leech=Lässt dich schwach und traurig wirken!
+lore.advanced.arrow.explosive=Explosionsstärke hängt vom kritischen Schaden des Pfeils ab
+lore.advanced.arrow.ender=Sofortige Reise oder Blockteleportation
+lore.advanced.arrow.flame=Verbrennt Mobs, Spieler und Blöcke
+lore.advanced.arrow.piercing=Schere Schafe stylisch
+lore.advanced.arrow.poison=Verursacht den Withereffekt
+lore.advanced.arrow.mystery=Sendet eine Friedens- und Liebesnachricht
+lore.advanced.arrow.leech=Hat einen vampirischen Touch
+
+tooltip.armour.points=Rüstung
+
+commands.weaponwield.usage=/weaponwield current <hand> [spieler] [nutzen] ODER /weaponwield name <hand> <item name> [nutzen] ODER /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
+commands.weaponwield.set=%1$s wurde erfolgreich als leicht zu handhabende Waffe festgelegt
+commands.weaponwield.sensitivity=Der Waffenvergleicher hat folgende Sensitivität: %1$s
+commands.weaponwield.sensitivity.added=Sensibilität wurde zum Waffenkomparator hinzugefügt: %1$s
+commands.weaponwield.sensitivity.removed=Sensibilität wurde vom Waffenkomparator entfernt: %1$s
+
+death.attack.battlegearExtra.backstab=%1$s wurde von %2$s im Rücken erstochen
+death.attack.battlegearExtra.backstab.item=%1$s wurde von %2$s im Rücken erstochen mithile von %3$s
+death.attack.battlegearExtra.mounted=%1$s wurde von %2$s und seinem Pferd durchbohrt
+death.attack.battlegearExtra.mounted.item=%1$s wurde von %2$s und seinem Pferd mithilfe von %3$s durchbohrt
