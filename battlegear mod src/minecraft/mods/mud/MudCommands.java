@@ -18,7 +18,7 @@ public class MudCommands extends CommandBase{
     }
     
     @Override
-    public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
+    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
         return getListOfStringsMatchingLastWord(par2ArrayOfStr, getCommandName());
     }
     
@@ -46,10 +46,5 @@ public class MudCommands extends CommandBase{
                 Minecraft.getMinecraft().displayGuiScreen(new GuiChangelogDownload());
             }
         }.start();
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return this.compareTo((ICommand)o);
     }
 }

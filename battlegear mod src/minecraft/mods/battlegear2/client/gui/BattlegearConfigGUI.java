@@ -18,7 +18,6 @@ public final class BattlegearConfigGUI extends GuiScreen{
         this.parent = parent;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void initGui(){
         int listWidth = 0;

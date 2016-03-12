@@ -20,7 +20,7 @@ public final class BattlegearAnimationPacket extends AbstractMBPacket {
 
     public BattlegearAnimationPacket(EnumBGAnimations animation, EntityPlayer user) {
     	this.animation = animation;
-    	this.username = user.getCommandSenderName();
+    	this.username = user.getName();
     }
 
     public BattlegearAnimationPacket() {

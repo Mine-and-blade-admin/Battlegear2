@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -259,14 +260,12 @@ public class BattlegearSigilGUI extends GuiContainer {
      */
     public void drawTexturedModalRect(int x, int y, int width, int height, int tex_x, int tex_y, int tex_width, int tex_height)
     {
-        float f = 0.00390625F;
-        float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.getWorldRenderer().startDrawingQuads();
-        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + 0)), (double) ((float) (tex_y + tex_height)));
-        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + height), (double) this.zLevel, (double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height)));
-        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + 0)));
-        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + 0), (double) this.zLevel, (double) ((float) (tex_x + 0)), (double) ((float) (tex_y + 0)));
+        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        tessellator.getWorldRenderer().pos((double) (x), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y))).endVertex();
+        tessellator.getWorldRenderer().pos((double) (x), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y))).endVertex();
         tessellator.draw();
     }
 

@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class BlockFlagPole extends BlockRotatedPillar {
 
-    public static final PropertyEnum VARIANT = PropertyEnum.create("variant", Variants.class);
+    public static final PropertyEnum<Variants> VARIANT = PropertyEnum.create("variant", Variants.class);
     private static final float[] woodTexDims = {0F, 4F, 8F, 12F, 16F};
     private static final float[] ironTexDims = {1F, 4.5F, 8F, 11.5F, 15F};
 
@@ -40,7 +40,7 @@ public class BlockFlagPole extends BlockRotatedPillar {
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
+    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List) {
         for (int i = 0; i < Variants.values().length; i++) {
             par3List.add(new ItemStack(par1, 1, i));
         }
@@ -62,7 +62,7 @@ public class BlockFlagPole extends BlockRotatedPillar {
 
     @Override
     public int damageDropped(IBlockState state) {
-        return ((Variants) state.getValue(VARIANT)).ordinal();
+        return state.getValue(VARIANT).ordinal();
     }
 
     @Override
@@ -72,12 +72,12 @@ public class BlockFlagPole extends BlockRotatedPillar {
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        return ((Variants) state.getValue(VARIANT)).ordinal();
+        return state.getValue(VARIANT).ordinal();
     }
 
     @Override
     protected BlockState createBlockState() {
-        return new BlockState(this, new IProperty[]{AXIS, VARIANT});
+        return new BlockState(this, AXIS, VARIANT);
     }
 
     @Override
@@ -157,7 +157,7 @@ public class BlockFlagPole extends BlockRotatedPillar {
         super.breakBlock(par1World, pos, par5);
     }
 
-    private enum Variants implements IStringSerializable {
+    public enum Variants implements IStringSerializable {
         OAK("oak"),
         SPRUCE("spruce"),
         BIRCH("birch"),
@@ -167,7 +167,7 @@ public class BlockFlagPole extends BlockRotatedPillar {
         DARK_OAK("dark_oak");
         private final String name;
 
-        private Variants(String name) {
+        Variants(String name) {
             this.name = name;
         }
 

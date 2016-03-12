@@ -136,7 +136,7 @@ public final class CommandWeaponWield extends CommandBase{
     }
 
     @Override
-    public List addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
+    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
         if(par2ArrayOfStr.length == 1)
             return getListOfStringsMatchingLastWord(par2ArrayOfStr, searchModes);
         else if(par2ArrayOfStr.length == 2) {
@@ -172,10 +172,5 @@ public final class CommandWeaponWield extends CommandBase{
                 names[i] = names[i].toLowerCase(Locale.ENGLISH);
         }
         return names;
-    }
-
-    @Override
-    public int compareTo(Object object){
-        return compareTo((ICommand) object);
     }
 }

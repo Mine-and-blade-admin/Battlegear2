@@ -12,7 +12,7 @@ public final class BattlegearShieldFlashPacket extends AbstractMBPacket{
 	private float damage;
 
     public BattlegearShieldFlashPacket(EntityPlayer player, float damage) {
-    	this.username = player.getCommandSenderName();
+    	this.username = player.getName();
     	this.damage = damage;
     }
 

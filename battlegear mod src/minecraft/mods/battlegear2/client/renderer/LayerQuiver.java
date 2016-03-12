@@ -36,7 +36,7 @@ public class LayerQuiver extends LayerPlayerBase{
             if(player.getEquipmentInSlot(3)!=null){//chest armor
                 GlStateManager.translate(0, 0, scale);
             }
-            renderer.getPlayerModel().bipedBody.postRender(scale);
+            renderer.getMainModel().bipedBody.postRender(scale);
             GlStateManager.scale(1.05F, 1.05F, 1.05F);
             BattlegearClientEvents.INSTANCE.quiverModel.render(arrowCount, scale);
 

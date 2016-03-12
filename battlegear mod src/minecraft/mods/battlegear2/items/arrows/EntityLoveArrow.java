@@ -58,7 +58,7 @@ public class EntityLoveArrow extends AbstractMBArrow{
                 EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) entityHit, ((EntityPlayer) entityHit).getCurrentEquippedItem(), true);
                 if(entityitem!=null){
                     entityitem.setPickupDelay(PICKUP_TIME);
-                    entityitem.setOwner(entityHit.getCommandSenderName());
+                    entityitem.setOwner(entityHit.getName());
                 }
                 if(!((IBattlePlayer)entityHit).isBattlemode())
                     ((EntityPlayer) entityHit).inventory.setInventorySlotContents(((EntityPlayer) entityHit).inventory.currentItem, new ItemStack(ItemMBArrow.component[5]));

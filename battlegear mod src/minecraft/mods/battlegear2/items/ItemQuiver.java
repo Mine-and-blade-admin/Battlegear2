@@ -50,7 +50,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable, IShea
                 EntityItem entityitem = ForgeHooks.onPlayerTossEvent(player, temp, true);
                 if(entityitem!=null) {
                     entityitem.setNoPickupDelay();
-                    entityitem.setOwner(player.getCommandSenderName());
+                    entityitem.setOwner(player.getName());
                 }
                 setStackInSlot(stack, i, null);
                 flag = true;
@@ -184,7 +184,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable, IShea
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List list, boolean par4) {
+    public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List<String> list, boolean par4) {
         super.addInformation(stack, par2EntityPlayer, list, par4);
 
         list.add(StatCollector.translateToLocal("attribute.quiver.arrow.count"));

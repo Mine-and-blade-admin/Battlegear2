@@ -41,7 +41,7 @@ public class BattlegearInGameGUI extends Gui {
 
         if (Battlegear.battlegearEnabled && !this.mc.playerController.isSpectator() && this.mc.getRenderViewEntity() instanceof EntityPlayer) {
 
-            ScaledResolution scaledresolution = new ScaledResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+            ScaledResolution scaledresolution = new ScaledResolution(this.mc);
             int width = scaledresolution.getScaledWidth();
             int height = scaledresolution.getScaledHeight();
             RenderGameOverlayEvent renderEvent = new RenderGameOverlayEvent(frame, scaledresolution);

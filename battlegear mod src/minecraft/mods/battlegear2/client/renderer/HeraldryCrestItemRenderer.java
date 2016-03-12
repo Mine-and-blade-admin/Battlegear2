@@ -9,44 +9,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
 
-public class HeraldryCrestItemRenderer implements IItemRenderer{
+public class HeraldryCrestItemRenderer {
     private RenderItem itemRenderer;
 
 
     public static final ResourceLocation map_overlay = new ResourceLocation("battlegear2", "textures/heraldry/Background.png");
-
-    @Override
-    public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-        return item.getItem() instanceof IHeraldryItem &&
-                ((IHeraldryItem)item.getItem()).hasHeraldry(item) &&
-                (type == ItemRenderType.INVENTORY || type == ItemRenderType.FIRST_PERSON_MAP);
-    }
-
-    @Override
-    public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-
-        byte[] heraldryData = ((IHeraldryItem)item.getItem()).getHeraldry(item);
-
-        switch (type){
-            case INVENTORY:
-                doInventoryRendering(item, new HeraldryData(heraldryData), ((IHeraldryItem)item.getItem()));
-                break;
-            case FIRST_PERSON_MAP:
-                doMapRendering(item, new HeraldryData(heraldryData), ((IHeraldryItem)item.getItem()));
-        }
-    }
 
     private void doMapRendering(ItemStack item, HeraldryData heraldryData, IHeraldryItem item1) {
         glPushMatrix();
@@ -58,11 +33,11 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
         Tessellator tess = Tessellator.getInstance();
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(map_overlay);
-        tess.getWorldRenderer().startDrawingQuads();
-        tess.getWorldRenderer().addVertexWithUV(-8, 136, -.01, 0, 1);
-        tess.getWorldRenderer().addVertexWithUV(136, 136, -.01, 1, 1);
-        tess.getWorldRenderer().addVertexWithUV(136, -8, -.01, 1, 0);
-        tess.getWorldRenderer().addVertexWithUV(-8, -8, -.01, 0, 0);
+        tess.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+        tess.getWorldRenderer().pos(-8, 136, -.01).tex(0, 1).endVertex();
+        tess.getWorldRenderer().pos(136, 136, -.01).tex(1, 1).endVertex();
+        tess.getWorldRenderer().pos(136, -8, -.01).tex(1, 0).endVertex();
+        tess.getWorldRenderer().pos(-8, -8, -.01).tex(0, 0).endVertex();
         tess.draw();
 
         //glDisable(GL_BLEND);
@@ -78,11 +53,11 @@ public class HeraldryCrestItemRenderer implements IItemRenderer{
         Minecraft.getMinecraft().getTextureManager().bindTexture(crestLocation);
 
 
-        tess.getWorldRenderer().startDrawingQuads();
-        tess.getWorldRenderer().addVertexWithUV(8, 120, -0.015, 0, 1);
-        tess.getWorldRenderer().addVertexWithUV(120, 120, -0.015, 1, 1);
-        tess.getWorldRenderer().addVertexWithUV(120, 8, -0.015, 1, 0);
-        tess.getWorldRenderer().addVertexWithUV(8, 8, -0.015, 0, 0);
+        tess.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+        tess.getWorldRenderer().pos(8, 120, -0.015).tex(0, 1).endVertex();
+        tess.getWorldRenderer().pos(120, 120, -0.015).tex(1, 1).endVertex();
+        tess.getWorldRenderer().pos(120, 8, -0.015).tex(1, 0).endVertex();
+        tess.getWorldRenderer().pos(8, 8, -0.015).tex(0, 0).endVertex();
         tess.draw();
 
 

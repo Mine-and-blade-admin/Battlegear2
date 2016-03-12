@@ -151,14 +151,14 @@ public class EntityEnderArrow extends AbstractMBArrow{
         BlockPos pos = new BlockPos(x, y, z);
         if(shootingEntity instanceof EntityPlayer && shootingEntity.isSneaking()){
             IBlockState id = worldObj.getBlockState(pos);
-            if (id.getBlock() != Blocks.bedrock && this.worldObj.getGameRules().getGameRuleBooleanValue("doTileDrops")) {
+            if (id.getBlock() != Blocks.bedrock && this.worldObj.getGameRules().getBoolean("doTileDrops")) {
                 worldObj.setBlockToAir(pos);
                 ItemStack item = new ItemStack(id.getBlock(), 1, id.getBlock().getMetaFromState(id));
                 if(!((EntityPlayer) shootingEntity).inventory.addItemStackToInventory(item)){
                     EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) shootingEntity, item, true);
                     if(entityitem!=null) {
                         entityitem.setNoPickupDelay();
-                        entityitem.setOwner(shootingEntity.getCommandSenderName());
+                        entityitem.setOwner(shootingEntity.getName());
                     }
                 }
             }

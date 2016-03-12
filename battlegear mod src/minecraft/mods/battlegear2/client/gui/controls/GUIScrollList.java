@@ -1,8 +1,10 @@
 package mods.battlegear2.client.gui.controls;
 
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -25,9 +27,9 @@ public abstract class GUIScrollList {
     private float scrollDistance;
     private int selectedIndex = -1;
     private long lastClickTime = 0L;
-    private boolean field_25123_p = true;
-    private boolean field_27262_q;
-    private int field_27261_r;
+    private boolean highlightSelected = true;
+    private boolean hasHeader;
+    private int headerHeight;
 	public boolean drawList = true;
 
     public GUIScrollList(int width, int top, int bottom, int left, int entryHeight)
@@ -42,17 +44,17 @@ public abstract class GUIScrollList {
 
     public void func_27258_a(boolean p_27258_1_)
     {
-        this.field_25123_p = p_27258_1_;
+        this.highlightSelected = p_27258_1_;
     }
 
-    protected void func_27259_a(boolean p_27259_1_, int p_27259_2_)
+    protected void setHeaderInfo(boolean p_27259_1_, int p_27259_2_)
     {
-        this.field_27262_q = p_27259_1_;
-        this.field_27261_r = p_27259_2_;
+        this.hasHeader = p_27259_1_;
+        this.headerHeight = p_27259_2_;
 
         if (!p_27259_1_)
         {
-            this.field_27261_r = 0;
+            this.headerHeight = 0;
         }
     }
 
@@ -63,21 +65,21 @@ public abstract class GUIScrollList {
     protected abstract boolean isSelected(int index);
 
     protected int getContentHeight(){
-        return this.getSize() * this.slotHeight + this.field_27261_r;
+        return this.getSize() * this.slotHeight + this.headerHeight;
     }
 
     protected abstract void drawBackground();
 
     protected abstract void drawSlot(int var1, int var2, int var3, int var4, Tessellator var5);
 
-    protected void func_27260_a(int p_27260_1_, int p_27260_2_, Tessellator p_27260_3_) {}
+    protected void drawHeader(int entryRight, int relativeY, Tessellator tess) {}
 
-    protected void func_27257_b(int p_27257_1_, int p_27257_2_) {}
+    protected void drawScreen(int mouseX, int mouseY) {}
 
     public int func_27256_c(int p_27256_1_, int p_27256_2_){
         int var3 = this.left + 1;
         int var4 = this.left + this.listWidth - 7;
-        int var5 = p_27256_2_ - this.top - this.field_27261_r + (int)this.scrollDistance - 4;
+        int var5 = p_27256_2_ - this.top - this.headerHeight + (int)this.scrollDistance - 4;
         int var6 = var5 / this.slotHeight;
         return p_27256_1_ >= var3 && p_27256_1_ <= var4 && var6 >= 0 && var5 >= 0 && var6 < this.getSize() ? var6 : -1;
     }
@@ -151,7 +153,7 @@ public abstract class GUIScrollList {
 	
 	                if (mouseY >= this.top && mouseY <= this.bottom)
 	                {
-	                    var10 = mouseY - this.top - this.field_27261_r + (int)this.scrollDistance - 4;
+	                    var10 = mouseY - this.top - this.headerHeight + (int)this.scrollDistance - 4;
 	                    var11 = var10 / this.slotHeight;
 	
 	                    if (mouseX >= boxLeft && mouseX <= boxRight && var11 >= 0 && var10 >= 0 && var11 < listLength)
@@ -247,37 +249,31 @@ public abstract class GUIScrollList {
 
 	        var10 = this.top + 4 - (int)this.scrollDistance;
 	
-	        if (this.field_27262_q)
+	        if (this.hasHeader)
 	        {
-	            this.func_27260_a(boxRight, var10, var18);
+	            this.drawHeader(boxRight, var10, var18);
 	        }
-	
-	        int var14;
 	
 	        for (var11 = 0; var11 < listLength; ++var11)
 	        {
-	            var19 = var10 + var11 * this.slotHeight + this.field_27261_r;
+	            var19 = var10 + var11 * this.slotHeight + this.headerHeight;
 	            var13 = this.slotHeight - 4;
 	
 	            if (var19 <= this.bottom && var19 + var13 >= this.top)
 	            {
-	                if (this.field_25123_p && this.isSelected(var11))
+	                if (this.highlightSelected && this.isSelected(var11))
 	                {
-	                    var14 = boxLeft;
-	                    int var15 = boxRight;
-	                    GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+						GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	                    GlStateManager.disableTexture2D();
-						var18.getWorldRenderer().startDrawingQuads();
-						var18.getWorldRenderer().setColorOpaque_I(8421504);
-						var18.getWorldRenderer().addVertexWithUV((double) var14, (double) (var19 + var13 + 2), 0.0D, 0.0D, 1.0D);
-						var18.getWorldRenderer().addVertexWithUV((double) var15, (double) (var19 + var13 + 2), 0.0D, 1.0D, 1.0D);
-						var18.getWorldRenderer().addVertexWithUV((double) var15, (double) (var19 - 2), 0.0D, 1.0D, 0.0D);
-						var18.getWorldRenderer().addVertexWithUV((double) var14, (double) (var19 - 2), 0.0D, 0.0D, 0.0D);
-						var18.getWorldRenderer().setColorOpaque_I(0);
-						var18.getWorldRenderer().addVertexWithUV((double) (var14 + 1), (double) (var19 + var13 + 1), 0.0D, 0.0D, 1.0D);
-						var18.getWorldRenderer().addVertexWithUV((double) (var15 - 1), (double) (var19 + var13 + 1), 0.0D, 1.0D, 1.0D);
-						var18.getWorldRenderer().addVertexWithUV((double) (var15 - 1), (double) (var19 - 1), 0.0D, 1.0D, 0.0D);
-						var18.getWorldRenderer().addVertexWithUV((double) (var14 + 1), (double) (var19 - 1), 0.0D, 0.0D, 0.0D);
+						var18.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+						var18.getWorldRenderer().pos((double) boxLeft, (double) (var19 + var13 + 2), 0).tex(0, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+						var18.getWorldRenderer().pos((double) boxRight, (double) (var19 + var13 + 2), 0).tex(1, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+						var18.getWorldRenderer().pos((double) boxRight, (double) (var19 - 2), 0).tex(1, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+						var18.getWorldRenderer().pos((double) boxLeft, (double) (var19 - 2), 0).tex(0, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+						var18.getWorldRenderer().pos((double) (boxLeft + 1), (double) (var19 + var13 + 1), 0).tex(0, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+						var18.getWorldRenderer().pos((double) (boxRight - 1), (double) (var19 + var13 + 1), 0).tex(1, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+						var18.getWorldRenderer().pos((double) (boxRight - 1), (double) (var19 - 1), 0).tex(1, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+						var18.getWorldRenderer().pos((double) (boxLeft + 1), (double) (var19 - 1), 0).tex(0, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
 						var18.draw();
 	                    GlStateManager.enableTexture2D();
 	                }
@@ -309,37 +305,34 @@ public abstract class GUIScrollList {
 	                var13 = this.bottom - this.top - 8;
 	            }
 	
-	            var14 = (int)this.scrollDistance * (this.bottom - this.top - var13) / var19 + this.top;
+	            int var14 = (int)this.scrollDistance * (this.bottom - this.top - var13) / var19 + this.top;
 	
 	            if (var14 < this.top)
 	            {
 	                var14 = this.top;
 	            }
 
-				var18.getWorldRenderer().startDrawingQuads();
-				var18.getWorldRenderer().setColorRGBA_I(0, 255);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) this.bottom, 0.0D, 0.0D, 1.0D);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXEnd, (double) this.bottom, 0.0D, 1.0D, 1.0D);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXEnd, (double) this.top, 0.0D, 1.0D, 0.0D);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) this.top, 0.0D, 0.0D, 0.0D);
+				var18.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) this.bottom, 0).tex(0, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+				var18.getWorldRenderer().pos((double) scrollBarXEnd, (double) this.bottom, 0).tex(1, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+				var18.getWorldRenderer().pos((double) scrollBarXEnd, (double) this.top, 0).tex(1, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) this.top, 0).tex(0, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
 				var18.draw();
-				var18.getWorldRenderer().startDrawingQuads();
-				var18.getWorldRenderer().setColorRGBA_I(8421504, 255);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) (var14 + var13), 0.0D, 0.0D, 1.0D);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXEnd, (double) (var14 + var13), 0.0D, 1.0D, 1.0D);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXEnd, (double) var14, 0.0D, 1.0D, 0.0D);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) var14, 0.0D, 0.0D, 0.0D);
+				var18.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) (var14 + var13), 0).tex(0, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+				var18.getWorldRenderer().pos((double) scrollBarXEnd, (double) (var14 + var13), 0).tex(1, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+				var18.getWorldRenderer().pos((double) scrollBarXEnd, (double) var14, 0).tex(1, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) var14, 0).tex(0, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
 				var18.draw();
-				var18.getWorldRenderer().startDrawingQuads();
-				var18.getWorldRenderer().setColorRGBA_I(12632256, 255);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) (var14 + var13 - 1), 0.0D, 0.0D, 1.0D);
-				var18.getWorldRenderer().addVertexWithUV((double) (scrollBarXEnd - 1), (double) (var14 + var13 - 1), 0.0D, 1.0D, 1.0D);
-				var18.getWorldRenderer().addVertexWithUV((double) (scrollBarXEnd - 1), (double) var14, 0.0D, 1.0D, 0.0D);
-				var18.getWorldRenderer().addVertexWithUV((double) scrollBarXStart, (double) var14, 0.0D, 0.0D, 0.0D);
+				var18.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) (var14 + var13 - 1), 0).tex(0, 1).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
+				var18.getWorldRenderer().pos((double) (scrollBarXEnd - 1), (double) (var14 + var13 - 1), 0).tex(1, 1).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
+				var18.getWorldRenderer().pos((double) (scrollBarXEnd - 1), (double) var14, 0).tex(1, 0).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
+				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) var14, 0).tex(0, 0).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
 				var18.draw();
 	        }
 	
-	        this.func_27257_b(mouseX, mouseY);
+	        this.drawScreen(mouseX, mouseY);
 	        GlStateManager.enableTexture2D();
 			GlStateManager.shadeModel(GL11.GL_FLAT);
 	        GlStateManager.enableAlpha();
@@ -352,13 +345,11 @@ public abstract class GUIScrollList {
      */
     public void drawTexturedModalRect(Tessellator tessellator, int x, int y, int width, int height, int zLevel)
     {
-        float f = 0.00390625F;
-        float f1 = 0.00390625F;
-		tessellator.getWorldRenderer().startDrawingQuads();
-		tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + height), (double) zLevel, 0F, 1F);
-		tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + height), (double) zLevel, 1F, 1F);
-		tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + 0), (double) zLevel, 1F, 0F);
-		tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + 0), (double) zLevel, 0F, 0F);
+		tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		tessellator.getWorldRenderer().pos((double) (x), (double) (y + height), (double) zLevel).tex(0F, 1F).endVertex();
+		tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + height), (double) zLevel).tex(1F, 1F).endVertex();
+		tessellator.getWorldRenderer().pos((double) (x + width), (double) (y), (double) zLevel).tex(1F, 0F).endVertex();
+		tessellator.getWorldRenderer().pos((double) (x), (double) (y), (double) zLevel).tex(0F, 0F).endVertex();
 		tessellator.draw();
     }
 
@@ -367,40 +358,7 @@ public abstract class GUIScrollList {
      */
     public static void drawRect(int x1, int y1, int x2, int y2, int col)
     {
-        int j1;
-
-        if (x1 < x2)
-        {
-            j1 = x1;
-            x1 = x2;
-            x2 = j1;
-        }
-
-        if (y1 < y2)
-        {
-            j1 = y1;
-            y1 = y2;
-            y2 = j1;
-        }
-
-        float f = (float)(col >> 24 & 255) / 255.0F;
-        float f1 = (float)(col >> 16 & 255) / 255.0F;
-        float f2 = (float)(col >> 8 & 255) / 255.0F;
-        float f3 = (float)(col & 255) / 255.0F;
-		Tessellator tessellator = Tessellator.getInstance();
-		GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
-        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color(f1, f2, f3, f);
-		tessellator.getWorldRenderer().startDrawingQuads();
-		tessellator.getWorldRenderer().addVertex((double) x1, (double) y2, 0.0D);
-		tessellator.getWorldRenderer().addVertex((double) x2, (double) y2, 0.0D);
-		tessellator.getWorldRenderer().addVertex((double) x2, (double) y1, 0.0D);
-		tessellator.getWorldRenderer().addVertex((double) x1, (double) y1, 0.0D);
-		tessellator.draw();
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
-    }
-
+		Gui.drawRect(x1, y1, x2, y2, col);
+	}
 
 }

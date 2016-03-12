@@ -22,7 +22,7 @@ public final class BattlegearSyncItemPacket extends AbstractMBPacket {
 	private EntityPlayer player;
 
     public BattlegearSyncItemPacket(EntityPlayer player){
-        this(player.getCommandSenderName(), player.inventory, player);
+        this(player.getName(), player.inventory, player);
     }
 
     private BattlegearSyncItemPacket(String user, InventoryPlayer inventory, EntityPlayer player) {

@@ -19,7 +19,7 @@ public class GuiDrawButton extends GuiButton {
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY){
         this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
-        this.drawer.drawElement(new ScaledResolution(mc, mc.displayWidth, mc.displayHeight), xPosition, yPosition);
+        this.drawer.drawElement(new ScaledResolution(mc), xPosition, yPosition);
         this.mouseDragged(mc, mouseX, mouseY);
     }
 
@@ -59,6 +59,6 @@ public class GuiDrawButton extends GuiButton {
     }
 
     public static interface IDrawnHandler{
-        public void drawElement(ScaledResolution resolution, int varX, int varY);
+        void drawElement(ScaledResolution resolution, int varX, int varY);
     }
 }

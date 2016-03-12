@@ -60,11 +60,11 @@ public final class ClientProxy extends CommonProxy {
     @Override
     public void registerHandlers() {
         if(BattlegearConfig.enableGUIKeys){
-            FMLCommonHandler.instance().bus().register(BattlegearGuiKeyHandler.INSTANCE);
+            MinecraftForge.EVENT_BUS.register(BattlegearGuiKeyHandler.INSTANCE);
         }
         super.registerHandlers();
         MinecraftForge.EVENT_BUS.register(BattlegearClientEvents.INSTANCE);
-        FMLCommonHandler.instance().bus().register(BattlegearClientTickHandeler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(BattlegearClientTickHandeler.INSTANCE);
         BattlegearUtils.RENDER_BUS.register(new BattlegearClientUtils());
     }
 
@@ -78,7 +78,7 @@ public final class ClientProxy extends CommonProxy {
 
     @Override
     public void startFlash(EntityPlayer player, float damage) {
-    	if(player.getCommandSenderName().equals(Minecraft.getMinecraft().thePlayer.getCommandSenderName())){
+    	if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
             BattlegearClientTickHandeler.resetFlash();
             ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
 
@@ -138,10 +138,10 @@ public final class ClientProxy extends CommonProxy {
         }
         //TODO: Heraldry renderers
         if (BattlegearConfig.banner != null) {
-            Collection<Comparable> collec = BlockFlagPole.VARIANT.getAllowedValues();
+            Collection<BlockFlagPole.Variants> collec = BlockFlagPole.VARIANT.getAllowedValues();
             final String[] variants = new String[collec.size()];
             int i = 0;
-            for (Comparable comparable : collec) {
+            for (BlockFlagPole.Variants comparable : collec) {
                 variants[i] = BattlegearConfig.MODID + BattlegearConfig.itemNames[10] + "/" + BlockFlagPole.VARIANT.getName(comparable);
                 i++;
             }

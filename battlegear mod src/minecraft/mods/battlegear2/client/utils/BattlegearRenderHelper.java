@@ -17,13 +17,16 @@ import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.Sheath;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.Entity;
@@ -42,8 +45,7 @@ import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
-
-import javax.vecmath.Vector3f;
+import org.lwjgl.util.vector.Vector3f;
 
 public final class BattlegearRenderHelper {
 
@@ -102,7 +104,7 @@ public final class BattlegearRenderHelper {
             float var10;
             float var21;
             float var20;
-            RenderPlayer var26 = (RenderPlayer) mc.getRenderManager().getEntityRenderObject(player);
+            RenderPlayer var26 = (RenderPlayer) (Render) mc.getRenderManager().getEntityRenderObject(player);
             RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(player, var26, frame);
             RenderPlayerEvent postRender = new RenderPlayerEvent.Post(player, var26, frame);
             if (offhandRender.getItemToRender() != null) {
@@ -362,7 +364,7 @@ public final class BattlegearRenderHelper {
                 GlStateManager.rotate(-20, -1, 0, 0);
                 GlStateManager.scale(0.5F, 0.5F, 0.5F);
             }
-            render.getPlayerModel().bipedLeftArm.postRender(RENDER_UNIT);
+            render.getMainModel().bipedLeftArm.postRender(RENDER_UNIT);
 
             GlStateManager.translate(RENDER_UNIT, 7 * RENDER_UNIT, RENDER_UNIT);
 
@@ -430,8 +432,8 @@ public final class BattlegearRenderHelper {
         if(BattlegearConfig.forceSheath==Sheath.NONE)
             return;
 
-        Pair<Boolean, ModelBase> chest = getEquippedModel(par1EntityPlayer, render, 3);
-        Pair<Boolean, ModelBase> legs = getEquippedModel(par1EntityPlayer, render, 2);
+        Pair<Boolean, ModelBiped> chest = getEquippedModel(par1EntityPlayer, render, 3);
+        Pair<Boolean, ModelBiped> legs = getEquippedModel(par1EntityPlayer, render, 2);
 
         int backCount = chest.getLeft() ? 1 : 0;
         RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
@@ -513,16 +515,16 @@ public final class BattlegearRenderHelper {
         } else if (legs instanceof ModelBiped && !onBack) {
             return (ModelBiped) legs;
         }
-        return render.getPlayerModel();
+        return render.getMainModel();
     }
 
-    public static Pair<Boolean, ModelBase> getEquippedModel(EntityPlayer player, RenderPlayer render, int slot) {
+    public static Pair<Boolean, ModelBiped> getEquippedModel(EntityPlayer player, RenderPlayer render, int slot) {
         ItemStack equip = player.getEquipmentInSlot(slot);
         boolean hasEquip = equip != null;
         if (hasEquip) {
             for (Object object : render.layerRenderers) {
-                if (object instanceof LayerArmorBase) {
-                    return Pair.of(true, ForgeHooksClient.getArmorModel(player, equip, slot, ((LayerArmorBase) object).func_177175_a(slot)));
+                if (object instanceof LayerArmorBase && ((LayerArmorBase) object).func_177175_a(slot) instanceof ModelBiped) {
+                    return Pair.of(true, ForgeHooksClient.getArmorModel(player, equip, slot, (ModelBiped)((LayerArmorBase) object).func_177175_a(slot)));
                 }
             }
         }
@@ -533,9 +535,15 @@ public final class BattlegearRenderHelper {
         Minecraft.getMinecraft().getItemRenderer().renderItem(livingBase, itemStack, livingBase != null ? ItemCameraTransforms.TransformType.THIRD_PERSON : ItemCameraTransforms.TransformType.NONE);
     }
 
+    /**
+     * Called from RenderItem#renderItemModelForEntity
+     * @param itemStack to render
+     * @param livingBase holding the stack
+     * @return the baked model
+     */
     public static IBakedModel getItemModel(ItemStack itemStack, EntityLivingBase livingBase){
         ItemModelMesher modelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
-        if(livingBase != null && itemStack.getItem() == Items.bow){
+        if(itemStack.getItem() == Items.bow){
             if(livingBase instanceof EntityPlayer){
                 EntityPlayer entityPlayer = (EntityPlayer) livingBase;
                 String bow = "bow";
@@ -643,18 +651,18 @@ public final class BattlegearRenderHelper {
         {
             GlStateManager.rotate(90, 1, 0, 0);
             GL11.glNormal3f(0, 0, f10);
-            tessellator.getWorldRenderer().startDrawingQuads();
-            tessellator.getWorldRenderer().addVertexWithUV(0, -2, 0, f2, 0);
-            tessellator.getWorldRenderer().addVertexWithUV(16 * depth, -2, 0, 0, 0);
-            tessellator.getWorldRenderer().addVertexWithUV(16 * depth, 2, 0, 0, f5);
-            tessellator.getWorldRenderer().addVertexWithUV(0, 2, 0, f2, f5);
+            tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            tessellator.getWorldRenderer().pos(0, -2, 0).tex(f2, 0).endVertex();
+            tessellator.getWorldRenderer().pos(16 * depth, -2, 0).tex(0, 0).endVertex();
+            tessellator.getWorldRenderer().pos(16 * depth, 2, 0).tex(0, f5).endVertex();
+            tessellator.getWorldRenderer().pos(0, 2, 0).tex(f2, f5).endVertex();
             tessellator.draw();
 
-            tessellator.getWorldRenderer().startDrawingQuads();
-            tessellator.getWorldRenderer().addVertexWithUV(0, 2, 0, f2, f5);
-            tessellator.getWorldRenderer().addVertexWithUV(16 * depth, 2, 0, 0, f5);
-            tessellator.getWorldRenderer().addVertexWithUV(16 * depth, -2, 0, 0, 0);
-            tessellator.getWorldRenderer().addVertexWithUV(0 * depth, -2, 0, f2, 0);
+            tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            tessellator.getWorldRenderer().pos(0, 2, 0).tex(f2, f5).endVertex();
+            tessellator.getWorldRenderer().pos(16 * depth, 2, 0).tex(0, f5).endVertex();
+            tessellator.getWorldRenderer().pos(16 * depth, -2, 0).tex(0, 0).endVertex();
+            tessellator.getWorldRenderer().pos(0 * depth, -2, 0).tex(f2, 0).endVertex();
             tessellator.draw();
         }
         GlStateManager.popMatrix();
@@ -663,11 +671,11 @@ public final class BattlegearRenderHelper {
     public static void renderTexturedQuad(int x, int y, float z, int width, int height)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.getWorldRenderer().startDrawingQuads();
-        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + height), (double) z, 0D, 1D);
-        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + height), (double) z, 1D, 1D);
-        tessellator.getWorldRenderer().addVertexWithUV((double) (x + width), (double) (y + 0), (double) z, 1D, 0D);
-        tessellator.getWorldRenderer().addVertexWithUV((double) (x + 0), (double) (y + 0), (double) z, 0D, 0D);
+        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        tessellator.getWorldRenderer().pos((double) (x), (double) (y + height), (double) z).tex(0D, 1D).endVertex();
+        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + height), (double) z).tex(1D, 1D).endVertex();
+        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y), (double) z).tex(1D, 0D).endVertex();
+        tessellator.getWorldRenderer().pos((double) (x), (double) (y), (double) z).tex(0D, 0D).endVertex();
         tessellator.draw();
     }
 }

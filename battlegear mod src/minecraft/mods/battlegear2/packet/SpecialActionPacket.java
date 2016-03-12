@@ -96,11 +96,11 @@ public final class SpecialActionPacket extends AbstractMBPacket{
 	public void write(ByteBuf out) {
 		boolean isPlayer = entityHit instanceof EntityPlayer;
 
-        ByteBufUtils.writeUTF8String(out, player.getCommandSenderName());
+        ByteBufUtils.writeUTF8String(out, player.getName());
 
         out.writeBoolean(isPlayer);
         if(isPlayer){
-            ByteBufUtils.writeUTF8String(out, entityHit.getCommandSenderName());
+            ByteBufUtils.writeUTF8String(out, entityHit.getName());
         }else{
             out.writeInt(entityHit != null?entityHit.getEntityId():-1);
         }

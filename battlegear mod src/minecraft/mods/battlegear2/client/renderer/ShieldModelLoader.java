@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.block.model.BlockPart;
 import net.minecraft.client.renderer.block.model.BlockPartFace;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ModelBlock;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -21,8 +22,8 @@ import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.IRetexturableModel;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.util.vector.Vector3f;
 
-import javax.vecmath.Vector3f;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -66,7 +67,7 @@ public class ShieldModelLoader extends BaseModelLoader{
         setLoader(modelBakeEvent.modelLoader);
         for(Item shield : BattlegearConfig.shield) {
             if(shield!=null) {
-                ResourceLocation mainLoc = DefaultMesh.INVENTORY.getModelLocation(new ItemStack(shield));
+                ModelResourceLocation mainLoc = DefaultMesh.INVENTORY.getModelLocation(new ItemStack(shield));
                 ResourceLocation itemLoc = new ResourceLocation(mainLoc.getResourceDomain(), "item/" + mainLoc.getResourcePath());
                 IModel originalModel = getModel(itemLoc);
                 if(originalModel instanceof IRetexturableModel){
@@ -74,7 +75,7 @@ public class ShieldModelLoader extends BaseModelLoader{
                     if (internalFrontModel != null) {
                         ModelBlock front = makeItem(internalFrontModel);
                         if (front != null) {
-                            IFlexibleBakedModel baked = wrap(join((IRetexturableModel) originalModel, front));
+                            IFlexibleBakedModel baked = wrap(join((IRetexturableModel) originalModel, front), mainLoc);
                             if(baked != null)
                                 modelBakeEvent.modelRegistry.putObject(mainLoc, baked);
                         }
@@ -85,7 +86,6 @@ public class ShieldModelLoader extends BaseModelLoader{
         setLoader(null);
     }
 
-    @SuppressWarnings("unchecked")
     private ModelBlock join(IRetexturableModel model, ModelBlock front) {
         HashMap<String,String> temp = new HashMap<String, String>();
         temp.putAll(front.textures);
@@ -113,7 +113,7 @@ public class ShieldModelLoader extends BaseModelLoader{
             if (internaltrim != null) {
                 ModelBlock trim = makeItem(internaltrim);
                 if(trim!=null) {
-                    for (BlockPart part : (List<BlockPart>) trim.getElements()) {
+                    for (BlockPart part : trim.getElements()) {
                         part.mapFaces.remove(EnumFacing.SOUTH);
                         HashMap<EnumFacing, BlockPartFace> faces = new HashMap<EnumFacing, BlockPartFace>();
                         Iterator<Map.Entry<EnumFacing, BlockPartFace>> itrMapFace = part.mapFaces.entrySet().iterator();
@@ -124,30 +124,30 @@ public class ShieldModelLoader extends BaseModelLoader{
                             }
                         }
                         part.mapFaces.putAll(faces);
-                        part.positionFrom.sub(trimTranslation);
-                        part.positionTo.sub(trimTranslation);
-                        part.positionTo.sub(trimTranslation);
+                        Vector3f.sub(part.positionFrom, trimTranslation, part.positionFrom);
+                        Vector3f.sub(part.positionTo, trimTranslation, part.positionTo);
+                        Vector3f.sub(part.positionTo, trimTranslation, part.positionTo);
                         elements.add(part);
                     }
                 }
             }
         }
-        for(BlockPart part : (List<BlockPart>) front.getElements()){
+        for(BlockPart part : front.getElements()){
             if(trimIndex!=-1) {
-                BlockPartFace face = (BlockPartFace) part.mapFaces.get(EnumFacing.NORTH);
+                BlockPartFace face = part.mapFaces.get(EnumFacing.NORTH);
                 if(face!=null && face.tintIndex == trimIndex) {
                     continue;
                 }
             }
-            part.positionTo.add(backTranslation);
+            Vector3f.add(part.positionTo, backTranslation, part.positionTo);
             BlockPartFace face;
             if(backIndex!=-1) {
-                face = (BlockPartFace) part.mapFaces.get(EnumFacing.SOUTH);
+                face = part.mapFaces.get(EnumFacing.SOUTH);
                 if (face!=null && (face.tintIndex != backIndex || face.texture == null || !face.texture.equals(LAYER + backIndex))) {
                     part.mapFaces.put(EnumFacing.SOUTH, new BlockPartFace(face.cullFace, backIndex, LAYER + backIndex, face.blockFaceUV));
                 }
             }
-            face = (BlockPartFace) part.mapFaces.get(EnumFacing.NORTH);
+            face = part.mapFaces.get(EnumFacing.NORTH);
             if(trimIndex!=-1){
                 if (face!=null && (face.tintIndex != trimIndex || face.texture == null || !face.texture.equals(LAYER + trimIndex))) {
                     part.mapFaces.put(EnumFacing.NORTH, new BlockPartFace(face.cullFace, trimIndex, LAYER + trimIndex, face.blockFaceUV));
@@ -156,13 +156,13 @@ public class ShieldModelLoader extends BaseModelLoader{
             if(face!=null && face.texture!=null && temp.get(face.texture).endsWith(BACK_EXTENSION)){
                 part.mapFaces.put(EnumFacing.NORTH, new BlockPartFace(face.cullFace, 0, BASE_LAYER, face.blockFaceUV));
             }
-            face = (BlockPartFace) part.mapFaces.get(EnumFacing.SOUTH);
+            face = part.mapFaces.get(EnumFacing.SOUTH);
             if(face!=null && face.texture!=null && temp.get(face.texture).endsWith(TRIM_EXTENSION)){
                 part.mapFaces.put(EnumFacing.SOUTH, new BlockPartFace(face.cullFace, 0, BASE_LAYER, face.blockFaceUV));
             }
             elements.add(part);
         }
 
-        return new ModelBlock(null, elements, ImmutableMap.copyOf(front.textures), false, false, new ItemCameraTransforms(front.getThirdPersonTransform(), front.getFirstPersonTransform(), front.getHeadTransform(), front.getInGuiTransform()));
+        return new ModelBlock(null, elements, ImmutableMap.copyOf(front.textures), false, false, front.func_181682_g());
     }
 }

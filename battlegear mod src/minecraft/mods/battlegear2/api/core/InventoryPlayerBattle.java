@@ -1,13 +1,13 @@
 package mods.battlegear2.api.core;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.server.CommandTestForBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -163,8 +163,8 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      * @return the total number of items cleared
      */
     @Override
-    public int func_174925_a(Item targetId, int targetDamage, int amount, NBTTagCompound targetNBT) {
-        int stacks = super.func_174925_a(targetId, targetDamage, amount, targetNBT);
+    public int clearMatchingItems(Item targetId, int targetDamage, int amount, NBTTagCompound targetNBT) {
+        int stacks = super.clearMatchingItems(targetId, targetDamage, amount, targetNBT);
         if(amount > 0 && stacks >= amount){
             return stacks;
         }
@@ -173,7 +173,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
             if (stack != null &&
                     (targetId == null || stack.getItem() == targetId) &&
                     (targetDamage <= -1 || stack.getMetadata() == targetDamage) &&
-                    (targetNBT == null || CommandTestForBlock.func_175775_a(targetNBT, stack.getTagCompound(), true))) {
+                    (targetNBT == null || NBTUtil.func_181123_a(targetNBT, stack.getTagCompound(), true))) {
                 int temp = amount <= 0 ? stack.stackSize : Math.min(amount - stacks, stack.stackSize);
                 stacks += temp;
                 if(amount != 0) {
@@ -275,7 +275,7 @@ public class InventoryPlayerBattle extends InventoryPlayer {
      * @return the stack that is stored in given slot
      */
     @Override
-    public ItemStack getStackInSlotOnClosing(int slot) {
+    public ItemStack removeStackFromSlot(int slot) {
         ItemStack result = getStackInSlot(slot);
         setInventorySlotContents(slot, null);
         return result;

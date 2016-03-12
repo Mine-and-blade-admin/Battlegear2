@@ -12,6 +12,8 @@ import net.minecraftforge.client.model.Attributes;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.animation.Animation;
+import net.minecraftforge.client.model.animation.ModelBlockAnimation;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -51,7 +53,7 @@ public class BaseModelLoader {
         return null;
     }
 
-    protected final IFlexibleBakedModel wrap(ModelBlock model){
+    protected final IFlexibleBakedModel wrap(ModelBlock model, ResourceLocation modelLocation){
         try {
             return new IFlexibleBakedModel.Wrapper(bakeModel(model), Attributes.DEFAULT_BAKED_FORMAT);
         }catch (Throwable vanillaIssue){//Vanilla failed, try the "Forge" way
@@ -64,9 +66,15 @@ public class BaseModelLoader {
                         return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
                     }
                 };
-                Constructor ctor = Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper").getDeclaredConstructor(ModelLoader.class, ResourceLocation.class, ModelBlock.class);
+                Constructor ctor = Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper").getDeclaredConstructor(ModelLoader.class, ResourceLocation.class, ModelBlock.class, ModelBlockAnimation.class);
                 ctor.setAccessible(true);
-                Object bakeable = ctor.newInstance(manager, null, model);
+                String modelPath = modelLocation.getResourcePath();
+                if(modelPath.startsWith("models/"))
+                {
+                    modelPath = modelPath.substring("models/".length());
+                }
+                ResourceLocation armatureLocation = new ResourceLocation(modelLocation.getResourceDomain(), "armatures/" + modelPath + ".json");
+                Object bakeable = ctor.newInstance(manager, null, model, Animation.INSTANCE.loadVanillaAnimation(armatureLocation));
                 ctor.setAccessible(false);
                 return ((IModel)bakeable).bake(ModelRotation.X0_Y0, Attributes.DEFAULT_BAKED_FORMAT, textureGetter);
             }catch (Throwable forgeIssue){//Well everything is broken

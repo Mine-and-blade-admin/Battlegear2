@@ -43,19 +43,17 @@ public class ItemMBArrow extends Item {
         return super.getUnlocalizedName(par1ItemStack) + "." + names[par1ItemStack.getMetadata()];
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List par3List){
+    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> par3List){
         for (int j = 0; j < names.length; ++j){
             par3List.add(new ItemStack(par1, 1, j));
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List, boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
         int dmg = par1ItemStack.getMetadata();
         if(dmg<names.length){

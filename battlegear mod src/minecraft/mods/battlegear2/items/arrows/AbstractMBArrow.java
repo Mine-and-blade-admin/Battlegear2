@@ -131,6 +131,6 @@ public abstract class AbstractMBArrow extends EntityArrow {
 
 
     public boolean canBreakBlocks(){
-        return !(this.shootingEntity instanceof EntityMob) || this.worldObj.getGameRules().getGameRuleBooleanValue("mobGriefing");
+        return !(this.shootingEntity instanceof EntityMob) || this.worldObj.getGameRules().getBoolean("mobGriefing");
     }
 }

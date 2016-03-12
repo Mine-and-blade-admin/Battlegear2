@@ -17,6 +17,7 @@ import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
@@ -92,7 +93,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
             if(!entityPlayer.isSpectator() && event.renderer instanceof RenderPlayer && entityPlayer.inventory instanceof InventoryPlayerBattle) {
                 ItemStack offhand = ((InventoryPlayerBattle) entityPlayer.inventory).getCurrentOffhandWeapon();
                 if (offhand != null) {
-                    ModelPlayer renderer = ((RenderPlayer) event.renderer).getPlayerModel();
+                    ModelPlayer renderer = ((RenderPlayer) event.renderer).getMainModel();
                     renderer.heldItemLeft = 1;
                     if (entityPlayer.getItemInUseCount() > 0 && entityPlayer.getItemInUse() == offhand) {
                         EnumAction enumaction = offhand.getItemUseAction();
@@ -116,7 +117,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
      */
     @SubscribeEvent(priority = EventPriority.LOW)
     public void resetPlayerLeftHand(RenderPlayerEvent.Post event){
-        event.renderer.getPlayerModel().heldItemLeft = 0;
+        event.renderer.getMainModel().heldItemLeft = 0;
     }
 
     private static final int SKELETON_ARROW = 5;
@@ -247,7 +248,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
                 World world = player.getEntityWorld();
                 Block block = world.getBlockState(pos).getBlock();
                 if (!block.isAir(world, pos)) {
-                    ItemStack temp = block.getPickBlock(target, world, pos);
+                    ItemStack temp = block.getPickBlock(target, world, pos, player);
                     if (temp!=null && player.capabilities.isCreativeMode && GuiScreen.isCtrlKeyDown()) {
                         TileEntity te = world.getTileEntity(pos);
                         if(te!=null){
@@ -403,7 +404,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
      * @param guiLeft horizontal placement parameter
      * @param guiTop vertical placement parameter
      */
-	public static void onOpenGui(List buttons, int guiLeft, int guiTop) {
+	public static void onOpenGui(List<GuiButton> buttons, int guiLeft, int guiTop) {
         if(BattlegearConfig.enableGuiButtons){
 			int count = 0;
 			for (GuiPlaceableButton tab : tabsList) {

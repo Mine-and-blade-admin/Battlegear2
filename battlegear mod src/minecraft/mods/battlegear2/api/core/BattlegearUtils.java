@@ -355,10 +355,10 @@ public class BattlegearUtils {
                     player.setLastAttacker(target);
 
                     if (target instanceof EntityLivingBase){
-                        EnchantmentHelper.func_151384_a((EntityLivingBase)target, player);
+                        EnchantmentHelper.applyThornEnchantments((EntityLivingBase) target, player);//Call #onUserHurt for each enchantment from target inventory
                     }
 
-                    EnchantmentHelper.func_151385_b(player, target);
+                    EnchantmentHelper.applyArthropodEnchantments(player, target);//Call #onEntityDamaged for each enchantment from player inventory
                     ItemStack itemstack = player.getCurrentEquippedItem();
                     if(itemstack != null) {
                         Object object = target;

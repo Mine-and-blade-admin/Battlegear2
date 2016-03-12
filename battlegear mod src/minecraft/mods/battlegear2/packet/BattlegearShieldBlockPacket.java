@@ -13,7 +13,7 @@ public final class BattlegearShieldBlockPacket extends AbstractMBPacket {
 
 	public BattlegearShieldBlockPacket(boolean block, EntityPlayer user) {
 		this.block = block;
-		this.username = user.getCommandSenderName();
+		this.username = user.getName();
 	}
 
 	public BattlegearShieldBlockPacket() {
