@@ -7,6 +7,7 @@ public final class MinecraftTransformer extends TransformerMethodProcess {
 
     public MinecraftTransformer() {
         super("net.minecraft.client.Minecraft", "func_147121_ag", new String[]{"func_147121_ag", SIMPLEST_METHOD_DESC});
+        setDebug(true);
     }
 
     private String entityClientPlayerClass;
