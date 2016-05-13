@@ -44,6 +44,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
@@ -309,15 +310,24 @@ public final class ClientProxy extends CommonProxy {
     public void tryUseDynamicLight(EntityPlayer player, ItemStack stack){
         if(player==null && stack==null){
             dynLightPlayerMod = Loader.instance().getIndexedModList().get("DynamicLights_thePlayer").getMod();
-            try {
-                if(dynLightPlayerMod!=null) {
-                    dynLightFromItemStack = dynLightPlayerMod.getClass().getDeclaredMethod("getLightFromItemStack", ItemStack.class);
-                    dynLightFromItemStack.setAccessible(true);
-                    refresh = Class.forName("mods.battlegear2.client.utils.DualHeldLight").getMethod("refresh", EntityPlayer.class, int.class, int.class);
-                }
-            }catch (Exception e){
-                return;
-            }
+			if(dynLightPlayerMod!=null) {
+				try {
+						refresh = Class.forName("mods.battlegear2.client.utils.DualHeldLight").getMethod("refresh", EntityPlayer.class, int.class, int.class);
+						//First attempt: retrieve private method from mod instance directly
+						dynLightFromItemStack = dynLightPlayerMod.getClass().getDeclaredMethod("getLightFromItemStack", ItemStack.class);
+						dynLightFromItemStack.setAccessible(true);
+				}catch (Exception first){//Second attempt: retrieve method from mod config helper
+                    try {
+                        Class<?> helper = Class.forName("atomicstryker.dynamiclights.client.ItemConfigHelper");
+                        Field config = dynLightPlayerMod.getClass().getDeclaredField("itemsMap");
+                        config.setAccessible(true);
+                        dynLightFromItemStack = helper.getMethod("getLightFromItemStack", ItemStack.class);
+                        dynLightPlayerMod = config.get(dynLightPlayerMod);
+                    }catch(Exception second){
+                        return;
+                    }
+				}
+			}
         }
         if(dynLightFromItemStack!=null && refresh!=null){
             if(!ItemStack.areItemStacksEqual(stack, heldCache)) {
