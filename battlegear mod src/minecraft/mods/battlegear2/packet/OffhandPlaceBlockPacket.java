@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.Side;
 import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BattlemodeHookContainerClass;
+import mods.battlegear2.BukkitWrapper;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
@@ -95,6 +96,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             if (offhandWeapon == null)
                 return;
             PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, 0, 0, 0, -1, player.getEntityWorld());
+            BukkitWrapper.callBukkitInteractEvent(event, offhandWeapon);
             MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, offhandWeapon));
             if (event.useItem != Event.Result.DENY){
                 BattlegearUtils.refreshAttributes(player, false);
@@ -167,6 +169,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
     {
         World theWorld = playerMP.getEntityWorld();
         PlayerInteractEvent event = new PlayerInteractEvent(playerMP, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, x, y, z, side, theWorld);
+        BukkitWrapper.callBukkitInteractEvent(event, itemStack);
         MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, itemStack));
         if (event.isCanceled())
         {
