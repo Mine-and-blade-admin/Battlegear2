@@ -22,7 +22,7 @@ public class BukkitWrapper {
             Object[] objs = temp.getEnumConstants();
             AIR = objs[3];
             BLOCK = objs[1];
-            temp = Class.forName("org.bukkit.event.Event.Result");
+            temp = Class.forName("org.bukkit.event.Event$Result");
             DENY = temp.getEnumConstants()[0];
             temp = Class.forName("org.bukkit.craftbukkit.event.CraftEventFactory");
             for(Method m : temp.getMethods()){
@@ -40,7 +40,9 @@ public class BukkitWrapper {
             IsCancelled = temp.getMethod("isCancelled");
             ItemUse = temp.getMethod("useItemInHand");
             BlockUse = temp.getMethod("useInteractedBlock");
-        }catch (Throwable ignored){}
+        }catch (Throwable logged){
+            Battlegear.logger.error(logged.getMessage());
+        }
     }
 
     /**
