@@ -58,18 +58,21 @@ public class BukkitWrapper {
             Object result = null;
             if (playerInteracted.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
                 result = AirInteract.invoke(null, playerInteracted.entityPlayer, AIR, stack);
+                if(result != null && ItemUse.invoke(result) == DENY)
+                    playerInteracted.useItem = Event.Result.DENY;
             } else {
                 result = BlockInteract.invoke(null, playerInteracted.entityPlayer, BLOCK, playerInteracted.x, playerInteracted.y, playerInteracted.z, playerInteracted.face, stack);
-            }
-            if(result != null){
-                if((Boolean)IsCancelled.invoke(result)){
-                    playerInteracted.setCanceled(true);
-                }else {
-                    if(ItemUse.invoke(result) == DENY){
-                        playerInteracted.useItem = Event.Result.DENY;
-                    }
-                    if(BlockUse.invoke(result) == DENY){
-                        playerInteracted.useBlock = Event.Result.DENY;
+
+                if(result != null){
+                    if((Boolean)IsCancelled.invoke(result)){
+                        playerInteracted.setCanceled(true);
+                    }else {
+                        if(ItemUse.invoke(result) == DENY){
+                            playerInteracted.useItem = Event.Result.DENY;
+                        }
+                        if(BlockUse.invoke(result) == DENY){
+                            playerInteracted.useBlock = Event.Result.DENY;
+                        }
                     }
                 }
             }
