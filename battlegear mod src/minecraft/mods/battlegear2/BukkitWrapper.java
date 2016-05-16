@@ -7,7 +7,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -33,12 +35,13 @@ public class BukkitWrapper {
             if(resource == null) {
                 throw new RuntimeException("No resource at path org/bukkit/craftbukkit");
             }
-            if(resource.toString().startsWith("jar:")){
+
+            if(resource.getProtocol().equals("jar")){
                 Battlegear.logger.info("Loading CraftEventFactory from jar");
-                temp = exploreJar(resource.getPath().replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", ""), "org/bukkit/craftbukkit");
+                temp = exploreJar(((JarURLConnection) resource.openConnection()).getJarFile(), "org/bukkit/craftbukkit");
             }else{
                 Battlegear.logger.info("Loading CraftEventFactory from directories");
-                temp = exploreDir(new File(resource.getPath()), "org.bukkit.craftbukkit");
+                temp = exploreDir(new File(URLDecoder.decode(resource.getPath(), "UTF-8")), "org.bukkit.craftbukkit");
             }
             if(temp == null) {
                 throw new RuntimeException("Couldn't find event factory at path org/bukkit/craftbukkit");
@@ -73,7 +76,7 @@ public class BukkitWrapper {
         if(AIR == null)//No point if Bukkit isn't here
             return;
         try {
-            Object result = null;
+            Object result;
             if (playerInteracted.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
                 result = AirInteract.invoke(null, playerInteracted.entityPlayer, AIR, stack);
                 if(result != null && ItemUse.invoke(result) == DENY)
@@ -103,9 +106,9 @@ public class BukkitWrapper {
      * Search Bukkit event factory class within jar
      * @throws ClassNotFoundException
      */
-    private static Class<?> exploreJar(String jarPath, String relPath) throws ClassNotFoundException, IOException {
+    private static Class<?> exploreJar(JarFile jarPath, String relPath) throws ClassNotFoundException, IOException {
         //Get contents of jar file and iterate through them
-        Enumeration<JarEntry> entries = new JarFile(jarPath).entries();
+        Enumeration<JarEntry> entries = jarPath.entries();
         while(entries.hasMoreElements()) {
             String entryName = entries.nextElement().getName();
 
