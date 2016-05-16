@@ -1,11 +1,16 @@
 package mods.battlegear2;
 
 import cpw.mods.fml.common.eventhandler.Event;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Help manage "Bukkit" support
@@ -24,7 +29,20 @@ public class BukkitWrapper {
             BLOCK = objs[1];
             temp = Class.forName("org.bukkit.event.Event$Result");
             DENY = temp.getEnumConstants()[0];
-            temp = Class.forName("org.bukkit.craftbukkit.event.CraftEventFactory");
+            URL resource = ClassLoader.getSystemClassLoader().getResource("org/bukkit/craftbukkit");
+            if(resource == null) {
+                throw new RuntimeException("No resource at path org/bukkit/craftbukkit");
+            }
+            if(resource.toString().startsWith("jar:")){
+                Battlegear.logger.info("Loading CraftEventFactory from jar");
+                temp = exploreJar(resource.getPath().replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", ""), "org/bukkit/craftbukkit");
+            }else{
+                Battlegear.logger.info("Loading CraftEventFactory from directories");
+                temp = exploreDir(new File(resource.getPath()), "org.bukkit.craftbukkit");
+            }
+            if(temp == null) {
+                throw new RuntimeException("Couldn't find event factory at path org/bukkit/craftbukkit");
+            }
             for(Method m : temp.getMethods()){
                 if(m.getName().equals("callPlayerInteractEvent")){
                     int i = m.getParameterTypes().length;
@@ -79,5 +97,44 @@ public class BukkitWrapper {
         }catch (Throwable logged){
             Battlegear.logger.error(logged.getMessage());
         }
+    }
+
+    /**
+     * Search Bukkit event factory class within jar
+     * @throws ClassNotFoundException
+     */
+    private static Class<?> exploreJar(String jarPath, String relPath) throws ClassNotFoundException, IOException {
+        //Get contents of jar file and iterate through them
+        Enumeration<JarEntry> entries = new JarFile(jarPath).entries();
+        while(entries.hasMoreElements()) {
+            String entryName = entries.nextElement().getName();
+
+            //Found the event factory, get the full class name.
+            if(entryName.endsWith("CraftEventFactory.class") && entryName.startsWith(relPath)) {
+                return Class.forName(entryName.replace('/', '.').replace('\\', '.').replace(".class", ""));
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Search Bukkit event factory class within directories
+     * @throws ClassNotFoundException
+     */
+    private static Class<?> exploreDir(File directory, String pkgname) throws ClassNotFoundException {
+        //Iterate through files in directory
+        String[] files = directory.list();
+        for(String name : files){
+            if(name.endsWith("CraftEventFactory.class")){//Found the event factory
+                return Class.forName(pkgname + '.' + name.substring(0, name.length() - 6));
+            }
+            File file = new File(directory, name);
+            if(file.isDirectory()){
+                Class<?> temp = exploreDir(file, pkgname + '.' + name);
+                if(temp != null)
+                    return temp;
+            }
+        }
+        return null;
     }
 }
