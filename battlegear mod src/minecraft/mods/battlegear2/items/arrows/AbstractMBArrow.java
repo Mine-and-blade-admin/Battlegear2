@@ -84,15 +84,18 @@ public abstract class AbstractMBArrow extends EntityArrow {
     public boolean tryPickArrow(EntityPlayer player){
         ItemStack arrow = getPickedUpItem();
         if(arrow!=null){
-            ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
-            if(offhand!=null && offhand.getItem() instanceof IArrowContainer2){
-                final int size = arrow.stackSize;
-                ItemStack arrowLeft = ((IArrowContainer2) offhand.getItem()).addArrows(offhand, arrow);
-                if(arrowLeft==null||arrowLeft.stackSize<size){
-                    if(arrowLeft!=null && arrowLeft.stackSize>0)
-                        worldObj.spawnEntityInWorld(new EntityItem(worldObj, posX, posY, posZ, arrowLeft));
-                    return true;
-                }
+            if (player.inventory instanceof InventoryPlayerBattle)
+            {
+		ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+            	if(offhand!=null && offhand.getItem() instanceof IArrowContainer2){
+                    final int size = arrow.stackSize;
+                    ItemStack arrowLeft = ((IArrowContainer2) offhand.getItem()).addArrows(offhand, arrow);
+                    if(arrowLeft==null||arrowLeft.stackSize<size){
+                	if(arrowLeft!=null && arrowLeft.stackSize>0)
+                            worldObj.spawnEntityInWorld(new EntityItem(worldObj, posX, posY, posZ, arrowLeft));
+                    	    return true;
+                    }
+            	}
             }
         }
         return player.inventory.addItemStackToInventory(arrow);
