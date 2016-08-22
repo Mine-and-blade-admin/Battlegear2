@@ -24,7 +24,7 @@ public final class ItemInWorldTransformer extends TransformerMethodProcess {
     @Override
     void processMethod(MethodNode mn) {
         sendPatchLog("tryUseItem");
-        replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 5, 7);
+        replaceInventoryArrayAccess(mn, entityPlayerClassName, playerInventoryFieldName, 3, 7);
 
         InsnList newList = new InsnList();
 

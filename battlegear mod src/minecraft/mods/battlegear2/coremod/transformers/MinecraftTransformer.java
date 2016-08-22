@@ -17,13 +17,13 @@ public final class MinecraftTransformer extends TransformerMethodProcess {
     void processMethod(MethodNode method) {
         sendPatchLog("Right Click Mouse");
 
-        replaceInventoryArrayAccess(method, entityClientPlayerClass, playerInventoryFieldName, 5, 9, 10);
+        replaceInventoryArrayAccess(method, entityClientPlayerClass, playerInventoryFieldName, 5, 7, 6);
     }
 
     @Override
     void setupMappings() {
         super.setupMappings();
-        entityClientPlayerClass = BattlegearTranslator.getMapedClassName("client.entity.EntityClientPlayerMP");
+        entityClientPlayerClass = BattlegearTranslator.getMapedClassName("client.entity.EntityPlayerSP");
         playerInventoryFieldName = BattlegearTranslator.getMapedFieldName("field_71071_by", "inventory");
     }
 }

@@ -241,7 +241,7 @@ public final class BattlegearClientTickHandeler {
         if (flag){
             offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
             PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, new BlockPos(0, 0, 0), null, player.worldObj), offhand);
-            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent)){
+            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent)){                
                 if (!mc.playerController.isSpectatorMode()) {
                     Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(useItemEvent.offhand).generatePacket());
                     if(useItemEvent.event.useItem != Event.Result.DENY) {

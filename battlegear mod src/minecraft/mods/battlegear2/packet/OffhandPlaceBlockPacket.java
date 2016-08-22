@@ -3,6 +3,7 @@ package mods.battlegear2.packet;
 import io.netty.buffer.ByteBuf;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.BattlemodeHookContainerClass;
+import mods.battlegear2.BukkitWrapper;
 import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
@@ -105,6 +106,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             if (offhandWeapon == null)
                 return;
             PlayerInteractEvent event = new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, new BlockPos(0, 0, 0), null, player.getEntityWorld());
+            BukkitWrapper.callBukkitInteractEvent(event, offhandWeapon);
             MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, offhandWeapon));
             if (event.useItem != Event.Result.DENY){
                 if (((EntityPlayerMP) player).theItemInWorldManager.getGameType() != WorldSettings.GameType.SPECTATOR) {
@@ -161,6 +163,7 @@ public final class OffhandPlaceBlockPacket extends AbstractMBPacket{
             return playerMP.theItemInWorldManager.activateBlockOrUseItem(playerMP, theWorld, itemStack, pos, side, xOffset, yOffset, zOffset);
         }
         PlayerInteractEvent event = new PlayerInteractEvent(playerMP, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, pos, side, theWorld);
+        BukkitWrapper.callBukkitInteractEvent(event, itemStack);
         MinecraftForge.EVENT_BUS.post(new PlayerEventChild.UseOffhandItemEvent(event, itemStack));
         if (event.isCanceled())
         {

@@ -204,7 +204,7 @@ public class WeaponRegistry {
         ORE{
             @Override
             public boolean differenciate(StackHolder holder1, StackHolder holder2) {
-                return !Objects.deepEquals(OreDictionary.getOreIDs(holder1.stack), OreDictionary.getOreIDs(holder2.stack));
+                return !Arrays.equals(OreDictionary.getOreIDs(holder1.stack), OreDictionary.getOreIDs(holder2.stack));
             }
         },
         TYPE{

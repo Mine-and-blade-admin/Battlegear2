@@ -15,7 +15,7 @@ public final class EntityAIControlledByPlayerTransformer extends TransformerMeth
     @Override
     void processMethod(MethodNode method) {
         sendPatchLog("updateTask");
-        replaceInventoryArrayAccess(method, entityPlayerClassName, playerInventoryFieldName, 8, 23);
+        replaceInventoryArrayAccess(method, entityPlayerClassName, playerInventoryFieldName, 12, 24);
     }
 
     @Override

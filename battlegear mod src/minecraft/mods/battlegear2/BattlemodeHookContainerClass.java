@@ -185,7 +185,7 @@ public final class BattlemodeHookContainerClass {
      * @return the copy
      */
     private static PlayerInteractEvent copy(PlayerInteractEvent event){
-        PlayerInteractEvent copy = new PlayerInteractEvent(event.entityPlayer, event.action, event.pos, event.face, event.world);
+        PlayerInteractEvent copy = new PlayerInteractEvent(event.entityPlayer, event.action, event.pos, event.face, event.world, event.localPos);
         if(event.isCanceled()){
             copy.setCanceled(true);
         }

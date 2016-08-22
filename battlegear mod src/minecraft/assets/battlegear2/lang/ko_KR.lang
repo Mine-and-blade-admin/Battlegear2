@@ -1,0 +1,142 @@
+tab.battle.title=M&B Battlegear 2 (마인&블래이드 배틀기어2)
+config.battlegear.title=Mine&Blade Battlegear 2 설정
+config.battlegear.category=커스텀 아이템에 대한 렌더링 제거
+config.battlegear.warn=변경된 효과를 보기 위해선 게임을 재 시작 해야합니다.
+use.gui.buttons=M&B관리창을 버튼으로 활성화
+use.gui.keys=M&B관리창을 명령어로 활성화
+render.quiver.skeleton=스켈레톤의 화살통 랜더링
+render.arrow.bow=활시위에 걸린 활 랜더링
+render.sheathed=플레이어에 대한 기본 옷 에 대한 랜더링 : %s
+render.hud.forced=강제 HUD 럔더링
+gui.open.fake=화면 구성 설정
+gui.fake.help1=화면 구성 GUI를 드래그로 움직입니다.
+gui.fake.help2=화살통 슬롯바
+gui.fake.help3=방패 스테미나 바
+gui.fake.help4=보조무기 슬롯
+gui.fake.help5=주무기 슬롯
+flag.design.save=저장
+flag.design.load=불러오기
+flag.design.load.sections=섹션 불러오기
+
+item.battlegear2:heraldric.name=문양 제작기
+item.battlegear2:chain.name=쇠사슬
+item.battlegear2:quiver.name=화살통
+
+item.battlegear2:mb.arrow.ender.name=엔더 화살
+item.battlegear2:mb.arrow.explosive.name=폭팔 화살
+item.battlegear2:mb.arrow.flame.name=불 화살
+item.battlegear2:mb.arrow.piercing.name=관통 화살
+item.battlegear2:mb.arrow.poison.name=독 화살
+item.battlegear2:mb.arrow.mystery.name=미스테리 화살
+item.battlegear2:mb.arrow.leech.name=흡혈 화살
+
+item.battlegear2:dagger.wood.name=나무 단검
+item.battlegear2:dagger.stone.name=돌 단검
+item.battlegear2:dagger.iron.name=철 단검
+item.battlegear2:dagger.diamond.name=다이아 단검
+item.battlegear2:dagger.gold.name=금 단검
+
+item.battlegear2:waraxe.wood.name=나무 워엑스
+item.battlegear2:waraxe.stone.name=돌 워엑스
+item.battlegear2:waraxe.iron.name=철 워엑스
+item.battlegear2:waraxe.diamond.name=다이아 워엑스
+item.battlegear2:waraxe.gold.name=금 워엑스
+
+item.battlegear2:mace.wood.name=나무 메이스
+item.battlegear2:mace.stone.name=돌 메이스
+item.battlegear2:mace.iron.name=철 메이스
+item.battlegear2:mace.diamond.name=다이아 메이스
+item.battlegear2:mace.gold.name=금 메이스
+
+item.battlegear2:spear.wood.name=나무 창
+item.battlegear2:spear.stone.name=돌 창
+item.battlegear2:spear.iron.name=철 창
+item.battlegear2:spear.diamond.name=다이아 창
+item.battlegear2:spear.gold.name=금 창
+
+item.battlegear2:shield.wood.name=나무 방패
+item.battlegear2:shield.hide.name=가죽 방패
+item.battlegear2:shield.iron.name=철 방패
+item.battlegear2:shield.diamond.name=다이아 방패
+item.battlegear2:shield.gold.name=금 방패
+
+item.battlegear2:knights_armour.helmet.name=기사의 투구
+item.battlegear2:knights_armour.plate.name=기사의 흉갑
+item.battlegear2:knights_armour.legs.name=기사의 바지
+item.battlegear2:knights_armour.boots.name=기사의 신발
+
+item.battlegear2:cloak.name=망토
+
+enchantment.bash.weightless=배쉬 무게감소
+enchantment.bash.power=배쉬 파워
+enchantment.bash.damage=배쉬 대미지
+enchantment.shield.usage=방패 능률
+enchantment.shield.recover=방어 회복
+enchantment.bow.loot=행운의 활
+enchantment.bow.charge=신속한 장전
+
+tile.battlegear2:flagpole.oak.name=참나무 깃대
+tile.battlegear2:flagpole.spruce.name=가문비나무 깃대
+tile.battlegear2:flagpole.birch.name=잣나무 깃대
+tile.battlegear2:flagpole.jungle.name=정글나무 깃대
+tile.battlegear2:flagpole.iron.name=철 깃대
+tile.battlegear2:flagpole.acacia.name=아카시아나무 깃대
+tile.battlegear2:flagpole.big_oak.name=짙은 참나무 깃대
+
+sigil.pattern.title=패턴
+sigil.icon.title=문장
+sigil.icon_pos.title=문장 위치
+sigil.colour1.title=색상 1
+sigil.colour2.title=색상 2
+sigil.icon_colour1.title=문장%n색상 1
+sigil.icon_colour2.title=문장%n색상 2
+sigil.banner.title=배너
+sigil.helm.title=투구
+sigil.colour.select=선택
+
+gui.sigil.add=추가
+gui.sigil.remove=제거
+gui.sigil.crest=문장
+gui.sigil.pattern=백그라운드
+
+
+attribute.name.weapon.penetrateArmor=갑옷 관통
+attribute.name.weapon.daze=혼란
+attribute.name.weapon.extendedReach=사정 거리
+attribute.name.weapon.attackSpeed=공격 속도
+attribute.name.weapon.backstab=백 스탭
+attribute.name.weapon.mountedBonus=추가 데미지
+attribute.shield.block.time=%s 초 방어
+attribute.shield.arrow.count=%s Arrows
+attribute.quiver.arrow.empty=비어있음
+attribute.quiver.arrow.count=활 종류
+
+lore.base.arrow.explosive=폭발은 예술이다!
+lore.base.arrow.ender=이 엔더의 눈 많이 아파 보이는데...
+lore.base.arrow.flame=부싯돌과 철? 이거면 되!
+lore.base.arrow.piercing=속에 본질을 꿰둘어본다?!
+lore.base.arrow.poison=비싼 편이지?  
+lore.base.arrow.mystery=모두 쿠키를 사랑한다고!
+lore.base.arrow.leech=무기력하고 우울해질껄?!
+lore.advanced.arrow.explosive=폭팔의 강도는 화살의 치명타 에 따라 다르다.
+lore.advanced.arrow.ender=즉석 여행 또는 블럭을 운반하고 싶을때...
+lore.advanced.arrow.flame=몹과 유저 그리고 블럭까지 불에태운다.
+lore.advanced.arrow.piercing=스타일리시하게 관통을 히지(유리,버섯소,양).
+lore.advanced.arrow.poison=위더효과를 준다.
+lore.advanced.arrow.mystery=평화와 사랑의 의미를 보낸다.
+lore.advanced.arrow.leech=뱀파이어의 손길이 깃들었다.
+
+tooltip.armour.points=방어력
+
+commands.weaponwield.usage=/weaponwield current <hand> [player] [usage] OR /weaponwield name <hand> <item name> [usage] OR /weaponwield sensitivity <add|remove|get> <ore|type|id|damage|nbt>
+commands.weaponwield.set=%1$s successfully set as wieldable weapon
+commands.weaponwield.sensitivity=The weapon comparator has following sensitivities: %1$s
+commands.weaponwield.sensitivity.added=Sensibility added to the weapon comparator: %1$s
+commands.weaponwield.sensitivity.removed=Sensibility removed from the weapon comparator: %1$s
+
+death.attack.battlegearExtra.backstab=%1$s 는 %2$s 에게 뒤통수를 맞아 죽었습니다.
+death.attack.battlegearExtra.backstab.item=%1$s 는 %2$s 에게 %3$s 을 사용한 통수를 맞아 죽었습니다.
+death.attack.battlegearExtra.mounted=%1$s 는 %2$s 에게 꿰뚤렸습니다
+death.attack.battlegearExtra.mounted.item=%1$s 는 %2$s 에게 꿰뚤렸습니다. %3$s 이란 무기 대단해!
+
+#translate by IS_Jump for feedback mail - acarus22@gmail.com

@@ -15,7 +15,7 @@ public final class PlayerControllerMPTransformer extends TransformerMethodProces
     @Override
     void processMethod(MethodNode method) {
         sendPatchLog("sendUseItem");
-        replaceInventoryArrayAccess(method, entityPlayerClassName, playerInventoryFieldName, 11, 13);
+        replaceInventoryArrayAccess(method, entityPlayerClassName, playerInventoryFieldName, 4, 6);
     }
 
     @Override
