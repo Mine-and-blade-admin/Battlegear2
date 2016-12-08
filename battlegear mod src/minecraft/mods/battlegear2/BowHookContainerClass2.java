@@ -11,12 +11,16 @@ import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.items.arrows.AbstractMBArrow;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraft.network.play.server.S2BPacketChangeGameState;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
@@ -171,9 +175,44 @@ public final class BowHookContainerClass2 {
     //Start hooks for arrows
     @SubscribeEvent
     public void onEntityHitByArrow(LivingAttackEvent event){
-        if(event.source.isProjectile() && event.source.getSourceOfDamage() instanceof AbstractMBArrow){
-            boolean isCanceled = ((AbstractMBArrow) event.source.getSourceOfDamage()).onHitEntity(event.entity, event.source, event.ammount);
-            event.setCanceled(isCanceled);
-        }
+	if(event.source.isProjectile() && event.source.getSourceOfDamage() instanceof AbstractMBArrow){
+		AbstractMBArrow arrow = (AbstractMBArrow) event.source.getSourceOfDamage();
+		if (arrow.onHitEntity(event.entity, event.source, event.ammount)) {
+			event.setCanceled(true);
+			// Copied from EntityArrow's onUpdate method: this should all happen upon damaging an entity
+			if (!event.entity.worldObj.isRemote) {
+				event.entityLiving.setArrowCountInEntity(event.entityLiving.getArrowCountInEntity() + 1);
+			}
+
+			// Knockback: (field is private - will require reflection or ASM to access)
+			/*
+			if (arrow.knockbackStrength > 0) {
+				float f = MathHelper.sqrt_double(arrow.motionX * arrow.motionX + arrow.motionZ * arrow.motionZ);
+				if (f > 0.0F) {
+					event.entity.addVelocity(arrow.motionX * (double) arrow.knockbackStrength * 0.6000000238418579D / (double) f, 0.1D, arrow.motionZ * (double) arrow.knockbackStrength * 0.6000000238418579D / (double) f);
+				}
+			}
+			 */
+
+			// Thorns:
+			if (arrow.shootingEntity != null && arrow.shootingEntity instanceof EntityLivingBase) {
+				EnchantmentHelper.func_151384_a(event.entityLiving, arrow.shootingEntity);
+				EnchantmentHelper.func_151385_b((EntityLivingBase) arrow.shootingEntity, event.entityLiving);
+			}
+
+			// Packet to player struck:
+			if (arrow.shootingEntity != null && event.entity != arrow.shootingEntity && event.entity instanceof EntityPlayer && arrow.shootingEntity instanceof EntityPlayerMP) {
+				((EntityPlayerMP) arrow.shootingEntity).playerNetServerHandler.sendPacket(new S2BPacketChangeGameState(6, 0.0F));
+			}
+
+			// Play sound at entity struck:
+			event.entity.playSound("random.bowhit", 1.0F, 1.2F / (event.entity.worldObj.rand.nextFloat() * 0.2F + 0.9F));
+
+			// Set arrow entity to 'dead':
+			if (!(event.entity instanceof EntityEnderman)) {
+				arrow.setDead();
+			}
+		}
+	}
     }
 }
