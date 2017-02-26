@@ -11,6 +11,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ContainerBattle extends ContainerLocalPlayer {
 
     public ContainerBattle(boolean local, EntityPlayer player) {
@@ -55,11 +57,12 @@ public class ContainerBattle extends ContainerLocalPlayer {
 
     }
 
+    @Nonnull
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex)
     {
-        ItemStack itemStack = null;
-        Slot slot = (Slot) this.inventorySlots.get(slotIndex);
+        ItemStack itemStack = ItemStack.EMPTY;
+        Slot slot = this.inventorySlots.get(slotIndex);
         if (slot != null && slot.getHasStack()) {
             ItemStack itemStack1 = slot.getStack();
             itemStack = itemStack1.copy();
@@ -71,25 +74,25 @@ public class ContainerBattle extends ContainerLocalPlayer {
             else //we are in normal inventory
             {
                 if (itemStack.getItem() instanceof ItemArmor){
-                    int index =  ((ItemArmor)itemStack.getItem()).armorType ;
+                    int index = ((ItemArmor)itemStack.getItem()).armorType.getIndex();
                     this.mergeItemStack(itemStack1, index, index + 1, false);
                 }else{
                     for(int index=40;index<this.inventorySlots.size();index++){//Search within WeaponSlot
-                        Slot destSlot = (Slot) this.inventorySlots.get(index);
+                        Slot destSlot = this.inventorySlots.get(index);
                         if (!destSlot.getHasStack() && destSlot.isItemValid(itemStack1)){
                             this.mergeItemStack(itemStack1, index, index + 1, false);
                         }
                     }
                 }
             }
-            if (itemStack1.stackSize == 0)
-                slot.putStack(null);
+            if (itemStack1.isEmpty())
+                slot.putStack(ItemStack.EMPTY);
             else
                 slot.onSlotChanged();
-            if (itemStack1.stackSize != itemStack.stackSize)
-                slot.onPickupFromSlot(player, itemStack1);
+            if (itemStack1.getCount() != itemStack.getCount())
+                slot.onTake(player, itemStack1);
             else
-                return null;
+                return ItemStack.EMPTY;
         }
         return itemStack;
     }

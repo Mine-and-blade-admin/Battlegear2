@@ -4,36 +4,40 @@ import mods.mud.gui.GuiChangelogDownload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
-import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.util.BlockPos;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class MudCommands extends CommandBase{
 
+    @Nonnull
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "mud";
     }
-    
+
+    @Nonnull
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
-        return getListOfStringsMatchingLastWord(par2ArrayOfStr, getCommandName());
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
+        return getListOfStringsMatchingLastWord(par2ArrayOfStr, getName());
     }
     
     @Override
-    public boolean canCommandSenderUseCommand(ICommandSender par1ICommandSender){
+    public boolean checkPermission(MinecraftServer server, ICommandSender par1ICommandSender){
         return true;
     }
 
+    @Nonnull
     @Override
-    public String getCommandUsage(ICommandSender icommandsender) {
+    public String getUsage(@Nonnull ICommandSender icommandsender) {
         return "/mud";
     }
 
     @Override
-    public void processCommand(ICommandSender icommandsender, String[] astring) throws CommandException {
+    public void execute(@Nonnull MinecraftServer server,@Nonnull ICommandSender icommandsender,@Nonnull String[] string) throws CommandException {
         new Thread() {
             @Override
             public void run()

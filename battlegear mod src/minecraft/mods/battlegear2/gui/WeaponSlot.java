@@ -38,8 +38,8 @@ public final class WeaponSlot extends Slot {
 
     @Override
     public boolean isItemValid(ItemStack par1ItemStack) {
-        if (par1ItemStack == null) {
-            return super.isItemValid(null);
+        if (par1ItemStack.isEmpty()) {
+            return super.isItemValid(ItemStack.EMPTY);
         } else if(inventory instanceof InventoryPlayer){
             if(super.isItemValid(par1ItemStack)) {
                 EntityPlayer player = ((InventoryPlayer) inventory).player;

@@ -9,20 +9,20 @@ import net.minecraft.item.ItemStack;
  */
 public interface IOffhandRender {
 
-    public ItemStack getItemToRender();
+    ItemStack getItemToRender();
 
-    public void setItemToRender(ItemStack item);
+    void setItemToRender(ItemStack item);
 
-    public int getEquippedItemSlot();
+    int getEquippedItemSlot();
 
-    public void setEquippedItemSlot(int slot);
+    void setEquippedItemSlot(int slot);
 
-    public float getEquippedProgress();
+    float getEquippedProgress();
 
-    public void setEquippedProgress(float progress);
+    void setEquippedProgress(float progress);
 
-    public float getPrevEquippedProgress();
+    float getPrevEquippedProgress();
 
-    public void setPrevEquippedProgress(float progress);
+    void setPrevEquippedProgress(float progress);
 
 }

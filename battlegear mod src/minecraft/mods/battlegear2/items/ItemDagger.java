@@ -3,11 +3,12 @@ package mods.battlegear2.items;
 import com.google.common.collect.Multimap;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.weapons.IBackStabbable;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockTallGrass;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
@@ -20,19 +21,21 @@ public class ItemDagger extends OneHandedWeapon implements IBackStabbable {
         this.reach = reach;
 		//set the base damage to that of lower than usual (balance)
 		this.baseDamage -= 2;
-        GameRegistry.registerItem(this, this.name);
+        GameRegistry.register(this);
 	}
 	
 	@Override//Daggers can harvest tallgrass and wool
-	public boolean canHarvestBlock(Block par1Block) {
-        return par1Block == Blocks.tallgrass||par1Block == Blocks.wool;
+	public boolean canHarvestBlock(IBlockState par1Block) {
+        return par1Block.getBlock() instanceof BlockTallGrass || par1Block.getBlock() == Blocks.WOOL;
     }
 
     @Override
-    public Multimap getAttributeModifiers(ItemStack stack) {
-        Multimap map = super.getAttributeModifiers(stack);
-        map.put(extendedReach.getAttributeUnlocalizedName(), new AttributeModifier(extendReachUUID, "Reach Modifier", this.reach, 0));
-        map.put(attackSpeed.getAttributeUnlocalizedName(), new AttributeModifier(attackSpeedUUID, "Speed Modifier", this.hitTime, 0));
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot slot) {
+        Multimap<String, AttributeModifier> map = super.getItemAttributeModifiers(slot);
+        if(slot.getSlotType() == EntityEquipmentSlot.Type.HAND) {
+            map.put(extendedReach.getName(), new AttributeModifier(extendReachUUID, "Reach Modifier", this.reach, 0));
+            map.put(attackSpeed.getName(), new AttributeModifier(attackSpeedUUID, "Speed Modifier", this.hitTime, 0));
+        }
         return map;
     }
 	

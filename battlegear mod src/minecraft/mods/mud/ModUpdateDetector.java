@@ -1,12 +1,12 @@
 package mods.mud;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.event.ClickEvent;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
@@ -87,9 +87,9 @@ public class ModUpdateDetector {
             if(verbose) {
                 ICommandSender sender = getSender();
                 if(sender != null)
-                sender.addChatMessage(new ChatComponentText(
-                        EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
-                                EnumChatFormatting.WHITE + ": " + StatCollector.translateToLocal("message.checking")));
+                sender.sendMessage(new TextComponentString(
+                        TextFormatting.YELLOW + I18n.format("mud.name") +
+                                TextFormatting.WHITE + ": " + I18n.format("message.checking")));
             }
             if(update == null || !update.isAlive()) {
                 update = new Thread(new UpdateChecker(updateMap.values()));
@@ -129,7 +129,6 @@ public class ModUpdateDetector {
         	handled.printStackTrace();
         }
         Object listener = new ModUpdateDetectorTickHandeler(Timer);
-        FMLCommonHandler.instance().bus().register(listener);
         MinecraftForge.EVENT_BUS.register(listener);
         ClientCommandHandler.instance.registerCommand(new MudCommands());
     }
@@ -150,7 +149,7 @@ public class ModUpdateDetector {
 
     public static ICommandSender getSender() {
         if(sender == null){
-        	sender = Minecraft.getMinecraft().thePlayer;
+        	sender = Minecraft.getMinecraft().player;
         }
         return sender;
     }
@@ -158,9 +157,9 @@ public class ModUpdateDetector {
     public static void notifyUpdateDone(){
         ICommandSender sender = getSender();
         if(verbose && sender != null){
-            sender.addChatMessage(new ChatComponentText(
-                    EnumChatFormatting.YELLOW + StatCollector.translateToLocal("mud.name") +
-                            EnumChatFormatting.WHITE + ": "+StatCollector.translateToLocal("message.check.done")
+            sender.sendMessage(new TextComponentString(
+                    TextFormatting.YELLOW + I18n.format("mud.name") +
+                            TextFormatting.WHITE + ": "+I18n.format("message.check.done")
             ));
         }
 
@@ -175,21 +174,21 @@ public class ModUpdateDetector {
                 failedCount++;
             }
         }
-        ChatComponentTranslation chat;
+        TextComponentTranslation chat;
         if(outOfDateCount > 0){
             if(sender != null){
-                chat = new ChatComponentTranslation("message.you.have.outdated", outOfDateCount);
-                chat.getChatStyle().setColor(EnumChatFormatting.RED);
-                sender.addChatMessage(chat);
-                chat = new ChatComponentTranslation("message.type.to.view");
-                chat.getChatStyle().setColor(EnumChatFormatting.RED).setChatClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mud"));
-                sender.addChatMessage(chat);
+                chat = new TextComponentTranslation("message.you.have.outdated", outOfDateCount);
+                chat.getStyle().setColor(TextFormatting.RED);
+                sender.sendMessage(chat);
+                chat = new TextComponentTranslation("message.type.to.view");
+                chat.getStyle().setColor(TextFormatting.RED).setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/mud"));
+                sender.sendMessage(chat);
             }
         }else if (verbose){
             if(sender != null){
-                chat = new ChatComponentTranslation("message.up.to.date");
-                chat.getChatStyle().setColor(EnumChatFormatting.DARK_GREEN);
-                sender.addChatMessage(chat);
+                chat = new TextComponentTranslation("message.up.to.date");
+                chat.getStyle().setColor(TextFormatting.DARK_GREEN);
+                sender.sendMessage(chat);
             }
         }
         hasChecked = true;

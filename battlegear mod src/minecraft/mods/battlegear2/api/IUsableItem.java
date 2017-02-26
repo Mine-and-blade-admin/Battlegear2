@@ -9,8 +9,8 @@ import net.minecraft.item.ItemStack;
  * By default can be hold in either hands of the player, but doesn't allow another usable item on the opposite hand.
  * See {@link IAllowItem} to change this behavior at your discretion (please consider game balance when doing so).
  *
- * {@link net.minecraft.item.Item#onItemUseFirst(ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, net.minecraft.util.BlockPos, net.minecraft.util.EnumFacing, float, float, float)}
- * {@link net.minecraft.item.Item#onItemUse(ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, net.minecraft.util.BlockPos, net.minecraft.util.EnumFacing, float, float, float)}
+ * {@link net.minecraft.item.Item#onItemUseFirst(ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing, float, float, float)}
+ * {@link net.minecraft.item.Item#onItemUse(ItemStack, net.minecraft.entity.player.EntityPlayer, net.minecraft.world.World, net.minecraft.util.math.BlockPos, net.minecraft.util.EnumFacing, float, float, float)}
  * {@link net.minecraft.item.Item#onItemRightClick(ItemStack, net.minecraft.world.World, net.minecraft.entity.player.EntityPlayer)}
  * will be called when player press {@link net.minecraft.client.settings.GameSettings#keyBindUseItem}, no matter what hand wield the {@link ItemStack}
  * exactly as if (or sufficiently close) done by vanilla Minecraft
@@ -30,5 +30,5 @@ public interface IUsableItem {
      * @param itemStack which contain this item
      * @return true if this item prefer being used instead of swinging/attacking
      */
-    public boolean isUsedOverAttack(ItemStack itemStack, EntityPlayer player);
+    boolean isUsedOverAttack(ItemStack itemStack, EntityPlayer player);
 }

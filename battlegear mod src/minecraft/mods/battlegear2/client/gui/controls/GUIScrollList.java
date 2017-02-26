@@ -265,15 +265,15 @@ public abstract class GUIScrollList {
 	                {
 						GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 	                    GlStateManager.disableTexture2D();
-						var18.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-						var18.getWorldRenderer().pos((double) boxLeft, (double) (var19 + var13 + 2), 0).tex(0, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-						var18.getWorldRenderer().pos((double) boxRight, (double) (var19 + var13 + 2), 0).tex(1, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-						var18.getWorldRenderer().pos((double) boxRight, (double) (var19 - 2), 0).tex(1, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-						var18.getWorldRenderer().pos((double) boxLeft, (double) (var19 - 2), 0).tex(0, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-						var18.getWorldRenderer().pos((double) (boxLeft + 1), (double) (var19 + var13 + 1), 0).tex(0, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-						var18.getWorldRenderer().pos((double) (boxRight - 1), (double) (var19 + var13 + 1), 0).tex(1, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-						var18.getWorldRenderer().pos((double) (boxRight - 1), (double) (var19 - 1), 0).tex(1, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-						var18.getWorldRenderer().pos((double) (boxLeft + 1), (double) (var19 - 1), 0).tex(0, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+						var18.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+						var18.getBuffer().pos((double) boxLeft, (double) (var19 + var13 + 2), 0).tex(0, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+						var18.getBuffer().pos((double) boxRight, (double) (var19 + var13 + 2), 0).tex(1, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+						var18.getBuffer().pos((double) boxRight, (double) (var19 - 2), 0).tex(1, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+						var18.getBuffer().pos((double) boxLeft, (double) (var19 - 2), 0).tex(0, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+						var18.getBuffer().pos((double) (boxLeft + 1), (double) (var19 + var13 + 1), 0).tex(0, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+						var18.getBuffer().pos((double) (boxRight - 1), (double) (var19 + var13 + 1), 0).tex(1, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+						var18.getBuffer().pos((double) (boxRight - 1), (double) (var19 - 1), 0).tex(1, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+						var18.getBuffer().pos((double) (boxLeft + 1), (double) (var19 - 1), 0).tex(0, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
 						var18.draw();
 	                    GlStateManager.enableTexture2D();
 	                }
@@ -312,23 +312,23 @@ public abstract class GUIScrollList {
 	                var14 = this.top;
 	            }
 
-				var18.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) this.bottom, 0).tex(0, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-				var18.getWorldRenderer().pos((double) scrollBarXEnd, (double) this.bottom, 0).tex(1, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-				var18.getWorldRenderer().pos((double) scrollBarXEnd, (double) this.top, 0).tex(1, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) this.top, 0).tex(0, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+				var18.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				var18.getBuffer().pos((double) scrollBarXStart, (double) this.bottom, 0).tex(0, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+				var18.getBuffer().pos((double) scrollBarXEnd, (double) this.bottom, 0).tex(1, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+				var18.getBuffer().pos((double) scrollBarXEnd, (double) this.top, 0).tex(1, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+				var18.getBuffer().pos((double) scrollBarXStart, (double) this.top, 0).tex(0, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
 				var18.draw();
-				var18.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) (var14 + var13), 0).tex(0, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-				var18.getWorldRenderer().pos((double) scrollBarXEnd, (double) (var14 + var13), 0).tex(1, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-				var18.getWorldRenderer().pos((double) scrollBarXEnd, (double) var14, 0).tex(1, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) var14, 0).tex(0, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+				var18.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				var18.getBuffer().pos((double) scrollBarXStart, (double) (var14 + var13), 0).tex(0, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+				var18.getBuffer().pos((double) scrollBarXEnd, (double) (var14 + var13), 0).tex(1, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+				var18.getBuffer().pos((double) scrollBarXEnd, (double) var14, 0).tex(1, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+				var18.getBuffer().pos((double) scrollBarXStart, (double) var14, 0).tex(0, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
 				var18.draw();
-				var18.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) (var14 + var13 - 1), 0).tex(0, 1).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
-				var18.getWorldRenderer().pos((double) (scrollBarXEnd - 1), (double) (var14 + var13 - 1), 0).tex(1, 1).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
-				var18.getWorldRenderer().pos((double) (scrollBarXEnd - 1), (double) var14, 0).tex(1, 0).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
-				var18.getWorldRenderer().pos((double) scrollBarXStart, (double) var14, 0).tex(0, 0).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
+				var18.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+				var18.getBuffer().pos((double) scrollBarXStart, (double) (var14 + var13 - 1), 0).tex(0, 1).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
+				var18.getBuffer().pos((double) (scrollBarXEnd - 1), (double) (var14 + var13 - 1), 0).tex(1, 1).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
+				var18.getBuffer().pos((double) (scrollBarXEnd - 1), (double) var14, 0).tex(1, 0).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
+				var18.getBuffer().pos((double) scrollBarXStart, (double) var14, 0).tex(0, 0).color(0xC0, 0xC0, 0xC0, 0xFF).endVertex();
 				var18.draw();
 	        }
 	
@@ -345,11 +345,11 @@ public abstract class GUIScrollList {
      */
     public void drawTexturedModalRect(Tessellator tessellator, int x, int y, int width, int height, int zLevel)
     {
-		tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-		tessellator.getWorldRenderer().pos((double) (x), (double) (y + height), (double) zLevel).tex(0F, 1F).endVertex();
-		tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + height), (double) zLevel).tex(1F, 1F).endVertex();
-		tessellator.getWorldRenderer().pos((double) (x + width), (double) (y), (double) zLevel).tex(1F, 0F).endVertex();
-		tessellator.getWorldRenderer().pos((double) (x), (double) (y), (double) zLevel).tex(0F, 0F).endVertex();
+		tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+		tessellator.getBuffer().pos((double) (x), (double) (y + height), (double) zLevel).tex(0F, 1F).endVertex();
+		tessellator.getBuffer().pos((double) (x + width), (double) (y + height), (double) zLevel).tex(1F, 1F).endVertex();
+		tessellator.getBuffer().pos((double) (x + width), (double) (y), (double) zLevel).tex(1F, 0F).endVertex();
+		tessellator.getBuffer().pos((double) (x), (double) (y), (double) zLevel).tex(0F, 0F).endVertex();
 		tessellator.draw();
     }
 

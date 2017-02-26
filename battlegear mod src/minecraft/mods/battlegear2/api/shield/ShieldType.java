@@ -14,11 +14,11 @@ import net.minecraftforge.common.util.Constants;
  */
 public class ShieldType {
 
-    public static final ShieldType WOOD = new ShieldType("wood", 1F/1F/20F, 1F/20F, 40, 15, 0xFFbc9862).setRepair(new ItemStack(Blocks.planks), IDSensible.INSTANCE); // 1 second block
-    public static final ShieldType HIDE = new ShieldType("hide", 1F/1.5F/20F, 1F/20F, 40, 12, 0xFF9b482b).setRepair(new ItemStack(Items.leather), IDSensible.INSTANCE); //1.5 second block
-    public static final ShieldType IRON = new ShieldType("iron", 1F/3F/20F, 1F/20F, 120,  9, 0xFFacacac).setRepair(new ItemStack(Items.iron_ingot), IDSensible.INSTANCE); //3 second block
-    public static final ShieldType DIAMOND = new ShieldType("diamond", 1F/5F/20F, 1F/20F, 263, 10, 0xFF23bfbf).setRepair(new ItemStack(Items.diamond), IDSensible.INSTANCE); //5 second block
-    public static final ShieldType GOLD = new ShieldType("gold", 1F/2F/20F, 1F/20F, 56, 25, 0xFFa8a400).setRepair(new ItemStack(Items.gold_ingot), IDSensible.INSTANCE); //2 second block
+    public static final ShieldType WOOD = new ShieldType("wood", 1F/1F/20F, 1F/20F, 40, 15, 0xFFbc9862).setRepair(new ItemStack(Blocks.PLANKS), IDSensible.INSTANCE); // 1 second block
+    public static final ShieldType HIDE = new ShieldType("hide", 1F/1.5F/20F, 1F/20F, 40, 12, 0xFF9b482b).setRepair(new ItemStack(Items.LEATHER), IDSensible.INSTANCE); //1.5 second block
+    public static final ShieldType IRON = new ShieldType("iron", 1F/3F/20F, 1F/20F, 120,  9, 0xFFacacac).setRepair(new ItemStack(Items.IRON_INGOT), IDSensible.INSTANCE); //3 second block
+    public static final ShieldType DIAMOND = new ShieldType("diamond", 1F/5F/20F, 1F/20F, 263, 10, 0xFF23bfbf).setRepair(new ItemStack(Items.DIAMOND), IDSensible.INSTANCE); //5 second block
+    public static final ShieldType GOLD = new ShieldType("gold", 1F/2F/20F, 1F/20F, 56, 25, 0xFFa8a400).setRepair(new ItemStack(Items.GOLD_INGOT), IDSensible.INSTANCE); //2 second block
 
     private final float decayRate;
     private final float damageDecay;
@@ -106,7 +106,7 @@ public class ShieldType {
 
     public ShieldType setRepair(NBTTagCompound compound){
         if(compound.hasKey("Repair", Constants.NBT.TAG_COMPOUND)){
-            setRepair(ItemStack.loadItemStackFromNBT(compound.getCompoundTag("Repair")), IDSensible.INSTANCE);
+            setRepair(new ItemStack(compound.getCompoundTag("Repair")), IDSensible.INSTANCE);
         }
         return this;
     }

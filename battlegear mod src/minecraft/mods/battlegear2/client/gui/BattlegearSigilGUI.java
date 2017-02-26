@@ -16,9 +16,9 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
@@ -63,8 +63,8 @@ public class BattlegearSigilGUI extends GuiContainer {
         this.buttonList.clear();
         this.elementList=new GUICrestElementList(this, 125, (this.width-125) / 2);
 
-        addButton = new GuiButton(ADD, (this.width-125) / 2+2, 5, 60, 20, StatCollector.translateToLocal("gui.sigil.add"));
-        removeButton = new GuiButton(REMOVE, (this.width-125)/2 + 63, 5, 60, 20, StatCollector.translateToLocal("gui.sigil.remove"));
+        addButton = new GuiButton(ADD, (this.width-125) / 2+2, 5, 60, 20, I18n.format("gui.sigil.add"));
+        removeButton = new GuiButton(REMOVE, (this.width-125)/2 + 63, 5, 60, 20, I18n.format("gui.sigil.remove"));
 
         buttonList.add(addButton);
         buttonList.add(removeButton);
@@ -80,7 +80,7 @@ public class BattlegearSigilGUI extends GuiContainer {
             }
         }
         
-        patternToggleButtons[0] = new GuiToggleButton(PAT_BUTTONS[0], (width+160)/2, 15, 65, 20, StatCollector.translateToLocal("gui.sigil.pattern"));
+        patternToggleButtons[0] = new GuiToggleButton(PAT_BUTTONS[0], (width+160)/2, 15, 65, 20, I18n.format("gui.sigil.pattern"));
     	patternToggleButtons[0].enabled = selectedIndex == 0;
     	patternToggleButtons[0].visible = selectedIndex == 0;
     	buttonList.add(patternToggleButtons[0]);
@@ -113,7 +113,7 @@ public class BattlegearSigilGUI extends GuiContainer {
         buttonList.add(colourPickerPattern);
         
         scrollListPattern = new GuiPatternScrollList(this, 125, 45, height-32, (width+160)/2);
-        BattlegearClientEvents.onOpenGui(buttonList, guiLeft-100, 5);
+        BattlegearClientEvents.onOpenGui(buttonList, getGuiLeft()-100, 5);
     }
 
     public FontRenderer getFontRenderer() {
@@ -261,11 +261,11 @@ public class BattlegearSigilGUI extends GuiContainer {
     public void drawTexturedModalRect(int x, int y, int width, int height, int tex_x, int tex_y, int tex_width, int tex_height)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        tessellator.getWorldRenderer().pos((double) (x), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y + tex_height))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y))).endVertex();
+        tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        tessellator.getBuffer().pos((double) (x), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getBuffer().pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getBuffer().pos((double) (x + width), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y))).endVertex();
+        tessellator.getBuffer().pos((double) (x), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y))).endVertex();
         tessellator.draw();
     }
 

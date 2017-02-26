@@ -29,10 +29,10 @@ public class ReachTargetPacket extends AbstractMBPacket{
 
     @Override
     public void process(ByteBuf in, EntityPlayer player) {
-        if(player.worldObj.isRemote || player.isSpectator()){
+        if(player.world.isRemote || player.isSpectator()){
             return;
         }
-        Entity entity = player.worldObj.getEntityByID(in.readInt());
+        Entity entity = player.world.getEntityByID(in.readInt());
         if (entity instanceof EntityLivingBase && entity != player){
             if (player.getDistanceToEntity(entity) > BattlemodeHookContainerClass.defaultReachDistance(player.capabilities.isCreativeMode)) {
                 if (entity.hurtResistantTime != ((EntityLivingBase) entity).maxHurtResistantTime) {

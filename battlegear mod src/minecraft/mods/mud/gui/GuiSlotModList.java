@@ -20,8 +20,8 @@ public class GuiSlotModList extends GuiScrollingList
 
     public GuiSlotModList(GuiChangelogDownload parent, Collection<UpdateEntry> entries, int listWidth)
     {
-        super(parent.getMinecraftInstance(), listWidth, parent.height, 32, parent.height - 65 + 4, 10, 25);
-        this.parent=parent;
+        super(parent.getMinecraftInstance(), listWidth, parent.height, 32, parent.height - 65 + 4, 10, 25, parent.width, parent.height);
+        this.parent = parent;
         this.entries = new ArrayList<UpdateEntry>(entries);
     }
 

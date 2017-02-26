@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 
+import javax.annotation.Nonnull;
+
 public class GuiDrawButton extends GuiButton {
     private final IDrawnHandler drawer;
     private final int initX, initY;
@@ -17,7 +19,7 @@ public class GuiDrawButton extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY){
+    public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY){
         this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
         this.drawer.drawElement(new ScaledResolution(mc), xPosition, yPosition);
         this.mouseDragged(mc, mouseX, mouseY);
@@ -58,7 +60,7 @@ public class GuiDrawButton extends GuiButton {
         return this.yPosition - this.initY;
     }
 
-    public static interface IDrawnHandler{
+    public interface IDrawnHandler{
         void drawElement(ScaledResolution resolution, int varX, int varY);
     }
 }

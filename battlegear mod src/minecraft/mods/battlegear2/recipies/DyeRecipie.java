@@ -7,17 +7,19 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public final class DyeRecipie implements IRecipe
 {
     @Override
-    public boolean matches(InventoryCrafting par1InventoryCrafting, World par2World)
+    public boolean matches(@Nonnull InventoryCrafting par1InventoryCrafting,@Nonnull World par2World)
     {
-        ItemStack dyableStack = null;
+        ItemStack dyableStack = ItemStack.EMPTY;
         ArrayList<ItemStack> arraylist = new ArrayList<ItemStack>();
         boolean waterFound = false;
 
@@ -25,23 +27,21 @@ public final class DyeRecipie implements IRecipe
         {
             ItemStack stack = par1InventoryCrafting.getStackInSlot(i);
 
-            if (stack != null)
+            if (!stack.isEmpty())
             {
                 if (stack.getItem() instanceof IDyable)
                 {
-
-                    if (dyableStack != null)
+                    if (!dyableStack.isEmpty())
                     {
                         return false;
                     }
-
                     dyableStack = stack;
                 }
                 else
                 {
-                    if(stack.getItem() == Items.water_bucket &&!waterFound){
+                    if(stack.getItem() == Items.WATER_BUCKET &&!waterFound){
                         waterFound = true;
-                    }else if (stack.getItem() != Items.dye)
+                    }else if (stack.getItem() != Items.DYE)
                     {
                         return false;
                     }else{
@@ -51,13 +51,14 @@ public final class DyeRecipie implements IRecipe
             }
         }
 
-        return dyableStack != null && (!arraylist.isEmpty() ^ waterFound);
+        return !dyableStack.isEmpty() && (!arraylist.isEmpty() ^ waterFound);
     }
 
+    @Nonnull
     @Override
-    public ItemStack getCraftingResult(InventoryCrafting par1InventoryCrafting)
+    public ItemStack getCraftingResult(@Nonnull InventoryCrafting par1InventoryCrafting)
     {
-        ItemStack dyableStack = null;
+        ItemStack dyableStack = ItemStack.EMPTY;
         int[] aint = new int[3];
         int i = 0;
         int j = 0;
@@ -72,20 +73,19 @@ public final class DyeRecipie implements IRecipe
         for (k = 0; k < par1InventoryCrafting.getSizeInventory(); ++k)
         {
             ItemStack stack = par1InventoryCrafting.getStackInSlot(k);
-
-            if (stack != null)
+            if (!stack.isEmpty())
             {
                 if (stack.getItem() instanceof IDyable)
                 {
                     dyeable = (IDyable)stack.getItem();
 
-                    if (dyableStack != null)
+                    if (!dyableStack.isEmpty())
                     {
-                        return null;
+                        return ItemStack.EMPTY;
                     }
 
                     dyableStack = stack.copy();
-                    dyableStack.stackSize = 1;
+                    dyableStack.setCount(1);
 
                     if (dyeable.hasColor(stack))
                     {
@@ -102,14 +102,14 @@ public final class DyeRecipie implements IRecipe
                 }
                 else
                 {
-                    if(stack.getItem() == Items.water_bucket){
+                    if(stack.getItem() == Items.WATER_BUCKET){
                         removeColour = true;
-                    }else if (stack.getItem() != Items.dye)
+                    }else if (stack.getItem() != Items.DYE)
                     {
-                        return null;
+                        return ItemStack.EMPTY;
                     }
 
-                    float[] afloat = EntitySheep.func_175513_a(EnumDyeColor.byDyeDamage(stack.getItemDamage()));
+                    float[] afloat = EntitySheep.getDyeRgb(EnumDyeColor.byDyeDamage(stack.getItemDamage()));
                     int j1 = (int)(afloat[0] * 255.0F);
                     int k1 = (int)(afloat[1] * 255.0F);
                     i1 = (int)(afloat[2] * 255.0F);
@@ -124,7 +124,7 @@ public final class DyeRecipie implements IRecipe
 
         if (dyeable == null)
         {
-            return null;
+            return ItemStack.EMPTY;
         }
         else
         {
@@ -153,14 +153,16 @@ public final class DyeRecipie implements IRecipe
         return 10;
     }
 
+    @Nonnull
     @Override
     public ItemStack getRecipeOutput()
     {
-        return null;
+        return ItemStack.EMPTY;
     }
 
+    @Nonnull
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+    public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv) {
         return ForgeHooks.defaultRecipeGetRemainingItems(inv);
     }
 }

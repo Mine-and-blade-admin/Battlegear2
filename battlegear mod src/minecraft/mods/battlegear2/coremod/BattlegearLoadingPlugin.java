@@ -19,16 +19,9 @@ public final class BattlegearLoadingPlugin implements IFMLLoadingPlugin {
     		new String[]{
                     "mods.battlegear2.coremod.transformers.EntityPlayerTransformer",
                     "mods.battlegear2.coremod.transformers.ModelBipedTransformer",
-                    "mods.battlegear2.coremod.transformers.NetClientHandlerTransformer",
-                    "mods.battlegear2.coremod.transformers.NetServerHandlerTransformer",
-                    "mods.battlegear2.coremod.transformers.PlayerControllerMPTransformer",
                     "mods.battlegear2.coremod.transformers.ItemRendererTransformer",
-                    "mods.battlegear2.coremod.transformers.RenderItemTransformer",
-                    "mods.battlegear2.coremod.transformers.MinecraftTransformer",
-                    "mods.battlegear2.coremod.transformers.ItemStackTransformer",
-                    "mods.battlegear2.coremod.transformers.ItemInWorldTransformer",
-                    "mods.battlegear2.coremod.transformers.EntityAIControlledByPlayerTransformer",
-                    "mods.battlegear2.coremod.transformers.EntityOtherPlayerMPTransformer",
+                    "mods.battlegear2.coremod.transformers.NetClientHandlerTransformer",
+                    "mods.battlegear2.coremod.transformers.NetServerHandlerTransformer"
    			};
 
     public static File debugOutputLocation;

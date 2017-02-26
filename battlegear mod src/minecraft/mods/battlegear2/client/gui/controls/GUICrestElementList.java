@@ -7,8 +7,8 @@ import mods.battlegear2.client.gui.BattlegearSigilGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -92,9 +92,9 @@ public class GUICrestElementList extends GUIScrollList {
         drawTexturedModalRect(var5, var2-listWidth+9, var3, 21, 21, 0);
 
         if(listIndex == 0){
-            parent.getFontRenderer().drawString(StatCollector.translateToLocal("gui.sigil.pattern"), var2-listWidth+9+25, var3+4, isSelected(listIndex)?0xFFFFFF00:0xFFFFFFFF);
+            parent.getFontRenderer().drawString(I18n.format("gui.sigil.pattern"), var2-listWidth+9+25, var3+4, isSelected(listIndex)?0xFFFFFF00:0xFFFFFFFF);
         }else{
-            parent.getFontRenderer().drawString(StatCollector.translateToLocal("gui.sigil.crest")+" "+listIndex, var2-listWidth+9+25, var3+4, isSelected(listIndex)?0xFFFFFF00:0xFFFFFFFF);
+            parent.getFontRenderer().drawString(I18n.format("gui.sigil.crest")+" "+listIndex, var2-listWidth+9+25, var3+4, isSelected(listIndex)?0xFFFFFF00:0xFFFFFFFF);
         }
 
 

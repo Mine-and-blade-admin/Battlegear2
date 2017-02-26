@@ -16,5 +16,5 @@ public interface IArrowCatcher {
      * @param projectile heading towards the shield
      * @return true if the projectile has been caught
      */
-	public boolean catchArrow(ItemStack shield, EntityPlayer player, IProjectile projectile);
+    boolean catchArrow(ItemStack shield, EntityPlayer player, IProjectile projectile);
 }

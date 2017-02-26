@@ -3,6 +3,7 @@ package mods.battlegear2.client.gui.controls;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 
+import javax.annotation.Nonnull;
 import java.util.Locale;
 
 /**
@@ -18,7 +19,7 @@ public class GuiTextFieldAlt extends GuiTextField {
 
 
     @Override
-    public void setText(String par1Str) {
+    public void setText(@Nonnull String par1Str) {
         super.setText(removeInvalidChars(par1Str));
     }
 

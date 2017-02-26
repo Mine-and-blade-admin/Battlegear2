@@ -3,7 +3,7 @@ package mods.battlegear2.heraldry;
 import mods.battlegear2.api.heraldry.HeraldryData;
 import mods.battlegear2.api.heraldry.HeraldryPattern;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class SigilHelper {
 	

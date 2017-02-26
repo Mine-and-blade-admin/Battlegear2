@@ -13,7 +13,7 @@ public final class GuiSigilButton extends GuiPlaceableButton {
 
 	@Override
 	protected void openGui(Minecraft mc) {
-		BattlegearSigilGUI.open(mc.thePlayer);
+		BattlegearSigilGUI.open(mc.player);
 	}
 
 	@Override

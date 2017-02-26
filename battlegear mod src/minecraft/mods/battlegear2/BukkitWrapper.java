@@ -77,22 +77,22 @@ public class BukkitWrapper {
             return;
         try {
             Object result;
-            if (playerInteracted.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR) {
-                result = AirInteract.invoke(null, playerInteracted.entityPlayer, AIR, stack);
+            if (playerInteracted instanceof PlayerInteractEvent.RightClickItem) {
+                result = AirInteract.invoke(null, playerInteracted.getEntityPlayer(), AIR, stack);
                 if(result != null && ItemUse.invoke(result) == DENY)
-                    playerInteracted.useItem = Event.Result.DENY;
-            } else {
-                result = BlockInteract.invoke(null, playerInteracted.entityPlayer, BLOCK, playerInteracted.pos.getX(), playerInteracted.pos.getY(), playerInteracted.pos.getZ(), playerInteracted.face.getIndex(), stack);
+                    playerInteracted.setCanceled(true);
+            } else if(playerInteracted instanceof PlayerInteractEvent.RightClickBlock){
+                result = BlockInteract.invoke(null, playerInteracted.getEntityPlayer(), BLOCK, playerInteracted.getPos().getX(), playerInteracted.getPos().getY(), playerInteracted.getPos().getZ(), playerInteracted.getFace().getIndex(), stack);
 
                 if(result != null){
                     if((Boolean)IsCancelled.invoke(result)){
                         playerInteracted.setCanceled(true);
                     }else {
                         if(ItemUse.invoke(result) == DENY){
-                            playerInteracted.useItem = Event.Result.DENY;
+                            ((PlayerInteractEvent.RightClickBlock) playerInteracted).setUseItem(Event.Result.DENY);
                         }
                         if(BlockUse.invoke(result) == DENY){
-                            playerInteracted.useBlock = Event.Result.DENY;
+                            ((PlayerInteractEvent.RightClickBlock) playerInteracted).setUseBlock(Event.Result.DENY);
                         }
                     }
                 }

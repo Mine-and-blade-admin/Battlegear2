@@ -6,8 +6,8 @@ import mods.battlegear2.api.heraldry.IHeraldryItem;
 import mods.battlegear2.api.heraldry.RefreshableTexture;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
@@ -19,9 +19,8 @@ import static org.lwjgl.opengl.GL11.glPushMatrix;
 
 public class HeraldryCrestItemRenderer {
     private RenderItem itemRenderer;
-
-
-    public static final ResourceLocation map_overlay = new ResourceLocation("battlegear2", "textures/heraldry/Background.png");
+    
+    public static final ResourceLocation map_overlay = new ResourceLocation("battlegear2", "textures/heraldry/background.png");
 
     private void doMapRendering(ItemStack item, HeraldryData heraldryData, IHeraldryItem item1) {
         glPushMatrix();
@@ -33,11 +32,11 @@ public class HeraldryCrestItemRenderer {
         Tessellator tess = Tessellator.getInstance();
 
         Minecraft.getMinecraft().getTextureManager().bindTexture(map_overlay);
-        tess.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
-        tess.getWorldRenderer().pos(-8, 136, -.01).tex(0, 1).endVertex();
-        tess.getWorldRenderer().pos(136, 136, -.01).tex(1, 1).endVertex();
-        tess.getWorldRenderer().pos(136, -8, -.01).tex(1, 0).endVertex();
-        tess.getWorldRenderer().pos(-8, -8, -.01).tex(0, 0).endVertex();
+        tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+        tess.getBuffer().pos(-8, 136, -.01).tex(0, 1).endVertex();
+        tess.getBuffer().pos(136, 136, -.01).tex(1, 1).endVertex();
+        tess.getBuffer().pos(136, -8, -.01).tex(1, 0).endVertex();
+        tess.getBuffer().pos(-8, -8, -.01).tex(0, 0).endVertex();
         tess.draw();
 
         //glDisable(GL_BLEND);
@@ -53,11 +52,11 @@ public class HeraldryCrestItemRenderer {
         Minecraft.getMinecraft().getTextureManager().bindTexture(crestLocation);
 
 
-        tess.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
-        tess.getWorldRenderer().pos(8, 120, -0.015).tex(0, 1).endVertex();
-        tess.getWorldRenderer().pos(120, 120, -0.015).tex(1, 1).endVertex();
-        tess.getWorldRenderer().pos(120, 8, -0.015).tex(1, 0).endVertex();
-        tess.getWorldRenderer().pos(8, 8, -0.015).tex(0, 0).endVertex();
+        tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+        tess.getBuffer().pos(8, 120, -0.015).tex(0, 1).endVertex();
+        tess.getBuffer().pos(120, 120, -0.015).tex(1, 1).endVertex();
+        tess.getBuffer().pos(120, 8, -0.015).tex(1, 0).endVertex();
+        tess.getBuffer().pos(8, 8, -0.015).tex(0, 0).endVertex();
         tess.draw();
 
 

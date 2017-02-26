@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by GotoLink on 07/11/2014.
  * A generic dispensing arrow behavior for {@link BlockDispenser]
@@ -18,14 +20,15 @@ public abstract class DispenseArrow extends BehaviorDefaultDispenseItem{
     /**
      * Spawn the new EntityArrow instance, or default to dispensing the item form.
      */
+    @Nonnull
     @Override
     public final ItemStack dispenseStack(IBlockSource source, ItemStack itemStack) {
         EntityArrow arrow = this.getArrowEntity(source.getWorld(), itemStack);
         if(arrow != null) {
             IPosition iPosition = BlockDispenser.getDispensePosition(source);
-            EnumFacing enumfacing = BlockDispenser.getFacing(source.getBlockMetadata());
+            EnumFacing enumfacing = source.getBlockState().getValue(BlockDispenser.FACING);
             this.setArrowProperties(arrow, iPosition, enumfacing);
-            if(source.getWorld().spawnEntityInWorld(arrow))
+            if(source.getWorld().spawnEntity(arrow))
                 this.consume(itemStack);
             return itemStack;
         }
@@ -51,7 +54,7 @@ public abstract class DispenseArrow extends BehaviorDefaultDispenseItem{
      */
     protected void setArrowProperties(EntityArrow arrow, IPosition iPosition, EnumFacing enumfacing){
         arrow.setPosition(iPosition.getX(), iPosition.getY(), iPosition.getZ());
-        arrow.canBePickedUp = 1;
+        arrow.pickupStatus = EntityArrow.PickupStatus.ALLOWED;
         arrow.setThrowableHeading((double) enumfacing.getFrontOffsetX(), (double) ((float) enumfacing.getFrontOffsetY() + 0.1F), (double) enumfacing.getFrontOffsetZ(), 1.1F, 6.0F);
     }
 
@@ -62,6 +65,12 @@ public abstract class DispenseArrow extends BehaviorDefaultDispenseItem{
      * @param itemStack inside the dispenser, to consume from
      */
     protected void consume(ItemStack itemStack) {
-        itemStack.splitStack(1);
+        itemStack.shrink(1);
+    }
+
+    @Override
+    protected void playDispenseSound(IBlockSource source)
+    {
+        source.getWorld().playEvent(1002, source.getBlockPos(), 0);
     }
 }

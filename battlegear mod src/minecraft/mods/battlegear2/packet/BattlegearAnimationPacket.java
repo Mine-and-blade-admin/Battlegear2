@@ -1,7 +1,6 @@
 package mods.battlegear2.packet;
 
 import io.netty.buffer.ByteBuf;
-import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
@@ -36,12 +35,12 @@ public final class BattlegearAnimationPacket extends AbstractMBPacket {
             return;
         }
         if (username != null && animation != null) {
-            EntityPlayer entity = player.worldObj.getPlayerEntityByName(username);
+            EntityPlayer entity = player.world.getPlayerEntityByName(username);
             if(entity!=null){
-                if (entity.worldObj instanceof WorldServer) {
-                    ((WorldServer) entity.worldObj).getEntityTracker().sendToAllTrackingEntity(entity, this.generatePacket());
+                if (entity.world instanceof WorldServer) {
+                    ((WorldServer) entity.world).getEntityTracker().sendToTrackingAndSelf(entity, this.generatePacket());
                 }
-                animation.processAnimation((IBattlePlayer)entity);
+                animation.processAnimation(entity);
             }
         }
     }

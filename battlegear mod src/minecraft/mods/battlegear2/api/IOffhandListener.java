@@ -1,8 +1,8 @@
 package mods.battlegear2.api;
 
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Created by GotoLink on 27/09/2014.
@@ -25,7 +25,7 @@ public interface IOffhandListener extends IHandListener{
      * @param event the OffhandAttackEvent that was generated
      * @param isOffhand True if this item is actually in the offhand slot, False otherwise
      */
-    public void onAttackEntity(PlayerEventChild.OffhandAttackEvent event, boolean isOffhand);
+    void onAttackEntity(PlayerEventChild.OffhandAttackEvent event, boolean isOffhand);
 
     /**
      * Perform any function when this item is held in the offhand and the user right clicks "Air".
@@ -33,10 +33,10 @@ public interface IOffhandListener extends IHandListener{
      * or the item in the main (right) hand couldn't be used.
      *
      * @param player the player entity
-     * @param mainhandStack the {@link ItemStack} currently being held in the right hand, can be null
+     * @param mainhandStack the {@link ItemStack} currently being held in the right hand, can be empty
      * @param offhandStack  the {@link ItemStack} currently being held in the left hand, holding this item
      * @return ALLOW to get the call on server side, but not perform the swing animation, DENY to prevent both, DEFAULT to get both
      */
-    public Event.Result onClickAir(EntityPlayer player, ItemStack mainhandStack, ItemStack offhandStack);
+    Event.Result onClickAir(EntityPlayer player, ItemStack mainhandStack, ItemStack offhandStack);
 
 }

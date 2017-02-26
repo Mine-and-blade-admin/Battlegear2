@@ -1,18 +1,35 @@
 {
-  "parent": "builtin/generated",
+  "parent": "item/generated",
   "textures": {
     "layer0": "battlegear2:items/spear.gold.big"
   },
   "display": {
-    "thirdperson": {
-      "rotation": [ 0, 90, -35 ],
-      "translation": [ -0.5, 1.2, -3.5 ],
+    "thirdperson_righthand": {
+      "rotation": [ 0, -90, 35 ],
+      "translation": [ -0.5, 1.2, 0.5 ],
       "scale": [ 1.7, 1.7, 0.85 ]
     },
-    "firstperson": {
-      "rotation": [ 0, -135, 100 ],
+    "thirdperson_lefthand": {
+      "rotation": [ 0, 90, -35 ],
+      "translation": [ -0.5, 1.2, 0.5 ],
+      "scale": [ 1.7, 1.7, 0.85 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, -100, 100 ],
       "translation": [ 0, 4, 2 ],
-      "scale": [ 1.7, 1.7, 1.7 ]
+      "scale": [ 1.7, 1.7, 0.85 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 0, 100, -100 ],
+      "translation": [ 0, 4, 2 ],
+      "scale": [ 1.7, 1.7, 0.85 ]
+    },
+    "ground":{
+      "rotation": [ 90, 0, 0 ],
+      "scale": [ 1.5, 1.5, 0.75 ]
+    },
+    "fixed":{
+      "scale": [ 1.5, 1.5, 0.75 ]
     }
   }
 }

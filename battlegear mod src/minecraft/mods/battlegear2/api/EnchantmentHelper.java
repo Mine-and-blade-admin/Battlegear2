@@ -2,15 +2,16 @@ package mods.battlegear2.api;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ObjectArrays;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Primitives;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.registry.GameData;
 import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.Constructor;
@@ -26,17 +27,12 @@ public class EnchantmentHelper {
      * Reservation system for new enchantments id, requested using {@link #takeNextAvailableId}
      */
     private static BitSet reservedId;
-    private final TreeSet<Enchantment> enchants;
-    public static final int MIN_FREE_SLOT = 8, INVALID = -1;
+    private final Set<Enchantment> enchants;
+    public static final int MIN_FREE_SLOT = 11, INVALID = -1;
     private static int MAX_ENCHANTS = INVALID;
 
     public EnchantmentHelper(){
-        enchants = Sets.newTreeSet(new Comparator<Enchantment>() {
-            @Override
-            public int compare(Enchantment o1, Enchantment o2) {
-                return o1.effectId - o2.effectId;
-            }
-        });
+        enchants = Sets.newIdentityHashSet();
     }
 
     public EnchantmentHelper(Comparator<Enchantment> comparator){
@@ -69,7 +65,7 @@ public class EnchantmentHelper {
     public Collection<ItemStack> getEnchantmentBooks() {
         Collection<ItemStack> list = new ArrayList<ItemStack>(enchants.size());
         for(Enchantment enchantment:enchants){
-            list.add(Items.enchanted_book.getEnchantedItemStack(new EnchantmentData(enchantment, enchantment.getMaxLevel())));
+            list.add(Items.ENCHANTED_BOOK.getEnchantedItemStack(new EnchantmentData(enchantment, enchantment.getMaxLevel())));
         }
         return list;
     }
@@ -77,9 +73,9 @@ public class EnchantmentHelper {
     public static int getMaxEnchants() {
         if(MAX_ENCHANTS == INVALID){
             try {
-                Field field = Enchantment.class.getDeclaredFields()[0];
+                Field field = GameData.class.getDeclaredField("MAX_ENCHANTMENT_ID");
                 field.setAccessible(true);
-                MAX_ENCHANTS = ((Enchantment[]) field.get(null)).length;
+                MAX_ENCHANTS = (Integer) field.get(null);
             }catch (Exception printed){
                 printed.printStackTrace();
             }
@@ -98,7 +94,7 @@ public class EnchantmentHelper {
 
     /**
      * Get the next available id for a new enchantment, makes no reservation.
-     * Will always return the same result till a new enchantment is added to {@link Enchantment#enchantmentsList}
+     * Will always return the same result till a new enchantment is added to {@link Enchantment#REGISTRY}
      * Recommended when registering lone enchantments
      *
      * @param startingId to start search from (included)
@@ -107,7 +103,7 @@ public class EnchantmentHelper {
     public static int getNextAvailableId(int startingId){
         int result = startingId < MIN_FREE_SLOT ? MIN_FREE_SLOT : startingId;
         while(result < getMaxEnchants()) {
-            if(Enchantment.getEnchantmentById(result)==null)
+            if(Enchantment.getEnchantmentByID(result)==null)
                 return result;
             result++;
         }
@@ -173,45 +169,33 @@ public class EnchantmentHelper {
      * @param args additional arguments used on the constructor when instantiating
      * @return the optional enchantment
      */
-    public static Optional<Enchantment> build(Property property, String name, Class<? extends Enchantment> type, Object... args){
+    public static Optional<Enchantment> build(Property property, String name, Class<? extends Enchantment> type, String registry, Object... args){
         int id = takeNextAvailableId(property);
         if(id!=INVALID && type!=null){
             Enchantment enchantment = null;
             try {
                 Constructor<? extends Enchantment> constructor;
                 if (args != null) {
-                    Class<?>[] ctorArgClasses = new Class<?>[args.length+1];
-                    ctorArgClasses[0] = int.class;
+                    Class<?>[] ctorArgClasses = new Class<?>[args.length];
                     for (int idx = 0; idx < args.length; idx++) {
-                        ctorArgClasses[idx+1] = Primitives.unwrap(args[idx].getClass());
+                        ctorArgClasses[idx] = Primitives.unwrap(args[idx].getClass());
                     }
                     constructor = type.getConstructor(ctorArgClasses);
-                    enchantment = constructor.newInstance(ObjectArrays.concat(id, args));
+                    enchantment = constructor.newInstance(args);
                 } else {
-                    constructor = type.getConstructor(int.class);
-                    enchantment = constructor.newInstance(id);
+                    constructor = type.getConstructor();
+                    enchantment = constructor.newInstance();
                 }
             }catch (Exception logged){
                 FMLLog.log(Level.ERROR, logged, "Caught an exception during enchantment registration");
             }
-            if(enchantment != null && name != null && !name.isEmpty())
+            if(enchantment != null && name != null && !name.isEmpty()) {
                 enchantment.setName(name);
+                Enchantment.REGISTRY.register(id, new ResourceLocation(registry), enchantment);
+            }
             return Optional.fromNullable(enchantment);
         }
         return Optional.absent();
-    }
-
-    /**
-     * Get the enchantment id from an optional enchantment.
-     *
-     * @param enchantmentOptional to get the id from
-     * @return {@code #INVALID} if the covered enchantment doesn't exist
-     */
-    public static int getId(Optional<Enchantment> enchantmentOptional){
-        if(enchantmentOptional.isPresent())
-            return enchantmentOptional.get().effectId;
-        else
-            return INVALID;
     }
 
     /**
@@ -223,7 +207,7 @@ public class EnchantmentHelper {
      */
     public static int getEnchantmentLevel(Optional<Enchantment> enchantmentOptional, ItemStack itemStack){
         if(enchantmentOptional.isPresent())
-            return net.minecraft.enchantment.EnchantmentHelper.getEnchantmentLevel(enchantmentOptional.get().effectId, itemStack);
+            return net.minecraft.enchantment.EnchantmentHelper.getEnchantmentLevel(enchantmentOptional.get(), itemStack);
         else
             return 0;
     }

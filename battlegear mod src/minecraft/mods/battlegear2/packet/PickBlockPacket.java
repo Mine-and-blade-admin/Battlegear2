@@ -43,7 +43,7 @@ public final class PickBlockPacket extends AbstractMBPacket{
             }
             if(InventoryPlayerBattle.isValidSwitch(slot)){
                 player.inventory.currentItem = slot;
-                if(player.capabilities.isCreativeMode && !ItemStack.areItemStacksEqual(stack, player.getCurrentEquippedItem())){
+                if(player.capabilities.isCreativeMode && !ItemStack.areItemStacksEqual(stack, player.getHeldItemMainhand())){
                     BattlegearUtils.setPlayerCurrentItem(player, stack);
                 }
                 if(player instanceof EntityPlayerMP)

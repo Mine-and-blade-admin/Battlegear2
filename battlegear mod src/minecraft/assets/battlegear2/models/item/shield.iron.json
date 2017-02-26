@@ -16,6 +16,9 @@
       "translation": [ 0, 4, 2 ],
       "scale": [ 1.7, 1.7, 1.7 ]
     },
+    "ground":{
+      "rotation": [ 90, 0, 0 ]
+    },
     "gui": {
       "rotation": [ 0, 180, 0 ]
     }

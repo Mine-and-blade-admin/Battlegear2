@@ -1,9 +1,9 @@
 package mods.battlegear2.api;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Flag an item instance for pre-process of rendering sheathed "on back"
@@ -21,5 +21,5 @@ public interface IBackSheathedRender{
      * @param inMainHand true if this item is in "right" hand slots, false in "left"
      */
     @SideOnly(Side.CLIENT)
-    public void preRenderBackSheathed(ItemStack itemStack, int amountOnBack, RenderPlayerEvent event, boolean inMainHand);
+    void preRenderBackSheathed(ItemStack itemStack, int amountOnBack, RenderPlayerEvent event, boolean inMainHand);
 }

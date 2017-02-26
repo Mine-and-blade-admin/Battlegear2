@@ -8,12 +8,12 @@ import net.minecraft.util.ResourceLocation;
  */
 public interface ITool {
 
-    public String getToolName();
+    String getToolName();
 
-    public ResourceLocation getToolImage();
+    ResourceLocation getToolImage();
 
-    public void drawOverlay(int x, int y, int[] pixals, DynamicTexture overlay, int rgb, boolean shift);
+    void drawOverlay(int x, int y, int[] pixals, DynamicTexture overlay, int rgb, boolean shift);
 
-    public void draw(int x, int y, int[] pixels, int rgb, boolean shift);
+    void draw(int x, int y, int[] pixels, int rgb, boolean shift);
 
 }

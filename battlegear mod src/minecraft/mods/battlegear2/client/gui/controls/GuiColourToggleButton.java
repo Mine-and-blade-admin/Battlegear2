@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 
+import javax.annotation.Nonnull;
+
 public class GuiColourToggleButton extends GuiToggleButton{
 
 	private int colour;
@@ -20,7 +22,7 @@ public class GuiColourToggleButton extends GuiToggleButton{
 	}
 	
 	@Override
-	public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
+	public void drawButton(@Nonnull Minecraft par1Minecraft, int par2, int par3) {
 		
 		if (this.visible)
         {

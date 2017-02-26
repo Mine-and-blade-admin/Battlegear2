@@ -11,5 +11,5 @@ public interface IEnchantable {
 	 * @param stack holding this item, trying to be enchanted
 	 * @return true to continue applying the enchantment
 	 */
-	public boolean isEnchantable(Enchantment baseEnchantment, ItemStack stack);
+    boolean isEnchantable(Enchantment baseEnchantment, ItemStack stack);
 }

@@ -38,9 +38,9 @@ public enum HeraldryBannerPositions {
 	private boolean[] patternFlip;
 	private boolean[] altColours;
 	
-	private HeraldryBannerPositions(int passess, float[] sourceXStart,
-			float[] sourceXEnd, float[] sourceYStart, float[] sourceYEnd,
-			boolean[] patternFlip, boolean[] altColours) {
+	HeraldryBannerPositions(int passess, float[] sourceXStart,
+                            float[] sourceXEnd, float[] sourceYStart, float[] sourceYEnd,
+                            boolean[] patternFlip, boolean[] altColours) {
 		this.passess = passess;
 		this.sourceXStart = sourceXStart;
 		this.sourceXEnd = sourceXEnd;

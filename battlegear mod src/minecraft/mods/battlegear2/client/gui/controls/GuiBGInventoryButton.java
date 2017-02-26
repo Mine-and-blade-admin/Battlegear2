@@ -12,7 +12,7 @@ public final class GuiBGInventoryButton extends GuiPlaceableButton{
 
 	@Override
 	protected void openGui(Minecraft mc) {
-		BattleEquipGUI.open(mc.thePlayer);
+		BattleEquipGUI.open(mc.player);
 	}
 
 	@Override

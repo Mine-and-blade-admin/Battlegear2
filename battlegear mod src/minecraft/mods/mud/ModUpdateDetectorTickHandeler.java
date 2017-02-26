@@ -38,14 +38,14 @@ public class ModUpdateDetectorTickHandeler {
 
     @SubscribeEvent
     public void onPostInitGui(GuiScreenEvent.InitGuiEvent.Post event) {
-        if(event.gui instanceof GuiIngameMenu || event.gui instanceof GuiModList){
-            int x = event.gui.width / 2 + 105;
-            int y = event.gui.height / 4 + 8;
-            if(event.gui instanceof GuiModList){
-                x = event.gui.width - 110;
+        if(event.getGui() instanceof GuiIngameMenu || event.getGui() instanceof GuiModList){
+            int x = event.getGui().width / 2 + 105;
+            int y = event.getGui().height / 4 + 8;
+            if(event.getGui() instanceof GuiModList){
+                x = event.getGui().width - 110;
                 y = 10;
             }
-            event.buttonList.add(new GuiModUpdateButton(BUTTON_ID, x, y, event.gui));
+            event.getButtonList().add(new GuiModUpdateButton(BUTTON_ID, x, y, event.getGui()));
         }
     }
 }

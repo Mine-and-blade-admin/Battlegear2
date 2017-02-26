@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.config.GuiUtils;
 
+import javax.annotation.Nonnull;
+
 public abstract class GuiPlaceableButton extends GuiButton {
     public static final ResourceLocation CREATIVE_TABS = new ResourceLocation("textures/gui/container/creative_inventory/tabs.png");
 	public static final int HEIGHT = 20, TAB_DIM = 28, TAB_BORDER = 3;
@@ -38,7 +40,7 @@ public abstract class GuiPlaceableButton extends GuiButton {
             if(!isInGui(mc.currentScreen))
                 this.openGui(mc);
             else
-                mc.displayGuiScreen(new GuiInventory(mc.thePlayer));
+                mc.displayGuiScreen(new GuiInventory(mc.player));
         }
 		return inWindow;
 	}
@@ -58,7 +60,7 @@ public abstract class GuiPlaceableButton extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY){
+    public void drawButton(@Nonnull Minecraft mc, int mouseX, int mouseY){
         if (this.visible)
         {
             if(mc.currentScreen instanceof InventoryEffectRenderer) {
@@ -66,7 +68,7 @@ public abstract class GuiPlaceableButton extends GuiButton {
                     this.yPosition -= deltaY;
                     deltaY = 0;
                 }
-                int size = mc.thePlayer.getActivePotionEffects().size();
+                int size = mc.player.getActivePotionEffects().size();
                 if (size > 0) {
                     int off = 33;
                     if (size > 4) {

@@ -4,16 +4,23 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.items.ItemMBArrow;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityMob;
-import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
+
+import javax.annotation.Nonnull;
 
 public abstract class AbstractMBArrow extends EntityArrow {
 
@@ -21,25 +28,36 @@ public abstract class AbstractMBArrow extends EntityArrow {
 		super(par1World);
 	}
 	
-    public AbstractMBArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
-        super(par1World, par2EntityLivingBase, par3);
+    public AbstractMBArrow(World par1World, EntityLivingBase par2EntityLivingBase) {
+        super(par1World, par2EntityLivingBase);
     }
 
-    public AbstractMBArrow(World par1World, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase, float par4, float par5) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5);
+    public AbstractMBArrow(World par1World, double x, double y, double z) {
+        super(par1World, x, y, z);
     }
 
     public abstract boolean onHitEntity(Entity entityHit, DamageSource source, float ammount);
 
-    public abstract void onHitGround(int x, int y, int z);
+    public abstract void onHitGround(BlockPos pos);
 
     @Override
     public void onUpdate() {
         super.onUpdate();
 
-        if(ticksInGround == 1){
-            onHitGround(xTile, yTile, zTile);
+        if(ticksInGround == 1 && isEntityAlive()){
+            onHitGround(new BlockPos(xTile, yTile, zTile));
         }
+    }
+
+    @Override
+    protected void onHit(RayTraceResult raytraceResultIn){
+        if(raytraceResultIn.entityHit==null){
+            IBlockState iblockstate = this.world.getBlockState(raytraceResultIn.getBlockPos());
+            if(iblockstate.getMaterial()!= Material.AIR){
+                onHitGround(raytraceResultIn.getBlockPos());
+            }
+        }
+        super.onHit(raytraceResultIn);
     }
 
     /**
@@ -49,11 +67,11 @@ public abstract class AbstractMBArrow extends EntityArrow {
      * @param skeleton the shooter
      * @return
      */
-    public static AbstractMBArrow generate(int type, EntityArrow arrow, EntitySkeleton skeleton) {
+    public static AbstractMBArrow generate(int type, EntityArrow arrow, AbstractSkeleton skeleton) {
         AbstractMBArrow mbArrow = null;
-        if(arrow != null && skeleton != null && skeleton.getAttackTarget() != null && type<ItemMBArrow.arrows.length){
+        if(arrow != null && skeleton != null && type<ItemMBArrow.arrows.length){
             try {
-                mbArrow = ItemMBArrow.arrows[type].getConstructor(World.class, EntityLivingBase.class, EntityLivingBase.class, float.class, float.class).newInstance(arrow.worldObj, skeleton, skeleton.getAttackTarget(), 1.6F, (float) (14 - skeleton.worldObj.getDifficulty().getDifficultyId() * 4));
+                mbArrow = ItemMBArrow.arrows[type].getConstructor(World.class, EntityLivingBase.class).newInstance(arrow.world, skeleton);
             } catch (Exception e) {
 				e.printStackTrace();
 			}          		
@@ -62,14 +80,14 @@ public abstract class AbstractMBArrow extends EntityArrow {
     }
     
     @Override//Fixes picking up arrows
-    public void onCollideWithPlayer(EntityPlayer par1EntityPlayer){
-        if (!this.worldObj.isRemote && this.ticksInGround>0 && this.arrowShake <= 0){
-            if (this.canBePickedUp == 1 && !tryPickArrow(par1EntityPlayer)){
+    public void onCollideWithPlayer(@Nonnull EntityPlayer par1EntityPlayer){
+        if (!this.world.isRemote && this.ticksInGround>0 && this.arrowShake <= 0){
+            if (this.pickupStatus == PickupStatus.ALLOWED && !tryPickArrow(par1EntityPlayer)){
             	return;
             }
-            boolean flag = this.canBePickedUp == 1 || this.canBePickedUp == 2 && par1EntityPlayer.capabilities.isCreativeMode;
+            boolean flag = this.pickupStatus == PickupStatus.ALLOWED || this.pickupStatus == PickupStatus.CREATIVE_ONLY && par1EntityPlayer.capabilities.isCreativeMode;
             if (flag){
-                this.playSound("random.pop", 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                this.playSound(SoundEvents.ENTITY_ITEM_PICKUP, 0.2F, ((this.rand.nextFloat() - this.rand.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                 par1EntityPlayer.onItemPickup(this, 1);//That second parameter is unused
                 this.setDead();
             }
@@ -82,11 +100,11 @@ public abstract class AbstractMBArrow extends EntityArrow {
      * @return false if the arrow couldn't be added to the player inventory
      */
     public boolean tryPickArrow(EntityPlayer player){
-        ItemStack arrow = getPickedUpItem();
-        if(arrow!=null){
+        ItemStack arrow = getArrowStack();
+        if(!arrow.isEmpty()){
             boolean hasPickUp = false;
-            ItemStack temp = addInQuiver(player.getCurrentEquippedItem(), arrow);
-            if(temp == null){
+            ItemStack temp = addInQuiver(player.getHeldItemMainhand(), arrow);
+            if(temp.isEmpty()){
                 return true;
             }else if(temp != arrow){
                 hasPickUp = true;
@@ -94,7 +112,7 @@ public abstract class AbstractMBArrow extends EntityArrow {
             }
             if(player.inventory instanceof InventoryPlayerBattle){
             	temp = addInQuiver(((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon(), arrow);
-            	if(temp == null){
+            	if(temp.isEmpty()){
                 	return true;
             	}else if(temp != arrow){
                 	hasPickUp = true;
@@ -102,8 +120,8 @@ public abstract class AbstractMBArrow extends EntityArrow {
             	}
             }
             if(hasPickUp){
-                if(arrow.stackSize>0)
-                    worldObj.spawnEntityInWorld(new EntityItem(worldObj, posX, posY, posZ, arrow));
+                if(arrow.getCount()>0)
+                    world.spawnEntity(new EntityItem(world, posX, posY, posZ, arrow));
                 return true;
             }
         }
@@ -111,12 +129,12 @@ public abstract class AbstractMBArrow extends EntityArrow {
     }
 
     private ItemStack addInQuiver(ItemStack quiver, ItemStack arrow){
-        if(quiver != null && quiver.getItem() instanceof IArrowContainer2){
-            final int size = arrow.stackSize;
+        if(quiver.getItem() instanceof IArrowContainer2){
+            final int size = arrow.getCount();
             ItemStack arrowLeft = ((IArrowContainer2) quiver.getItem()).addArrows(quiver, arrow);
-            if(arrowLeft == null){
-                return null;
-            }else if(arrowLeft.stackSize < size){
+            if(arrowLeft.isEmpty()){
+                return ItemStack.EMPTY;
+            }else if(arrowLeft.getCount() < size){
                 return arrowLeft.copy();
             }
         }
@@ -127,12 +145,14 @@ public abstract class AbstractMBArrow extends EntityArrow {
      * Could be abstracted, but using the registry is easier
      * @return the stack to be picked up, if any
      */
-	public ItemStack getPickedUpItem(){
+    @Override
+    @Nonnull
+    protected ItemStack getArrowStack(){
 		return QuiverArrowRegistry.getItem(this.getClass());
 	}
 
 
     public boolean canBreakBlocks(){
-        return !(this.shootingEntity instanceof EntityMob) || this.worldObj.getGameRules().getBoolean("mobGriefing");
+        return !(this.shootingEntity instanceof EntityMob) || this.world.getGameRules().getBoolean("mobGriefing");
     }
 }

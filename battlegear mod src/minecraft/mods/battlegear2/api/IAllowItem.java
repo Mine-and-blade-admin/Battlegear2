@@ -25,5 +25,5 @@ public interface IAllowItem {
 	 * If this item is not yet placed but the opposite is (or null), allow this item own placement
 	 * }
      */
-	public boolean allowOffhand(ItemStack inhand, ItemStack oppositehand, EntityPlayer player);
+    boolean allowOffhand(ItemStack inhand, ItemStack oppositehand, EntityPlayer player);
 }

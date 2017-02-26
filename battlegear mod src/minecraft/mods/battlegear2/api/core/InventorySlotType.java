@@ -5,15 +5,23 @@ package mods.battlegear2.api.core;
  */
 public enum InventorySlotType {
     /**
-     * The main inventory space (slots 0 to 99)
+     * The hotbar inventory space (slots up to 8)
      */
-    MAIN,
+    HOTBAR(0),
     /**
-     * The armor inventory space (slots 100 to 149)
+     * The main inventory space (slots up to 35)
      */
-    ARMOR,
+    MAIN(9),
     /**
-     * The inventory space added by battlegear (slots 150 and above)
+     * The armor inventory space (slots up to 103)
      */
-    BATTLE
+    ARMOR(100),
+    /**
+     * The inventory space added by battlegear (slots 151 and above)
+     */
+    BATTLE(151);
+    public final int start;
+    InventorySlotType(int init){
+        start = init;
+    }
 }

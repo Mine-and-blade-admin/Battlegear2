@@ -9,7 +9,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Mouse;
 
@@ -54,8 +54,8 @@ public class GuiChangelogDownload extends GuiScreen
 
     public GuiChangelogDownload(GuiScreen parent){
         this.parent = parent;
-        this.changelog = new String[]{StatCollector.translateToLocal("log.message.loading")};
-        this.entries=new ArrayList<UpdateEntry>(ModUpdateDetector.getAllUpdateEntries());
+        this.changelog = new String[]{I18n.format("log.message.loading")};
+        this.entries = new ArrayList<UpdateEntry>(ModUpdateDetector.getAllUpdateEntries());
         if(!ModUpdateDetector.hasChecked && !ModUpdateDetector.isChecking()){
             Thread thread = new Thread(new UpdateChecker(entries));
             thread.setDaemon(true);
@@ -77,12 +77,12 @@ public class GuiChangelogDownload extends GuiScreen
         for(int i= 0; i < bullets.length; i++){
             bulletWidth[i] = fontRendererObj.getStringWidth(bullets[i]+" ");
         }
-        disable = new GuiButton(3, 15, 10, 125, 20, StatCollector.translateToLocalFormatted("mud.disable", !ModUpdateDetector.enabled));
-        download = new GuiButton(4, 15, height-35, 125, 20, StatCollector.translateToLocal("button.download.latest"));
+        disable = new GuiButton(3, 15, 10, 125, 20, I18n.format("mud.disable", !ModUpdateDetector.enabled));
+        download = new GuiButton(4, 15, height-35, 125, 20, I18n.format("button.download.latest"));
         download.enabled = false;
-        close1 = new GuiButton(5, width-140, height-35, 125, 20, StatCollector.translateToLocal("gui.done"));
-        ok = new GuiButton(6, (width - 200)/2 + 5, (height - 150)/2+115, 190, 20, StatCollector.translateToLocal("button.ok"));
-        urlButton = new GuiButton(7, (width - 125)/2, height-35, 125, 20, StatCollector.translateToLocal("button.url"));
+        close1 = new GuiButton(5, width-140, height-35, 125, 20, I18n.format("gui.done"));
+        ok = new GuiButton(6, (width - 200)/2 + 5, (height - 150)/2+115, 190, 20, I18n.format("button.ok"));
+        urlButton = new GuiButton(7, (width - 125)/2, height-35, 125, 20, I18n.format("button.url"));
         urlButton.enabled = false;
         ok.visible = isDownloading;
         ok.enabled = downloadComplete || downloadFailed;
@@ -117,7 +117,7 @@ public class GuiChangelogDownload extends GuiScreen
                         isDownloading = false;
                         close1.enabled = true;
                         ModUpdateDetector.toggleState();
-                        disable.displayString = StatCollector.translateToLocalFormatted("mud.disable", !ModUpdateDetector.enabled);
+                        disable.displayString = I18n.format("mud.disable", !ModUpdateDetector.enabled);
                         return;
                     case 4:
                         if(selectedMod.getLatest() != null) {
@@ -200,7 +200,7 @@ public class GuiChangelogDownload extends GuiScreen
             drawRect(x-1,y-1,x+201, y+151, 0xFFFFFFFF);
             drawRect(x,y,x+200, y+150, 0xFF000000);
 
-            drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.downloading"), width/2, y + 15, 0xFFFFFF00);
+            drawCenteredString(fontRendererObj, I18n.format("gui.downloading"), width/2, y + 15, 0xFFFFFF00);
 
             drawRect(x + 24, y + 39, x+176, y+56, 0xFFFFFFFF);
             drawRect(x + 25, y + 40, (x+25 + 150), y+55, 0xFF000000);
@@ -211,11 +211,11 @@ public class GuiChangelogDownload extends GuiScreen
             drawHorizontalLine(x + 25, (int)(x+25 + 150*downloadPercent)-1, y + 54, 0xFF808080);
 
             if(downloadComplete){
-                drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.download.complete"), width/2, y + 70, 0xFF44FF44);
+                drawCenteredString(fontRendererObj, I18n.format("gui.download.complete"), width/2, y + 70, 0xFF44FF44);
             }
 
             if(downloadFailed){
-                drawCenteredString(fontRendererObj, StatCollector.translateToLocal("gui.download.failed"), width/2, y + 70, 0xFFFF0000);
+                drawCenteredString(fontRendererObj, I18n.format("gui.download.failed"), width/2, y + 70, 0xFFFF0000);
             }
 
             if(message != null){
@@ -316,17 +316,17 @@ public class GuiChangelogDownload extends GuiScreen
             urlButton.enabled = selectedMod!=null && selectedMod.getLatest()!=null && selectedMod.getLatest().url!=null;
             if(selectedMod!=null) {
                 if (selectedMod.getChangelogURL() == null) {
-                    changelog = new String[]{StatCollector.translateToLocal("log.message.none")};
+                    changelog = new String[]{I18n.format("log.message.none")};
                 } else {
                     getChangeLogThread = new Thread(new ChangelogLoader(selectedMod.getChangelogURL()));
                     getChangeLogThread.start();
-                    changelog = new String[]{StatCollector.translateToLocal("log.message.loading")};
+                    changelog = new String[]{I18n.format("log.message.loading")};
                 }
 
                 try {
                     if (!selectedMod.isUpToDate()) {
                         download.enabled = true;
-                        download.displayString = StatCollector.translateToLocal("button.download.latest");
+                        download.displayString = I18n.format("button.download.latest");
                     }
                 } catch (Exception ignored) {
 
@@ -364,7 +364,7 @@ public class GuiChangelogDownload extends GuiScreen
                 changelog = lines.toArray(new String[lines.size()]);
             } catch (Throwable e) {
                 e.printStackTrace();
-                changelog = new String[]{StatCollector.translateToLocal("log.message.fail")};
+                changelog = new String[]{I18n.format("log.message.fail")};
             }
         }
     }
@@ -442,12 +442,12 @@ public class GuiChangelogDownload extends GuiScreen
                         if(Arrays.equals(md5, expectedMd5)){
                             downloadComplete = true;
                             ok.enabled = true;
-                            message = StatCollector.translateToLocal("gui.restart");
+                            message = I18n.format("gui.restart");
                         }else{
                             downloadComplete = false;
                             downloadFailed = true;
                             ok.enabled = true;
-                            message = StatCollector.translateToLocal("gui.md5.fail");
+                            message = I18n.format("gui.md5.fail");
                         }
 
                     } catch (Exception e) {
@@ -465,7 +465,7 @@ public class GuiChangelogDownload extends GuiScreen
                 }else{
                     downloadComplete = true;
                     ok.enabled = true;
-                    message = StatCollector.translateToLocal("gui.restart");
+                    message = I18n.format("gui.restart");
                 }
 
                 if(downloadComplete && ModUpdateDetector.deleteOnComplete()){
@@ -478,7 +478,7 @@ public class GuiChangelogDownload extends GuiScreen
 
             } catch (Throwable e) {
                 e.printStackTrace();
-                message = StatCollector.translateToLocal(e.getLocalizedMessage());
+                message = I18n.format(e.getLocalizedMessage());
                 downloadFailed = true;
                 ok.enabled = true;
             }

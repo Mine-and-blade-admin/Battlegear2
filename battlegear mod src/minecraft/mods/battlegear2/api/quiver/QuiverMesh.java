@@ -1,8 +1,10 @@
 package mods.battlegear2.api.quiver;
 
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
+
+import javax.annotation.Nonnull;
 
 /**
  * Created by Olivier on 04/06/2015.
@@ -21,15 +23,16 @@ public final class QuiverMesh implements ItemMeshDefinition {
         empty = emptyQuiverMesh;
     }
 
+    @Nonnull
     @Override
-    public ModelResourceLocation getModelLocation(ItemStack stack) {
+    public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
         ModelResourceLocation emptyQuiver = empty.getModelLocation(stack);
         if(stack.getItem() instanceof IArrowContainer2) {
             IArrowContainer2 quiver = (IArrowContainer2) stack.getItem();
             boolean hasArrows = false;
             int maxStack = quiver.getSlotCount(stack);
             for (int i = 0; i < maxStack && !hasArrows; i++) {
-                hasArrows = quiver.getStackInSlot(stack, i) != null;
+                hasArrows = !quiver.getStackInSlot(stack, i).isEmpty();
             }
             if(hasArrows){
                 String variant = emptyQuiver.getVariant();

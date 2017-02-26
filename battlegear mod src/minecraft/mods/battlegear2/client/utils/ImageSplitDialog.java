@@ -1,6 +1,6 @@
 package mods.battlegear2.client.utils;
 
-import net.minecraft.util.StatCollector;
+import net.minecraft.client.resources.I18n;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -38,7 +38,7 @@ public class ImageSplitDialog extends JDialog {
         contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
         getContentPane().add(contentPanel, BorderLayout.CENTER);
 
-        JLabel lblNewLabel = new JLabel(StatCollector.translateToLocal("gui.splitter.number.x.sections"));
+        JLabel lblNewLabel = new JLabel(I18n.format("gui.splitter.number.x.sections"));
         lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         JPanel panel = new JPanel();
@@ -68,7 +68,7 @@ public class ImageSplitDialog extends JDialog {
         x1slider.setMaximum(4);
         x1slider.setMajorTickSpacing(1);
 
-        JLabel lblNewLabel_1 = new JLabel(StatCollector.translateToLocal("gui.splitter.x.section"));
+        JLabel lblNewLabel_1 = new JLabel(I18n.format("gui.splitter.x.section"));
         lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
 
 
@@ -84,7 +84,7 @@ public class ImageSplitDialog extends JDialog {
         y2slider.setPaintLabels(true);
         y2slider.setOrientation(SwingConstants.VERTICAL);
 
-        JLabel lblYSection = new JLabel(StatCollector.translateToLocal("gui.splitter.y.section"));
+        JLabel lblYSection = new JLabel(I18n.format("gui.splitter.y.section"));
         lblYSection.setHorizontalAlignment(SwingConstants.CENTER);
 
         y1slider = new JSlider();
@@ -98,7 +98,7 @@ public class ImageSplitDialog extends JDialog {
         y1slider.setMaximum(4);
         y1slider.setMajorTickSpacing(1);
 
-        String[] split = StatCollector.translateToLocal("gui.splitter.number.y.sections").split("\\*");
+        String[] split = I18n.format("gui.splitter.number.y.sections").split("\\*");
         JLabel lblNewLabel_2 = new JLabel();
         JLabel lblYSections = new JLabel();
         if(split.length > 1){

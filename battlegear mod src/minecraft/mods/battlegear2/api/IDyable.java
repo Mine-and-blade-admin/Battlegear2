@@ -8,22 +8,20 @@ public interface IDyable {
     /**
      * Return whether the specified ItemStack has a color.
      */
-    public boolean hasColor(ItemStack par1ItemStack);
-
+    boolean hasColor(ItemStack par1ItemStack);
 
     /**
      * Return the color for the specified ItemStack.
      */
-    public int getColor(ItemStack par1ItemStack);
+    int getColor(ItemStack par1ItemStack);
 
-    public void setColor(ItemStack dyable, int rgb);
+    void setColor(ItemStack dyable, int rgb);
 
     /**
      * Remove the color from the specified ItemStack.
      */
-    public void removeColor(ItemStack par1ItemStack);
+    void removeColor(ItemStack par1ItemStack);
 
-    public int getDefaultColor(ItemStack par1ItemStack);
-
+    int getDefaultColor(ItemStack par1ItemStack);
 
 }

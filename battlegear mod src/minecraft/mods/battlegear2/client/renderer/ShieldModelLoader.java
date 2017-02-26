@@ -7,18 +7,13 @@ import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.block.model.BlockPart;
-import net.minecraft.client.renderer.block.model.BlockPartFace;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ModelBlock;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.RenderItemInFrameEvent;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.IRetexturableModel;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -36,7 +31,7 @@ public class ShieldModelLoader extends BaseModelLoader{
     private final static String BACK_EXTENSION = ".back", TRIM_EXTENSION = ".trim";
 
     public ShieldModelLoader(){
-        this(1/16, 0.5F);
+        this(1/16F, 0.5F);
     }
 
     public ShieldModelLoader(float backWidth, float trimWidth){
@@ -46,16 +41,16 @@ public class ShieldModelLoader extends BaseModelLoader{
 
     @SubscribeEvent
     public void onFrame(RenderItemInFrameEvent frameEvent){
-        if(frameEvent.item.getItem() instanceof ItemShield){
+        if(frameEvent.getItem().getItem() instanceof ItemShield){
             GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            if (!Minecraft.getMinecraft().getRenderItem().shouldRenderItemIn3D(frameEvent.item))
+            if (!Minecraft.getMinecraft().getRenderItem().shouldRenderItemIn3D(frameEvent.getItem()))
             {
                 GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
             }
 
             GlStateManager.pushAttrib();
             RenderHelper.enableStandardItemLighting();
-            Minecraft.getMinecraft().getRenderItem().renderItemModelForEntity(frameEvent.item, null, ItemCameraTransforms.TransformType.GUI);
+            Minecraft.getMinecraft().getRenderItem().renderItem(frameEvent.getItem(), ItemCameraTransforms.TransformType.GUI);
             RenderHelper.disableStandardItemLighting();
             GlStateManager.popAttrib();
             frameEvent.setCanceled(true);
@@ -64,7 +59,7 @@ public class ShieldModelLoader extends BaseModelLoader{
 
     @SubscribeEvent
     public void onModelBaked(ModelBakeEvent modelBakeEvent){
-        setLoader(modelBakeEvent.modelLoader);
+        setLoader(modelBakeEvent.getModelLoader());
         for(Item shield : BattlegearConfig.shield) {
             if(shield!=null) {
                 ModelResourceLocation mainLoc = DefaultMesh.INVENTORY.getModelLocation(new ItemStack(shield));
@@ -74,11 +69,9 @@ public class ShieldModelLoader extends BaseModelLoader{
                     ModelBlock internalFrontModel = getInternalModel(originalModel);
                     if (internalFrontModel != null) {
                         ModelBlock front = makeItem(internalFrontModel);
-                        if (front != null) {
-                            IFlexibleBakedModel baked = wrap(join((IRetexturableModel) originalModel, front), mainLoc);
-                            if(baked != null)
-                                modelBakeEvent.modelRegistry.putObject(mainLoc, baked);
-                        }
+                        IBakedModel baked = wrap(join((IRetexturableModel) originalModel, front), itemLoc);
+                        if(baked != null)
+                            modelBakeEvent.getModelRegistry().putObject(mainLoc, baked);
                     }
                 }
             }
@@ -163,6 +156,6 @@ public class ShieldModelLoader extends BaseModelLoader{
             elements.add(part);
         }
 
-        return new ModelBlock(null, elements, ImmutableMap.copyOf(front.textures), false, false, front.func_181682_g());
+        return new ModelBlock(null, elements, ImmutableMap.copyOf(front.textures), front.isAmbientOcclusion(), front.isGui3d(), front.getAllTransforms(), front.getOverrides());
     }
 }

@@ -28,8 +28,8 @@ public enum HelaldyArmourPositions {
 	private float[] sourceYEnd;
 	private boolean[] altColours;
 	
-	private HelaldyArmourPositions(int passess, float[] sourceX, float[] sourceY,
-			float[] sourceXEnd, float[] sourceYEnd, boolean[] altColours) {
+	HelaldyArmourPositions(int passess, float[] sourceX, float[] sourceY,
+                           float[] sourceXEnd, float[] sourceYEnd, boolean[] altColours) {
 		this.passess = passess;
 		this.sourceX = sourceX;
 		this.sourceY = sourceY;

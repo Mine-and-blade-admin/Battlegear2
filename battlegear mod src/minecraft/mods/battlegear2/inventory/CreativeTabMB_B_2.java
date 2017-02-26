@@ -3,12 +3,12 @@ package mods.battlegear2.inventory;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
-import net.minecraft.util.StatCollector;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.List;
+import javax.annotation.Nonnull;
 
 public class CreativeTabMB_B_2 extends CreativeTabs{
 
@@ -18,21 +18,23 @@ public class CreativeTabMB_B_2 extends CreativeTabs{
 	
 	@Override
 	@SideOnly(Side.CLIENT)
+	@Nonnull
     public String getTranslatedTabLabel()
     {
-        return StatCollector.translateToLocal("tab.battle.title");
+        return "tab.battle.title";
     }
 	
 	@Override
     @SideOnly(Side.CLIENT)
-	public Item getTabIconItem() {
-		return BattlegearConfig.findNonNullItemIcon();
+	@Nonnull
+	public ItemStack getTabIconItem() {
+		return new ItemStack(BattlegearConfig.findNonNullItemIcon());
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void displayAllReleventItems(List list){
-        super.displayAllReleventItems(list);
+	public void displayAllRelevantItems(@Nonnull NonNullList<ItemStack> list){
+        super.displayAllRelevantItems(list);
         list.addAll(BaseEnchantment.helper.getEnchantmentBooks());
     }
 }

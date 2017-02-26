@@ -1,9 +1,11 @@
 package mods.battlegear2.api.quiver;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
+
+import javax.annotation.Nonnull;
 
 /**
  * Event triggered when about to swap slot in quiver.
@@ -23,7 +25,7 @@ public class SwapArrowEvent extends PlayerEvent{
      * Step when swapping slots
      */
     public int slotStep = 1;
-    public SwapArrowEvent(EntityPlayer player, ItemStack quiver) {
+    public SwapArrowEvent(EntityPlayer player, @Nonnull ItemStack quiver) {
         super(player);
         quiverStack = quiver;
         selected = ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiverStack);

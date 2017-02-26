@@ -16,11 +16,11 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -131,8 +131,8 @@ public class GuiFlagDesigner extends GuiScreen {
 
         imageBuffer = new int[BUFFER_SIZE][];
         imageBuffer[bufferPointer] = new int[ImageData.IMAGE_RES * ImageData.IMAGE_RES];
-        ItemStack item = player.getHeldItem();
-        if(item != null && item.getItem() instanceof IHeraldryItem){
+        ItemStack item = player.getHeldItemMainhand();
+        if(item.getItem() instanceof IHeraldryItem){
             if(((IHeraldryItem) item.getItem()).hasHeraldry(item)){
                 ImageData image = new ImageData(((IHeraldryItem) item.getItem()).getHeraldry(item));
                 image.setTexture(imageBuffer[bufferPointer]);
@@ -231,10 +231,10 @@ public class GuiFlagDesigner extends GuiScreen {
         y_rpanel_start = y_lpanel_start;
 
 
-        this.buttonList.add(new GuiButton(ID_OK, 6 + x_rpanel_start, y_rpanel_start + y_rpanel_height - 25, 80, 20, StatCollector.translateToLocal("gui.done")));
-        this.buttonList.add(new GuiButton(ID_SAVE, guiLeft + 5, guiTop + 5, 100, 20,StatCollector.translateToLocal("flag.design.save")));
-        this.buttonList.add(new GuiButton(ID_LOAD, guiLeft + 5+100+11, guiTop + 5, 100, 20, StatCollector.translateToLocal("flag.design.load")));
-        this.buttonList.add(new GuiButton(ID_LOAD_SECTION, guiLeft + 5+200+22, guiTop + 5, 100, 20, StatCollector.translateToLocal("flag.design.load.sections")));
+        this.buttonList.add(new GuiButton(ID_OK, 6 + x_rpanel_start, y_rpanel_start + y_rpanel_height - 25, 80, 20, I18n.format("gui.done")));
+        this.buttonList.add(new GuiButton(ID_SAVE, guiLeft + 5, guiTop + 5, 100, 20,I18n.format("flag.design.save")));
+        this.buttonList.add(new GuiButton(ID_LOAD, guiLeft + 5+100+11, guiTop + 5, 100, 20, I18n.format("flag.design.load")));
+        this.buttonList.add(new GuiButton(ID_LOAD_SECTION, guiLeft + 5+200+22, guiTop + 5, 100, 20, I18n.format("flag.design.load.sections")));
         colourPicker = new GuiColourPicker(ID_COLOUR_PICKER, x_rpanel_start+6, y_rpanel_start+5, 0xFF000000, 7);
         colourPicker.addListener(new IControlListener() {
             @Override
@@ -264,7 +264,7 @@ public class GuiFlagDesigner extends GuiScreen {
         cursors[0] = Mouse.getNativeCursor();
 
         for(int i = 0; i < toggleButtons.length; i++){
-            toggleButtons[i] = new GuiToggeableButton(10+ i, x_lpanel_start+5, y_lpanel_start +i*26 + 5, 20, 20, StatCollector.translateToLocal(tools[i].getToolName()), i==0, tools[i].getToolImage());
+            toggleButtons[i] = new GuiToggeableButton(10+ i, x_lpanel_start+5, y_lpanel_start +i*26 + 5, 20, 20, I18n.format(tools[i].getToolName()), i==0, tools[i].getToolImage());
             this.buttonList.add(toggleButtons[i]);
 
             try{
@@ -280,7 +280,7 @@ public class GuiFlagDesigner extends GuiScreen {
 
         selectedTool = tools[0];
 
-        slider = new GuiSliderAlt(SLIDER, guiLeft, guiTop+25+5*22, 80, StatCollector.translateToLocal("gui.threshold"), 0, 0 , 64);
+        slider = new GuiSliderAlt(SLIDER, guiLeft, guiTop+25+5*22, 80, I18n.format("gui.threshold"), 0, 0 , 64);
 
         //this.buttonList.add(slider);
 
@@ -472,8 +472,8 @@ public class GuiFlagDesigner extends GuiScreen {
 
         switch (par1GuiButton.id){
             case ID_OK:
-                ItemStack stack = player.getCurrentEquippedItem();
-                if(stack != null && stack.getItem() instanceof IHeraldryItem){
+                ItemStack stack = player.getHeldItemMainhand();
+                if(stack.getItem() instanceof IHeraldryItem){
                     ((IHeraldryItem) stack.getItem()).setHeraldry(stack, new ImageData(imageBuffer[bufferPointer], ImageData.IMAGE_RES, ImageData.IMAGE_RES).getByteArray());
                     Battlegear.packetHandler.sendPacketToServer(new BattlegearChangeHeraldryPacket(((IHeraldryItem) stack.getItem()).getHeraldry(stack)).generatePacket());
                     this.keyTyped('c',1);
@@ -559,11 +559,11 @@ public class GuiFlagDesigner extends GuiScreen {
     public void drawTexturedModalRect(int x, int y, int width, int height, int tex_x, int tex_y, int tex_width, int tex_height)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        tessellator.getWorldRenderer().pos((double) (x + 0), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + 0)), (double) ((float) (tex_y + tex_height))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + 0))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + 0), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (tex_x + 0)), (double) ((float) (tex_y + 0))).endVertex();
+        tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        tessellator.getBuffer().pos((double) (x + 0), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + 0)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getBuffer().pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getBuffer().pos((double) (x + width), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + 0))).endVertex();
+        tessellator.getBuffer().pos((double) (x + 0), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (tex_x + 0)), (double) ((float) (tex_y + 0))).endVertex();
         tessellator.draw();
     }
 

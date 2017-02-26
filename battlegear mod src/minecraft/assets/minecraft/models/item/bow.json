@@ -1,0 +1,253 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "items/bow_standby"
+    },
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [ -80, 260, -40 ],
+            "translation": [ -1, -2, 2.5 ],
+            "scale": [ 0.9, 0.9, 0.9 ]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [ -80, -280, 40 ],
+            "translation": [ -1, -2, 2.5 ],
+            "scale": [ 0.9, 0.9, 0.9 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, -90, 25 ],
+            "translation": [ 1.13, 3.2, 1.13],
+            "scale": [ 0.68, 0.68, 0.68 ]
+        },
+        "firstperson_lefthand": {
+            "rotation": [ 0, 90, -25 ],
+            "translation": [ 1.13, 3.2, 1.13],
+            "scale": [ 0.68, 0.68, 0.68 ]
+        }
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "pulling": 1
+            },
+            "model": "battlegear2:item/bow_arrow_pulling_0"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.65
+            },
+            "model": "battlegear2:item/bow_arrow_pulling_1"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.9
+            },
+            "model": "battlegear2:item/bow_arrow_pulling_2"
+        },
+		{
+            "predicate": {
+				"use_mb.arrow.ender": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.ender"
+        },
+		{
+            "predicate": {
+                "pulling": 1,
+				"use_mb.arrow.ender": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.ender_pulling_0"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.65,
+				"use_mb.arrow.ender": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.ender_pulling_1"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.9,
+				"use_mb.arrow.ender": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.ender_pulling_2"
+        },
+		{
+            "predicate": {
+				"use_mb.arrow.explosive": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.explosive"
+        },
+		{
+            "predicate": {
+                "pulling": 1,
+				"use_mb.arrow.explosive": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.explosive_pulling_0"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.65,
+				"use_mb.arrow.explosive": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.explosive_pulling_1"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.9,
+				"use_mb.arrow.explosive": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.explosive_pulling_2"
+        },
+		{
+            "predicate": {
+				"use_mb.arrow.flame": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.flame"
+        },
+		{
+            "predicate": {
+                "pulling": 1,
+				"use_mb.arrow.flame": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.flame_pulling_0"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.65,
+				"use_mb.arrow.flame": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.flame_pulling_1"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.9,
+				"use_mb.arrow.flame": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.flame_pulling_2"
+        },
+		{
+            "predicate": {
+				"use_mb.arrow.leech": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.leech"
+        },
+		{
+            "predicate": {
+                "pulling": 1,
+				"use_mb.arrow.leech": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.leech_pulling_0"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.65,
+				"use_mb.arrow.leech": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.leech_pulling_1"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.9,
+				"use_mb.arrow.leech": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.leech_pulling_2"
+        },
+		{
+            "predicate": {
+				"use_mb.arrow.mystery": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.mystery"
+        },
+		{
+            "predicate": {
+                "pulling": 1,
+				"use_mb.arrow.mystery": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.mystery_pulling_0"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.65,
+				"use_mb.arrow.mystery": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.mystery_pulling_1"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.9,
+				"use_mb.arrow.mystery": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.mystery_pulling_2"
+        },
+		{
+            "predicate": {
+				"use_mb.arrow.piercing": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.piercing"
+        },
+		{
+            "predicate": {
+                "pulling": 1,
+				"use_mb.arrow.piercing": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.piercing_pulling_0"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.65,
+				"use_mb.arrow.piercing": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.piercing_pulling_1"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.9,
+				"use_mb.arrow.piercing": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.piercing_pulling_2"
+        },
+		{
+            "predicate": {
+				"use_mb.arrow.poison": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.poison"
+        },
+		{
+            "predicate": {
+                "pulling": 1,
+				"use_mb.arrow.poison": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.poison_pulling_0"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.65,
+				"use_mb.arrow.poison": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.poison_pulling_1"
+        },
+        {
+            "predicate": {
+                "pulling": 1,
+                "pull": 0.9,
+				"use_mb.arrow.poison": 1
+            },
+            "model": "battlegear2:item/bow_mb.arrow.poison_pulling_2"
+        }
+    ]
+}

@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -23,17 +24,20 @@ public final class BattlegearClientUtils {
      * @return the new value for isItemInUse field
      */
     public static boolean entityOtherPlayerIsItemInUseHook(EntityOtherPlayerMP player, boolean isItemInUse){
-        ItemStack itemStack = player.getCurrentEquippedItem();
+        EnumHand hand = EnumHand.MAIN_HAND;
+        ItemStack itemStack = player.getHeldItem(hand);
         if(BattlegearUtils.isPlayerInBattlemode(player)){
             ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
-            if(offhand!=null && BattlegearUtils.usagePriorAttack(offhand, player, true))
+            if(!offhand.isEmpty() && BattlegearUtils.usagePriorAttack(offhand, player, true)) {
                 itemStack = offhand;
+                hand = EnumHand.OFF_HAND;
+            }
         }
-        if (!isItemInUse && player.isEating() && itemStack != null){
-            player.setItemInUse(itemStack, itemStack.getMaxItemUseDuration());
+        if (!isItemInUse && player.isHandActive() && !itemStack.isEmpty()){
+            player.setActiveHand(hand);
             return true;
-        }else if (isItemInUse && !player.isEating()){
-            player.clearItemInUse();
+        }else if (isItemInUse && !player.isHandActive()){
+            player.resetActiveHand();
             return false;
         }else{
             return isItemInUse;
@@ -58,15 +62,15 @@ public final class BattlegearClientUtils {
             } else {
                 if(preRender.element.getItem() instanceof IArrowContainer2 && ((IArrowContainer2) preRender.element.getItem()).renderDefaultQuiverModel(preRender.element)) {
                     if (BattlegearConfig.hasRender("quiver")) {
-                        ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(preRender.entityPlayer);
+                        ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(preRender.getEntityPlayer());
                         if (preRender.element == quiverStack) {
                             preRender.setCanceled(true);
                             return;
                         }
                     }
                 }
-                ItemStack inUse = preRender.entityPlayer.getItemInUse();
-                if(preRender.element != inUse && inUse != null && BattlegearUtils.isBow(inUse.getItem())) {
+                ItemStack inUse = preRender.getEntityPlayer().getActiveItemStack();
+                if(preRender.element != inUse && !inUse.isEmpty() && BattlegearUtils.isBow(inUse.getItem())) {
                     preRender.setCanceled(true);
                 }
             }

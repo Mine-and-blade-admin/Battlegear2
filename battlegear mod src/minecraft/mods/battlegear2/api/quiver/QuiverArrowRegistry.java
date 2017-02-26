@@ -9,9 +9,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 
 public class QuiverArrowRegistry {
@@ -68,9 +70,9 @@ public class QuiverArrowRegistry {
      */
     public static void addArrowToRegistry(ItemStack stack, Class<? extends EntityArrow> entityArrow){
         ItemStack st = stack.copy();
-        st.stackSize = 1;
+        st.setCount(1);
         stackToClasses.put(st, entityArrow);
-        if(entityArrow!=null)
+        if(entityArrow != null)
             classToStacks.put(entityArrow, st);
     }
 
@@ -95,40 +97,42 @@ public class QuiverArrowRegistry {
      * @return true if it could be added
      */
     public static boolean addArrowFireHandler(IArrowFireHandler handler){
-        return handler!=null && fireHandlers.add(handler);
+        return handler != null && fireHandlers.add(handler);
     }
 
     /**
      * Search for an ItemStack whose item is an {@link IArrowContainer2}, to be used either by a compatible mainhand bow or offhand bow
      * @param entityPlayer the player being searched for an arrow container
-     * @return the first non-null itemstack found through the quiver selection algorithms
+     * @return the first non-empty itemstack found through the quiver selection algorithms
      */
+    @Nonnull
     public static ItemStack getArrowContainer(EntityPlayer entityPlayer) {
-        ItemStack bow = entityPlayer.getCurrentEquippedItem();
-        if(bow!=null){
+        ItemStack bow = entityPlayer.getHeldItemMainhand();
+        if(!bow.isEmpty()){
             ItemStack temp = getArrowContainer(bow, entityPlayer);
-            if(temp!=null)
+            if(!temp.isEmpty())
                 return temp;
         }
-        bow = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
-        return bow!=null ? getArrowContainer(bow, entityPlayer) : null;
+        bow = entityPlayer.getHeldItemOffhand();
+        return bow.isEmpty() ? ItemStack.EMPTY : getArrowContainer(bow, entityPlayer);
     }
 
     /**
      * Search for an ItemStack whose item is an {@link IArrowContainer2}
-     * @param bow the "bow" in use, not necessarily a {@link ItemBow}
+     * @param bow the "bow" in use, not necessarily a {@link net.minecraft.item.ItemBow}
      * @param entityPlayer the player using it
-     * @return the first non-null itemstack found through the quiver selection algorithms
+     * @return the first non-empty itemstack found through the quiver selection algorithms
      */
+    @Nonnull
     public static ItemStack getArrowContainer(ItemStack bow, EntityPlayer entityPlayer) {
         ItemStack temp;
         for(IQuiverSelection handler:quiverSelectors){
             temp = handler.getQuiverFor(bow, entityPlayer);
-            if(temp!=null){
+            if(!temp.isEmpty()){
                 return temp;
             }
         }
-        return null;
+        return ItemStack.EMPTY;
     }
 
     /**
@@ -155,16 +159,16 @@ public class QuiverArrowRegistry {
 
     //Get first available special bow
     private static ItemStack getSpecialBow(EntityPlayer player){
-        ItemStack bow = player.getHeldItem();
-        if (bow != null && bow.getItem() instanceof ISpecialBow) {
+        ItemStack bow = player.getHeldItemMainhand();
+        if (bow.getItem() instanceof ISpecialBow) {
             return bow;
         }
-        return ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+        return player.getHeldItemOffhand();
     }
 
     //Allows customization of fire handler list for custom bows
     public static List<IArrowFireHandler> getFireHandlers(ItemStack bow, ItemStack arrow, EntityPlayer player){
-        if (bow != null && bow.getItem() instanceof ISpecialBow) {
+        if (bow.getItem() instanceof ISpecialBow) {
             List<IArrowFireHandler> handlers = ((ISpecialBow) bow.getItem()).getFireHandlers(arrow, bow, player);
             if (handlers != null) {
                 return handlers;
@@ -191,7 +195,7 @@ public class QuiverArrowRegistry {
     public static ItemStack getItem(Class<? extends EntityArrow> clazz){
     	ItemStack temp = classToStacks.get(clazz);
         if(temp == null){
-			return new ItemStack(Items.arrow);
+			return new ItemStack(Items.ARROW);
 		}else{
 			return temp.copy();
 		}
@@ -292,12 +296,25 @@ public class QuiverArrowRegistry {
             Class<? extends EntityArrow> clazz = getArrowClass(arrow);
             if(clazz != null){
                 try {
-                    return clazz.getConstructor(World.class, EntityLivingBase.class, Float.TYPE)
-                            .newInstance(player.worldObj, player, charge);
+                    return clazz.getConstructor(World.class, EntityLivingBase.class)
+                            .newInstance(world, player);
                 } catch (Exception ignored) {
                 }
             }
             return null;
+        }
+    }
+
+    public static class ClassicArrowFire implements IArrowFireHandler {
+
+        @Override
+        public boolean canFireArrow(ItemStack arrow, World world, EntityPlayer player, float charge) {
+            return arrow.getItem() instanceof ItemArrow;
+        }
+
+        @Override
+        public EntityArrow getFiredArrow(ItemStack arrow, World world, EntityPlayer player, float charge) {
+            return ((ItemArrow)arrow.getItem()).createArrow(world, arrow, player);
         }
     }
 }

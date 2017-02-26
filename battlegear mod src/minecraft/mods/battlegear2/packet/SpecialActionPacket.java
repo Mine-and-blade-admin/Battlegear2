@@ -13,6 +13,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
@@ -27,11 +28,11 @@ public final class SpecialActionPacket extends AbstractMBPacket{
     @Override
     public void process(ByteBuf inputStream, EntityPlayer player) {
         try {
-            this.player = player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
+            this.player = player.world.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
             if (inputStream.readBoolean()) {
-                entityHit = player.worldObj.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
+                entityHit = player.world.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
             } else {
-                entityHit = player.worldObj.getEntityByID(inputStream.readInt());
+                entityHit = player.world.getEntityByID(inputStream.readInt());
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -57,10 +58,10 @@ public final class SpecialActionPacket extends AbstractMBPacket{
                         float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage, offhand) * 2F;
                         if (dam > 0) {
                             entityHit.attackEntityFrom(DamageSource.causeThornsDamage(this.player), dam);
-                            entityHit.playSound("damage.thorns", 0.5F, 1.0F);
+                            entityHit.playSound(SoundEvents.ENCHANT_THORNS_HIT, 0.5F, 1.0F);
                         }
                     }
-                    if (!this.player.worldObj.isRemote && entityHit instanceof EntityPlayerMP) {
+                    if (!this.player.world.isRemote && entityHit instanceof EntityPlayerMP) {
                         Battlegear.packetHandler.sendPacketToPlayer(this.generatePacket(), (EntityPlayerMP) entityHit);
                     }
                 }

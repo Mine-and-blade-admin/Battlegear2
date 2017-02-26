@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import mods.battlegear2.api.weapons.WeaponRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -15,12 +16,11 @@ public class TwoHandedWeapon extends ItemWeapon{
 	}
 
 	/**
-	 * Breaks the symmetry of wielding by returning false
-	 * (Make this item instance right-hand only)
+	 * Make this item instance right-hand only
 	 */
 	@Override
-	public boolean isOffhandWieldable(ItemStack off, EntityPlayer player) {
-		return false;
+	public WeaponRegistry.Wield getWieldStyle(ItemStack itemStack, EntityPlayer player) {
+		return WeaponRegistry.Wield.RIGHT;
 	}
 
 	@Override

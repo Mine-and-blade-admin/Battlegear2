@@ -10,6 +10,7 @@ import net.minecraft.item.ItemDye;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,8 @@ public class GuiColourPicker extends GuiButton {
         pixels[2] = 0xFF999999;
 
         pixels = default_colours.getTextureData();
-        for(int i = 0; i < ItemDye.dyeColors.length; i++){
-            pixels[i] = ItemDye.dyeColors[i] | 0xFF000000;
+        for(int i = 0; i < ItemDye.DYE_COLORS.length; i++){
+            pixels[i] = ItemDye.DYE_COLORS[i] | 0xFF000000;
         }
     }
 
@@ -165,7 +166,7 @@ public class GuiColourPicker extends GuiButton {
 
         if(isSwitchOn(DEFAULT_COLOURS)){
             if(x >= xPosition && x < 48+xPosition && y >= yPosition && y < 12+yPosition){
-                selectColour(ItemDye.dyeColors[((x - xPosition) / 6) + (((y - yPosition) / 6) * 8)] | 0xFF000000);
+                selectColour(ItemDye.DYE_COLORS[((x - xPosition) / 6) + (((y - yPosition) / 6) * 8)] | 0xFF000000);
                 return true;
             }
         }
@@ -175,7 +176,7 @@ public class GuiColourPicker extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouse_x, int mouse_y) {
+    public void drawButton(@Nonnull Minecraft mc, int mouse_x, int mouse_y) {
         //super.drawButton(mc, mouse_x, mouse_y);
 
     	if(visible){
@@ -297,11 +298,11 @@ public class GuiColourPicker extends GuiButton {
     public void drawTexturedModalRect(int x, int y, int width, int height, int tex_x, int tex_y, int tex_width, int tex_height)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        tessellator.getWorldRenderer().pos((double) (x), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y + tex_height))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y))).endVertex();
+        tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        tessellator.getBuffer().pos((double) (x), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getBuffer().pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getBuffer().pos((double) (x + width), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y))).endVertex();
+        tessellator.getBuffer().pos((double) (x), (double) (y), (double) this.zLevel).tex((double) ((float) (tex_x)), (double) ((float) (tex_y))).endVertex();
         tessellator.draw();
     }
 
@@ -330,11 +331,11 @@ public class GuiColourPicker extends GuiButton {
         float f3 = (float)(colour & 255) / 255.0F;
         Tessellator tessellator = Tessellator.getInstance();
         GlStateManager.color(f1, f2, f3, f);
-        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
-        tessellator.getWorldRenderer().pos((double) x1, (double) y2, 0).endVertex();
-        tessellator.getWorldRenderer().pos((double) x2, (double) y2, 0).endVertex();
-        tessellator.getWorldRenderer().pos((double) x2, (double) y1, 0).endVertex();
-        tessellator.getWorldRenderer().pos((double) x1, (double) y1, 0).endVertex();
+        tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        tessellator.getBuffer().pos((double) x1, (double) y2, 0).endVertex();
+        tessellator.getBuffer().pos((double) x2, (double) y2, 0).endVertex();
+        tessellator.getBuffer().pos((double) x2, (double) y1, 0).endVertex();
+        tessellator.getBuffer().pos((double) x1, (double) y1, 0).endVertex();
         tessellator.draw();
     }
 

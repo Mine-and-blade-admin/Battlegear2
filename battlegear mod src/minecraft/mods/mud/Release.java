@@ -52,14 +52,14 @@ public class Release implements Comparable<Release>{
     }
 
 
-    public static enum EnumReleaseType{
+    public enum EnumReleaseType{
         Normal(1),
         Beta(2),
         Dev(3);
 
         public int level;
 
-        private EnumReleaseType(int level){
+        EnumReleaseType(int level){
             this.level = level;
         }
     }

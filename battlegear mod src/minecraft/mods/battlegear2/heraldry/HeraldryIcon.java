@@ -31,7 +31,7 @@ public enum HeraldryIcon {
 	;
 	private String name;
 	
-	private HeraldryIcon(String name){
+	HeraldryIcon(String name){
 		this.name = name;
 	}
 	

@@ -5,9 +5,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
 public final class QuiverRecipe implements IRecipe {
 
     @Override
-    public boolean matches(InventoryCrafting inventorycrafting, World world) {
+    public boolean matches(@Nonnull InventoryCrafting inventorycrafting,@Nonnull World world) {
         int slot = getNextQuiver(inventorycrafting, 0);
         if(slot == -1 || getNextQuiver(inventorycrafting, slot + 1) != -1){
             return false;
@@ -29,7 +31,7 @@ public final class QuiverRecipe implements IRecipe {
             if(slot == i)
                 continue;
             ItemStack stack = inventorycrafting.getStackInSlot(i);
-            if(stack!=null && !((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack))
+            if(!stack.isEmpty() && !((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack))
             {
                 return false;
             }
@@ -41,25 +43,26 @@ public final class QuiverRecipe implements IRecipe {
     private int getNextQuiver(InventoryCrafting inventorycrafting, int min){
         for(int i = min; i < inventorycrafting.getSizeInventory(); i++) {
             ItemStack stack = inventorycrafting.getStackInSlot(i);
-            if (stack != null && stack.getItem() instanceof IArrowContainer2) {
+            if (!stack.isEmpty() && stack.getItem() instanceof IArrowContainer2) {
                 return i;
             }
         }
         return -1;
     }
 
+    @Nonnull
     @Override
-    public ItemStack getCraftingResult(InventoryCrafting inventorycrafting) {
+    public ItemStack getCraftingResult(@Nonnull InventoryCrafting inventorycrafting) {
         int slot = getNextQuiver(inventorycrafting, 0);
         if(slot == -1){
-            return null;
+            return ItemStack.EMPTY;
         }
         ItemStack quiver = inventorycrafting.getStackInSlot(slot).copy();
         for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
             if(slot == i)
                 continue;
             ItemStack stack = inventorycrafting.getStackInSlot(i);
-            if(stack!=null)
+            if(!stack.isEmpty())
             {
                 if(((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack))
                 {
@@ -75,16 +78,18 @@ public final class QuiverRecipe implements IRecipe {
         return 10;
     }
 
+    @Nonnull
     @Override
     public ItemStack getRecipeOutput() {
-        return null;
+        return ItemStack.EMPTY;
     }
 
+    @Nonnull
     @Override
-    public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+    public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv) {
         int slot = getNextQuiver(inv, 0);
         if(slot == -1){
-            return new ItemStack[0];
+            return NonNullList.withSize(0, ItemStack.EMPTY);
         }
         ItemStack quiver = inv.getStackInSlot(slot).copy();
         List<ItemStack> arrows = new ArrayList<ItemStack>();
@@ -93,7 +98,7 @@ public final class QuiverRecipe implements IRecipe {
             if(slot == i)
                 continue;
             ItemStack stack = inv.getStackInSlot(i);
-            if(stack != null){
+            if(!stack.isEmpty()){
                 if(((IArrowContainer2)quiver.getItem()).isCraftableWithArrows(quiver, stack)){
                     arrows.add(stack);
                 }
@@ -108,25 +113,25 @@ public final class QuiverRecipe implements IRecipe {
             while(itr.hasNext()) {
                 ItemStack temp = itr.next();
                 ItemStack drop = ((IArrowContainer2)quiver.getItem()).addArrows(quiver, temp);
-                if(drop != null && drop.stackSize > 0) {
+                if(!drop.isEmpty()) {
                     temp = drop.copy();
                     if(!player.inventory.addItemStackToInventory(temp)){
-                        player.dropPlayerItemWithRandomChoice(temp, false);
+                        player.dropItem(temp, false);
                     }
                 }
                 itr.remove();
             }
             for(int index = 0; index < i; index++){
-                inv.setInventorySlotContents(index, null);
+                inv.setInventorySlotContents(index, ItemStack.EMPTY);
             }
             for(;i < inv.getSizeInventory(); i++){
                 ItemStack stack = inv.getStackInSlot(i);
-                if(stack != null){
-                    stack.stackSize++;
+                if(!stack.isEmpty()){
+                    stack.grow(1);
                 }
             }
         }
-        return new ItemStack[i];
+        return NonNullList.withSize(i, ItemStack.EMPTY);
     }
 
 }
