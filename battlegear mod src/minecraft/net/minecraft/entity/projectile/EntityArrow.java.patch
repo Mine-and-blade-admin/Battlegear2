@@ -4,17 +4,17 @@
  
  public class EntityArrow extends Entity implements IProjectile
  {
--    private int field_145791_d = -1;
--    private int field_145792_e = -1;
--    private int field_145789_f = -1;
+-    private int xTile = -1;
+-    private int yTile = -1;
+-    private int zTile = -1;
 +    /*
 +    * Mine and blade edits, I am editing the access to the tile fields for the "arrow API"
 +    * changing access to xTile, yTile, zTile & ticksInGround
 +     */
-+    public int field_145791_d = -1;
-+    public int field_145792_e = -1;
-+    public int field_145789_f = -1;
-     private Block field_145790_g;
++    public int xTile = -1;
++    public int yTile = -1;
++    public int zTile = -1;
+     private Block inTile;
      private int inData;
      private boolean inGround;
 @@ -39,7 +43,7 @@

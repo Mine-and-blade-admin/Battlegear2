@@ -14,7 +14,7 @@ public class EquipGearTab extends AbstractTab {
 
 	@Override
 	public void onTabClicked() {
-		BattleEquipGUI.open(Minecraft.getMinecraft().thePlayer);
+		BattleEquipGUI.open(Minecraft.getMinecraft().player);
 	}
 
 	@Override

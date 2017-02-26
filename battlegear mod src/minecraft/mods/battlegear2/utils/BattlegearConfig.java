@@ -24,6 +24,7 @@ import net.minecraft.item.Item.ToolMaterial;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.common.util.Constants;
@@ -46,13 +47,12 @@ public class BattlegearConfig {
 	public static boolean enableGUIKeys = false, enableGuiButtons = true, forceHUD = false;
 	public static final String[] itemNames = {"heraldric","chain","quiver","dagger","waraxe","mace","spear","shield","knight.armour", "mb.arrow", "flagpole"};
     public static final String[] renderNames = {"shield", "bow", "quiver", "flagpole"};
-    public static final String[] armourTypes = {"helmet", "plate", "legs", "boots"};
     public static final String[] enchantsName = {"BashWeight", "BashPower", "BashDamage", "ShieldUsage", "ShieldRecovery", "BowLoot", "BowCharge"};
     public static ItemWeapon[] dagger = new ItemWeapon[5], warAxe = new ItemWeapon[5], mace = new ItemWeapon[5], spear = new ItemWeapon[5];
     public static ItemShield[] shield = new ItemShield[5];
     public static Item chain,quiver,heradricItem,MbArrows;
 	public static BlockFlagPole banner;
-	public static ItemArmor[] knightArmor=new ItemArmor[armourTypes.length];
+	public static ItemArmor[] knightArmor=new ItemArmor[4];
     private static String[] comments = new String[4];
 	private static String[] disabledItems = new String[0];
     private static String[] disabledRecipies = new String[0];
@@ -63,8 +63,8 @@ public class BattlegearConfig {
 	public static void getConfig(Configuration config) {
         file = config;
 
-        enableGUIKeys=config.get(config.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
-        enableGuiButtons=config.get(config.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
+        enableGUIKeys=config.get(Configuration.CATEGORY_GENERAL, "Enable GUI Keys", enableGUIKeys).getBoolean();
+        enableGuiButtons=config.get(Configuration.CATEGORY_GENERAL, "Enable GUI Buttons", enableGuiButtons).getBoolean();
         updateRate=config.getInt("Update packet rate", "Server", updateRate, 1, 20000, "How often packets are sent over the network to update the battle inventory slots. Lower for faster updates, but more packets to deal for each client.");
         config.get("Coremod", "ASM debug Mode", false, "Only use for advanced bug reporting when asked by a dev.").setRequiresMcRestart(true);
 
@@ -118,8 +118,8 @@ public class BattlegearConfig {
             }
         }
         comments[0] = sb.toString();
-        disabledItems = config.get(config.CATEGORY_GENERAL, "Disabled Items", new String[0], comments[0]).setRequiresMcRestart(true).getStringList();
-        WeaponHookContainerClass.INSTANCE.doBlocking = config.getBoolean("Let Items Block", config.CATEGORY_GENERAL, false, "Set to true to let items with block animation do their thing. Note blocking will be removed by Mojang in 1.9 anyway.");
+        disabledItems = config.get(Configuration.CATEGORY_GENERAL, "Disabled Items", new String[0], comments[0]).setRequiresMcRestart(true).getStringList();
+        WeaponHookContainerClass.INSTANCE.doBlocking = config.getBoolean("Let Items Block", Configuration.CATEGORY_GENERAL, false, "Set to true to let items with block animation do their thing. Note blocking will be removed by Mojang in 1.9 anyway.");
         if(Arrays.deepEquals(disabledItems, itemNames)){
             return;//No point in going further if all items are disabled
         }
@@ -131,8 +131,9 @@ public class BattlegearConfig {
         }
 
         if(Arrays.binarySearch(disabledItems, itemNames[10]) < 0){
-            banner = (BlockFlagPole) new BlockFlagPole().setCreativeTab(customTab).setUnlocalizedName(MODID + itemNames[10]);
-            GameRegistry.registerBlock(banner, ItemBlockFlagPole.class, itemNames[10]);
+            banner = (BlockFlagPole) new BlockFlagPole().setCreativeTab(customTab).setUnlocalizedName(MODID + itemNames[10]).setRegistryName(new ResourceLocation(MODID+itemNames[10]));
+            GameRegistry.register(banner);
+            GameRegistry.register(new ItemBlockFlagPole(banner).setRegistryName(banner.getRegistryName()));
             GameRegistry.registerTileEntity(TileEntityFlagPole.class, MODID+itemNames[10]);
         }
 
@@ -142,14 +143,14 @@ public class BattlegearConfig {
         
         if(Arrays.binarySearch(disabledItems, itemNames[2]) < 0){
             quiver = new ItemQuiver().setUnlocalizedName(MODID + itemNames[2]).setCreativeTab(customTab);
-            BlockDispenser.dispenseBehaviorRegistry.putObject(quiver, new DispenseQuiverArrow(Items.bow, 1.0F));
+            BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(quiver, new DispenseQuiverArrow(Items.BOW, 1.0F));
         }
         if(Arrays.binarySearch(disabledItems, itemNames[9]) < 0){
-            MbArrows = new ItemMBArrow().setUnlocalizedName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.arrow);
+            MbArrows = new ItemMBArrow().setUnlocalizedName(MODID + itemNames[9]).setCreativeTab(customTab).setContainerItem(Items.ARROW);
             for(int i = 0; i < ItemMBArrow.arrows.length; i++){
                 QuiverArrowRegistry.addArrowToRegistry(MbArrows, i, ItemMBArrow.arrows[i]);
             }
-            BlockDispenser.dispenseBehaviorRegistry.putObject(MbArrows, ItemMBArrow.dispensable);
+            BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.putObject(MbArrows, ItemMBArrow.dispensable);
         }
         
         sb = new StringBuffer();
@@ -180,7 +181,7 @@ public class BattlegearConfig {
         }
         sb.append("chain.armour");
         comments[1] = sb.toString();
-        disabledRecipies = config.get(config.CATEGORY_GENERAL, "Disabled Recipies", new String[0], comments[1]).setRequiresMcRestart(true).getStringList();
+        disabledRecipies = config.get(Configuration.CATEGORY_GENERAL, "Disabled Recipies", new String[0], comments[1]).setRequiresMcRestart(true).getStringList();
         Arrays.sort(disabledRecipies);
 
         ShieldType[] types = {ShieldType.WOOD, ShieldType.HIDE, ShieldType.IRON, ShieldType.DIAMOND, ShieldType.GOLD};
@@ -212,7 +213,8 @@ public class BattlegearConfig {
                 if(Item.class.isAssignableFrom(f.getType())){
                     Item it = (Item)f.get(null);
                     if(it!=null){
-                        GameRegistry.registerItem(it, it.getUnlocalizedName().replace("item.", "").replace(MODID, "").trim());
+                        it.setRegistryName(new ResourceLocation(it.getUnlocalizedName().replace("item.", "")));
+                        GameRegistry.register(it);
                     }
                 }
             }
@@ -241,13 +243,13 @@ public class BattlegearConfig {
                 ));
 	        if(hasRecipe("chain.armour")){
                 //Chain armor recipes
-	            GameRegistry.addRecipe(new ItemStack(Items.chainmail_helmet),
+	            GameRegistry.addRecipe(new ItemStack(Items.CHAINMAIL_HELMET),
 	                    "LLL","L L",'L',chain);
-	            GameRegistry.addRecipe(new ItemStack(Items.chainmail_chestplate),
+	            GameRegistry.addRecipe(new ItemStack(Items.CHAINMAIL_CHESTPLATE),
 	                    "L L","LLL","LLL",'L',chain);
-	            GameRegistry.addRecipe(new ItemStack(Items.chainmail_leggings),
+	            GameRegistry.addRecipe(new ItemStack(Items.CHAINMAIL_LEGGINGS),
 	                    "LLL","L L","L L",'L',chain);
-	            GameRegistry.addRecipe(new ItemStack(Items.chainmail_boots),
+	            GameRegistry.addRecipe(new ItemStack(Items.CHAINMAIL_BOOTS),
 	                    "L L","L L",'L',chain);
 	        }
 		}
@@ -256,7 +258,7 @@ public class BattlegearConfig {
 	        //Quiver recipes :
 	        if(hasRecipe(itemNames[2]))
 	            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(quiver),
-	                "X X", "X X","XXX",'X', Items.leather));
+	                "X X", "X X","XXX",'X', Items.LEATHER));
 		}
 
         RecipeSorter.register("battlegear:quiverfilling", QuiverRecipe.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
@@ -302,7 +304,7 @@ public class BattlegearConfig {
             //Hide Shield
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[1]), " H ","HWH", " H ",
                             'W', woodStack,
-                            'H', Items.leather));
+                            'H', Items.LEATHER));
             //Iron Shield
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(shield[2]), "I I","IWI", " I ",
                             'W', woodStack,
@@ -321,8 +323,8 @@ public class BattlegearConfig {
 
         if(Arrays.binarySearch(disabledItems, itemNames[8]) < 0 && hasRecipe(itemNames[8])) {
             RecipeSorter.register("battlegear:knightarmor", KnightArmourRecipie.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
-            for (int i = 0; i < 4; i++) {
-                GameRegistry.addRecipe(new KnightArmourRecipie(i));
+            for (int i = 0; i < knightArmor.length; i++) {
+                GameRegistry.addRecipe(new KnightArmourRecipie(knightArmor[i]));
             }
         }
 
@@ -331,7 +333,7 @@ public class BattlegearConfig {
 		        if(hasRecipe(itemNames[9]+"."+ItemMBArrow.names[i])){
 		            GameRegistry.addRecipe(new ItemStack(MbArrows, 1, i), "G","A",
 		                            'G', ItemMBArrow.component[i],
-		                            'A', Items.arrow
+		                            'A', Items.ARROW
 		                    );
 		            if(i!=2 && i!=3){//We can't have those components being duplicated by an "Infinity" bow
 		            	GameRegistry.addShapelessRecipe(new ItemStack(ItemMBArrow.component[i]), new ItemStack(MbArrows, 1, i));
@@ -342,7 +344,7 @@ public class BattlegearConfig {
 
         if(banner!=null && hasRecipe(itemNames[10])){
             for(int i = 0; i < 7; i++){
-                Object temp = i < 4 ? new ItemStack(Blocks.log, 1, i):i==4?"ingotIron":new ItemStack(Blocks.log2, 1, i-5);
+                Object temp = i < 4 ? new ItemStack(Blocks.LOG, 1, i):i==4?"ingotIron":new ItemStack(Blocks.LOG2, 1, i-5);
                 GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(banner, 4, i), "W", "W", "W", 'W', temp));
             }
         }
@@ -380,8 +382,8 @@ public class BattlegearConfig {
             file.get("Rendering", "Default Sheath", Sheath.HIP.toString()).set(forceSheath.toString());
             file.get("Rendering", "Render quiver on skeleton back", true).set(enableSkeletonQuiver);
             file.get("Rendering", "Force screen components rendering", false).set(forceHUD);
-            file.get(file.CATEGORY_GENERAL, "Enable GUI Keys", false).set(enableGUIKeys);
-            file.get(file.CATEGORY_GENERAL, "Enable GUI Buttons", true).set(enableGuiButtons);
+            file.get(Configuration.CATEGORY_GENERAL, "Enable GUI Keys", false).set(enableGUIKeys);
+            file.get(Configuration.CATEGORY_GENERAL, "Enable GUI Buttons", true).set(enableGuiButtons);
             file.save();
         }catch (Exception e){
             e.printStackTrace();
@@ -528,7 +530,7 @@ public class BattlegearConfig {
                 if(i!=null)
                     return i;
         }
-        return Items.bow;//If that is null, we are screwed anyway
+        return Items.BOW;//If that is null, we are screwed anyway
     }
 
     public static boolean hasRecipe(String name){

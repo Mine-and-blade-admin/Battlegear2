@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
  * User: nerd-boy
  * Date: 26/06/13
  * Time: 1:38 PM
- * TODO: Add discription
+ * Packet for opening player GUI depending on id
  */
 public final class BattlegearGUIPacket extends AbstractMBPacket {
 
@@ -27,7 +27,7 @@ public final class BattlegearGUIPacket extends AbstractMBPacket {
     public void process(ByteBuf in, EntityPlayer player) {
 		equipid = in.readInt();
         if(equipid != -1){
-            player.openGui(Battlegear.INSTANCE, equipid, player.worldObj, 0, 0, 0);
+            player.openGui(Battlegear.INSTANCE, equipid, player.world, 0, 0, 0);
         }
     }
 

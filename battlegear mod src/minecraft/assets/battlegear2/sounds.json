@@ -2,16 +2,16 @@
     "shield": {
     "category": "player",
     "sounds": [
-        "shield0",
-        "shield1",
-        "shield2",
-        "shield3",
-        "shield4",
-        "shield5",
-        "shield6",
-        "shield7",
-        "shield8",
-        "shield9"
+        "battlegear2:shield0",
+        "battlegear2:shield1",
+        "battlegear2:shield2",
+        "battlegear2:shield3",
+        "battlegear2:shield4",
+        "battlegear2:shield5",
+        "battlegear2:shield6",
+        "battlegear2:shield7",
+        "battlegear2:shield8",
+        "battlegear2:shield9"
       ]
     }
 }

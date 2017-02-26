@@ -3,8 +3,10 @@ package mods.battlegear2.items.arrows;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 /**
  * An arrow which sets living entities or blocks on flame
@@ -18,13 +20,13 @@ public class EntityFlameArrow extends AbstractMBArrow{
         isImmuneToFire = true;
     }
     
-    public EntityFlameArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
-        super(par1World, par2EntityLivingBase, par3);
+    public EntityFlameArrow(World par1World, EntityLivingBase par2EntityLivingBase) {
+        super(par1World, par2EntityLivingBase);
         isImmuneToFire = true;
     }
 
-    public EntityFlameArrow(World par1World, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase, float par4, float par5) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5);
+    public EntityFlameArrow(World par1World, double x, double y, double z) {
+        super(par1World, x, y, z);
         isImmuneToFire = true;
     }
 
@@ -36,11 +38,11 @@ public class EntityFlameArrow extends AbstractMBArrow{
     }
 
     @Override
-    public void onHitGround(int x, int y, int z) {
-        BlockPos pos = new BlockPos(x, y + 1, z);
-        if (worldObj.isAirBlock(pos) && Blocks.fire.canPlaceBlockAt(worldObj, pos)) {
-            worldObj.playSoundEffect((double)x + 0.5D, (double)y + 1.5D, (double)z + 0.5D, "fire.ignite", 1.0F, rand.nextFloat() * 0.4F + 0.8F);
-            worldObj.setBlockState(pos, Blocks.fire.getDefaultState());
+    public void onHitGround(BlockPos posGround) {
+        BlockPos pos = posGround.up();
+        if (world.isAirBlock(pos) && Blocks.FIRE.canPlaceBlockAt(world, pos)) {
+            world.playSound(null, pos, SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.BLOCKS, 1.0F, rand.nextFloat() * 0.4F + 0.8F);
+            world.setBlockState(pos, Blocks.FIRE.getDefaultState());
         }
     }
 

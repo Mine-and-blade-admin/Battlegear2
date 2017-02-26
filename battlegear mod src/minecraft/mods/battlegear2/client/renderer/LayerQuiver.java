@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -22,18 +23,18 @@ public class LayerQuiver extends LayerPlayerBase{
     @Override
     protected void doRender(EntityPlayer player, float partialTicks, float scale) {
         ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(player);
-        if (quiverStack != null && ((IArrowContainer2) quiverStack.getItem()).renderDefaultQuiverModel(quiverStack)) {
+        if (!quiverStack.isEmpty() && ((IArrowContainer2) quiverStack.getItem()).renderDefaultQuiverModel(quiverStack)) {
 
             IArrowContainer2 quiver = (IArrowContainer2) quiverStack.getItem();
             int maxStack = quiver.getSlotCount(quiverStack);
             int arrowCount = 0;
             for (int i = 0; i < maxStack; i++) {
-                arrowCount += quiver.getStackInSlot(quiverStack, i) == null ? 0 : 1;
+                arrowCount += quiver.getStackInSlot(quiverStack, i).isEmpty()? 0 : 1;
             }
             GlStateManager.pushMatrix();
             GlStateManager.color(1, 1, 1);
             Minecraft.getMinecraft().getTextureManager().bindTexture(BattlegearClientEvents.INSTANCE.quiverDetails);
-            if(player.getEquipmentInSlot(3)!=null){//chest armor
+            if(player.isWearing(EnumPlayerModelParts.JACKET)){//chest armor
                 GlStateManager.translate(0, 0, scale);
             }
             renderer.getMainModel().bipedBody.postRender(scale);

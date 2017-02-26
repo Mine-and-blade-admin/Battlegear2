@@ -1,8 +1,8 @@
 package mods.battlegear2.api.core;
 
-import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
  * Created by GotoLink on 05/05/2014.

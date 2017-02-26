@@ -13,7 +13,7 @@ public class StackHolder{
     public final ItemStack stack;
     private int hash;
     public StackHolder(ItemStack stack){
-        if(stack==null || stack.getItem()==null){
+        if(stack==null || stack.isEmpty()){
             throw new IllegalArgumentException("StackHolder doesn't accept null");
         }
         this.stack = stack;

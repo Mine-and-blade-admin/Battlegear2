@@ -10,50 +10,41 @@ import mods.battlegear2.api.core.IOffhandRender;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.IShield;
-import mods.battlegear2.client.renderer.LayerOffhandItem;
-import mods.battlegear2.client.renderer.LayerQuiver;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.BattlegearShieldBlockPacket;
 import mods.battlegear2.packet.OffhandPlaceBlockPacket;
 import mods.battlegear2.packet.ReachTargetPacket;
-import mods.battlegear2.utils.BattlegearConfig;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import net.minecraftforge.fml.relauncher.Side;
 import org.lwjgl.input.Keyboard;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public final class BattlegearClientTickHandeler {
     private static final int FLASH_MAX = 30;
@@ -67,12 +58,11 @@ public final class BattlegearClientTickHandeler {
     private int previousNormal = 0;
     private int flashTimer;
     private boolean specialDone = false, drawDone = false, inBattle = false;
-    private List<RenderPlayer> renderPlayer = new ArrayList<RenderPlayer>();
     public static final BattlegearClientTickHandeler INSTANCE = new BattlegearClientTickHandeler();
 
     private BattlegearClientTickHandeler(){
-        drawWeapons = new KeyBinding("key.drawWeapons", Keyboard.KEY_R, "key.categories.gameplay");
-        special = new KeyBinding("key.special", Keyboard.KEY_Z, "key.categories.gameplay");
+        drawWeapons = new KeyBinding("key.drawWeapons", KeyConflictContext.IN_GAME, Keyboard.KEY_R, "key.categories.gameplay");
+        special = new KeyBinding("key.special", KeyConflictContext.IN_GAME, Keyboard.KEY_Z,"key.categories.gameplay");
         ClientRegistry.registerKeyBinding(drawWeapons);
         ClientRegistry.registerKeyBinding(special);
         mc = FMLClientHandler.instance().getClient();
@@ -82,20 +72,20 @@ public final class BattlegearClientTickHandeler {
     public void keyDown(TickEvent.ClientTickEvent event) {
         if(Battlegear.battlegearEnabled){
             //null checks to prevent any crash outside the world (and to make sure we have no screen open)
-            if (mc.thePlayer != null && mc.theWorld != null && mc.currentScreen == null) {
-                EntityPlayer player = mc.thePlayer;
+            if (mc.player != null && mc.world != null && mc.currentScreen == null) {
+                EntityPlayer player = mc.player;
                 if(event.phase == TickEvent.Phase.START) {
                     if (!specialDone && special.isKeyDown() && ((IBattlePlayer) player).getSpecialActionTimer() == 0) {
                         ItemStack quiver = QuiverArrowRegistry.getArrowContainer(player);
 
-                        if (quiver != null) {
+                        if (!quiver.isEmpty()) {
                             FMLProxyPacket p = new BattlegearAnimationPacket(EnumBGAnimations.SpecialAction, player).generatePacket();
                             Battlegear.packetHandler.sendPacketToServer(p);
                             ((IBattlePlayer) player).setSpecialActionTimer(2);
                         } else if (((IBattlePlayer) player).isBattlemode()) {
-                            ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
+                            ItemStack offhand = player.getHeldItemOffhand();
 
-                            if (offhand != null && offhand.getItem() instanceof IShield) {
+                            if (offhand.getItem() instanceof IShield) {
                                 float shieldBashPenalty = 0.33F - 0.06F * EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashWeight, offhand);
 
                                 if (blockBar >= shieldBashPenalty) {
@@ -115,7 +105,7 @@ public final class BattlegearClientTickHandeler {
                         if (((IBattlePlayer) player).isBattlemode()) {
                             previousBattlemode = player.inventory.currentItem;
                             player.inventory.currentItem = previousNormal;
-                        } else {
+                        } else if(!player.isSpectator()){
                             previousNormal = player.inventory.currentItem;
                             player.inventory.currentItem = previousBattlemode;
                         }
@@ -142,11 +132,11 @@ public final class BattlegearClientTickHandeler {
 
     @SubscribeEvent
     public void onPlayerTick(TickEvent.PlayerTickEvent event){
-        if(event.player == mc.thePlayer) {
+        if(event.player == mc.player) {
             if (event.phase == TickEvent.Phase.START) {
-                tickStart(mc.thePlayer);
+                tickStart(mc.player);
             } else {
-                tickEnd(mc.thePlayer);
+                tickEnd(mc.player);
             }
         }
     }
@@ -157,21 +147,9 @@ public final class BattlegearClientTickHandeler {
     }
 
     public void tickStart(EntityPlayer player) {
-        if (renderPlayer.isEmpty()) {
-            try {
-                Map<String, RenderPlayer> map = ObfuscationReflectionHelper.getPrivateValue(RenderManager.class, mc.getRenderManager(), "skinMap", "field_178636_l");
-                renderPlayer.addAll(map.values());
-                for (RenderPlayer render : renderPlayer) {
-                    render.layerRenderers.add(new LayerOffhandItem(render));
-                    if (BattlegearConfig.hasRender("quiver"))
-                        render.layerRenderers.add(new LayerQuiver(render));
-                }
-            } catch (Throwable ignored) {
-            }
-        }
         if(((IBattlePlayer)player).isBattlemode()){
-            ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
-            if(offhand != null){
+            ItemStack offhand = player.getHeldItemOffhand();
+            if(!offhand.isEmpty()){
                 if(offhand.getItem() instanceof IShield){
                     if(flashTimer == FLASH_MAX){
                         player.motionY = player.motionY/2;
@@ -205,7 +183,7 @@ public final class BattlegearClientTickHandeler {
                             blockBar = 1;
                         }
                     }
-                } else if (mc.gameSettings.keyBindUseItem.isKeyDown() && mc.rightClickDelayTimer == 4 && !player.isUsingItem()) {
+                } else if (mc.gameSettings.keyBindUseItem.isKeyDown() && mc.rightClickDelayTimer == 4 && !player.isHandActive()) {
                     tryCheckUseItem(offhand, player);
                 }
             }
@@ -213,45 +191,39 @@ public final class BattlegearClientTickHandeler {
     }
 
     public void tryCheckUseItem(ItemStack offhand, EntityPlayer player){
-        MovingObjectPosition mouseOver = mc.objectMouseOver;
+        RayTraceResult mouseOver = mc.objectMouseOver;
         boolean flag = true;
-        if (mouseOver != null && mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK){
+        if (mouseOver != null && mouseOver.typeOfHit == RayTraceResult.Type.BLOCK){
             BlockPos pos = mouseOver.getBlockPos();
-            if (!player.worldObj.getBlockState(pos).getBlock().isAir(player.worldObj, pos)) {
-                final int size = offhand.stackSize;
+            if (!player.world.isAirBlock(pos)) {
+                final int size = offhand.getCount();
                 EnumFacing i1 = mouseOver.sideHit;
-                PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK, pos, i1, player.worldObj), offhand);
+                PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent.RightClickBlock(player, EnumHand.OFF_HAND, pos, i1, mouseOver.hitVec));
                 if (!MinecraftForge.EVENT_BUS.post(useItemEvent)){
-                    BattlegearUtils.refreshAttributes(player);
                     boolean result = onPlayerPlaceBlock(mc.playerController, player, useItemEvent.offhand, pos, i1, mouseOver.hitVec);
-                    BattlegearUtils.refreshAttributes(player);
                     if(result) {
                         if (useItemEvent.swingOffhand)
-                            BattlegearUtils.sendOffSwingEvent(useItemEvent.event, useItemEvent.offhand);
+                            BattlegearUtils.sendOffSwingEvent(useItemEvent.event);
                         flag = false;
                     }
                 }
-                if (useItemEvent.offhand.stackSize == 0){
-                    BattlegearUtils.setPlayerOffhandItem(player, null);
-                }else if (useItemEvent.offhand.stackSize != size || mc.playerController.isInCreativeMode()){
+                if (useItemEvent.offhand.isEmpty()){
+                    BattlegearUtils.setPlayerOffhandItem(player, ItemStack.EMPTY);
+                }else if (useItemEvent.offhand.getCount() != size || mc.playerController.isInCreativeMode()){
                     ((IOffhandRender)mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
                 }
             }
         }
         if (flag){
-            offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
-            PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent(player, PlayerInteractEvent.Action.RIGHT_CLICK_AIR, new BlockPos(0, 0, 0), null, player.worldObj), offhand);
-            if (offhand != null && !MinecraftForge.EVENT_BUS.post(useItemEvent)){                
+            offhand = player.getHeldItemOffhand();
+            PlayerEventChild.UseOffhandItemEvent useItemEvent = new PlayerEventChild.UseOffhandItemEvent(new PlayerInteractEvent.RightClickItem(player, EnumHand.OFF_HAND));
+            if (!offhand.isEmpty() && !MinecraftForge.EVENT_BUS.post(useItemEvent)){
                 if (!mc.playerController.isSpectatorMode()) {
                     Battlegear.packetHandler.sendPacketToServer(new OffhandPlaceBlockPacket(useItemEvent.offhand).generatePacket());
-                    if(useItemEvent.event.useItem != Event.Result.DENY) {
-                        BattlegearUtils.refreshAttributes(player);
-                        flag = BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT);
-                        BattlegearUtils.refreshAttributes(player);
-                    }
-                    if (flag) {
+                    EnumActionResult result = BattlemodeHookContainerClass.tryUseItem(player, useItemEvent.offhand, Side.CLIENT);
+                    if (result != EnumActionResult.FAIL) {
                         if (useItemEvent.swingOffhand)
-                            BattlegearUtils.sendOffSwingEvent(useItemEvent.event, useItemEvent.offhand);
+                            BattlegearUtils.sendOffSwingEvent(useItemEvent.event);
                         ((IOffhandRender) mc.entityRenderer.itemRenderer).setEquippedProgress(0.0F);
                     }
                 }
@@ -265,25 +237,13 @@ public final class BattlegearClientTickHandeler {
             partialTick = event.renderTickTime;
             if(mc.currentScreen instanceof GuiMainMenu){
                 Battlegear.battlegearEnabled = false;
-                if (!renderPlayer.isEmpty()) {
-                    for (RenderPlayer render : renderPlayer) {
-                        Iterator iterator = render.layerRenderers.iterator();
-                        while (iterator.hasNext()) {
-                            Object object = iterator.next();
-                            if (object instanceof LayerOffhandItem || object instanceof LayerQuiver) {
-                                iterator.remove();
-                            }
-                        }
-                    }
-                    renderPlayer.clear();
-                }
             }
         }
     }
 
-    private boolean onPlayerPlaceBlock(PlayerControllerMP controller, EntityPlayer player, ItemStack offhand, BlockPos pos, EnumFacing l, Vec3 hitVec) {
-        final World worldObj = player.worldObj;
-        if (!worldObj.getWorldBorder().contains(pos)) {
+    private boolean onPlayerPlaceBlock(PlayerControllerMP controller, EntityPlayer player, ItemStack offhand, BlockPos pos, EnumFacing l, Vec3d hitVec) {
+        final World world = player.world;
+        if (!world.getWorldBorder().contains(pos)) {
             return false;
         }
         float f = (float) hitVec.xCoord - (float) pos.getX();
@@ -291,18 +251,18 @@ public final class BattlegearClientTickHandeler {
         float f2 = (float) hitVec.zCoord - (float) pos.getZ();
         boolean flag = false;
         if (!controller.isSpectatorMode()) {
-            if (offhand.getItem().onItemUseFirst(offhand, player, worldObj, pos, l, f, f1, f2)) {
+            if (offhand.onItemUseFirst(player, world, pos, EnumHand.OFF_HAND, l, f, f1, f2) == EnumActionResult.SUCCESS) {
                 return true;
             }
-            if (!player.isSneaking() || player.getCurrentEquippedItem() == null || player.getCurrentEquippedItem().getItem().doesSneakBypassUse(worldObj, pos, player)) {
-                IBlockState b = worldObj.getBlockState(pos);
-                if (!b.getBlock().isAir(worldObj, pos) && b.getBlock().onBlockActivated(worldObj, pos, b, player, l, f, f1, f2)) {
+            if (!player.isSneaking() || player.getHeldItemOffhand().isEmpty() || player.getHeldItemOffhand().getItem().doesSneakBypassUse(offhand, world, pos, player)) {
+                IBlockState b = world.getBlockState(pos);
+                if (!b.getBlock().isAir(b, world, pos) && b.getBlock().onBlockActivated(world, pos, b, player, EnumHand.OFF_HAND, l, f, f1, f2)) {
                     flag = true;
                 }
             }
             if (!flag && offhand.getItem() instanceof ItemBlock) {
                 ItemBlock itemblock = (ItemBlock) offhand.getItem();
-                if (!itemblock.canPlaceBlockOnSide(worldObj, pos, l, player, offhand)) {
+                if (!itemblock.canPlaceBlockOnSide(world, pos, l, player, offhand)) {
                     return false;
                 }
             }
@@ -311,24 +271,25 @@ public final class BattlegearClientTickHandeler {
         if (flag || controller.isSpectatorMode()) {
             return true;
         }
-        else if (offhand == null){
+        else if (offhand.isEmpty()){
             return false;
         }
         else{
             if (controller.isInCreativeMode()){
                 int i1 = offhand.getMetadata();
-                int j1 = offhand.stackSize;
-                boolean flag1 = offhand.onItemUse(player, worldObj, pos, l, f, f1, f2);
+                int j1 = offhand.getCount();
+                boolean flag1 = offhand.onItemUse(player, world, pos, EnumHand.OFF_HAND, l, f, f1, f2) == EnumActionResult.SUCCESS;
                 offhand.setItemDamage(i1);
-                offhand.stackSize = j1;
+                offhand.setCount(j1);
                 return flag1;
             }
             else{
-                if (!offhand.onItemUse(player, worldObj, pos, l, f, f1, f2)) {
+                ItemStack copy = offhand.copy();
+                if (offhand.onItemUse(player, world, pos, EnumHand.OFF_HAND, l, f, f1, f2) != EnumActionResult.SUCCESS) {
                     return false;
                 }
-                if (offhand.stackSize <= 0){
-                    ForgeEventFactory.onPlayerDestroyItem(player, offhand);
+                if (offhand.isEmpty()){
+                    ForgeEventFactory.onPlayerDestroyItem(player, copy, EnumHand.OFF_HAND);
                 }
                 return true;
             }
@@ -336,10 +297,10 @@ public final class BattlegearClientTickHandeler {
     }
 
     public void tickEnd(EntityPlayer player) {
-        ItemStack offhand = ((InventoryPlayerBattle) player.inventory).getCurrentOffhandWeapon();
+        ItemStack offhand = player.getHeldItemOffhand();
         Battlegear.proxy.tryUseDynamicLight(player, offhand);
         //If we use a shield
-        if(offhand != null && offhand.getItem() instanceof IShield){
+        if(offhand.getItem() instanceof IShield){
             if (mc.gameSettings.keyBindUseItem.isKeyDown() && !player.isSwingInProgress && blockBar > 0) {
                 player.motionX = player.motionX/5;
                 player.motionZ = player.motionZ/5;
@@ -350,8 +311,8 @@ public final class BattlegearClientTickHandeler {
         if (player.swingProgressInt == 1 && !player.isSpectator()) {
             double extendedReach = BattlemodeHookContainerClass.INSTANCE.maxReachDistance(player);
             if (extendedReach > BattlemodeHookContainerClass.defaultReachDistance(player.capabilities.isCreativeMode)) {
-                MovingObjectPosition mouseOver = Battlegear.proxy.getMouseOver(extendedReach);
-                if (mouseOver != null && mouseOver.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+                RayTraceResult mouseOver = Battlegear.proxy.getMouseOver(extendedReach);
+                if (mouseOver != null && mouseOver.typeOfHit == RayTraceResult.Type.ENTITY) {
                     Entity target = mouseOver.entityHit;
                     if (target instanceof EntityLivingBase && target != player && player.getDistanceToEntity(target) > mc.playerController.getBlockReachDistance()) {
                         if (target.hurtResistantTime != ((EntityLivingBase) target).maxHurtResistantTime) {

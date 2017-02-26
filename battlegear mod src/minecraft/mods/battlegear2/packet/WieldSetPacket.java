@@ -35,7 +35,7 @@ public class WieldSetPacket extends AbstractMBPacket{
     public void process(ByteBuf in, EntityPlayer player) {
         type = ByteBufUtils.readUTF8String(in);
         stack = ByteBufUtils.readItemStack(in);
-        if(stack!=null && player.worldObj.isRemote) {
+        if(stack!=null && player.world.isRemote) {
             WeaponRegistry.Wield.valueOf(type).setUsable(stack);
         }
     }

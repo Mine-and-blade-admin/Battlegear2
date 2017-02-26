@@ -22,10 +22,10 @@ public class ImageData {
 
     static{
         defaultImage = new ImageData(
-                ItemDye.dyeColors[0] | 0xFF000000,
-                ItemDye.dyeColors[15] | 0xFF000000,
-                ItemDye.dyeColors[15] | 0xFF000000,
-                ItemDye.dyeColors[0] | 0xFF000000);
+                ItemDye.DYE_COLORS[0] | 0xFF000000,
+                ItemDye.DYE_COLORS[15] | 0xFF000000,
+                ItemDye.DYE_COLORS[15] | 0xFF000000,
+                ItemDye.DYE_COLORS[0] | 0xFF000000);
         defaultData = defaultImage.getByteArray();
     }
 

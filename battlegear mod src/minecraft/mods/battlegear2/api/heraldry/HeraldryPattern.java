@@ -1,6 +1,5 @@
 package mods.battlegear2.api.heraldry;
 
-import net.minecraft.client.renderer.texture.IIconCreator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.util.ResourceLocation;
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
-public class HeraldryPattern implements IIconCreator {
+public class HeraldryPattern {
 
     public static List<HeraldryPattern> patterns = new ArrayList<HeraldryPattern>();
     public static final HeraldryPattern VERTICAL_BLOCK = new HeraldryPattern("battlegear2","patterns/pattern-0");

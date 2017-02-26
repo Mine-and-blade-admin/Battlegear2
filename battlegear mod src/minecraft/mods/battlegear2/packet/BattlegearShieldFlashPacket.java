@@ -28,7 +28,7 @@ public final class BattlegearShieldFlashPacket extends AbstractMBPacket{
             e.printStackTrace();
             return;
         }
-        EntityPlayer targetPlayer = player.worldObj.getPlayerEntityByName(username);
+        EntityPlayer targetPlayer = player.world.getPlayerEntityByName(username);
         if(targetPlayer!=null)
             Battlegear.proxy.startFlash(targetPlayer, damage);
     }

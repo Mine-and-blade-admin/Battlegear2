@@ -46,12 +46,12 @@ public final class BattlegearPacketHandeler {
 
     @SubscribeEvent
     public void onServerPacket(final FMLNetworkEvent.ServerCustomPacketEvent event) {
-        final AbstractMBPacket packet = map.get(event.packet.channel());
+        final AbstractMBPacket packet = map.get(event.getPacket().channel());
         if (packet != null) {
-            Battlegear.proxy.scheduleTask(new Runnable() {
+            Battlegear.proxy.getThreadListener().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    packet.process(event.packet.payload(), ((NetHandlerPlayServer) event.handler).playerEntity);
+                    packet.process(event.getPacket().payload(), ((NetHandlerPlayServer) event.getHandler()).playerEntity);
                 }
             });
         }
@@ -59,12 +59,12 @@ public final class BattlegearPacketHandeler {
 
     @SubscribeEvent
     public void onClientPacket(final FMLNetworkEvent.ClientCustomPacketEvent event) {
-        final AbstractMBPacket packet = map.get(event.packet.channel());
+        final AbstractMBPacket packet = map.get(event.getPacket().channel());
         if (packet != null) {
-            Battlegear.proxy.scheduleTask(new Runnable() {
+            Battlegear.proxy.getThreadListener().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    packet.process(event.packet.payload(), Battlegear.proxy.getClientPlayer());
+                    packet.process(event.getPacket().payload(), Battlegear.proxy.getClientPlayer());
                 }
             });
         }

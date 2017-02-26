@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
  * Those events are posted to {@link BattlegearUtils.RENDER_BUS} from {@link BattlegearRenderHelper}
  */
 public abstract class RenderPlayerEventChild extends RenderPlayerEvent{
-	public static enum PlayerElementType{
+	public enum PlayerElementType{
 		Offhand,
 		ItemOffhand,
 		ItemOffhandSheathed,
@@ -28,7 +28,7 @@ public abstract class RenderPlayerEventChild extends RenderPlayerEvent{
      */
 	public final ItemStack element;
 	public RenderPlayerEventChild(RenderPlayerEvent parent, PlayerElementType type, boolean firstPerson, ItemStack item) {
-		super(parent.entityPlayer, parent.renderer, parent.partialRenderTick, parent.x, parent.y, parent.z);
+		super(parent.getEntityPlayer(), parent.getRenderer(), parent.getPartialRenderTick(), parent.getX(), parent.getY(), parent.getZ());
 		this.type = type;
 		this.isFirstPerson = firstPerson;
 		this.element = item;

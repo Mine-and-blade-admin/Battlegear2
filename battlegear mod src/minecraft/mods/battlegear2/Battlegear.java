@@ -8,9 +8,14 @@ import mods.battlegear2.gui.BattlegearGUIHandeler;
 import mods.battlegear2.packet.BattlegearPacketHandeler;
 import mods.battlegear2.utils.BattlegearConfig;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.projectile.EntitySpectralArrow;
+import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.*;
@@ -19,6 +24,7 @@ import net.minecraftforge.fml.common.event.FMLInterModComms.IMCEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms.IMCMessage;
 import net.minecraftforge.fml.common.network.NetworkCheckHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.Map;
@@ -36,6 +42,7 @@ public class Battlegear {
     public static CommonProxy proxy;
 
     public static ItemArmor.ArmorMaterial knightArmourMaterial;
+    public static SoundEvent shieldSound;
 
     public static boolean battlegearEnabled = true;
     public static boolean debug = false;
@@ -46,7 +53,9 @@ public class Battlegear {
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         logger = event.getModLog();
-        knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", "", 25, new int[]{3, 7, 5, 3}, 15);
+        knightArmourMaterial = EnumHelper.addArmorMaterial("knights.armour", "battlegear2:knight", 25, new int[]{3, 5, 7, 3}, 15, SoundEvents.ITEM_ARMOR_EQUIP_IRON, 1.5F);
+        ResourceLocation sound = new ResourceLocation(MODID, "shield");
+        shieldSound = GameRegistry.register(new SoundEvent(sound).setRegistryName(sound));
         BattlegearConfig.getConfig(new Configuration(event.getSuggestedConfigurationFile()));
 
         if((event.getSourceFile().getName().endsWith(".jar") || debug) && event.getSide().isClient()){
@@ -69,7 +78,9 @@ public class Battlegear {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        QuiverArrowRegistry.addArrowToRegistry(Items.arrow, EntityArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(Items.ARROW, EntityTippedArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(Items.TIPPED_ARROW, EntityTippedArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(Items.SPECTRAL_ARROW, EntitySpectralArrow.class);
         proxy.registerItemRenderers();
         BattlegearConfig.registerRecipes();
         packetHandler = new BattlegearPacketHandeler();

@@ -6,15 +6,15 @@ import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.weapons.WeaponRegistry;
 import mods.battlegear2.packet.WieldSetPacket;
 import net.minecraft.command.*;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -43,7 +43,7 @@ public final class CommandWeaponWield extends CommandBase{
      */
     private Set<String> sensitivities = Sets.newHashSet("ID", "DAMAGE", "NBT");
     @Override
-    public String getCommandName() {
+    public String getName() {
         return "weaponwield";
     }
 
@@ -55,38 +55,33 @@ public final class CommandWeaponWield extends CommandBase{
      * <sensitivity> <operation:add|remove|get> <ore|type|id|damage|nbt>
      */
     @Override
-    public String getCommandUsage(ICommandSender var1) {
+    public String getUsage(@Nonnull ICommandSender var1) {
         return "commands.weaponwield.usage";
     }
 
     @Override
-    public void processCommand(ICommandSender var1, String[] var2) throws CommandException {
-        if(var2!=null) {
-            ItemStack itemStack = null;
+    public void execute(@Nonnull MinecraftServer server,@Nonnull ICommandSender var1,@Nonnull String[] var2) throws CommandException {
+            ItemStack itemStack = ItemStack.EMPTY;
             if (var2.length == 2) {
                 if(var2[0].equals(searchModes[0])) {//current
-                    if (var1 instanceof EntityPlayer)
-                        itemStack = ((EntityPlayer) var1).getCurrentEquippedItem();
-                    else
-                        throw new PlayerNotFoundException();
+                    itemStack = getCommandSenderAsPlayer(var1).getHeldItemMainhand();
                 }else if(var2[0].equals(searchModes[2]) && var2[1].equals(operations[2])){//sensitivity get
-                    notifyOperators(var1, this, "commands.weaponwield.sensitivity", sensitivities);
+                    notifyCommandListener(var1, this, "commands.weaponwield.sensitivity", sensitivities);
                     return;
                 }
             }else if(var2.length < 5){
                 if(var2[0].equals(searchModes[0]))//current
-                    itemStack = getPlayer(var1, var2[2]).getCurrentEquippedItem();
+                    itemStack = getPlayer(server, var1, var2[2]).getHeldItemMainhand();
                 else if(var2[0].equals(searchModes[1])) {//name
                     Item item = getItemByText(var1, var2[2]);
-                    if (item != null)
-                        itemStack = new ItemStack(item);
+                    itemStack = new ItemStack(item);
                 }else if(var2[0].equals(searchModes[2])){//sensitivity
                     if(var2[1].equals(operations[0])){//add
                         try {
                             WeaponRegistry.Sensitivity sens = WeaponRegistry.Sensitivity.valueOf(var2[2].toUpperCase(Locale.ENGLISH));
                             if (sensitivities.add(sens.name()) && WeaponRegistry.addSensitivity(sens)) {
-                                notifyOperators(var1, this, "commands.weaponwield.sensitivity.added", sens);
-                                var1.addChatMessage(new ChatComponentText(sensitivities.toString()));
+                                notifyCommandListener(var1, this, "commands.weaponwield.sensitivity.added", sens);
+                                var1.sendMessage(new TextComponentString(sensitivities.toString()));
                                 return;
                             }
                         } catch (IllegalArgumentException ignored) {
@@ -95,8 +90,8 @@ public final class CommandWeaponWield extends CommandBase{
                         try {
                             WeaponRegistry.Sensitivity sens = WeaponRegistry.Sensitivity.valueOf(var2[2].toUpperCase(Locale.ENGLISH));
                             if (sensitivities.remove(sens.name()) && WeaponRegistry.removeSensitivity(sens)) {
-                                notifyOperators(var1, this, "commands.weaponwield.sensitivity.removed", sens);
-                                var1.addChatMessage(new ChatComponentText(sensitivities.toString()));
+                                notifyCommandListener(var1, this, "commands.weaponwield.sensitivity.removed", sens);
+                                var1.sendMessage(new TextComponentString(sensitivities.toString()));
                                 return;
                             }
                         }catch (IllegalArgumentException ignored){}
@@ -104,7 +99,7 @@ public final class CommandWeaponWield extends CommandBase{
                 }
             }
             boolean result = false;
-            if(itemStack!=null) {
+            if(!itemStack.isEmpty()) {
                 String temp = var2[1].toUpperCase(Locale.ENGLISH);
                 if (var2.length == 4 && parseBoolean(var2[3])) {
                     result = setUsable(itemStack, temp);
@@ -116,11 +111,10 @@ public final class CommandWeaponWield extends CommandBase{
                 }
             }
             if(result) {
-                var1.setCommandStat(CommandResultStats.Type.AFFECTED_ITEMS, itemStack.stackSize);
-                notifyOperators(var1, this, "commands.weaponwield.set", itemStack);
+                var1.setCommandStat(CommandResultStats.Type.AFFECTED_ITEMS, itemStack.getCount());
+                notifyCommandListener(var1, this, "commands.weaponwield.set", itemStack);
             }else
-                throw new WrongUsageException(getCommandUsage(var1), itemStack);
-        }
+                throw new WrongUsageException(getUsage(var1), itemStack);
     }
 
     public boolean setWeapon(ItemStack stack, String type) {
@@ -135,8 +129,9 @@ public final class CommandWeaponWield extends CommandBase{
         return false;
     }
 
+    @Nonnull
     @Override
-    public List<String> addTabCompletionOptions(ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
+    public List<String> getTabCompletions(MinecraftServer server, ICommandSender par1ICommandSender, String[] par2ArrayOfStr, BlockPos pos) {
         if(par2ArrayOfStr.length == 1)
             return getListOfStringsMatchingLastWord(par2ArrayOfStr, searchModes);
         else if(par2ArrayOfStr.length == 2) {
@@ -147,7 +142,7 @@ public final class CommandWeaponWield extends CommandBase{
         }
         else if(par2ArrayOfStr.length == 3) {
             if (par2ArrayOfStr[0].equals(searchModes[0]))//current
-                return getListOfStringsMatchingLastWord(par2ArrayOfStr, MinecraftServer.getServer().getAllUsernames());
+                return getListOfStringsMatchingLastWord(par2ArrayOfStr, server.getOnlinePlayerNames());
             else if(par2ArrayOfStr[0].equals(searchModes[1]))//name
                 return getListOfStringsMatchingLastWord(par2ArrayOfStr, GameData.getItemRegistry().getKeys());
             else if (par2ArrayOfStr[0].equals(searchModes[2])) {//sensitivity
@@ -161,7 +156,7 @@ public final class CommandWeaponWield extends CommandBase{
         else if(par2ArrayOfStr.length == 4) {
             return getListOfStringsMatchingLastWord(par2ArrayOfStr, "true", "1", "false", "0");
         }
-        return null;
+        return super.getTabCompletions(server, par1ICommandSender, par2ArrayOfStr, pos);
     }
 
     private String[] getNames(Object[] values, boolean lowerCase) {

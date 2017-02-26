@@ -6,14 +6,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +32,7 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder, ITick
         flags = new ArrayList<ItemStack>(MAX_FLAGS);
     }
 
+    @Nonnull
     @Override
     @SideOnly(Side.CLIENT)
     public AxisAlignedBB getRenderBoundingBox()
@@ -50,14 +51,15 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder, ITick
         flags = new ArrayList<ItemStack>(MAX_FLAGS);
         for(int i = 0; i < MAX_FLAGS; i++){
             if(par1NBTTagCompound.hasKey("flag"+i)){
-                flags.add(ItemStack.loadItemStackFromNBT(par1NBTTagCompound.getCompoundTag("flag"+i)));
+                flags.add(new ItemStack(par1NBTTagCompound.getCompoundTag("flag"+i)));
             }
         }
         receiveUpdates = par1NBTTagCompound.getBoolean("hasUpdate");
     }
 
+    @Nonnull
     @Override
-    public void writeToNBT(NBTTagCompound par1NBTTagCompound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound par1NBTTagCompound) {
         super.writeToNBT(par1NBTTagCompound);
         par1NBTTagCompound.setInteger("orientation", side);
         for(int i = 0; i < flags.size(); i++){
@@ -66,17 +68,18 @@ public class TileEntityFlagPole extends TileEntity implements IFlagHolder, ITick
             par1NBTTagCompound.setTag("flag"+i, flagCompound);
         }
         par1NBTTagCompound.setBoolean("hasUpdate", receiveUpdates);
+        return par1NBTTagCompound;
     }
 
     @Override
-    public Packet getDescriptionPacket() {
+    public SPacketUpdateTileEntity getUpdatePacket() {
         NBTTagCompound flagCompound = new NBTTagCompound();
         writeToNBT(flagCompound);
-        return new S35PacketUpdateTileEntity(pos, 0, flagCompound);
+        return new SPacketUpdateTileEntity(pos, 0, flagCompound);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt){
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt){
         if (getWorld().isRemote && pkt.getTileEntityType() == 0)
             readFromNBT(pkt.getNbtCompound());
     }

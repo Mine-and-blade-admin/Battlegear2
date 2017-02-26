@@ -9,7 +9,7 @@ public interface IQuiverSelection {
      * Defines a quiver selection algorithm, to be added with {@link QuiverArrowRegistry#addQuiverSelection}
      * @param bow a possible stack that relates to {@link IArrowContainer2}, not necessarily a {@link ItemBow}
      * @param player entity holding this bow
-     * @return a stack holding a {@link IArrowContainer2} item or null if none is found to be compatible with
+     * @return a stack holding a {@link IArrowContainer2} item or ItemStack.EMPTY if none is found to be compatible with
      */
-    public ItemStack getQuiverFor(ItemStack bow, EntityPlayer player);
+    ItemStack getQuiverFor(ItemStack bow, EntityPlayer player);
 }

@@ -2,20 +2,26 @@ package mods.battlegear2.client;
 
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.CommonProxy;
+import mods.battlegear2.MobHookContainerClass;
+import mods.battlegear2.api.Colorable;
 import mods.battlegear2.api.DefaultMesh;
+import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.quiver.QuiverMesh;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
 import mods.battlegear2.client.renderer.FlagPoleTileRenderer;
+import mods.battlegear2.client.renderer.LayerOffhandItem;
+import mods.battlegear2.client.renderer.LayerQuiver;
 import mods.battlegear2.client.renderer.ShieldModelLoader;
 import mods.battlegear2.client.utils.BattlegearClientUtils;
-import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.items.ItemMBArrow;
+import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -24,30 +30,39 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.ItemModelMesher;
+import net.minecraft.client.renderer.block.model.ModelBakery;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public final class ClientProxy extends CommonProxy {
 
@@ -55,7 +70,7 @@ public final class ClientProxy extends CommonProxy {
     public static Method updateTab, addTabs;
     private static Object dynLightPlayerMod;
     private static Method dynLightFromItemStack, refresh;
-    public static ItemStack heldCache;
+    public static ItemStack heldCache = ItemStack.EMPTY;
     public static TextureAtlasSprite[] backgroundIcon;
 
     @Override
@@ -72,24 +87,29 @@ public final class ClientProxy extends CommonProxy {
     @Override
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {
         if (entityPlayer instanceof EntityPlayerSP) {
-            ((EntityPlayerSP) entityPlayer).sendQueue.addToSendQueue(
+            ((EntityPlayerSP) entityPlayer).connection.sendPacket(
                     new BattlegearAnimationPacket(animation, entityPlayer).generatePacket());
         }
     }
 
     @Override
     public void startFlash(EntityPlayer player, float damage) {
-    	if(player.getName().equals(Minecraft.getMinecraft().thePlayer.getName())){
+    	if(player.getName().equals(Minecraft.getMinecraft().player.getName())){
             BattlegearClientTickHandeler.resetFlash();
             ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
-
-            if(offhand != null && offhand.getItem() instanceof IShield)
+            if(offhand.getItem() instanceof IShield)
                 BattlegearClientTickHandeler.reduceBlockTime(((IShield) offhand.getItem()).getDamageDecayRate(offhand, damage));
         }
     }
 
     @Override
     public void registerItemRenderers() {
+        Map<String, RenderPlayer> map = Minecraft.getMinecraft().getRenderManager().getSkinMap();
+        for (RenderPlayer render : map.values()) {
+            render.addLayer(new LayerOffhandItem(render));
+            if (BattlegearConfig.hasRender("quiver"))
+                render.addLayer(new LayerQuiver(render));
+        }
         if (BattlegearConfig.hasRender("shield"))
             MinecraftForge.EVENT_BUS.register(new ShieldModelLoader());
         ItemModelMesher modelMesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
@@ -116,6 +136,13 @@ public final class ClientProxy extends CommonProxy {
             if (shield != null)
                 modelMesher.register(shield, DefaultMesh.INVENTORY);
         }
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new Colorable(), BattlegearConfig.shield);
+        Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new IItemColor() {
+            @Override
+            public int getColorFromItemstack(ItemStack stack, int tintIndex) {
+                return tintIndex < 2 ? ((IDyable)stack.getItem()).getColor(stack) : -1;
+            }
+        }, BattlegearConfig.shield[0]);
         for (Item armor : BattlegearConfig.knightArmor) {
             if (armor != null)
                 modelMesher.register(armor, DefaultMesh.INVENTORY);
@@ -125,28 +152,34 @@ public final class ClientProxy extends CommonProxy {
             modelMesher.register(BattlegearConfig.chain, DefaultMesh.INVENTORY);
         if (BattlegearConfig.quiver != null) {
             modelMesher.register(BattlegearConfig.quiver, new QuiverMesh("_full", DefaultMesh.INVENTORY));
-            ModelLoader.addVariantName(BattlegearConfig.quiver, BattlegearConfig.MODID + "quiver", BattlegearConfig.MODID + "quiver_full");
+            ModelBakery.registerItemVariants(BattlegearConfig.quiver, new ResourceLocation(BattlegearConfig.MODID + "quiver"), new ResourceLocation(BattlegearConfig.MODID + "quiver_full"));
+            Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new Colorable(), BattlegearConfig.quiver);
         }
         if (BattlegearConfig.heradricItem != null)
             modelMesher.register(BattlegearConfig.heradricItem, DefaultMesh.INVENTORY);
         if (BattlegearConfig.MbArrows != null) {
-            String[] variants = new String[ItemMBArrow.names.length];
+            final ResourceLocation[] variants = new ResourceLocation[ItemMBArrow.names.length];
             for (int i = 0; i < variants.length; i++) {
-                variants[i] = BattlegearConfig.MODID + BattlegearConfig.itemNames[9] + "." + ItemMBArrow.names[i];
+                variants[i] = new ResourceLocation(BattlegearConfig.MODID + BattlegearConfig.itemNames[9] + "." + ItemMBArrow.names[i]);
             }
-            ModelLoader.addVariantName(BattlegearConfig.MbArrows, variants);
-            modelMesher.register(BattlegearConfig.MbArrows, DefaultMesh.INVENTORY);
+            ModelBakery.registerItemVariants(BattlegearConfig.MbArrows, variants);
+            modelMesher.register(BattlegearConfig.MbArrows, new ItemMeshDefinition() {
+                @Override
+                public ModelResourceLocation getModelLocation(ItemStack stack) {
+                    return new ModelResourceLocation(variants[stack.getMetadata()], "inventory");
+                }
+            });
         }
         //TODO: Heraldry renderers
         if (BattlegearConfig.banner != null) {
             Collection<BlockFlagPole.Variants> collec = BlockFlagPole.VARIANT.getAllowedValues();
-            final String[] variants = new String[collec.size()];
+            final ResourceLocation[] variants = new ResourceLocation[collec.size()];
             int i = 0;
             for (BlockFlagPole.Variants comparable : collec) {
-                variants[i] = BattlegearConfig.MODID + BattlegearConfig.itemNames[10] + "/" + BlockFlagPole.VARIANT.getName(comparable);
+                variants[i] = new ResourceLocation(BattlegearConfig.MODID + BattlegearConfig.itemNames[10] + "/" + BlockFlagPole.VARIANT.getName(comparable));
                 i++;
             }
-            ModelLoader.addVariantName(Item.getItemFromBlock(BattlegearConfig.banner), variants);
+            ModelBakery.registerItemVariants(Item.getItemFromBlock(BattlegearConfig.banner), variants);
             modelMesher.register(Item.getItemFromBlock(BattlegearConfig.banner), new ItemMeshDefinition() {
                 @Override
                 public ModelResourceLocation getModelLocation(ItemStack stack) {
@@ -158,15 +191,43 @@ public final class ClientProxy extends CommonProxy {
     }
 
     private void registerArrows(){
-        ModelLoader.addVariantName(Items.bow, "bow", "bow_pulling_0", "bow_pulling_1", "bow_pulling_2");
         for (ItemStack itemStack : QuiverArrowRegistry.getKnownArrows()) {
-            String location = BattlegearRenderHelper.getArrowLocation(itemStack);
-            if(BattlegearConfig.arrowForceRendered){
-                ModelLoader.addVariantName(Items.bow, location);
-            }
-            location += "_pulling_";
-            ModelLoader.addVariantName(Items.bow, location + "0", location + "1", location + "2");
+            final String location = getArrowLocation(itemStack);
+            final ResourceLocation rLocation = new ResourceLocation(location);
+            final ResourceLocation key = new ResourceLocation(rLocation.getResourceDomain(), "use_" + rLocation.getResourcePath());
+            Items.BOW.addPropertyOverride(key, new IItemPropertyGetter() {
+                @Override
+                public float apply(@Nonnull ItemStack itemStack, @Nullable World worldIn, @Nullable EntityLivingBase livingBase) {
+                    if(livingBase instanceof EntityPlayer){
+                        EntityPlayer entityPlayer = (EntityPlayer) livingBase;
+                        if(entityPlayer.getActiveItemStack() == itemStack || BattlegearConfig.arrowForceRendered) {
+                            ItemStack quiver = QuiverArrowRegistry.getArrowContainer(itemStack, (EntityPlayer) livingBase);
+                            if(!quiver.isEmpty()){
+                                ItemStack arrowStack = ((IArrowContainer2)quiver.getItem()).getStackInSlot(quiver, ((IArrowContainer2)quiver.getItem()).getSelectedSlot(quiver));
+                                if(QuiverArrowRegistry.isKnownArrow(arrowStack)){
+                                    String bow = getArrowLocation(arrowStack);
+                                    if(bow.equals(location))
+                                        return 1;
+                                }
+                            }
+                            return 0;
+                        }
+
+                    }else if(livingBase instanceof EntitySkeleton){
+                        String bow = getArrowLocation(MobHookContainerClass.INSTANCE.getArrowForMob((EntitySkeleton) livingBase));
+                        return bow.equals(location) ? 1:0;
+                    }
+                    return 0;
+                }
+            });
         }
+    }
+
+    public static String getArrowLocation(ItemStack arrowStack){
+        if (BattlegearConfig.hasRender("bow")) {
+            return arrowStack.getUnlocalizedName().replace("item.", "");
+        }
+        return "arrow";
     }
 
     public TextureAtlasSprite getSlotIcon(int index) {
@@ -179,8 +240,8 @@ public final class ClientProxy extends CommonProxy {
 
     @Override
     public void doSpecialAction(EntityPlayer entityPlayer, ItemStack itemStack) {
-        MovingObjectPosition mop = null;
-        if(itemStack != null && itemStack.getItem() instanceof IShield){
+        RayTraceResult mop = null;
+        if(itemStack.getItem() instanceof IShield){
             mop = getMouseOver(4);
         }
 
@@ -198,7 +259,7 @@ public final class ClientProxy extends CommonProxy {
 
     @Override
     public boolean handleAttack(EntityPlayer entityPlayer) {
-        if(Minecraft.getMinecraft().thePlayer == entityPlayer && super.handleAttack(entityPlayer)){
+        if(Minecraft.getMinecraft().player == entityPlayer && super.handleAttack(entityPlayer)){
             KeyBinding use = Minecraft.getMinecraft().gameSettings.keyBindUseItem;
             KeyBinding.setKeyBindState(use.getKeyCode(), false);
             while(use.isPressed());
@@ -211,28 +272,28 @@ public final class ClientProxy extends CommonProxy {
      * Finds what block or object the mouse is over at the specified distance. Args: distance
      */
     @Override
-    public MovingObjectPosition getMouseOver(double d0)
+    public RayTraceResult getMouseOver(double d0)
     {
         Minecraft mc = Minecraft.getMinecraft();
         if (mc.getRenderViewEntity() != null)
         {
-            if (mc.theWorld != null)
+            if (mc.world != null)
             {
                 float tickPart = BattlegearClientTickHandeler.getPartialTick();
-                MovingObjectPosition objectMouseOver = mc.getRenderViewEntity().rayTrace(d0, tickPart);
+                RayTraceResult objectMouseOver = mc.getRenderViewEntity().rayTrace(d0, tickPart);
                 double d1 = d0;
-                Vec3 vec3 = mc.getRenderViewEntity().getPositionEyes(tickPart);
+                Vec3d vec3 = mc.getRenderViewEntity().getPositionEyes(tickPart);
 
                 if (objectMouseOver != null)
                 {
                     d1 = objectMouseOver.hitVec.distanceTo(vec3);
                 }
 
-                Vec3 vec31 = mc.getRenderViewEntity().getLook(tickPart);
-                Vec3 vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
-                Vec3 vec33 = null;
+                Vec3d vec31 = mc.getRenderViewEntity().getLook(tickPart);
+                Vec3d vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
+                Vec3d vec33 = null;
                 Entity pointedEntity = null;
-                List list = mc.theWorld.getEntitiesWithinAABBExcludingEntity(mc.getRenderViewEntity(), mc.getRenderViewEntity().getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand(1.0D, 1.0D, 1.0D));
+                List list = mc.world.getEntitiesWithinAABBExcludingEntity(mc.getRenderViewEntity(), mc.getRenderViewEntity().getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand(1.0D, 1.0D, 1.0D));
                 double d2 = d1;
 
                 for (Object o : list)
@@ -243,7 +304,7 @@ public final class ClientProxy extends CommonProxy {
                     {
                         double f2 = entity.getCollisionBorderSize();
                         AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().expand(f2, f2, f2);
-                        MovingObjectPosition movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
+                        RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
                         if (axisalignedbb.isVecInside(vec3))
                         {
@@ -260,7 +321,7 @@ public final class ClientProxy extends CommonProxy {
 
                             if (d3 < d2 || d2 == 0.0D)
                             {
-                                if (entity == entity.ridingEntity && !entity.canRiderInteract()) {
+                                if (entity == entity.getRidingEntity() && !entity.canRiderInteract()) {
                                     if (d2 == 0.0D) {
                                         pointedEntity = entity;
                                         vec33 = movingobjectposition.hitVec;
@@ -277,7 +338,7 @@ public final class ClientProxy extends CommonProxy {
 
                 if (pointedEntity != null && (d2 < d1 || objectMouseOver == null))
                 {
-                    objectMouseOver = new MovingObjectPosition(pointedEntity, vec33);
+                    objectMouseOver = new RayTraceResult(pointedEntity, vec33);
                 }
 
                 return objectMouseOver;
@@ -347,11 +408,11 @@ public final class ClientProxy extends CommonProxy {
 
     @Override
     public EntityPlayer getClientPlayer(){
-        return Minecraft.getMinecraft().thePlayer;
+        return Minecraft.getMinecraft().player;
     }
 
     @Override
-    public void scheduleTask(Runnable runnable) {
-        Minecraft.getMinecraft().addScheduledTask(runnable);
+    public IThreadListener getThreadListener() {
+        return Minecraft.getMinecraft();
     }
 }

@@ -10,6 +10,8 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
 
@@ -24,12 +26,12 @@ public class EntityLoveArrow extends AbstractMBArrow{
 		super(world);
 	}
 	
-	public EntityLoveArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
-        super(par1World, par2EntityLivingBase, par3);
+	public EntityLoveArrow(World par1World, EntityLivingBase par2EntityLivingBase) {
+        super(par1World, par2EntityLivingBase);
     }
 
-    public EntityLoveArrow(World par1World, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase, float par4, float par5) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5);
+    public EntityLoveArrow(World par1World, double x, double y, double z) {
+        super(par1World, x, y, z);
     }
 
 	@Override
@@ -38,10 +40,10 @@ public class EntityLoveArrow extends AbstractMBArrow{
             if(entityHit instanceof EntityAgeable){
                 if(!((EntityAgeable) entityHit).isChild()) {
                     EntityAgeable child = ((EntityAgeable) entityHit).createChild((EntityAgeable) entityHit);
-                    if (child != null && !this.worldObj.isRemote) {
+                    if (child != null && !this.world.isRemote) {
                         child.setGrowingAge(AGE_TIMER);
                         child.setLocationAndAngles(this.posX, this.posY, this.posZ, 0.0F, 0.0F);
-                        this.worldObj.spawnEntityInWorld(child);
+                        this.world.spawnEntity(child);
                     }
                 }
                 ((EntityAgeable) entityHit).setGrowingAge(AGE_TIMER);
@@ -49,19 +51,21 @@ public class EntityLoveArrow extends AbstractMBArrow{
                 return true;
             }else if(entityHit instanceof EntityCreature){
                 ((EntityCreature) entityHit).setAttackTarget(null);
-                if(((EntityCreature) entityHit).getHeldItem()==null){
-                    entityHit.setCurrentItemOrArmor(0, new ItemStack(ItemMBArrow.component[5]));
+                if(((EntityCreature) entityHit).getHeldItemMainhand().isEmpty()){
+                    ((EntityCreature) entityHit).setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ItemMBArrow.component[5]));
+                }else if(((EntityCreature) entityHit).getHeldItemOffhand().isEmpty()){
+                    ((EntityCreature) entityHit).setHeldItem(EnumHand.OFF_HAND, new ItemStack(ItemMBArrow.component[5]));
                 }
                 setDead();
                 return true;
             }else if(entityHit instanceof EntityPlayer){
-                EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) entityHit, ((EntityPlayer) entityHit).getCurrentEquippedItem(), true);
+                EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) entityHit, ((EntityPlayer) entityHit).getHeldItemMainhand(), true);
                 if(entityitem!=null){
                     entityitem.setPickupDelay(PICKUP_TIME);
                     entityitem.setOwner(entityHit.getName());
                 }
                 if(!((IBattlePlayer)entityHit).isBattlemode())
-                    ((EntityPlayer) entityHit).inventory.setInventorySlotContents(((EntityPlayer) entityHit).inventory.currentItem, new ItemStack(ItemMBArrow.component[5]));
+                    ((EntityPlayer) entityHit).setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ItemMBArrow.component[5]));
                 setDead();
                 return true;
             }
@@ -70,8 +74,7 @@ public class EntityLoveArrow extends AbstractMBArrow{
 	}
 
 	@Override
-	public void onHitGround(int x, int y, int z) {
+	public void onHitGround(BlockPos pos) {
 		
 	}
-
 }

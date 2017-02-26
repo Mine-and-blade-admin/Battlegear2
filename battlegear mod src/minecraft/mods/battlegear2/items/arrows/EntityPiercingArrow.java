@@ -1,12 +1,16 @@
 package mods.battlegear2.items.arrows;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 
@@ -23,23 +27,23 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 		super(par1World);
 	}
 	
-	public EntityPiercingArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
-        super(par1World, par2EntityLivingBase, par3);
+	public EntityPiercingArrow(World par1World, EntityLivingBase par2EntityLivingBase) {
+        super(par1World, par2EntityLivingBase);
     }
 
-    public EntityPiercingArrow(World par1World, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase, float par4, float par5) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5);
+    public EntityPiercingArrow(World par1World, double x, double y, double z) {
+        super(par1World, x, y, z);
     }
 
     @Override
     public void onUpdate() {
-        Vec3 a = new Vec3(this.posX, this.posY, this.posZ);
-        Vec3 b = new Vec3(this.posX + this.motionX * 1.5, this.posY + this.motionY * 1.5, this.posZ + this.motionZ * 1.5);
-        MovingObjectPosition movingobjectposition = this.worldObj.rayTraceBlocks(a, b, false, true, true);
+        Vec3d a = new Vec3d(this.posX, this.posY, this.posZ);
+        Vec3d b = new Vec3d(this.posX + this.motionX * 1.5, this.posY + this.motionY * 1.5, this.posZ + this.motionZ * 1.5);
+        RayTraceResult movingobjectposition = this.world.rayTraceBlocks(a, b, false, true, true);
 
         if (ticksInGround == 0 && movingobjectposition != null && movingobjectposition.entityHit == null){
             ticksInGround ++;
-            onHitGround(movingobjectposition.getBlockPos().getX(), movingobjectposition.getBlockPos().getY(), movingobjectposition.getBlockPos().getZ());
+            onHitGround(movingobjectposition.getBlockPos());
         }
         super.onUpdate();
     }
@@ -47,9 +51,9 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 	@Override
 	public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
 		entityHit.attackEntityFrom(getPiercingDamage(), ammount);
-		if(!worldObj.isRemote && entityHit instanceof IShearable){
-            if (((IShearable) entityHit).isShearable(null, worldObj, new BlockPos(entityHit))) {
-                List<ItemStack> drops = ((IShearable) entityHit).onSheared(null, worldObj, new BlockPos(entityHit), 1);
+		if(!world.isRemote && entityHit instanceof IShearable){
+            if (((IShearable) entityHit).isShearable(ItemStack.EMPTY, world, new BlockPos(entityHit))) {
+                List<ItemStack> drops = ((IShearable) entityHit).onSheared(ItemStack.EMPTY, world, new BlockPos(entityHit), 1);
                 Random rand = new Random();
                 for(ItemStack stack : drops){
                     EntityItem ent = entityHit.entityDropItem(stack, 1.0F);
@@ -63,33 +67,32 @@ public class EntityPiercingArrow extends AbstractMBArrow{
 	}
 
     public DamageSource getPiercingDamage(){
-        return new EntityDamageSourceIndirect("piercing.arrow", null, shootingEntity).setProjectile().setDamageBypassesArmor();
+        return new EntityDamageSourceIndirect("piercing.arrow", this, shootingEntity).setProjectile().setDamageBypassesArmor();
     }
 
 	@Override
-	public void onHitGround(int x, int y, int z) {
+	public void onHitGround(BlockPos pos) {
         boolean broken = false;
         if(canBreakBlocks()) {
-            BlockPos pos = new BlockPos(x, y, z);
-            Block block = worldObj.getBlockState(pos).getBlock();
-            if (block.getMaterial() == Material.glass) {
-                worldObj.destroyBlock(pos, false);
-            } else if (!worldObj.isRemote) {
-                if (block instanceof IShearable) {
-                    IShearable target = (IShearable) block;
-                    if (target.isShearable(null, worldObj, pos)) {
-                        List<ItemStack> drops = target.onSheared(null, worldObj, pos, 1);
+            IBlockState block = world.getBlockState(pos);
+            if (block.getMaterial() == Material.GLASS) {
+                world.destroyBlock(pos, false);
+            } else if (!world.isRemote) {
+                if (block.getBlock() instanceof IShearable) {
+                    IShearable target = (IShearable) block.getBlock();
+                    if (target.isShearable(ItemStack.EMPTY, world, pos)) {
+                        List<ItemStack> drops = target.onSheared(ItemStack.EMPTY, world, pos, 1);
                         Random rand = new Random();
                         for (ItemStack stack : drops) {
                             float f = 0.7F;
                             double d = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
                             double d1 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
                             double d2 = (double) (rand.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-                            EntityItem entityitem = new EntityItem(worldObj, (double) x + d, (double) y + d1, (double) z + d2, stack);
+                            EntityItem entityitem = new EntityItem(world, (double) pos.getY() + d, (double) pos.getY() + d1, (double) pos.getZ() + d2, stack);
                             entityitem.setDefaultPickupDelay();
-                            worldObj.spawnEntityInWorld(entityitem);
+                            world.spawnEntity(entityitem);
                         }
-                        broken = worldObj.setBlockToAir(pos);
+                        broken = world.setBlockToAir(pos);
                     }
                 }
             }

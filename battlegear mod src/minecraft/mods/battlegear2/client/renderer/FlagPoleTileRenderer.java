@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer<TileEntityFl
         if (banner.getBlock() instanceof BlockAir) {
             return;
         }
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         int type = banner.getBlock().getMetaFromState(banner);
         int side = tileentity.getOrientation();
 
@@ -84,17 +83,17 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer<TileEntityFl
                 ImageCache.setTexture(flag);
 
                 if(flag_sections == 0){
-                    tess.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                    tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
-                    tess.getWorldRenderer().pos(8F / 16F, -flagIndex + 1 - 2F / 16F, 0).tex(0, 0.001).endVertex();
-                    tess.getWorldRenderer().pos(8F / 16F, -flagIndex - 2F / 16F, 0).tex(1, 0.001).endVertex();
-                    tess.getWorldRenderer().pos(8F / 16F, -flagIndex - 2F / 16F, 1).tex(1, 0.999).endVertex();
-                    tess.getWorldRenderer().pos(8F / 16F, -flagIndex + 1 - 2F / 16F, 1).tex(0, 0.999).endVertex();
+                    tess.getBuffer().pos(8F / 16F, -flagIndex + 1 - 2F / 16F, 0).tex(0, 0.001).endVertex();
+                    tess.getBuffer().pos(8F / 16F, -flagIndex - 2F / 16F, 0).tex(1, 0.001).endVertex();
+                    tess.getBuffer().pos(8F / 16F, -flagIndex - 2F / 16F, 1).tex(1, 0.999).endVertex();
+                    tess.getBuffer().pos(8F / 16F, -flagIndex + 1 - 2F / 16F, 1).tex(0, 0.999).endVertex();
 
-                    tess.getWorldRenderer().pos(8F / 16F, -flagIndex + 1 - 2F / 16F, 1).tex(0, 0.999).endVertex();
-                    tess.getWorldRenderer().pos(8F / 16F, -flagIndex - 2F / 16F, 1).tex(1, 0.999).endVertex();
-                    tess.getWorldRenderer().pos(8F / 16F, -flagIndex - 2F / 16F, 0).tex(1, 0.001).endVertex();
-                    tess.getWorldRenderer().pos(8F / 16F, -flagIndex + 1 - 2F / 16F, 0).tex(0, 0.001).endVertex();
+                    tess.getBuffer().pos(8F / 16F, -flagIndex + 1 - 2F / 16F, 1).tex(0, 0.999).endVertex();
+                    tess.getBuffer().pos(8F / 16F, -flagIndex - 2F / 16F, 1).tex(1, 0.999).endVertex();
+                    tess.getBuffer().pos(8F / 16F, -flagIndex - 2F / 16F, 0).tex(1, 0.001).endVertex();
+                    tess.getBuffer().pos(8F / 16F, -flagIndex + 1 - 2F / 16F, 0).tex(0, 0.001).endVertex();
 
 
                     tess.draw();
@@ -103,20 +102,20 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer<TileEntityFl
 
                     long time = System.currentTimeMillis();
                     for(int i = 0; i < flag_sections; i++){
-                        tess.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                        tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
                         double z1 = getZLevel((float)((flag_sections - i)) / (float)flag_sections + flagIndex, 5, time) / 5F;
                         double z2 = getZLevel((float)(flag_sections - i+1) / (float)flag_sections + flagIndex, 5, time) / 5F;
 
-                        tess.getWorldRenderer().pos(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 0).tex((float) (i + 1) / (float) flag_sections, 0.999).endVertex();
-                        tess.getWorldRenderer().pos(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 0).tex((float) (i) / (float) flag_sections, 0.999).endVertex();
-                        tess.getWorldRenderer().pos(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 1).tex((float) (i) / (float) flag_sections, 0.001).endVertex();
-                        tess.getWorldRenderer().pos(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 1).tex((float) (i + 1) / (float) flag_sections, 0.001).endVertex();
+                        tess.getBuffer().pos(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 0).tex((float) (i + 1) / (float) flag_sections, 0.999).endVertex();
+                        tess.getBuffer().pos(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 0).tex((float) (i) / (float) flag_sections, 0.999).endVertex();
+                        tess.getBuffer().pos(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 1).tex((float) (i) / (float) flag_sections, 0.001).endVertex();
+                        tess.getBuffer().pos(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 1).tex((float) (i + 1) / (float) flag_sections, 0.001).endVertex();
 
-                        tess.getWorldRenderer().pos(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 1).tex((float) (i + 1) / (float) flag_sections, 0.001).endVertex();
-                        tess.getWorldRenderer().pos(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 1).tex((float) (i) / (float) flag_sections, 0.001).endVertex();
-                        tess.getWorldRenderer().pos(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 0).tex((float) (i) / (float) flag_sections, 0.999).endVertex();
-                        tess.getWorldRenderer().pos(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 0).tex((float) (i + 1) / (float) flag_sections, 0.999).endVertex();
+                        tess.getBuffer().pos(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 1).tex((float) (i + 1) / (float) flag_sections, 0.001).endVertex();
+                        tess.getBuffer().pos(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 1).tex((float) (i) / (float) flag_sections, 0.001).endVertex();
+                        tess.getBuffer().pos(8F / 16F + z2, -flagIndex + (float) (i) / (float) flag_sections - 2F / 16F, 0).tex((float) (i) / (float) flag_sections, 0.999).endVertex();
+                        tess.getBuffer().pos(8F / 16F + z1, -flagIndex + (float) (i + 1) / (float) flag_sections - 2F / 16F, 0).tex((float) (i + 1) / (float) flag_sections, 0.999).endVertex();
 
 
                         tess.draw();
@@ -149,36 +148,36 @@ public class FlagPoleTileRenderer extends TileEntitySpecialRenderer<TileEntityFl
 
 
                 if(flag_sections == 0){
-                    tess.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-                    tess.getWorldRenderer().pos(7F / 16F - flagIndex, 0, 8F / 16F).tex(0, 0.999).endVertex();
-                    tess.getWorldRenderer().pos(7F / 16F - flagIndex - 1, 0, 8F / 16F).tex(1.0025, 0.999).endVertex();
-                    tess.getWorldRenderer().pos(7F / 16F - flagIndex - 1, 1, 8F / 16F).tex(1.0025, 0.001).endVertex();
-                    tess.getWorldRenderer().pos(7F / 16F - flagIndex, 1, 8F / 16F).tex(0, 0.001).endVertex();
+                    tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                    tess.getBuffer().pos(7F / 16F - flagIndex, 0, 8F / 16F).tex(0, 0.999).endVertex();
+                    tess.getBuffer().pos(7F / 16F - flagIndex - 1, 0, 8F / 16F).tex(1.0025, 0.999).endVertex();
+                    tess.getBuffer().pos(7F / 16F - flagIndex - 1, 1, 8F / 16F).tex(1.0025, 0.001).endVertex();
+                    tess.getBuffer().pos(7F / 16F - flagIndex, 1, 8F / 16F).tex(0, 0.001).endVertex();
 
-                    tess.getWorldRenderer().pos(7F / 16F - flagIndex, 1, 8F / 16F).tex(0, 0.001).endVertex();
-                    tess.getWorldRenderer().pos(7F / 16F - flagIndex - 1, 1, 8F / 16F).tex(1.0025, 0.001).endVertex();
-                    tess.getWorldRenderer().pos(7F / 16F - flagIndex - 1, 0, 8F / 16F).tex(1.0025, 0.999).endVertex();
-                    tess.getWorldRenderer().pos(7F / 16F - flagIndex, 0, 8F / 16F).tex(0, 0.999).endVertex();
+                    tess.getBuffer().pos(7F / 16F - flagIndex, 1, 8F / 16F).tex(0, 0.001).endVertex();
+                    tess.getBuffer().pos(7F / 16F - flagIndex - 1, 1, 8F / 16F).tex(1.0025, 0.001).endVertex();
+                    tess.getBuffer().pos(7F / 16F - flagIndex - 1, 0, 8F / 16F).tex(1.0025, 0.999).endVertex();
+                    tess.getBuffer().pos(7F / 16F - flagIndex, 0, 8F / 16F).tex(0, 0.999).endVertex();
 
                     tess.draw();
 
                 }else{
                     long time = System.currentTimeMillis();
                     for(int i = 0; i < flag_sections; i++){
-                        tess.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+                        tess.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
                         double z1 = getZLevel((float)(i) / (float)flag_sections + flagIndex, 3, time);
                         double z2 = getZLevel((float)(i+1) / (float)flag_sections + flagIndex, 3, time);
 
-                        tess.getWorldRenderer().pos(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 0, 8F / 16F + z1).tex((float) (i) / (float) flag_sections, 0.999).endVertex();
-                        tess.getWorldRenderer().pos(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 0, 8F / 16F + z2).tex((float) (i + 1) / (float) flag_sections, 0.999).endVertex();
-                        tess.getWorldRenderer().pos(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z2).tex((float) (i + 1) / (float) flag_sections, 0.001).endVertex();
-                        tess.getWorldRenderer().pos(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z1).tex((float) (i) / (float) flag_sections, 0.001).endVertex();
+                        tess.getBuffer().pos(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 0, 8F / 16F + z1).tex((float) (i) / (float) flag_sections, 0.999).endVertex();
+                        tess.getBuffer().pos(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 0, 8F / 16F + z2).tex((float) (i + 1) / (float) flag_sections, 0.999).endVertex();
+                        tess.getBuffer().pos(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z2).tex((float) (i + 1) / (float) flag_sections, 0.001).endVertex();
+                        tess.getBuffer().pos(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z1).tex((float) (i) / (float) flag_sections, 0.001).endVertex();
 
-                        tess.getWorldRenderer().pos(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z1).tex((float) (i) / (float) flag_sections, 0.001).endVertex();
-                        tess.getWorldRenderer().pos(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z2).tex((float) (i + 1) / (float) flag_sections, 0.001).endVertex();
-                        tess.getWorldRenderer().pos(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 0, 8F / 16F + z2).tex((float) (i + 1) / (float) flag_sections, 0.999).endVertex();
-                        tess.getWorldRenderer().pos(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 0, 8F / 16F + z1).tex((float) (i) / (float) flag_sections, 0.999).endVertex();
+                        tess.getBuffer().pos(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z1).tex((float) (i) / (float) flag_sections, 0.001).endVertex();
+                        tess.getBuffer().pos(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 1.0025, 8F / 16F + z2).tex((float) (i + 1) / (float) flag_sections, 0.001).endVertex();
+                        tess.getBuffer().pos(7F / 16F - (float) (i + 1) / (float) flag_sections - flagIndex, 0, 8F / 16F + z2).tex((float) (i + 1) / (float) flag_sections, 0.999).endVertex();
+                        tess.getBuffer().pos(7F / 16F - (float) (i) / (float) flag_sections - flagIndex, 0, 8F / 16F + z1).tex((float) (i) / (float) flag_sections, 0.999).endVertex();
 
                         tess.draw();
                     }

@@ -5,7 +5,7 @@ import mods.battlegear2.api.heraldry.IFlagHolder;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public final class BattlegearBannerPacket extends AbstractMBPacket{
         }catch (Exception e){
             e.printStackTrace();
         }
-        TileEntity te = player.worldObj.getTileEntity(new BlockPos(posX, posY, posZ));
+        TileEntity te = player.world.getTileEntity(new BlockPos(posX, posY, posZ));
         if(te instanceof IFlagHolder){
             ((IFlagHolder) te).clearFlags();
             for(ItemStack flag:parts){

@@ -1,18 +1,18 @@
 {
-  "parent": "builtin/generated",
+  "parent": "item/generated",
   "textures": {
     "layer0": "battlegear2:items/chain"
   },
   "display": {
-    "thirdperson": {
+    "thirdperson_righthand": {
       "rotation": [ -90, 0, 0 ],
       "translation": [ 0, 1, -2 ],
       "scale": [ 0.45, 0.45, 0.45 ]
     },
-    "firstperson": {
-      "rotation": [ 0, -135, 25 ],
+    "firstperson_righthand": {
+      "rotation": [ 90, -135, 5 ],
       "translation": [ 0, 4, 2 ],
-      "scale": [ 1.7, 1.7, 1.7 ]
+      "scale": [ 0.68, 0.68, 0.68 ]
     }
   }
 }

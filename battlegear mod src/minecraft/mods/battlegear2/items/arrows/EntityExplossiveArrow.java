@@ -3,6 +3,7 @@ package mods.battlegear2.items.arrows;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 /**
  * An arrow which causes explosions
@@ -15,12 +16,12 @@ public class EntityExplossiveArrow extends AbstractMBArrow{
         super(par1World);
     }
 	
-    public EntityExplossiveArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
-        super(par1World, par2EntityLivingBase, par3);
+    public EntityExplossiveArrow(World par1World, EntityLivingBase par2EntityLivingBase) {
+        super(par1World, par2EntityLivingBase);
     }
 
-    public EntityExplossiveArrow(World par1World, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase, float par4, float par5) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5);
+    public EntityExplossiveArrow(World par1World, double x, double y, double z) {
+        super(par1World, x, y, z);
     }
 
     @Override
@@ -31,13 +32,13 @@ public class EntityExplossiveArrow extends AbstractMBArrow{
     }
 
     @Override
-    public void onHitGround(int x, int y, int z) {
+    public void onHitGround(BlockPos pos) {
     	this.onExplode();
     }
     
     public void onExplode(){
-        if (!this.worldObj.isRemote) {
-            this.worldObj.createExplosion(this, this.posX, this.posY, this.posZ, getExplosionStrength(), canBreakBlocks());
+        if (!this.world.isRemote) {
+            this.world.createExplosion(this, this.posX, this.posY, this.posZ, getExplosionStrength(), canBreakBlocks());
             this.setDead();
         }
     }

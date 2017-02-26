@@ -1,165 +1,60 @@
-@@ -92,14 +92,22 @@
- import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
- import net.minecraftforge.event.entity.player.PlayerSleepInBedEvent;
+@@ -96,7 +96,7 @@
+ import net.minecraftforge.fml.relauncher.SideOnly;
  
--public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender
--{
-+public abstract class EntityPlayer extends EntityLivingBase implements ICommandSender, mods.battlegear2.api.core.IBattlePlayer
-+{/** Mine & Blade: Notes Edits made by: nerd-boy and GotoLink
-+ 	 *
-+ 	 * Edits: 4 Added Methods: 7 Added Fields: 6
-+ 	 *
-+ 	 * Adding methods and fields is relatively easy. Some of the methods
-+ 	 * provided are not needed, they do however provide more simple access.
-+ 	 * The bigger edits are patches over the "using item" system.
-+ 	 * The only other edit is to replace the instance of Inventory player with
-+ 	 * the custom Inventory class.*/
+ @SuppressWarnings("incomplete-switch")
+-public abstract class EntityPlayer extends EntityLivingBase
++public abstract class EntityPlayer extends EntityLivingBase implements mods.battlegear2.api.core.IBattlePlayer
+ {
      public static final String PERSISTED_NBT_TAG = "PlayerPersisted";
-     private HashMap<Integer, ChunkCoordinates> spawnChunkMap = new HashMap<Integer, ChunkCoordinates>();
-     private HashMap<Integer, Boolean> spawnForcedMap = new HashMap<Integer, Boolean>();
- 
+     private java.util.HashMap<Integer, BlockPos> spawnChunkMap = new java.util.HashMap<Integer, BlockPos>();
+@@ -108,7 +108,7 @@
+     protected static final DataParameter<Byte> PLAYER_MODEL_FLAG = EntityDataManager.<Byte>createKey(EntityPlayer.class, DataSerializers.BYTE);
+     protected static final DataParameter<Byte> MAIN_HAND = EntityDataManager.<Byte>createKey(EntityPlayer.class, DataSerializers.BYTE);
      /** Inventory of the player */
 -    public InventoryPlayer inventory = new InventoryPlayer(this);
 +    public InventoryPlayer inventory = new mods.battlegear2.api.core.InventoryPlayerBattle(this);
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
      /** The Container for the player's inventory (which opens when they press E) */
      public Container inventoryContainer;
-@@ -259,7 +267,7 @@
-         FMLCommonHandler.instance().onPlayerPreTick(this);
-         if (this.itemInUse != null)
-         {
--            ItemStack itemstack = this.inventory.getCurrentItem();
-+            ItemStack itemstack = mods.battlegear2.api.core.BattlegearUtils.getCurrentItemOnUpdate(this, this.itemInUse);//---MB-Edited---
+@@ -2375,26 +2375,13 @@
  
-             if (itemstack == this.itemInUse)
-             {
-@@ -469,7 +477,7 @@
-             int i = this.itemInUse.stackSize;
-             ItemStack itemstack = this.itemInUse.onFoodEaten(this.worldObj, this);
- 
--            itemstack = ForgeEventFactory.onItemUseFinish(this, itemInUse, itemInUseCount, itemstack);
-+            itemstack = mods.battlegear2.api.core.BattlegearUtils.beforeFinishUseEvent(this, itemInUse, itemInUseCount, itemstack, i);//---MB-Edited---
- 
-             if (itemstack != this.itemInUse || itemstack != null && itemstack.stackSize != i)
-             {
-@@ -1260,50 +1268,9 @@
- 
-     public boolean interactWith(Entity p_70998_1_)
+     public ItemStack getItemStackFromSlot(EntityEquipmentSlot slotIn)
      {
--        if (MinecraftForge.EVENT_BUS.post(new EntityInteractEvent(this, p_70998_1_))) return false;
--        ItemStack itemstack = this.getCurrentEquippedItem();
--        ItemStack itemstack1 = itemstack != null ? itemstack.copy() : null;
--
--        if (!p_70998_1_.interactFirst(this))
--        {
--            if (itemstack != null && p_70998_1_ instanceof EntityLivingBase)
--            {
--                if (this.capabilities.isCreativeMode)
--                {
--                    itemstack = itemstack1;
-+        return mods.battlegear2.api.core.BattlegearUtils.interactWith(this, p_70998_1_);
--                }
-+    }
+-        return slotIn == EntityEquipmentSlot.MAINHAND ? this.inventory.getCurrentItem() : (slotIn == EntityEquipmentSlot.OFFHAND ? (ItemStack)this.inventory.offHandInventory.get(0) : (slotIn.getSlotType() == EntityEquipmentSlot.Type.ARMOR ? (ItemStack)this.inventory.armorInventory.get(slotIn.getIndex()) : ItemStack.EMPTY));
++        return mods.battlegear2.api.core.BattlegearUtils.getItemStackFromSlot(this, slotIn);
+     }
  
--                if (itemstack.interactWithEntity(this, (EntityLivingBase)p_70998_1_))
--                {
--                    if (itemstack.stackSize <= 0 && !this.capabilities.isCreativeMode)
--                    {
--                        this.destroyCurrentEquippedItem();
--                    }
--
--                    return true;
--                }
--            }
--
--            return false;
--        }
--        else
--        {
--            if (itemstack != null && itemstack == this.getCurrentEquippedItem())
--            {
--                if (itemstack.stackSize <= 0 && !this.capabilities.isCreativeMode)
--                {
--                    this.destroyCurrentEquippedItem();
--                }
--                else if (itemstack.stackSize < itemstack1.stackSize && this.capabilities.isCreativeMode)
--                {
--                    itemstack.stackSize = itemstack1.stackSize;
--                }
--            }
--
--            return true;
--        }
--    }
--
-     /**
-      * Returns the currently being used item by the player.
-      */
-@@ -2363,7 +2330,7 @@
+     public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack)
      {
-         if (p_70062_1_ == 0)
-         {
--            this.inventory.mainInventory[this.inventory.currentItem] = p_70062_2_;
-+            mods.battlegear2.api.core.BattlegearUtils.setPlayerCurrentItem(this, p_70062_2_);//-----MB-Edited-----
-         }
-         else
-         {
-@@ -2626,5 +2593,69 @@
+-        if (slotIn == EntityEquipmentSlot.MAINHAND)
+-        {
++        if(mods.battlegear2.api.core.BattlegearUtils.setItemStackToSlot(this, slotIn, stack))
+             this.playEquipSound(stack);
+-            this.inventory.mainInventory.set(this.inventory.currentItem, stack);
+-        }
+-        else if (slotIn == EntityEquipmentSlot.OFFHAND)
+-        {
+-            this.playEquipSound(stack);
+-            this.inventory.offHandInventory.set(0, stack);
+-        }
+-        else if (slotIn.getSlotType() == EntityEquipmentSlot.Type.ARMOR)
+-        {
+-            this.playEquipSound(stack);
+-            this.inventory.armorInventory.set(slotIn.getIndex(), stack);
+-        }
+     }
+ 
+     public Iterable<ItemStack> getHeldEquipment()
+@@ -2917,4 +2904,31 @@
+         OTHER_PROBLEM,
          NOT_SAFE;
- 
-         private static final String __OBFID = "CL_00001712";
-+    }
-+    /* ===================================== Battlegear2 START =====================================*/
-+    // -----MB-addFields-----
-+    public float offHandSwingProgress = 0.0F;
-+    public float prevOffHandSwingProgress = 0.0F;
-+    public int offHandSwingProgressInt = 0;
-+    public boolean isOffHandSwingInProgress = false;
+     }
++
 +    public int specialActionTimer = 0;
 +    public boolean isShielding = false;
 +    // -----MB-AddMethod-----
 +    public void attackTargetEntityWithCurrentOffItem(Entity target) {
 +        mods.battlegear2.api.core.BattlegearUtils.attackTargetEntityWithCurrentOffItem(this, target);
-+    }
-+    // -----MB-AddMethod-----
-+    public void swingOffItem() {
-+        if (!this.isOffHandSwingInProgress || this.offHandSwingProgressInt >= this.getArmSwingAnimationEnd() / 2 || this.offHandSwingProgressInt < 0) {
-+            this.offHandSwingProgressInt = -1;
-+            this.isOffHandSwingInProgress = true;
-+        }
-+    }
-+    // -----MB-AddMethod-----
-+    public float getOffSwingProgress(float frame) {
-+        float diff = this.offHandSwingProgress - this.prevOffHandSwingProgress;
-+        if (diff < 0.0F) {
-+            ++diff;
-+        }
-+        return this.prevOffHandSwingProgress + diff * frame;
-+    }
-+    // -----MB-AddMethod----- (Overridden)
-+    @Override
-+    protected void updateArmSwingProgress() {
-+        super.updateArmSwingProgress();
-+        this.prevOffHandSwingProgress = this.offHandSwingProgress;
-+        int var1 = this.getArmSwingAnimationEnd();
-+        if (this.isOffHandSwingInProgress) {
-+            ++this.offHandSwingProgressInt;
-+            if (this.offHandSwingProgressInt >= var1) {
-+                this.offHandSwingProgressInt = 0;
-+                this.isOffHandSwingInProgress = false;
-+            }
-+        } else {
-+            this.offHandSwingProgressInt = 0;
-+        }
-+        this.offHandSwingProgress = (float) this.offHandSwingProgressInt / (float) var1;
-+        if(specialActionTimer > 0){
-+            this.isOffHandSwingInProgress = false;
-+            this.isSwingInProgress = false;
-+            this.offHandSwingProgress = 0;
-+            this.offHandSwingProgressInt = 0;
-+            this.swingProgress = 0;
-+            this.swingProgressInt = 0;
-+        }
 +    }
 +    // -----MB-AddMethod-----
 +    public boolean isBattlemode() {
@@ -170,7 +65,16 @@
 +        return mods.battlegear2.api.core.BattlegearUtils.canBlockWithShield(this) && isShielding;
 +    }
 +    //-----MB-AddMethod-----
-+    public void setBlockingWithShield(boolean block){
++    public void setBlockingWithShield(boolean block) {
 +        isShielding = block && mods.battlegear2.api.core.BattlegearUtils.canBlockWithShield(this);
-     }
++    }
++    //-----MB-AddMethod-----
++    public int getSpecialActionTimer(){
++        return specialActionTimer;
++    }
++    //-----MB-AddMethod-----
++    public void setSpecialActionTimer(int time){
++        specialActionTimer = time;
++    }
  }
+\ No newline at end of file

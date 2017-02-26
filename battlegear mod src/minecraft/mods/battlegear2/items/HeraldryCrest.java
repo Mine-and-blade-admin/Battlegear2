@@ -10,11 +10,16 @@ import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class HeraldryCrest extends ItemMap implements IHeraldryItem{
@@ -39,9 +44,9 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     }*/
 
     @Override
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World world, EntityPlayer player){
-        player.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.flagEditor, world, 0, 0, 0);
-        return par1ItemStack;
+    public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand){
+        player.openGui(Battlegear.INSTANCE, BattlegearGUIHandeler.flagEditor, world, hand.ordinal(), 0, 0);
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
     }
 
     @Override
@@ -55,7 +60,8 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     }
 
     @Override
-    public ItemStack getContainerItem(ItemStack itemStack) {
+    @Nonnull
+    public ItemStack getContainerItem(@Nonnull ItemStack itemStack) {
         return itemStack;
     }
 
@@ -111,19 +117,19 @@ public class HeraldryCrest extends ItemMap implements IHeraldryItem{
     {}
 
     @Override
-    public void onUpdate(ItemStack par1ItemStack, World par2World, Entity par3Entity, int par4, boolean par5)
+    public void onUpdate(@Nullable ItemStack par1ItemStack, World par2World,@Nullable Entity par3Entity, int par4, boolean par5)
     {}
 
     @Override
-    public Packet createMapDataPacket(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    public Packet createMapDataPacket(@Nullable ItemStack par1ItemStack,@Nullable World par2World,@Nullable EntityPlayer par3EntityPlayer)
     {return null;}
 
     @Override
-    public void onCreated(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    public void onCreated(ItemStack par1ItemStack,@Nullable World par2World, EntityPlayer par3EntityPlayer)
     {}
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4)
+    public void addInformation(@Nullable ItemStack par1ItemStack, EntityPlayer par2EntityPlayer,@Nullable List<String> par3List, boolean par4)
     {}
 }

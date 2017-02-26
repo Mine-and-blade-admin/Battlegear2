@@ -30,8 +30,8 @@ public enum HeraldryPositions {
 	private boolean[] patternFlip;
 	private boolean[] altColours;
 	
-	private HeraldryPositions(int passess, float[] sourceX, float[] sourceY,
-			float width, boolean[] patternFlip, boolean[] altColours) {
+	HeraldryPositions(int passess, float[] sourceX, float[] sourceY,
+                      float width, boolean[] patternFlip, boolean[] altColours) {
 		this.passess = passess;
 		this.sourceX = sourceX;
 		this.sourceY = sourceY;

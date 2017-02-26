@@ -38,11 +38,11 @@ public final class BattlegearTickHandeler {
 
     public void tickStart(EntityPlayer entityPlayer) {
 
-        if (!entityPlayer.worldObj.isRemote && entityPlayer.worldObj instanceof WorldServer) {
+        if (!entityPlayer.world.isRemote && entityPlayer.world instanceof WorldServer) {
 
             if(((InventoryPlayerBattle)entityPlayer.inventory).hasChanged){
 
-                ((WorldServer)entityPlayer.worldObj).getEntityTracker().func_151248_b(
+                ((WorldServer)entityPlayer.world).getEntityTracker().sendToTrackingAndSelf(
                         entityPlayer, new BattlegearSyncItemPacket(entityPlayer).generatePacket()
                 );
 
@@ -52,8 +52,8 @@ public final class BattlegearTickHandeler {
 
             }
             //Force update every 3 seconds
-            else if(((IBattlePlayer)entityPlayer).isBattlemode() && entityPlayer.ticksExisted % BattlegearConfig.updateRate == 0 && !entityPlayer.isUsingItem()){
-                ((WorldServer)entityPlayer.worldObj).getEntityTracker().func_151248_b(
+            else if(((IBattlePlayer)entityPlayer).isBattlemode() && entityPlayer.ticksExisted % BattlegearConfig.updateRate == 0 && !entityPlayer.isHandActive()){
+                ((WorldServer)entityPlayer.world).getEntityTracker().sendToTrackingAndSelf(
                         entityPlayer, new BattlegearSyncItemPacket(entityPlayer).generatePacket()
                 );
             }

@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.EnchantmentHelper;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.IEnchantable;
@@ -10,6 +11,7 @@ import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.shield.ShieldType;
 import mods.battlegear2.enchantments.BaseEnchantment;
 import mods.battlegear2.utils.BattlegearConfig;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnumEnchantmentType;
 import net.minecraft.entity.IProjectile;
@@ -19,8 +21,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.IFuelHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -39,11 +41,11 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
         this.enumShield = enumShield;
 
         this.setUnlocalizedName("battlegear2:shield."+enumShield.getName());
-
+        this.setRegistryName("battlegear2:shield."+enumShield.getName());
         this.setMaxDamage(enumShield.getMaxDamage());
         this.setMaxStackSize(1);
         this.setHasSubtypes(false);
-        GameRegistry.registerItem(this, "shield."+enumShield.getName());
+        GameRegistry.register(this);
     }
 
     @Override
@@ -99,7 +101,7 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     @Override
     public void blockAnimation(EntityPlayer player, float dmg){
-        player.worldObj.playSoundAtEntity(player, "battlegear2:shield", 1, 1);
+        player.world.playSound(null, player.getPosition(), Battlegear.shieldSound, SoundCategory.PLAYERS, 1, 1);
     }
 
     @Override
@@ -124,28 +126,27 @@ public class ItemShield extends Item implements IShield, IDyable, IEnchantable, 
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
+    public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List<String> par3List, boolean par4) {
         super.addInformation(par1ItemStack, par2EntityPlayer, par3List, par4);
 
         par3List.add("");
 
-        par3List.add(EnumChatFormatting.DARK_GREEN+
-                StatCollector.translateToLocalFormatted("attribute.shield.block.time", ItemStack.DECIMALFORMAT.format(1F / (enumShield.getDecayRate()) / 20F)));
+        par3List.add(TextFormatting.DARK_GREEN+
+                I18n.format("attribute.shield.block.time", ItemStack.DECIMALFORMAT.format(1F / (enumShield.getDecayRate()) / 20F)));
 
         int arrowCount = getArrowCount(par1ItemStack);
         if(arrowCount > 0){
-            par3List.add(EnumChatFormatting.GOLD+
-                    StatCollector.translateToLocalFormatted("attribute.shield.arrow.count", arrowCount));
+            par3List.add(TextFormatting.GOLD+
+                    I18n.format("attribute.shield.arrow.count", arrowCount));
         }
 
     }
 
-    @Override
     @SideOnly(Side.CLIENT)
-    public int getColorFromItemStack(ItemStack stack, int renderPass) {
+    public int getColor(ItemStack stack, int renderPass) {
         if (renderPass == 0 || (this.enumShield == ShieldType.WOOD && renderPass < 2))
             return getColor(stack);
-        return super.getColorFromItemStack(stack, renderPass);
+        return -1;
     }
 
     /**

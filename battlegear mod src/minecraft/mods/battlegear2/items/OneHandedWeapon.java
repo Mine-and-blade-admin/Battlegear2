@@ -1,5 +1,6 @@
 package mods.battlegear2.items;
 
+import mods.battlegear2.api.weapons.WeaponRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
@@ -15,8 +16,8 @@ public class OneHandedWeapon extends ItemWeapon{
 	}
 
 	@Override
-	public boolean isOffhandWieldable(ItemStack off, EntityPlayer player) {
-		return true;
+	public WeaponRegistry.Wield getWieldStyle(ItemStack itemStack, EntityPlayer player) {
+		return WeaponRegistry.Wield.BOTH;
 	}
 
 	@Override

@@ -10,7 +10,7 @@ public final class LoginPacket extends AbstractMBPacket{
 
     @Override
     public void process(ByteBuf inputStream, EntityPlayer player) {
-        if(player.worldObj.isRemote){
+        if(player.world.isRemote){
             Battlegear.battlegearEnabled = true;
             WeaponHookContainerClass.INSTANCE.doBlocking = inputStream.readBoolean();
         }

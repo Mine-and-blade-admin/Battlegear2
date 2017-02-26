@@ -7,26 +7,34 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+
 /**
  * An arrow which sucks living entities life force to give it to the shooter
  * @author GotoLink
  *
  */
 public class EntityLeechArrow extends AbstractMBArrow{
-    public static final int SPLASH_WEAKNESS = 16392;
+    @GameRegistry.ObjectHolder("minecraft:weakness")
+    public static Potion WEAKNESS;
+    @GameRegistry.ObjectHolder("minecraft:weakness")
+    public static PotionType WEAKNESS_TYPE;
     public static float LEECH_FACTOR = 0.2F;
     public EntityLeechArrow(World par1World){
         super(par1World);
     }
 
-    public EntityLeechArrow(World par1World, EntityLivingBase par2EntityLivingBase, float par3) {
-        super(par1World, par2EntityLivingBase, par3);
+    public EntityLeechArrow(World par1World, EntityLivingBase par2EntityLivingBase) {
+        super(par1World, par2EntityLivingBase);
     }
 
-    public EntityLeechArrow(World par1World, EntityLivingBase par2EntityLivingBase, EntityLivingBase par3EntityLivingBase, float par4, float par5) {
-        super(par1World, par2EntityLivingBase, par3EntityLivingBase, par4, par5);
+    public EntityLeechArrow(World par1World, double x, double y, double z) {
+        super(par1World, x, y, z);
     }
 
     @Override
@@ -36,7 +44,7 @@ public class EntityLeechArrow extends AbstractMBArrow{
             if(entityHit.attackEntityFrom(getLeechDamage(), value)){//Try leech
                 if(shootingEntity instanceof EntityLivingBase)
                     ((EntityLivingBase) shootingEntity).heal(value);
-                ((EntityLivingBase) entityHit).addPotionEffect(new PotionEffect(Potion.weakness.getId(), 40));//Weaken the opponent
+                ((EntityLivingBase) entityHit).addPotionEffect(new PotionEffect(WEAKNESS, 40));//Weaken the opponent
             }
             ((EntityLivingBase) entityHit).setArrowCountInEntity(((EntityLivingBase) entityHit).getArrowCountInEntity()+1);
             this.setDead();
@@ -46,9 +54,9 @@ public class EntityLeechArrow extends AbstractMBArrow{
     }
 
     @Override
-    public void onHitGround(int x, int y, int z) {
-        if (!worldObj.isRemote){
-            worldObj.spawnEntityInWorld(new EntityPotion(worldObj, x, y, z, new ItemStack(Items.potionitem, 1, SPLASH_WEAKNESS)));//Splash weakness
+    public void onHitGround(BlockPos pos) {
+        if (!world.isRemote){
+            world.spawnEntity(new EntityPotion(world, pos.getX(), pos.getY(), pos.getZ(), PotionUtils.addPotionToItemStack(new ItemStack(Items.SPLASH_POTION), WEAKNESS_TYPE)));//Splash weakness
         }
         this.setDead();
     }

@@ -10,29 +10,31 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class HeraldryArmourModel extends ModelBiped{
 
-	private ItemStack stack;
-	private final int armourSlot;
+	private ItemStack stack = ItemStack.EMPTY;
+	private final EntityEquipmentSlot armourSlot;
 	
 	private boolean renderDecorations = false;
 	private float helmOffset;
 	
-	public HeraldryArmourModel(int par1) {
-		super(par1==2 ? 0.4F : 1F);
+	public HeraldryArmourModel(EntityEquipmentSlot par1) {
+		super(par1==EntityEquipmentSlot.LEGS ? 0.4F : 1F);
 		this.armourSlot = par1;
 		bipedHeadwear.cubeList.clear();
-		if(armourSlot == 2){
+		if(armourSlot == EntityEquipmentSlot.LEGS){
 			//bipedRightLeg = bipedRightLeg.setTextureOffset(40, 16);
 
 			bipedRightLeg.cubeList.clear();
@@ -55,21 +57,21 @@ public class HeraldryArmourModel extends ModelBiped{
 	}
 
 	@Override
-	public void render(Entity par1Entity, float par2, float par3, float par4,
-			float par5, float par6, float par7) {
+	public void render(@Nullable Entity par1Entity, float par2, float par3, float par4,
+					   float par5, float par6, float par7) {
 		super.render(par1Entity, par2, par3, par4, par5, par6, par7);
 		
 		
 		//Allows for proper enchantment rendering
 		if(GL11.glIsEnabled(GL11.GL_BLEND)){
 			
-		}else if(stack != null){
+		}else if(stack.getItem() instanceof IHeraldyArmour){
 			GlStateManager.pushMatrix();
 			IHeraldyArmour heraldryItem = (IHeraldyArmour)stack.getItem();
 			if(heraldryItem.hasHeraldry(stack)){
 				byte[] code = heraldryItem.getHeraldry(stack);
 				//if helmet
-				if(armourSlot == 0 && renderDecorations){
+				if(armourSlot == EntityEquipmentSlot.HEAD && renderDecorations){
 					if(par1Entity == null){
 						renderHelmDecoration(0, SigilHelper.getHelm(code), 0);
 					}else{
@@ -89,7 +91,7 @@ public class HeraldryArmourModel extends ModelBiped{
 	            this.bipedLeftLeg.render(par7);
 	            this.bipedHeadwear.render(par7);
 	            
-	            if(armourSlot == 0 && renderDecorations){
+	            if(armourSlot == EntityEquipmentSlot.HEAD && renderDecorations){
 	            	if(par1Entity == null){
 						renderHelmDecoration(0, SigilHelper.getHelm(code), 1);
 					}else{
@@ -119,7 +121,7 @@ public class HeraldryArmourModel extends ModelBiped{
 	            this.bipedLeftLeg.render(par7);
 	            this.bipedHeadwear.render(par7);
 	            
-	            if(armourSlot == 0 && renderDecorations){
+	            if(armourSlot == EntityEquipmentSlot.HEAD && renderDecorations){
 	            	if(par1Entity == null){
 						renderHelmDecoration(0, SigilHelper.getHelm(code), 1);
 					}else{
@@ -129,7 +131,7 @@ public class HeraldryArmourModel extends ModelBiped{
 
 				GlStateManager.disableLighting();
 	            //If chestplate
-	            if(armourSlot == 1){
+	            if(armourSlot == EntityEquipmentSlot.CHEST){
 	            	HeraldryIcon sigil = SigilHelper.getSigil(code);
 	            	if(!sigil.equals(HeraldryIcon.Blank)){
 		            	float[] colourIconPrimary = SigilHelper.getSigilPrimaryColourArray(code);
@@ -225,7 +227,7 @@ public class HeraldryArmourModel extends ModelBiped{
 
 	public static void renderTexturedQuad(float par1, float par2, float par3, float par4) {
 		Tessellator par0Tessellator = Tessellator.getInstance();
-		WorldRenderer renderer = par0Tessellator.getWorldRenderer();
+		VertexBuffer renderer = par0Tessellator.getBuffer();
 		renderer.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 		renderer.pos(0, 0, 0).tex((double) par1, (double) par4).normal(0, 0, 1).endVertex();
 		renderer.pos(1, 0, 0).tex((double) par3, (double) par4).normal(0, 0, 1).endVertex();
@@ -292,7 +294,7 @@ public class HeraldryArmourModel extends ModelBiped{
 	 */
 	public static void renderItemIn2D(float p_78439_1_, float p_78439_3_, float p_78439_4_) {
 		Tessellator tess = Tessellator.getInstance();
-		WorldRenderer p_78439_0_ = tess.getWorldRenderer();
+		VertexBuffer p_78439_0_ = tess.getBuffer();
 		p_78439_0_.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 		p_78439_0_.pos(0, 0, 0).tex((double) p_78439_1_, (double) p_78439_4_).normal(0, 0, 1).endVertex();
 		p_78439_0_.pos(1, 0, 0).tex((double) p_78439_3_, (double) p_78439_4_).normal(0, 0, 1).endVertex();

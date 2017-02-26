@@ -1,58 +1,63 @@
-@@ -28,8 +28,18 @@
- import org.lwjgl.opengl.GL11;
+@@ -2,6 +2,8 @@
+ 
+ import cpw.mods.fml.relauncher.Side;
+ import cpw.mods.fml.relauncher.SideOnly;
+ import net.minecraft.block.Block;
+ import net.minecraft.block.material.Material;
+ import net.minecraft.client.Minecraft;
+@@ -37,8 +39,19 @@
+ import static net.minecraftforge.client.IItemRenderer.ItemRendererHelper.*;
  
  @SideOnly(Side.CLIENT)
 -public class ItemRenderer
--{
 +public class ItemRenderer implements mods.battlegear2.api.core.IOffhandRender
-+{/*
+ {
++    /*
 +	 * Mine & Blade: Notes
 +	 * Edits made by: nerd-boy
 +	 *
-+	 * Edits: 2
++	 * Edits: 1
 +	 * Added Methods: 0
-+	 * Added Fields: 4 (8 accessors)-added interface
++	 * Added Fields: 1 (8 accessors)-added interface
 +	 *
 +	 * Because rendering the offhand item is quite complex the edits only defer the actual rendering to
 +	 * another method in BattlegearRenderHelper. This makes the coremod infinitely simpler.
 +	 */
+     private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
      private static final ResourceLocation RES_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
      private static final ResourceLocation RES_UNDERWATER_OVERLAY = new ResourceLocation("textures/misc/underwater.png");
-     /** A reference to the Minecraft object. */
-@@ -368,6 +378,7 @@
-         GlStateManager.popMatrix();
-         GlStateManager.disableRescaleNormal();
+@@ -549,6 +562,7 @@
+ 
+         GL11.glDisable(GL12.GL_RESCALE_NORMAL);
          RenderHelper.disableStandardItemLighting();
-+        mods.battlegear2.client.utils.BattlegearRenderHelper.renderItemInFirstPerson(partialTicks, mc, this);//-----MB-Edited-----
      }
  
      /**
-@@ -529,6 +540,7 @@
- 
-     public void updateEquippedItem()
-     {
-+        mods.battlegear2.client.utils.BattlegearRenderHelper.updateEquippedItem(this, mc);//-----MB-Edited-----
-         this.prevEquippedProgress = this.equippedProgress;
-         EntityPlayerSP entityplayersp = this.mc.thePlayer;
-         ItemStack itemstack = entityplayersp.inventory.getCurrentItem();
-@@ -639,5 +651,43 @@
-                 ;
-             }
+@@ -746,6 +760,7 @@
+             this.itemToRender = itemstack;
+             this.equippedItemSlot = entityclientplayermp.inventory.currentItem;
          }
++        mods.battlegear2.client.utils.BattlegearRenderHelper.updateEquippedItem(this, mc);//-----MB-Edited-----
+     }
+ 
+     /**
+@@ -762,5 +777,45 @@
+     public void resetEquippedProgress2()
+     {
+         this.equippedProgress = 0.0F;
 +    }
++
 +    /* ===================================== Battlegear2 START =====================================*/
-+    //-----MB-AddFields-----(4)
-+    private ItemStack offHandItemToRender;
-+    private int equippedItemOffhandSlot = -1;
-+    private float equippedOffHandProgress = 0.0F;
-+    private float prevEquippedOffHandProgress = 0.0F;
++
++    //-----MB-AddFields-----(1)
++    public int equippedItemOffhandSlot = 0;
 +
 +    public ItemStack getItemToRender(){
-+        return offHandItemToRender;
++        return itemStackOffHand;
 +    }
 +
 +    public void setItemToRender(ItemStack item){
-+        offHandItemToRender = item;
++        itemStackOffHand = item;
 +    }
 +
 +    public int getEquippedItemSlot(){
@@ -64,19 +69,19 @@
 +    }
 +
 +    public float getEquippedProgress(){
-+        return equippedOffHandProgress;
++        return equippedProgressOffHand;
 +    }
 +
 +    public void setEquippedProgress(float progress){
-+        equippedOffHandProgress = progress;
++        equippedProgressOffHand = progress;
 +    }
 +
 +    public float getPrevEquippedProgress(){
-+        return prevEquippedOffHandProgress;
++        return prevEquippedProgressOffHand;
 +    }
 +
 +    public void setPrevEquippedProgress(float progress){
-+        prevEquippedOffHandProgress = progress;
++        prevEquippedProgressOffHand = progress;
      }
  }
-\ No newline at end of file
+

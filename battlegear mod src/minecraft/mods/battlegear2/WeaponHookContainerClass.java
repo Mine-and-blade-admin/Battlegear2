@@ -1,9 +1,12 @@
 package mods.battlegear2;
 
-import mods.battlegear2.api.weapons.*;
+import mods.battlegear2.api.core.IBattlePlayer;
+import mods.battlegear2.api.weapons.Attributes;
+import mods.battlegear2.api.weapons.IBackStabbable;
+import mods.battlegear2.api.weapons.IPotionEffect;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.ai.attributes.BaseAttributeMap;
+import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
@@ -13,10 +16,11 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerUseItemEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -33,7 +37,7 @@ public final class WeaponHookContainerClass {
 
     public static final WeaponHookContainerClass INSTANCE = new WeaponHookContainerClass();
     private static final float backstabFuzzy = 0.01F;
-    private static final int[] dazeEffects = {Potion.moveSlowdown.getId(), Potion.confusion.getId(), Potion.blindness.getId(), Potion.weakness.getId()};
+    private static final Potion[] dazeEffects = {Potion.REGISTRY.getObject(new ResourceLocation("slowness")), Potion.REGISTRY.getObject(new ResourceLocation("nausea")), Potion.REGISTRY.getObject(new ResourceLocation("blindness")), Potion.REGISTRY.getObject(new ResourceLocation("weakness"))};
     public boolean doBlocking = false;
 
     private WeaponHookContainerClass(){}
@@ -41,45 +45,36 @@ public final class WeaponHookContainerClass {
     @SubscribeEvent
     public void onAttack(LivingAttackEvent event){
 
-    	if(event.entityLiving instanceof EntityPlayer && ((EntityPlayer)event.entityLiving).capabilities.isCreativeMode)
+    	if(event.getEntityLiving() instanceof EntityPlayer && ((EntityPlayer) event.getEntityLiving()).capabilities.isCreativeMode)
     	{
     		return;//Fix vanilla bug with baby zombies being able to lead mobs to attack player
     		//in creative mode thus calling the event
     	}
-        EntityLivingBase entityHit = event.entityLiving;
+        EntityLivingBase entityHit = event.getEntityLiving();
         //Record the hurt times
         int hurtTimeTemp = entityHit.hurtTime;
         int hurtResistanceTimeTemp = entityHit.hurtResistantTime;
-        if(event.source instanceof EntityDamageSource && !event.source.damageType.startsWith(Battlegear.CUSTOM_DAMAGE_SOURCE) &&
-                !(event.source instanceof EntityDamageSourceIndirect) )
+        if(event.getSource() instanceof EntityDamageSource && !event.getSource().damageType.startsWith(Battlegear.CUSTOM_DAMAGE_SOURCE) &&
+                !(event.getSource() instanceof EntityDamageSourceIndirect) )
         {
-            Entity attacker = event.source.getEntity();
+            Entity attacker = event.getSource().getEntity();
             if(attacker instanceof EntityLivingBase)
             {
                 EntityLivingBase entityHitting = (EntityLivingBase)attacker;
-                ItemStack stack = entityHitting.getHeldItem();
-                if(stack!=null)
+                ItemStack stack = entityHitting.getHeldItemMainhand();
+                if(!stack.isEmpty())
                 {
                     boolean hit=false;
                     if(stack.getItem() instanceof IBackStabbable)
                     {
                         hit = performBackStab(stack.getItem(), entityHit, entityHitting);
                     }
-                    if(stack.getItem() instanceof ISpecialEffect)
-                    {
-                        boolean tempHit = ((ISpecialEffect)stack.getItem()).performEffects(entityHit,entityHitting);
-                        if(!hit)
-                            hit = tempHit;
-                    }
                     if(stack.getItem() instanceof IPotionEffect)
                     {
                         performEffects(((IPotionEffect)stack.getItem()).getEffectsOnHit(entityHit, entityHitting), entityHit);
                     }
-                    if(!entityHit.worldObj.isRemote) {
+                    if(!entityHit.world.isRemote) {
                         int timeModifier = (int) (-entityHitting.getEntityAttribute(Attributes.attackSpeed).getAttributeValue() * entityHit.maxHurtResistantTime * 0.5F);
-                        if (stack.getItem() instanceof IHitTimeModifier) {
-                            timeModifier = ((IHitTimeModifier) stack.getItem()).getHitTime(stack, entityHit);
-                        }
                         if (timeModifier != 0) {
                             if (hurtResistanceTimeTemp > entityHit.maxHurtResistantTime * 0.5F) {//Hit shield is in effect
                                 //If the shield is supposed to be reduced, don't re-apply the effect every time
@@ -109,37 +104,33 @@ public final class WeaponHookContainerClass {
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onLivingHurt(LivingHurtEvent hurt){
-        if(hurt.source.getEntity() instanceof EntityLivingBase && hurt.source instanceof EntityDamageSource && hurt.entityLiving.hurtTime == 0){
-            EntityLivingBase source = ((EntityLivingBase) hurt.source.getEntity());
+        if(hurt.getSource().getEntity() instanceof EntityLivingBase && hurt.getSource() instanceof EntityDamageSource && hurt.getEntityLiving().hurtTime == 0){
+            EntityLivingBase source = ((EntityLivingBase) hurt.getSource().getEntity());
             double chance = source.getEntityAttribute(Attributes.daze).getAttributeValue();
             if (source.getRNG().nextDouble() < chance) {
-                for (int effect : dazeEffects) {
-                    if (!hurt.entityLiving.isPotionActive(effect)) {
+                for (Potion effect : dazeEffects) {
+                    if (!hurt.getEntityLiving().isPotionActive(effect)) {
                         PotionEffect potion = new PotionEffect(effect, 3 * 20, 100);
                         potion.getCurativeItems().clear();
-                        hurt.entityLiving.addPotionEffect(potion);
+                        hurt.getEntityLiving().addPotionEffect(potion);
                     }
                 }
             }
-            final int hurtResistanceTimeTemp = hurt.entityLiving.hurtResistantTime;
-            if (!hurt.source.damageType.startsWith(Battlegear.CUSTOM_DAMAGE_SOURCE) && source.isRiding()) {
+            final int hurtResistanceTimeTemp = hurt.getEntityLiving().hurtResistantTime;
+            if (!hurt.getSource().damageType.startsWith(Battlegear.CUSTOM_DAMAGE_SOURCE) && source.isRiding()) {
                 float damage = (float) source.getEntityAttribute(Attributes.mountedBonus).getAttributeValue();
                 if(damage>0){
-                    hurt.entityLiving.hurtResistantTime = 0;
-                    hurt.entityLiving.attackEntityFrom(new EntityDamageSource(Battlegear.CUSTOM_DAMAGE_SOURCE + ".mounted", source), damage);
+                    hurt.getEntityLiving().hurtResistantTime = 0;
+                    hurt.getEntityLiving().attackEntityFrom(new EntityDamageSource(Battlegear.CUSTOM_DAMAGE_SOURCE + ".mounted", source), damage);
                 }
             }
             float damage = (float) source.getEntityAttribute(Attributes.armourPenetrate).getAttributeValue();
-            ItemStack itemStack = source.getHeldItem();
-            if(itemStack!=null && itemStack.getItem() instanceof IPenetrateWeapon) {
-                damage = ((IPenetrateWeapon) itemStack.getItem()).getPenetratingPower(itemStack);
-            }
             if (damage > 0) {
-                hurt.entityLiving.hurtResistantTime = 0;
+                hurt.getEntityLiving().hurtResistantTime = 0;
                 //Attack using the "generic" damage type (ignores armour)
-                hurt.entityLiving.attackEntityFrom(DamageSource.generic, damage);
+                hurt.getEntityLiving().attackEntityFrom(DamageSource.GENERIC, damage);
             }
-            hurt.entityLiving.hurtResistantTime = hurtResistanceTimeTemp;
+            hurt.getEntityLiving().hurtResistantTime = hurtResistanceTimeTemp;
         }
     }
 
@@ -148,11 +139,11 @@ public final class WeaponHookContainerClass {
      */
     @SubscribeEvent
     public void onLivingConstructor(EntityEvent.EntityConstructing constructing){
-        if(constructing.entity instanceof EntityLivingBase){
-            BaseAttributeMap attributeMap = ((EntityLivingBase) constructing.entity).getAttributeMap();
+        if(constructing.getEntity() instanceof EntityLivingBase){
+            AbstractAttributeMap attributeMap = ((EntityLivingBase) constructing.getEntity()).getAttributeMap();
             attributeMap.registerAttribute(Attributes.armourPenetrate);
             attributeMap.registerAttribute(Attributes.daze);
-            if(constructing.entity instanceof EntityPlayer){
+            if(constructing.getEntity() instanceof EntityPlayer){
                 attributeMap.registerAttribute(Attributes.extendedReach).setBaseValue(-2.2);//Reduce bare hands range
             }
             attributeMap.registerAttribute(Attributes.attackSpeed);
@@ -178,16 +169,18 @@ public final class WeaponHookContainerClass {
         double roll = Math.random();
         for (Map.Entry<PotionEffect, Float> effect : map.entrySet()) {
             //add effects if they aren't already applied, with corresponding chance factor
-            if (!entityHit.isPotionActive(effect.getKey().getPotionID()) && effect.getValue() > roll) {
+            if (!entityHit.isPotionActive(effect.getKey().getPotion()) && effect.getValue() > roll) {
                 entityHit.addPotionEffect(new PotionEffect(effect.getKey()));
             }
         }
     }
 
     @SubscribeEvent
-    public void onBlock(PlayerUseItemEvent.Start use) {
-        if (!doBlocking && use.duration > 0 && use.item.getItemUseAction() == EnumAction.BLOCK) {
-            use.setCanceled(true);
+    public void onBlock(LivingEntityUseItemEvent.Start use) {
+        if(use.getEntityLiving() instanceof IBattlePlayer && ((IBattlePlayer) use.getEntityLiving()).isBattlemode()) {
+            if (!doBlocking && use.getDuration() > 0 && use.getItem().getItemUseAction() == EnumAction.BLOCK) {
+                use.setCanceled(true);
+            }
         }
     }
 }

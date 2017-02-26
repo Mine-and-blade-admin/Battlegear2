@@ -19,7 +19,7 @@ public abstract class RenderItemBarEvent extends RenderGameOverlayEvent{
     public int yOffset = 0;
 
     public RenderItemBarEvent(RenderGameOverlayEvent parent) {
-        super(parent.partialTicks, parent.resolution);
+        super(parent.getPartialTicks(), parent.getResolution());
     }
 
     /**

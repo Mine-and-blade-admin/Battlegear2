@@ -1,11 +1,13 @@
 package mods.battlegear2.items;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import mods.battlegear2.api.IBackSheathedRender;
 import mods.battlegear2.api.shield.IShield;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -24,7 +26,7 @@ public class ItemSpear extends TwoHandedWeapon implements IBackSheathedRender {
         this.reach = reach;
 		//set the base damage to that of lower than usual (balance)
 		this.baseDamage -= 2;
-        GameRegistry.registerItem(this, this.name);
+        GameRegistry.register(this);
 	}
 
 	@Override
@@ -33,11 +35,14 @@ public class ItemSpear extends TwoHandedWeapon implements IBackSheathedRender {
 	}
 
     @Override
-    public Multimap getAttributeModifiers(ItemStack stack) {
-        Multimap map = super.getAttributeModifiers(stack);
-        map.put(extendedReach.getAttributeUnlocalizedName(), new AttributeModifier(extendReachUUID, "Reach Modifier", this.reach, 0));
-        map.put(mountedBonus.getAttributeUnlocalizedName(), new AttributeModifier(mountedBonusUUID, "Attack Modifier", this.mounted_extra_damage, 0));
-        return map;
+    public Multimap<String, AttributeModifier> getItemAttributeModifiers(EntityEquipmentSlot slot) {
+        if(slot == EntityEquipmentSlot.MAINHAND) {
+            Multimap<String, AttributeModifier> map = super.getItemAttributeModifiers(slot);
+            map.put(extendedReach.getName(), new AttributeModifier(extendReachUUID, "Reach Modifier", this.reach, 0));
+            map.put(mountedBonus.getName(), new AttributeModifier(mountedBonusUUID, "Attack Modifier", this.mounted_extra_damage, 0));
+            return map;
+        }
+        return HashMultimap.<String, AttributeModifier>create();
     }
 
     @Override

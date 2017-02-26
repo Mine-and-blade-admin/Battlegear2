@@ -1,8 +1,10 @@
 package mods.battlegear2.api.heraldry;
 
-public interface IHeraldyArmour extends IHeraldryItem{
-	
-	public String getBaseArmourPath(int armourSlot);
+import net.minecraft.inventory.EntityEquipmentSlot;
 
-    public String getPatternArmourPath(PatternStore pattern, int index, int armourSlot);
+public interface IHeraldyArmour extends IHeraldryItem{
+
+	String getBaseArmourPath(EntityEquipmentSlot armourSlot);
+
+    String getPatternArmourPath(PatternStore pattern, int index, EntityEquipmentSlot armourSlot);
 }

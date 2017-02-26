@@ -4,44 +4,19 @@
  public class NetHandlerPlayServer implements INetHandlerPlayServer
 -{
 +{   /*
-+	 * Edits made by nerd-boy : 4
++	 * Edits made by nerd-boy : 1
 +	 *
 +	 * Edit to allow a switch to occur to items that are outside of the normal slot range.
-+	 * A second & third edit to prevent an index out of bounds error when "using" a block
-+	 * A final one against NullPointerException (vanilla bug)
 +	 */
      private static final Logger logger = LogManager.getLogger();
      public final NetworkManager netManager;
      private final MinecraftServer serverController;
-@@ -635,18 +641,19 @@
- 
-         if (itemstack != null && itemstack.stackSize == 0)
-         {
--            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = null;
-+            mods.battlegear2.api.core.BattlegearUtils.setPlayerCurrentItem(playerEntity, null);//-----MB-Edited-----
-             itemstack = null;
-         }
- 
-         if (itemstack == null || itemstack.getMaxItemUseDuration() == 0)
-         {
-             this.playerEntity.isChangingQuantityOnly = true;
--            this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem] = ItemStack.copyItemStack(this.playerEntity.inventory.mainInventory[this.playerEntity.inventory.currentItem]);
-+            mods.battlegear2.api.core.BattlegearUtils.setPlayerCurrentItem(this.playerEntity, ItemStack.copyItemStack(this.playerEntity.inventory.getCurrentItem()));//-----MB-Edited-----
-             Slot slot = this.playerEntity.openContainer.getSlotFromInventory(this.playerEntity.inventory, this.playerEntity.inventory.currentItem);
-             this.playerEntity.openContainer.detectAndSendChanges();
-             this.playerEntity.isChangingQuantityOnly = false;
--
-+            if(slot==null)//-----MB-Edited-----
-+                return;
-             if (!ItemStack.areItemStacksEqual(this.playerEntity.inventory.getCurrentItem(), p_147346_1_.func_149574_g()))
-             {
-                 this.sendPacket(new S2FPacketSetSlot(this.playerEntity.openContainer.windowId, slot.slotNumber, this.playerEntity.inventory.getCurrentItem()));
 @@ -717,7 +724,7 @@
       */
-     public void processHeldItemChange(C09PacketHeldItemChange p_147355_1_)
+     public void processHeldItemChange(CPacketHeldItemChange packetIn)
      {
--        if (p_147355_1_.func_149614_c() >= 0 && p_147355_1_.func_149614_c() < InventoryPlayer.getHotbarSize())
-+        if (mods.battlegear2.api.core.InventoryPlayerBattle.isValidSwitch(p_147355_1_.func_149614_c()))
+-        if (packetIn.func_149614_c() >= 0 && packetIn.func_149614_c() < InventoryPlayer.getHotbarSize())
++        if (mods.battlegear2.api.core.InventoryPlayerBattle.isValidSwitch(packetIn.func_149614_c()))
          {
-             this.playerEntity.inventory.currentItem = p_147355_1_.func_149614_c();
+             this.playerEntity.inventory.currentItem = packetIn.func_149614_c();
              this.playerEntity.func_143004_u();

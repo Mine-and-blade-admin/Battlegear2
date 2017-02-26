@@ -13,7 +13,7 @@ import net.minecraft.util.ResourceLocation;
 
 public final class BattleEquipGUI extends InventoryEffectRenderer {
 
-    public static final ResourceLocation resource = new ResourceLocation("battlegear2", "textures/gui/Equip GUI.png");
+    public static final ResourceLocation resource = new ResourceLocation("battlegear2", "textures/gui/equip.png");
     public static Class equipTab;
     
     /**
@@ -44,7 +44,7 @@ public final class BattleEquipGUI extends InventoryEffectRenderer {
                 if(equipTab==null){
                     equipTab = Class.forName("mods.battlegear2.client.gui.controls.EquipGearTab");
                 }
-                ClientProxy.updateTab.invoke(null, guiLeft, guiTop, equipTab);
+                ClientProxy.updateTab.invoke(null, getGuiLeft(), getGuiTop(), equipTab);
                 ClientProxy.addTabs.invoke(null, this.buttonList);
             }catch(Exception e){
                 ClientProxy.tconstructEnabled = false;
@@ -69,10 +69,10 @@ public final class BattleEquipGUI extends InventoryEffectRenderer {
     protected void drawGuiContainerBackgroundLayer(float par1, int par2, int par3) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(resource);
-        int var5 = this.guiLeft;
-        int var6 = this.guiTop;
+        int var5 = this.getGuiLeft();
+        int var6 = this.getGuiTop();
         this.drawTexturedModalRect(var5, var6, 0, 0, this.xSize, this.ySize);
-        GuiInventory.drawEntityOnScreen(var5 + 31, var6 + 75, 30, (float) (var5 + 51) - this.xSize_lo, (float) (var6 + 75 - 50) - this.ySize_lo, mc.thePlayer);
+        GuiInventory.drawEntityOnScreen(var5 + 31, var6 + 75, 30, (float) (var5 + 51) - this.xSize_lo, (float) (var6 + 75 - 50) - this.ySize_lo, mc.player);
     }
     
     public static void open(EntityPlayer player){

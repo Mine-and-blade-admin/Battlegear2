@@ -8,8 +8,11 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
+
+import javax.annotation.Nonnull;
 
 public class HeraldricWeaponRecipie implements IRecipe{
 
@@ -20,27 +23,25 @@ public class HeraldricWeaponRecipie implements IRecipe{
 	}
 	
 	@Override
-	public boolean matches(InventoryCrafting inventorycrafting, World world) {
+	public boolean matches(@Nonnull InventoryCrafting inventorycrafting,@Nonnull World world) {
 		
 		boolean itemFound = false;
 		boolean iconFound = false;
 		
 		for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
 			ItemStack stack = inventorycrafting.getStackInSlot(i);
-			
-			if(stack != null){
-				if(stack.getItem() == BattlegearConfig.heradricItem ||
-						stack.getItem() == Items.water_bucket){
-					if(iconFound)
-						return false;
-					else
-						iconFound = true;
-				}else if (stack.getItem() == heraldricWeapon){
-					if(itemFound)
-						return false;
-					else
-						itemFound = true;
-				}
+
+			if(stack.getItem() == BattlegearConfig.heradricItem ||
+					stack.getItem() == Items.WATER_BUCKET){
+				if(iconFound)
+					return false;
+				else
+					iconFound = true;
+			}else if (stack.getItem() == heraldricWeapon){
+				if(itemFound)
+					return false;
+				else
+					itemFound = true;
 			}
 			
 		}
@@ -48,34 +49,33 @@ public class HeraldricWeaponRecipie implements IRecipe{
 		return itemFound && iconFound;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting inventorycrafting) {
+	public ItemStack getCraftingResult(@Nonnull InventoryCrafting inventorycrafting) {
 		
-		ItemStack item = null;
-		ItemStack icon = null;
+		ItemStack item = ItemStack.EMPTY;
+		ItemStack icon = ItemStack.EMPTY;
 		
 		for(int i = 0; i < inventorycrafting.getSizeInventory(); i++){
 			ItemStack stack = inventorycrafting.getStackInSlot(i);
-			
-			if(stack != null){
-				if(stack.getItem() == BattlegearConfig.heradricItem){
-					icon = stack;
-				}else if (stack.getItem() == heraldricWeapon){
-					item = stack;
-				}else if (stack.getItem() == Items.water_bucket){
-					icon = stack;
-				}
+
+			if(stack.getItem() == BattlegearConfig.heradricItem){
+				icon = stack;
+			}else if (stack.getItem() == heraldricWeapon){
+				item = stack;
+			}else if (stack.getItem() == Items.WATER_BUCKET){
+				icon = stack;
 			}
 		}
-        if(item==null)
-            return null;
+        if(item.isEmpty())
+            return item;
 		
 		NBTTagCompound compound = item.getTagCompound();
 		if(compound == null){
 			compound = new NBTTagCompound();
 		}
 		
-		if(icon!=null && icon.getItem() == BattlegearConfig.heradricItem){
+		if(icon.getItem() == BattlegearConfig.heradricItem){
 			byte[] code = ((IHeraldryItem)icon.getItem()).getHeraldry(icon);
 			compound.setByteArray("hc2", code);
 			item.setTagCompound(compound);
@@ -93,6 +93,7 @@ public class HeraldricWeaponRecipie implements IRecipe{
 		return 2;
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack getRecipeOutput() {
 		ItemStack stack = new ItemStack(heraldricWeapon, 1);
@@ -101,8 +102,9 @@ public class HeraldricWeaponRecipie implements IRecipe{
 		return stack;
 	}
 
+	@Nonnull
 	@Override
-	public ItemStack[] getRemainingItems(InventoryCrafting inv) {
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull InventoryCrafting inv) {
 		return ForgeHooks.defaultRecipeGetRemainingItems(inv);
 	}
 

@@ -4,15 +4,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class GuiModUpdateButton extends GuiButton{
 
-    ItemStack icon = new ItemStack(Blocks.grass);
+    ItemStack icon = new ItemStack(Blocks.GRASS);
     List<String> text = null;
     private GuiScreen parent;
     public GuiModUpdateButton(int id, int x, int y, GuiScreen parent) {
@@ -21,11 +22,11 @@ public class GuiModUpdateButton extends GuiButton{
     }
 
     @Override
-    public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
+    public void drawButton(@Nonnull Minecraft par1Minecraft, int par2, int par3) {
         super.drawButton(par1Minecraft, par2, par3);
 
         if(text == null){
-            text = par1Minecraft.fontRendererObj.listFormattedStringToWidth(StatCollector.translateToLocal("mud.name"), 80);
+            text = par1Minecraft.fontRendererObj.listFormattedStringToWidth(I18n.format("mud.name"), 80);
         }
         par1Minecraft.getRenderItem().renderItemIntoGUI(icon, xPosition+2, yPosition+2);
 

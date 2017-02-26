@@ -19,6 +19,6 @@ public interface IPotionEffect {
      * @param entityHitting
      * @return A Map of {@link PotionEffect} with chance value ranging from 0 to 1, to be dealt to the entityHit
      */
-    public Map<PotionEffect,Float> getEffectsOnHit(EntityLivingBase entityHit, EntityLivingBase entityHitting);
+    Map<PotionEffect,Float> getEffectsOnHit(EntityLivingBase entityHit, EntityLivingBase entityHitting);
 
 }

@@ -6,6 +6,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 
+import javax.annotation.Nonnull;
+
 public class GuiToggleButton extends GuiButton{
 	public static final ResourceLocation resourceLocation = new ResourceLocation("battlegear2", "textures/gui/widgets-extra.png");
 	private boolean isSelected = false;
@@ -33,7 +35,7 @@ public class GuiToggleButton extends GuiButton{
 	}
 	
 	@Override
-	public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
+	public void drawButton(@Nonnull Minecraft par1Minecraft, int par2, int par3) {
 		if (this.visible)
         {
             FontRenderer fontrenderer = par1Minecraft.fontRendererObj;

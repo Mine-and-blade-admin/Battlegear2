@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
- * Render a player left hand item, or sheathed items
+ * Render a player sheathed items
  */
 public class LayerOffhandItem extends LayerPlayerBase {
 

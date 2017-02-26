@@ -20,7 +20,7 @@ public interface IArrowFireHandler {
      * @param charge amount of charge in the bow
      * @return true to get called for #getFireArrow
      */
-    public boolean canFireArrow(ItemStack arrow, World world, EntityPlayer player, float charge);
+    boolean canFireArrow(ItemStack arrow, World world, EntityPlayer player, float charge);
 
     /**
      * Called from QuiverArrowRegistry.getArrowType,
@@ -32,5 +32,5 @@ public interface IArrowFireHandler {
      * @param charge amount of charge in the bow
      * @return the arrow to fire, or null if it couldn't be built
      */
-    public EntityArrow getFiredArrow(ItemStack arrow, World world, EntityPlayer player, float charge);
+    EntityArrow getFiredArrow(ItemStack arrow, World world, EntityPlayer player, float charge);
 }

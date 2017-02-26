@@ -1,8 +1,8 @@
 package mods.battlegear2.api.quiver;
 
-import net.minecraftforge.fml.common.eventhandler.Event.Result;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.common.eventhandler.Event.Result;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public interface ISpecialBow {
    *  Returning null will cause the default fire handlers to be used.
    *  Returning an empty list will prevent any fire handlers from processing, effectively rendering the bow useless.
    */
-  public List<IArrowFireHandler> getFireHandlers(ItemStack arrow, ItemStack bow, EntityPlayer player);
+  List<IArrowFireHandler> getFireHandlers(ItemStack arrow, ItemStack bow, EntityPlayer player);
 
   /**
    * Allows the custom bow to determine if it may be nocked or not during the {@link ArrowNockEvent}.
@@ -60,6 +60,6 @@ public interface ISpecialBow {
    * Result.ALLOW to allow the bow to be nocked, ignoring the
    * default BG2 nocking behavior.
    */
-  public Result canDrawBow(ItemStack bow, EntityPlayer player);
+  Result canDrawBow(ItemStack bow, EntityPlayer player);
 
 }

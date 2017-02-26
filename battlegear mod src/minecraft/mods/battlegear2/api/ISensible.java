@@ -8,7 +8,7 @@ public interface ISensible<T> {
     /**
      * @return true if first arg is different from second arg
      */
-    public boolean differenciate(T holder1, T holder2);
+    boolean differenciate(T holder1, T holder2);
 
     /**
      * Predicate filtering, uses a comparing object of same type and iterating over multiple instance of above interface

@@ -18,21 +18,21 @@ public interface IArrowContainer2 {
      * @param container {@link ItemStack} representing this item
      * @return the amount of slots
      */
-    public int getSlotCount(ItemStack container);
+    int getSlotCount(ItemStack container);
 
     /**
      * Returns the currently selected slot in the arrow container
      * @param container {@link ItemStack} representing this item
      * @return the currently selected slot
      */
-    public int getSelectedSlot(ItemStack container);
+    int getSelectedSlot(ItemStack container);
 
     /**
      * Sets the currently selected slot to the given value
      * @param container {@link ItemStack} representing this item
      * @param newSlot the new slot index
      */
-    public void setSelectedSlot(ItemStack container, int newSlot);
+    void setSelectedSlot(ItemStack container, int newSlot);
 
     /**
      * Returns the itemStack in the currently selected slot
@@ -40,7 +40,7 @@ public interface IArrowContainer2 {
      * @param slot the slot index
      * @return The {@link ItemStack} in the given slot.
      */
-    public ItemStack getStackInSlot(ItemStack container, int slot);
+    ItemStack getStackInSlot(ItemStack container, int slot);
 
     /**
      * Sets places the given item stack in the given slot
@@ -48,7 +48,7 @@ public interface IArrowContainer2 {
      * @param slot the slot index
      * @param stack {@link ItemStack} representing the new stack
      */
-    public void setStackInSlot(ItemStack container, int slot, ItemStack stack);
+    void setStackInSlot(ItemStack container, int slot, ItemStack stack);
 
     /**
      *
@@ -57,7 +57,7 @@ public interface IArrowContainer2 {
      * @param player The {@link EntityPlayer} using the bow
      * @return true if the item contains at least one arrow in the selected slot
      */
-    public boolean hasArrowFor(ItemStack container, ItemStack bow, EntityPlayer player, int slot);
+    boolean hasArrowFor(ItemStack container, ItemStack bow, EntityPlayer player, int slot);
 
     /**
      * The arrow spawned when bow is used with this non empty container equipped
@@ -67,7 +67,7 @@ public interface IArrowContainer2 {
      * @param world
      * @return the arrow entity to spawn when bow is used
      */
-    public EntityArrow getArrowType(ItemStack container, World world, EntityPlayer player, float charge);
+    EntityArrow getArrowType(ItemStack container, World world, EntityPlayer player, float charge);
 
     /**
      * Action to take after an arrow has been fired
@@ -78,13 +78,13 @@ public interface IArrowContainer2 {
      * @param bow The bow which fired
      * @param arrow the arrow fired
      */
-    public void onArrowFired(World world, EntityPlayer player, ItemStack container, ItemStack bow, EntityArrow arrow);
+    void onArrowFired(World world, EntityPlayer player, ItemStack container, ItemStack bow, EntityArrow arrow);
 
     /**
      * Called before the arrow is fired from this container
      * @param arrowEvent Used to decide bow damage, bow sound and arrow enchantment
      */
-    public void onPreArrowFired(PlayerEventChild.QuiverArrowEvent.Firing arrowEvent);
+    void onPreArrowFired(PlayerEventChild.QuiverArrowEvent.Firing arrowEvent);
 
     /**
      * Called when the container is put on a crafting bench with other items
@@ -92,7 +92,7 @@ public interface IArrowContainer2 {
      * @param arrowStack The {@link ItemStack} representing other items
      * @return True to receive {@link #addArrows(ItemStack, ItemStack)}
      */
-    public boolean isCraftableWithArrows(ItemStack container, ItemStack arrowStack);
+    boolean isCraftableWithArrows(ItemStack container, ItemStack arrowStack);
 
     /**
      * Crafts the item with the items from {@link #isCraftableWithArrows(ItemStack, ItemStack)}
@@ -100,13 +100,13 @@ public interface IArrowContainer2 {
      * @param newStack Another valid item on the crafting bench
      * @return Arrows that couldn't fit in
      */
-    public ItemStack addArrows(ItemStack container, ItemStack newStack);
+    ItemStack addArrows(ItemStack container, ItemStack newStack);
 
     /**
      * Called through post rendering event on the player
      * @param container
      * @return true if the default quiver model can be rendered
      */
-    public boolean renderDefaultQuiverModel(ItemStack container);
+    boolean renderDefaultQuiverModel(ItemStack container);
 
 }

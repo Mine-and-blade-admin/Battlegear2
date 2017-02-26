@@ -3,8 +3,8 @@ package mods.battlegear2;
 import mods.battlegear2.utils.EnumBGAnimations;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 
@@ -15,7 +15,7 @@ public class CommonProxy {
     private HashMap<Integer,Long> timers;
     public void registerHandlers(){
         timers = new HashMap<Integer,Long>();
-        FMLCommonHandler.instance().bus().register(BattlegearTickHandeler.INSTANCE);
+        MinecraftForge.EVENT_BUS.register(BattlegearTickHandeler.INSTANCE);
         MinecraftForge.EVENT_BUS.register(BattlemodeHookContainerClass.INSTANCE);
         MinecraftForge.EVENT_BUS.register(WeaponHookContainerClass.INSTANCE);
         MinecraftForge.EVENT_BUS.register(BowHookContainerClass2.INSTANCE);
@@ -24,7 +24,7 @@ public class CommonProxy {
 
     public void sendAnimationPacket(EnumBGAnimations animation, EntityPlayer entityPlayer) {}
 
-    public MovingObjectPosition getMouseOver(double v) {
+    public RayTraceResult getMouseOver(double v) {
         return null;
     }
 
@@ -59,7 +59,7 @@ public class CommonProxy {
         return null;
     }
 
-    public void scheduleTask(Runnable runnable) {
-        MinecraftServer.getServer().addScheduledTask(runnable);
+    public IThreadListener getThreadListener() {
+        return FMLCommonHandler.instance().getMinecraftServerInstance();
     }
 }

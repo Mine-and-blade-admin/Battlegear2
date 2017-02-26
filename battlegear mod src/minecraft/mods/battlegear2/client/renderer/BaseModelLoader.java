@@ -1,23 +1,15 @@
 package mods.battlegear2.client.renderer;
 
-import com.google.common.base.Function;
 import mods.battlegear2.Battlegear;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelBlock;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelRotation;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.Attributes;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
-import net.minecraftforge.client.model.IModel;
-import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.client.model.animation.Animation;
-import net.minecraftforge.client.model.animation.ModelBlockAnimation;
+import net.minecraftforge.client.model.*;
+import net.minecraftforge.common.model.TRSRTransformation;
 
-import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
  * Manipulate item models.
@@ -32,8 +24,8 @@ public class BaseModelLoader {
 
     protected final IModel getModel(ResourceLocation location){
         try {
-            return manager.getModel(location);
-        } catch (IOException e) {
+            return ModelLoaderRegistry.getModel(location);
+        } catch (Exception e) {
             return null;
         }
     }
@@ -53,30 +45,15 @@ public class BaseModelLoader {
         return null;
     }
 
-    protected final IFlexibleBakedModel wrap(ModelBlock model, ResourceLocation modelLocation){
+    protected final IBakedModel wrap(ModelBlock model, ResourceLocation modelLocation){
         try {
-            return new IFlexibleBakedModel.Wrapper(bakeModel(model), Attributes.DEFAULT_BAKED_FORMAT);
+            return bakeModel(model);
         }catch (Throwable vanillaIssue){//Vanilla failed, try the "Forge" way
             Battlegear.logger.warn(vanillaIssue.toString());
             Battlegear.logger.warn("Encountered issue while trying to load model, trying fallback.");
             try {
-                Function<ResourceLocation, TextureAtlasSprite> textureGetter = new Function<ResourceLocation, TextureAtlasSprite>() {
-                    @Override
-                    public TextureAtlasSprite apply(ResourceLocation location) {
-                        return Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(location.toString());
-                    }
-                };
-                Constructor ctor = Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaModelWrapper").getDeclaredConstructor(ModelLoader.class, ResourceLocation.class, ModelBlock.class, ModelBlockAnimation.class);
-                ctor.setAccessible(true);
-                String modelPath = modelLocation.getResourcePath();
-                if(modelPath.startsWith("models/"))
-                {
-                    modelPath = modelPath.substring("models/".length());
-                }
-                ResourceLocation armatureLocation = new ResourceLocation(modelLocation.getResourceDomain(), "armatures/" + modelPath + ".json");
-                Object bakeable = ctor.newInstance(manager, null, model, Animation.INSTANCE.loadVanillaAnimation(armatureLocation));
-                ctor.setAccessible(false);
-                return ((IModel)bakeable).bake(ModelRotation.X0_Y0, Attributes.DEFAULT_BAKED_FORMAT, textureGetter);
+                ICustomModelLoader loader = (ICustomModelLoader) Class.forName("net.minecraftforge.client.model.ModelLoader$VanillaLoader").getEnumConstants()[0];
+                return defaultBake(loader.loadModel(ModelLoaderRegistry.getActualLocation(modelLocation)));
             }catch (Throwable forgeIssue){//Well everything is broken
                 Battlegear.logger.warn(forgeIssue.toString());
                 Battlegear.logger.warn("Encountered issue while trying model loading fallback. Last fallback: crappy vanilla model. Sorry :(");
@@ -85,8 +62,39 @@ public class BaseModelLoader {
         return null;
     }
 
+    private final IBakedModel defaultBake(IModel bakeable){
+        return bakeable.bake(ModelRotation.X0_Y0, Attributes.DEFAULT_BAKED_FORMAT, ModelLoader.defaultTextureGetter());
+    }
+
+    /*From ModelBakery bakeModel*/
     protected final IBakedModel bakeModel(ModelBlock model) {
-        return manager.bakeModel(model, ModelRotation.X0_Y0, false);
+        if (model.getElements().isEmpty())
+        {
+            return null;
+        }
+        else
+        {
+            TextureAtlasSprite sprite = ModelLoader.defaultTextureGetter().apply(new ResourceLocation(model.resolveTextureName("particle")));
+            SimpleBakedModel.Builder simplebakedmodel$builder = (new SimpleBakedModel.Builder(model, model.createOverrides())).setTexture(sprite);
+            for (BlockPart blockpart : model.getElements())
+            {
+                for (Map.Entry<EnumFacing,BlockPartFace> entry : blockpart.mapFaces.entrySet())
+                {
+                    BlockPartFace blockpartface = entry.getValue();
+                    sprite = ModelLoader.defaultTextureGetter().apply(new ResourceLocation(model.resolveTextureName(blockpartface.texture)));
+                    BakedQuad baked = manager.makeBakedQuad(blockpart, blockpartface, sprite, entry.getKey(), ModelRotation.X0_Y0, false);
+                    if (blockpartface.cullFace == null || !TRSRTransformation.isInteger(ModelRotation.X0_Y0.getMatrix()))
+                    {
+                        simplebakedmodel$builder.addGeneralQuad(baked);
+                    }
+                    else
+                    {
+                        simplebakedmodel$builder.addFaceQuad(ModelRotation.X0_Y0.rotate(blockpartface.cullFace), baked);
+                    }
+                }
+            }
+            return simplebakedmodel$builder.makeBakedModel();
+        }
     }
 
     protected final ModelBlock makeItem(ModelBlock model){

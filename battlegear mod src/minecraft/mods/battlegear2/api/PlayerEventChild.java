@@ -3,11 +3,13 @@ package mods.battlegear2.api;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
-import net.minecraftforge.event.entity.player.EntityInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
@@ -20,7 +22,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
 	public final PlayerEvent parent;
 
 	public PlayerEventChild(PlayerEvent parent) {
-		super(parent.entityPlayer);
+		super(parent.getEntityPlayer());
 		this.parent = parent;
 	}
 
@@ -41,7 +43,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
     }
 
     public EntityPlayer getPlayer(){
-        return parent.entityPlayer;
+        return parent.getEntityPlayer();
     }
     
 	/**
@@ -71,30 +73,26 @@ public abstract class PlayerEventChild extends PlayerEvent{
     /**
      * Called when a player right clicks in battlemode
      * The parent event can be either {@link PlayerInteractEvent} or {@link EntityInteractEvent} if the OffhandAttackEvent allowed swinging
-     * Both {@link ItemStack} can be null
+     * Both {@link ItemStack} can be empty
      * If cancelled, no offhand swinging will be performed
      */
     @Cancelable
     public static class OffhandSwingEvent extends PlayerEventChild {
         public final ItemStack mainHand;
         public final ItemStack offHand;
-        @Deprecated
-        public OffhandSwingEvent(PlayerEvent parent, ItemStack mainHand, ItemStack offHand){
-            this(parent, offHand);
-        }
 
-        public OffhandSwingEvent(PlayerEvent parent, ItemStack offHand){
+        public OffhandSwingEvent(PlayerEvent parent){
             super(parent);
-            this.mainHand = parent.entityPlayer.getCurrentEquippedItem();
-            this.offHand = offHand;
+            this.mainHand = parent.getEntityPlayer().getHeldItemMainhand();
+            this.offHand = parent.getEntityPlayer().getHeldItemOffhand();
         }
 
         public boolean onEntity(){
-            return parent instanceof EntityInteractEvent;
+            return parent instanceof PlayerInteractEvent.EntityInteract;
         }
 
         public boolean onBlock(){
-            return parent instanceof PlayerInteractEvent;
+            return parent instanceof PlayerInteractEvent.RightClickBlock;
         }
     }
 
@@ -117,9 +115,9 @@ public abstract class PlayerEventChild extends PlayerEvent{
          */
         public boolean shouldAttack = true;
         /**
-         * If we should Prevent {@link PlayerInteractEvent.Action.RIGHT_CLICK_AIR} and
-         * {@link ItemStack#useItemRightClick(World, EntityPlayer)}
-         * from being called for the item in main hand.
+         * If we should Prevent {@link PlayerInteractEvent.RightClickItem} and
+         * {@link ItemStack#useItemRightClick(World, EntityPlayer, EnumHand)}
+         * from being called for the item in offhand.
          */
         public boolean cancelParent = true;
         /**
@@ -127,7 +125,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
          * This event has already been posted in EventBus, handled by all potential listeners and was not cancelled.
          * Changing its state will have no effect.
          */
-        public final EntityInteractEvent event;
+        public final PlayerInteractEvent.EntityInteract event;
         /**
          * Content of the main hand slot
          */
@@ -137,20 +135,15 @@ public abstract class PlayerEventChild extends PlayerEvent{
          */
         public final ItemStack offHand;
 
-        @Deprecated
-        public OffhandAttackEvent(EntityInteractEvent parent, ItemStack mainHand, ItemStack offHand) {
-            this(parent, offHand);
-        }
-
-        public OffhandAttackEvent(EntityInteractEvent parent, ItemStack offHand) {
+        public OffhandAttackEvent(PlayerInteractEvent.EntityInteract parent) {
             super(parent);
             this.event = parent;
-            this.mainHand = parent.entityPlayer.getCurrentEquippedItem();
-            this.offHand = offHand;
+            this.mainHand = parent.getEntityPlayer().getHeldItemMainhand();
+            this.offHand = parent.getEntityPlayer().getHeldItemOffhand();
         }
 
         public Entity getTarget() {
-            return ((EntityInteractEvent)parent).target;
+            return ((PlayerInteractEvent.EntityInteract)parent).getTarget();
         }
     }
 
@@ -173,15 +166,23 @@ public abstract class PlayerEventChild extends PlayerEvent{
          * The equivalent {@link PlayerInteractEvent} that would have been triggered if the offhand item was held in right hand and right click was pressed
          */
         public final PlayerInteractEvent event;
-        public UseOffhandItemEvent(PlayerInteractEvent event, ItemStack offhand){
+        public UseOffhandItemEvent(PlayerInteractEvent event){
             super(event);
             this.event = event;
-            this.offhand = offhand;
+            this.offhand = event.getItemStack();
             this.swingOffhand = onBlock();
         }
 
         public boolean onBlock(){
-            return event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK;
+            return event instanceof PlayerInteractEvent.RightClickBlock || event instanceof PlayerInteractEvent.LeftClickBlock;
+        }
+
+        public void setUseBlock(Result trigger){
+            if(event instanceof PlayerInteractEvent.RightClickBlock){
+                ((PlayerInteractEvent.RightClickBlock) event).setUseBlock(trigger);
+            }else if(event instanceof PlayerInteractEvent.LeftClickBlock){
+                ((PlayerInteractEvent.LeftClickBlock) event).setUseBlock(trigger);
+            }
         }
     }
 
@@ -207,7 +208,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
          */
         public ItemStack getBow()
         {
-            return event.bow;
+            return event.getBow();
         }
 
         /**
@@ -215,7 +216,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
          */
         public float getCharge()
         {
-            return event.charge;
+            return event.getCharge();
         }
 
         /**
@@ -234,7 +235,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
             /**
              * Sound used right before spawning the arrow entity
              */
-            public String bowSound = "random.bow";
+            public SoundEvent bowSound = SoundEvents.ENTITY_ARROW_SHOOT;
             /**
              * Decides if standard enchantments can be added to the arrow
              */
@@ -284,17 +285,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
                     case DENY:
                         return 0;
                 }
-                float f = super.getCharge()/20.0F;
-                f = (f * f + f * 2.0F) / 3.0F;
-                if ((double)f < 0.1D)
-                {
-                    return 0;
-                }
-                if (f > 1.0F)
-                {
-                    f = 1.0F;
-                }
-                return f;
+                return ItemBow.getArrowVelocity((int)super.getCharge());
             }
 
             public void setNewCharge(float charge){

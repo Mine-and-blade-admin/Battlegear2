@@ -9,12 +9,12 @@ import tconstruct.client.tabs.AbstractTab;
 public class SigilTab extends AbstractTab {
 
 	public SigilTab() {
-		super(1, 0, 0, new ItemStack(Items.item_frame,1,0));
+		super(1, 0, 0, new ItemStack(Items.ITEM_FRAME,1,0));
 	}
 
 	@Override
 	public void onTabClicked() {
-		BattlegearSigilGUI.open(Minecraft.getMinecraft().thePlayer);
+		BattlegearSigilGUI.open(Minecraft.getMinecraft().player);
 	}
 
 	@Override

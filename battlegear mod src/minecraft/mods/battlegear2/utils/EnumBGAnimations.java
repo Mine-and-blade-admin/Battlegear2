@@ -5,25 +5,26 @@ import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.shield.IShield;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 
 public enum EnumBGAnimations {
 
     OffHandSwing {
         @Override
-        public void processAnimation(IBattlePlayer entity) {
-            entity.swingOffItem();
+        public void processAnimation(EntityPlayer entity) {
+            entity.swingArm(EnumHand.OFF_HAND);
         }
     }, SpecialAction {
         @Override
-        public void processAnimation(IBattlePlayer entity) {
-            ItemStack offhand = ((InventoryPlayerBattle)((EntityPlayer) entity).inventory).getCurrentOffhandWeapon();
-            if(offhand != null && offhand.getItem() instanceof IShield){
-                entity.setSpecialActionTimer(((IShield)offhand.getItem()).getBashTimer(offhand));
+        public void processAnimation(EntityPlayer entity) {
+            ItemStack offhand = ((InventoryPlayerBattle)entity.inventory).getCurrentOffhandWeapon();
+            if(offhand.getItem() instanceof IShield){
+                ((IBattlePlayer)entity).setSpecialActionTimer(((IShield)offhand.getItem()).getBashTimer(offhand));
             }
         }
     };
 
 
-    public abstract void processAnimation(IBattlePlayer entity);
+    public abstract void processAnimation(EntityPlayer entity);
 
 }

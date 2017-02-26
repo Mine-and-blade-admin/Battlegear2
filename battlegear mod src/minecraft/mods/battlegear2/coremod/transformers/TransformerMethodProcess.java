@@ -13,7 +13,7 @@ public abstract class TransformerMethodProcess extends TransformerBase {
     private final String desc;
     private String methName;
 
-    public TransformerMethodProcess(String classPath, String method, String[] devs) {
+    public TransformerMethodProcess(String classPath, String method, String... devs) {
         super(classPath);
         this.meth = method;
         this.devName = devs[0];

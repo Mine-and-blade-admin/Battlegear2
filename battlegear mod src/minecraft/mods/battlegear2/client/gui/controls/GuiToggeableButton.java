@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +43,7 @@ public class GuiToggeableButton extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft par1Minecraft, int par2, int par3) {
+    public void drawButton(@Nonnull Minecraft par1Minecraft, int par2, int par3) {
         super.drawButton(par1Minecraft, par2, par3);
 
         int start_x = (width - 16) / 2 + xPosition;
@@ -129,11 +130,11 @@ public class GuiToggeableButton extends GuiButton {
     public void drawTexturedModalRect(int x, int y, int width, int height, int tex_x, int tex_y, int tex_width, int tex_height)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        tessellator.getWorldRenderer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        tessellator.getWorldRenderer().pos((double) (x + 0), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + 0)), (double) ((float) (tex_y + tex_height))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + width), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + 0))).endVertex();
-        tessellator.getWorldRenderer().pos((double) (x + 0), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (tex_x + 0)), (double) ((float) (tex_y + 0))).endVertex();
+        tessellator.getBuffer().begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        tessellator.getBuffer().pos((double) (x + 0), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + 0)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getBuffer().pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + tex_height))).endVertex();
+        tessellator.getBuffer().pos((double) (x + width), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (tex_x + tex_width)), (double) ((float) (tex_y + 0))).endVertex();
+        tessellator.getBuffer().pos((double) (x + 0), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (tex_x + 0)), (double) ((float) (tex_y + 0))).endVertex();
         tessellator.draw();
     }
 }
