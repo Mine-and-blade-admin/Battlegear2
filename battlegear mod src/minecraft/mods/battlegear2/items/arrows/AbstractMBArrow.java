@@ -110,14 +110,12 @@ public abstract class AbstractMBArrow extends EntityArrow {
                 hasPickUp = true;
                 arrow = temp;
             }
-            if(player.inventory instanceof InventoryPlayerBattle){
-            	temp = addInQuiver(((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon(), arrow);
-            	if(temp.isEmpty()){
-                	return true;
-            	}else if(temp != arrow){
-                	hasPickUp = true;
-                	arrow = temp;
-            	}
+            temp = addInQuiver(player.getHeldItemOffhand(), arrow);
+            if(temp.isEmpty()){
+                return true;
+            }else if(temp != arrow){
+                hasPickUp = true;
+                arrow = temp;
             }
             if(hasPickUp){
                 if(arrow.getCount()>0)

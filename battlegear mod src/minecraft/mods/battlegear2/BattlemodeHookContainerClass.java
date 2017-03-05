@@ -202,37 +202,6 @@ public final class BattlemodeHookContainerClass {
         return copy;
     }
 
-    /**
-     * Attempts to right-click-use an item by the given EntityPlayer
-     */
-    public static EnumActionResult tryUseItem(EntityPlayer entityPlayer, ItemStack itemStack, Side side)
-    {
-        final int i = itemStack.getCount();
-        final int j = itemStack.getMetadata();
-        ActionResult<ItemStack> itemstack1 = itemStack.useItemRightClick(entityPlayer.getEntityWorld(), entityPlayer, EnumHand.OFF_HAND);
-
-        if (itemstack1.getResult() == itemStack && (itemstack1.getResult().isEmpty() || itemstack1.getResult().getCount() == i && (side.isClient() || (itemstack1.getResult().getMaxItemUseDuration() <= 0 && itemstack1.getResult().getMetadata() == j))))
-        {
-            return itemstack1.getType();
-        }else{
-            BattlegearUtils.setPlayerOffhandItem(entityPlayer, itemstack1.getResult());
-            if (side.isServer() && ((EntityPlayerMP)entityPlayer).interactionManager.isCreative()){
-                itemstack1.getResult().setCount(i);
-                if (itemstack1.getResult().isItemStackDamageable())
-                {
-                    itemstack1.getResult().setItemDamage(j);
-                }
-            }
-            if (itemstack1.getResult().isEmpty()){
-                BattlegearUtils.setPlayerOffhandItem(entityPlayer, ItemStack.EMPTY);
-            }
-            if (side.isServer() && !entityPlayer.isHandActive()){
-                ((EntityPlayerMP) entityPlayer).sendContainerToPlayer(entityPlayer.inventoryContainer);
-            }
-            return itemstack1.getType();
-        }
-    }
-
     public static void sendOffSwingEvent(PlayerInteractEvent player){
         if(!player.getEntityPlayer().isSwingInProgress) {
             PlayerEventChild.OffhandSwingEvent event = new PlayerEventChild.OffhandSwingEvent(copy(player));
@@ -281,6 +250,20 @@ public final class BattlemodeHookContainerClass {
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onOffhandItem(PlayerInteractEvent.RightClickItem offhandItemEvent){
+        if(offhandItemEvent.getHand() == EnumHand.OFF_HAND){
+            onOffhandUse(new PlayerEventChild.UseOffhandItemEvent(offhandItemEvent));
+        }
+    }
+
+
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    public void onOffhandBlock(PlayerInteractEvent.RightClickBlock offhandItemEvent){
+        if(offhandItemEvent.getHand() == EnumHand.OFF_HAND){
+            onOffhandUse(new PlayerEventChild.UseOffhandItemEvent(offhandItemEvent));
+        }
+    }
+
     public void onOffhandUse(PlayerEventChild.UseOffhandItemEvent offhandItemEvent){
         if(!offhandItemEvent.offhand.isEmpty()){
             ItemStack offhandItem = offhandItemEvent.offhand;
@@ -310,7 +293,8 @@ public final class BattlemodeHookContainerClass {
             ItemStack mainHand = offhandItemEvent.getPlayer().getHeldItemMainhand();
             if(!mainHand.isEmpty() && BattlegearUtils.usagePriorAttack(mainHand, offhandItemEvent.getPlayer(), false)) {
                offhandItemEvent.swingOffhand = false;
-            }
+            }else
+                BattlegearUtils.sendOffSwingEvent(offhandItemEvent.event);
         }
     }
 

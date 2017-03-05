@@ -52,9 +52,6 @@ public class CommonProxy {
 	public void tryUseTConstruct() {
 	}
 
-    public void tryUseDynamicLight(EntityPlayer player, ItemStack stack){
-    }
-
     public EntityPlayer getClientPlayer(){
         return null;
     }

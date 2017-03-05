@@ -36,7 +36,7 @@ public final class BattlegearTickHandeler {
         }
     }
 
-    public void tickStart(EntityPlayer entityPlayer) {
+    private void tickStart(EntityPlayer entityPlayer) {
 
         if (!entityPlayer.world.isRemote && entityPlayer.world instanceof WorldServer) {
 
@@ -61,17 +61,17 @@ public final class BattlegearTickHandeler {
         }
     }
 
-    public void tickEnd(EntityPlayer entityPlayer) {
+    private void tickEnd(EntityPlayer entityPlayer) {
         int timer = ((IBattlePlayer)entityPlayer).getSpecialActionTimer();
         if(timer > 0){
             ((IBattlePlayer)entityPlayer).setSpecialActionTimer(timer-1);
             int targetTime = -1;
-            ItemStack offhand = ((InventoryPlayerBattle)entityPlayer.inventory).getCurrentOffhandWeapon();
-            if(offhand != null && offhand.getItem() instanceof IShield){
+            ItemStack offhand = entityPlayer.getHeldItemOffhand();
+            if(offhand.getItem() instanceof IShield){
                 targetTime = ((IShield) offhand.getItem()).getBashTimer(offhand) / 2;
             }else{
                 offhand = QuiverArrowRegistry.getArrowContainer(entityPlayer);
-                if(offhand != null) {
+                if(!offhand.isEmpty()) {
                     targetTime = 0;
                 }
             }

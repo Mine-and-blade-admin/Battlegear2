@@ -11,6 +11,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
@@ -48,8 +49,10 @@ public class EntityEnderArrow extends AbstractMBArrow{
                     tryTeleport((EntityLivingBase)entityHit);
                 }
                 else if(shootingEntity instanceof EntityLivingBase){
-                    if (shootingEntity instanceof EntityPlayerMP && !(((EntityPlayerMP) this.shootingEntity).connection.getNetworkManager().isChannelOpen() && shootingEntity.world == this.world))
+                    if (shootingEntity instanceof EntityPlayerMP){
+                        if(!((EntityPlayerMP) this.shootingEntity).connection.getNetworkManager().isChannelOpen() || shootingEntity.world != this.world || ((EntityPlayerMP) this.shootingEntity).isPlayerSleeping())
                         return false;
+                    }
                     double x = shootingEntity.posX;
                     double y = shootingEntity.posY;
                     double z = shootingEntity.posZ;
@@ -87,61 +90,16 @@ public class EntityEnderArrow extends AbstractMBArrow{
      */
     protected void tryTeleport(EntityLivingBase entity)
     {
-        double x = entity.posX + (this.rand.nextDouble() - 0.5D) * tpRange * 2;
-        double y = entity.posY + (double)(this.rand.nextInt(4) - 2);
-        double z = entity.posZ + (this.rand.nextDouble() - 0.5D) * tpRange * 2;
-        EnderTeleportEvent event = new EnderTeleportEvent(entity, x, y, z, 0);
+        double x = entity.posX;
+        double y = entity.posY;
+        double z = entity.posZ;
+        EnderTeleportEvent event = new EnderTeleportEvent(entity, x+ (this.rand.nextDouble() - 0.5D) * tpRange * 2, y+ (double)(this.rand.nextInt(4) - 2), z+ (this.rand.nextDouble() - 0.5D) * tpRange * 2, 0);
         if (MinecraftForge.EVENT_BUS.post(event)){
             return;
         }
-        x = entity.posX;
-        y = entity.posY;
-        z = entity.posZ;
-        entity.posX = event.getTargetX();
-        entity.posY = event.getTargetY();
-        entity.posZ = event.getTargetZ();
-        boolean success = false;
-        BlockPos pos = new BlockPos(entity);
-
-        if (this.world.isBlockLoaded(pos))
-        {
-            while (pos.getY() > 0)
-            {
-                BlockPos temp = pos.down();
-                IBlockState block = this.world.getBlockState(temp);
-                if (block.getMaterial().blocksMovement())
-                {
-                    entity.setPosition(entity.posX, entity.posY, entity.posZ);
-                    if (this.world.getCollisionBoxes(entity, entity.getEntityBoundingBox()).isEmpty())
-                    {
-                        success = true;
-                        for (int l = 0; l < 128; ++l)
-                        {
-                            double d6 = (double)l / 127.0D;
-                            float f = (this.rand.nextFloat() - 0.5F) * 0.2F;
-                            float f1 = (this.rand.nextFloat() - 0.5F) * 0.2F;
-                            float f2 = (this.rand.nextFloat() - 0.5F) * 0.2F;
-                            double d7 = x + (entity.posX - x) * d6 + (this.rand.nextDouble() - 0.5D) * (double)entity.width * 2.0D;
-                            double d8 = y + (entity.posY - y) * d6 + this.rand.nextDouble() * (double)entity.height;
-                            double d9 = z + (entity.posZ - z) * d6 + (this.rand.nextDouble() - 0.5D) * (double)entity.width * 2.0D;
-                            this.world.spawnParticle(EnumParticleTypes.PORTAL, d7, d8, d9, (double) f, (double) f1, (double) f2);
-                        }
-                        this.world.playSound(null, x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F);
-                        entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
-                    }
-                    break;
-                }
-                else
-                {
-                    --entity.posY;
-                    pos = temp;
-                }
-            }
-        }
-
-        if (!success)
-        {
-            entity.setPosition(x, y, z);
+        if(entity.attemptTeleport(event.getTargetX(), event.getTargetY(), event.getTargetZ())){
+            this.world.playSound(null, x, y, z, SoundEvents.ENTITY_ENDERMEN_TELEPORT, entity.getSoundCategory(), 1.0F, 1.0F);
+            entity.playSound(SoundEvents.ENTITY_ENDERMEN_TELEPORT, 1.0F, 1.0F);
         }
     }
 
@@ -150,11 +108,14 @@ public class EntityEnderArrow extends AbstractMBArrow{
         this.setDead();
         if(shootingEntity instanceof EntityPlayer && shootingEntity.isSneaking()){
             IBlockState id = world.getBlockState(pos);
-            if (id.getBlock() != Blocks.BEDROCK && this.world.getGameRules().getBoolean("doTileDrops")) {
-                world.setBlockToAir(pos);
-                ItemStack item = new ItemStack(id.getBlock(), 1, id.getBlock().getMetaFromState(id));
-                if(!((EntityPlayer) shootingEntity).inventory.addItemStackToInventory(item)){
-                    EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) shootingEntity, item, true);
+            if (id.getBlock().getBlockHardness(id, world, pos) != -1F && this.world.getGameRules().getBoolean("doTileDrops")) {
+                Item item = Item.getItemFromBlock(id.getBlock());
+                int i = 0;
+                if(item.getHasSubtypes())
+                    i = id.getBlock().getMetaFromState(id);
+                ItemStack stack = new ItemStack(item, 1, i);
+                if(world.setBlockToAir(pos) && !((EntityPlayer) shootingEntity).inventory.addItemStackToInventory(stack)){
+                    EntityItem entityitem = ForgeHooks.onPlayerTossEvent((EntityPlayer) shootingEntity, stack, true);
                     if(entityitem!=null) {
                         entityitem.setNoPickupDelay();
                         entityitem.setOwner(shootingEntity.getName());
@@ -179,8 +140,10 @@ public class EntityEnderArrow extends AbstractMBArrow{
             if (!world.isAirBlock(pos)) {
                 return;
             }
-            if (shootingEntity instanceof EntityPlayerMP && !(((EntityPlayerMP) this.shootingEntity).connection.getNetworkManager().isChannelOpen() && shootingEntity.world == this.world))
+            if (shootingEntity instanceof EntityPlayerMP){
+                if(!((EntityPlayerMP) this.shootingEntity).connection.getNetworkManager().isChannelOpen() || shootingEntity.world != this.world || ((EntityPlayerMP) this.shootingEntity).isPlayerSleeping())
                 return;
+            }
             handleTeleportEvent(new EnderTeleportEvent((EntityLivingBase) shootingEntity, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, getDamageAgainst((EntityLivingBase) shootingEntity)));
         }
     }

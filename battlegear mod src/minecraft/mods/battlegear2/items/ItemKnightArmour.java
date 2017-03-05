@@ -55,7 +55,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubItems(Item par1, CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List){
+    public void getSubItems(@Nonnull Item par1, CreativeTabs par2CreativeTabs, NonNullList<ItemStack> par3List){
         ItemStack armor = new ItemStack(par1);
         setHeraldry(armor,SigilHelper.getDefault());
         par3List.add(armor);
@@ -130,15 +130,7 @@ public class ItemKnightArmour extends ItemArmor implements IHeraldyArmour, ISpec
 		}
 		
 		HeraldryArmourModel model = (HeraldryArmourModel)modelObject;
-
 		model.setItemStack(itemStack);
-		
-		/*if(entityLiving != null){
-			Render renderer = Minecraft.getMinecraft().getRenderManager().getEntityRenderObject(entityLiving);
-			if (renderer instanceof RenderLivingBase) {
-				model.setModelAttributes(((RenderLivingBase) renderer).getMainModel());
-			}
-		}*/
 		
 		return model;
 	}

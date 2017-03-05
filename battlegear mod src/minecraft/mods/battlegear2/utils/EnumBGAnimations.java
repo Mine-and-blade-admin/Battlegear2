@@ -17,7 +17,7 @@ public enum EnumBGAnimations {
     }, SpecialAction {
         @Override
         public void processAnimation(EntityPlayer entity) {
-            ItemStack offhand = ((InventoryPlayerBattle)entity.inventory).getCurrentOffhandWeapon();
+            ItemStack offhand = entity.getHeldItemMainhand();
             if(offhand.getItem() instanceof IShield){
                 ((IBattlePlayer)entity).setSpecialActionTimer(((IShield)offhand.getItem()).getBashTimer(offhand));
             }
