@@ -4,5 +4,10 @@
     "layer0": "battlegear2:items/quiver/quiver",
     "layer1": "battlegear2:items/quiver/quiver-details",
     "layer2": "battlegear2:items/quiver/quiver-arrows"
+  },
+  "display": {
+    "fixed":{
+      "scale": [ 0.75, 0.75, 0.75 ]
+    }
   }
 }

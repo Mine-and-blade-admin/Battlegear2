@@ -3,8 +3,8 @@ package mods.battlegear2.client;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.api.EnchantmentHelper;
 import mods.battlegear2.api.core.BattlegearUtils;
-import mods.battlegear2.api.core.IBattlePlayer;
-import mods.battlegear2.api.core.InventoryPlayerBattle;
+import mods.battlegear2.api.quiver.IArrowContainer2;
+import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.shield.IShield;
 import mods.battlegear2.api.weapons.Attributes;
 import mods.battlegear2.api.weapons.IBackStabbable;
@@ -15,17 +15,13 @@ import mods.battlegear2.client.gui.controls.GuiSigilButton;
 import mods.battlegear2.client.model.QuiverModel;
 import mods.battlegear2.client.utils.BattlegearRenderHelper;
 import mods.battlegear2.enchantments.BaseEnchantment;
-import mods.battlegear2.packet.PickBlockPacket;
 import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
-import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.RenderSkeleton;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
@@ -33,23 +29,16 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.entity.ai.attributes.BaseAttribute;
+import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagString;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -69,7 +58,6 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
     //public static final ResourceLocation patterns = new ResourceLocation("battlegear2", "textures/heraldry/patterns-small.png");
     //public static int storageIndex;
 
-    private static final int MAIN_INV = InventoryPlayer.getHotbarSize();
 	public static final GuiPlaceableButton[] tabsList = { new GuiBGInventoryButton(0), new GuiSigilButton(1)};
     public static final BattlegearClientEvents INSTANCE = new BattlegearClientEvents();
     private String[] attributeNames;
@@ -122,18 +110,36 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
      */
 	@SubscribeEvent
     public void renderPlayerOffhand(RenderSpecificHandEvent event){
+        final AbstractClientPlayer player = Minecraft.getMinecraft().player;
 	    if(event.getHand() == EnumHand.OFF_HAND){
-            final EntityPlayer player = Minecraft.getMinecraft().player;
 	        if(event.getItemStack().isEmpty()){
                 if(!player.isInvisible() && BattlegearUtils.isPlayerInBattlemode(player)) {
                     GlStateManager.pushMatrix();
                     Minecraft.getMinecraft().getItemRenderer().renderArmFirstPerson(event.getEquipProgress(), event.getSwingProgress(), player.getPrimaryHand().opposite());
                     GlStateManager.popMatrix();
                 }
+                return;
 	        }else if(event.getItemStack().getItem() instanceof IShield){
                 BattlegearRenderHelper.renderItemInFirstPerson(event.getEquipProgress(), player, Minecraft.getMinecraft().getItemRenderer());
                 event.setCanceled(true);
+                return;
             }
+        }
+        if(event.getItemStack().getItem() instanceof IArrowContainer2 && ((IArrowContainer2) event.getItemStack().getItem()).renderDefaultQuiverModel(event.getItemStack())) {
+            if (BattlegearConfig.hasRender("quiver")) {
+                ItemStack quiverStack = QuiverArrowRegistry.getArrowContainer(player);
+                if (event.getItemStack() == quiverStack) {
+                    int slot = ((IArrowContainer2) event.getItemStack().getItem()).getSelectedSlot(event.getItemStack());
+                    ItemStack arrowStack = ((IArrowContainer2) event.getItemStack().getItem()).getStackInSlot(event.getItemStack(), slot);
+                    Minecraft.getMinecraft().getItemRenderer().renderItemInFirstPerson(player, event.getPartialTicks(), event.getInterpolatedPitch(), event.getHand(), event.getSwingProgress(), arrowStack, event.getEquipProgress());
+                    event.setCanceled(true);
+                    return;
+                }
+            }
+        }
+        ItemStack inUse = player.getActiveItemStack();
+        if(event.getHand() != player.getActiveHand() && event.getItemStack() != inUse && !inUse.isEmpty() && BattlegearUtils.isBow(inUse.getItem())) {
+            event.setCanceled(true);
         }
     }
 
@@ -142,7 +148,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
      * Render quiver on skeletons if possible
      */
 	@SubscribeEvent
-	public void renderLiving(RenderLivingEvent.Post event) {
+	public void renderLiving(RenderLivingEvent.Post<AbstractSkeleton> event) {
 
 		if (BattlegearConfig.enableSkeletonQuiver && event.getEntity() instanceof EntitySkeleton && event.getRenderer() instanceof RenderSkeleton) {
 
@@ -209,79 +215,6 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
             }
             event.setNewfov(event.getFov()/ (1.0F - f1 * 0.15F));
         }
-    }
-
-    /**TODO
-     * Fixes pick block
-     */
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
-    public void replacePickBlock(MouseEvent event){
-        if(event.isButtonstate()){
-            Minecraft mc = Minecraft.getMinecraft();
-            if (mc.player != null) {
-                if(mc.gameSettings.keyBindPickBlock.isActiveAndMatches(event.getButton() - 100)){
-                    if(!mc.player.isSpectator() && ((IBattlePlayer) mc.player).isBattlemode())
-                        event.setCanceled(true);
-                    /*if (!((IBattlePlayer) mc.player).isBattlemode()) {
-                        boolean isCreative = mc.player.capabilities.isCreativeMode;
-                        ItemStack stack = getItemFromPointedAt(mc.objectMouseOver, mc.player);
-                        if (!stack.isEmpty()) {
-                            int k = -1;
-                            ItemStack temp;
-                            for (int slot = 0; slot < MAIN_INV; slot++) {
-                                temp = mc.player.inventory.getStackInSlot(slot);
-                                if (!temp.isEmpty() && stack.isItemEqual(temp) && ItemStack.areItemStackTagsEqual(stack, temp)) {
-                                    k = slot;
-                                    break;
-                                }
-                            }
-                            if (isCreative && k == -1) {
-                                k = mc.player.inventory.getFirstEmptyStack();
-                                if (k < 0 || k >= MAIN_INV) {
-                                    k = mc.player.inventory.currentItem;
-                                }
-                            }
-                            if (k >= 0 && k < MAIN_INV) {
-                                mc.player.inventory.currentItem = k;
-                                Battlegear.packetHandler.sendPacketToServer(new PickBlockPacket(stack, k).generatePacket());
-                            }
-                        }
-                    }*/
-                }
-            }
-        }
-    }
-
-    /**
-     * Equivalent code to the creative pick block
-     * @param target The client target vector
-     * @param player The player trying to pick
-     * @return the stack expected for the creative pick button
-     */
-    private static ItemStack getItemFromPointedAt(RayTraceResult target, EntityPlayer player) {
-        if(target!=null){
-            if (target.typeOfHit == RayTraceResult.Type.BLOCK)
-            {
-                BlockPos pos = target.getBlockPos();
-                World world = player.getEntityWorld();
-                IBlockState block = world.getBlockState(pos);
-                if (!block.getBlock().isAir(block, world, pos)) {
-                    ItemStack temp = block.getBlock().getPickBlock(block, target, world, pos, player);
-                    if (!temp.isEmpty() && player.capabilities.isCreativeMode && GuiScreen.isCtrlKeyDown() && block.getBlock().hasTileEntity(block)) {
-                        TileEntity te = world.getTileEntity(pos);
-                        if(te!=null){
-                            Minecraft.getMinecraft().storeTEInStack(temp, te);
-                        }
-                    }
-                    return temp;
-                }
-            }
-            else if(target.typeOfHit == RayTraceResult.Type.ENTITY && target.entityHit != null && player.capabilities.isCreativeMode)
-            {
-                return target.entityHit.getPickedResult(target);
-            }
-        }
-        return ItemStack.EMPTY;
     }
 
 	/**

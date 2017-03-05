@@ -2,7 +2,8 @@ package mods.battlegear2.client.utils;
 
 import mods.battlegear2.api.IBackSheathedRender;
 import mods.battlegear2.api.ISheathed;
-import mods.battlegear2.api.RenderPlayerEventChild.*;
+import mods.battlegear2.api.RenderPlayerEventChild.PostRenderSheathed;
+import mods.battlegear2.api.RenderPlayerEventChild.PreRenderSheathed;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.core.IOffhandRender;
@@ -17,7 +18,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerArmorBase;
@@ -83,18 +86,17 @@ public final class BattlegearRenderHelper {
                             float)((IShield)offhandRender.getItemToRender().getItem()).getBashTimer(
                             offhandRender.getItemToRender());
             swingProgress = MathHelper.sin(swingProgress * (float) Math.PI);
-            GlStateManager.translate(-0.95F + 0.25F * swingProgress,
-                    -1.3F - progress * 0.6F,
+            GlStateManager.translate(-0.59F + 0.25F * swingProgress,
+                    -0.53F - progress * 0.6F,
                     -0.8F - 0.25F * swingProgress);
 
             if(((IBattlePlayer)player).isBlockingWithShield()){
                 GlStateManager.translate(0.25F, 0.15F, 0);
             }
 
-            GlStateManager.rotate(-25, 0, 0, 1);
-            GlStateManager.rotate(145 - 35 * swingProgress, 0, 1, 0);
+            GlStateManager.rotate(- 35F * swingProgress, 0, 1, 0);
 
-            itemRenderer.renderItem(player, offhandRender.getItemToRender(), ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND);//TODO
+            itemRenderer.renderItem(player, offhandRender.getItemToRender(), ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND);
 
             GlStateManager.popMatrix();
         }
@@ -153,7 +155,7 @@ public final class BattlegearRenderHelper {
                     biped.bipedLeftArm.rotateAngleY -= biped.bipedBody.rotateAngleY;
                     biped.bipedLeftArm.rotateAngleX -= biped.bipedBody.rotateAngleY;
                 }*/
-                biped.bipedBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(offhandSwing) * (float)Math.PI * 2) * 0.2F;
+                biped.bipedBody.rotateAngleY = MathHelper.sin(MathHelper.sqrt(offhandSwing) * (float)Math.PI * 2F) * 0.2F;
                 if (side == EnumHandSide.LEFT)
                     biped.bipedBody.rotateAngleY *= -1F;
 
@@ -167,8 +169,8 @@ public final class BattlegearRenderHelper {
                 float f6 = 1 - offhandSwing;
                 f6 = 1 - f6*f6*f6*f6;
                 double f8 = MathHelper.sin(f6 * (float)Math.PI) * 1.2D;
-                double f10 = MathHelper.sin(offhandSwing * (float)Math.PI) * -(biped.bipedHead.rotateAngleX - 0.7F) * 0.75F;
-                model.rotateAngleX -= f8 + f10;
+                double f10 = MathHelper.sin(offhandSwing * (float)Math.PI) * (0.7F -biped.bipedHead.rotateAngleX) * 0.75F;
+                model.rotateAngleX = (float)((double)model.rotateAngleX - (f8 + f10));
                 model.rotateAngleY += biped.bipedBody.rotateAngleY * 2;
                 model.rotateAngleZ += MathHelper.sin(offhandSwing * (float)Math.PI) * -0.4F;
             }
@@ -192,6 +194,9 @@ public final class BattlegearRenderHelper {
         RenderPlayerEvent preRender = new RenderPlayerEvent.Pre(par1EntityPlayer, render, frame);
         RenderPlayerEvent postRender = new RenderPlayerEvent.Post(par1EntityPlayer, render, frame);
 
+        if (par1EntityPlayer.isSneaking()){
+            GlStateManager.translate(0.0F, 0.2F, 0.0F);
+        }
         ItemStack sheathed = BattlegearClientTickHandeler.getPreviousMainhand(par1EntityPlayer);
         if(!sheathed.isEmpty() && !(sheathed.getItem() instanceof ItemBlock)){
 
@@ -295,7 +300,7 @@ public final class BattlegearRenderHelper {
             {
                 GlStateManager.depthMask(false);
             }
-            Minecraft.getMinecraft().getRenderItem().renderItem(itemStack, ItemCameraTransforms.TransformType.NONE);//TODO
+            Minecraft.getMinecraft().getRenderItem().renderItem(itemStack, ItemCameraTransforms.TransformType.FIXED);
             if (flag)
             {
                 GlStateManager.depthMask(true);

@@ -6,6 +6,7 @@ import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
+import mods.battlegear2.api.quiver.QuiverMesh;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
@@ -18,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -25,12 +27,16 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 
 public class ItemQuiver extends Item implements IArrowContainer2, IDyable, ISheathed {
     public ItemQuiver() {
         super();
         this.setMaxStackSize(1);
+        this.addPropertyOverride(new ResourceLocation("onBack"), QuiverMesh.BACK_MODEL);
+        this.addPropertyOverride(new ResourceLocation("bowInUse"), QuiverMesh.BOW_USE);
+        this.addPropertyOverride(new ResourceLocation("hasArrow"), QuiverMesh.HAS_ARROW);
     }
 
     private NBTTagCompound getNBTTagComound(ItemStack stack){
@@ -41,7 +47,8 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable, IShea
         }
         return stack.getTagCompound();
     }
-    
+
+    @Nonnull
     @Override
     public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float offX, float offY, float offZ) {
         EnumActionResult flag = EnumActionResult.FAIL;
@@ -124,6 +131,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable, IShea
             }
             setStackInSlot(stack, selectedSlot, arrowStack);
         }
+        bow.getTagCompound().removeTag("Battlegear2-LoadedArrow");
     }
 
     @Override
@@ -136,8 +144,8 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable, IShea
 
     /**
      * Convenience feature for "AnonymousProductions" dude
-     * @param bow
-     * @param loadedArrow
+     * @param bow Item in use
+     * @param loadedArrow Arrow to be fired
      */
     public static void writeBowNBT(ItemStack bow, ItemStack loadedArrow) {
         NBTTagCompound tags = new NBTTagCompound();
@@ -218,14 +226,14 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable, IShea
     public int getColor(ItemStack par1ItemStack)
     {
         NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
-        if (nbttagcompound == null)
+        if (nbttagcompound == null || !nbttagcompound.hasKey("display"))
         {
             return getDefaultColor(par1ItemStack);
         }
         else
         {
             NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
-            return nbttagcompound1 == null ? getDefaultColor(par1ItemStack): (nbttagcompound1.hasKey("color") ? nbttagcompound1.getInteger("color") : getDefaultColor(par1ItemStack));
+            return nbttagcompound1.hasKey("color") ? nbttagcompound1.getInteger("color") : getDefaultColor(par1ItemStack);
         }
     }
 
@@ -233,15 +241,9 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable, IShea
     public void removeColor(ItemStack par1ItemStack)
     {
         NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
-
         if (nbttagcompound != null)
         {
-            NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
-
-            if (nbttagcompound1.hasKey("color"))
-            {
-                nbttagcompound1.removeTag("color");
-            }
+            nbttagcompound.getCompoundTag("display").removeTag("color");
         }
     }
 
@@ -253,18 +255,7 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable, IShea
     @Override
     public void setColor(ItemStack par1ItemStack, int par2)
     {
-        NBTTagCompound nbttagcompound = par1ItemStack.getTagCompound();
-        if (nbttagcompound == null)
-        {
-            nbttagcompound = new NBTTagCompound();
-            par1ItemStack.setTagCompound(nbttagcompound);
-        }
-        NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("display");
-        if (!nbttagcompound.hasKey("display"))
-        {
-            nbttagcompound.setTag("display", nbttagcompound1);
-        }
-        nbttagcompound1.setInteger("color", par2);
+        par1ItemStack.getOrCreateSubCompound("display").setInteger("color", par2);
     }
 
     @Override

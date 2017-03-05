@@ -3,5 +3,30 @@
   "textures": {
     "layer0": "battlegear2:items/quiver/quiver",
     "layer1": "battlegear2:items/quiver/quiver-details"
-  }
+  },
+  "display": {
+    "fixed":{
+      "scale": [ 0.75, 0.75, 0.75 ]
+    }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "hasArrow": 0.2
+      },
+      "model": "battlegear2:item/quiver_full"
+    },
+    {
+      "predicate": {
+        "onBack": 1
+      },
+      "model": "item/arrow"
+    },
+    {
+      "predicate": {
+        "bowInUse": 1
+      },
+      "model": "builtin/entity"
+    }
+  ]
 }

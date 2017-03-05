@@ -2,18 +2,13 @@ package mods.battlegear2.client.renderer;
 
 import com.google.common.collect.ImmutableMap;
 import mods.battlegear2.api.DefaultMesh;
-import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.utils.BattlegearConfig;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.event.RenderItemInFrameEvent;
 import net.minecraftforge.client.model.IModel;
 import net.minecraftforge.client.model.IRetexturableModel;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -37,24 +32,6 @@ public class ShieldModelLoader extends BaseModelLoader{
     public ShieldModelLoader(float backWidth, float trimWidth){
         backTranslation = new Vector3f(0, 0, backWidth);
         trimTranslation = new Vector3f(0, 0, trimWidth);
-    }
-
-    @SubscribeEvent
-    public void onFrame(RenderItemInFrameEvent frameEvent){
-        if(frameEvent.getItem().getItem() instanceof ItemShield){
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            if (!Minecraft.getMinecraft().getRenderItem().shouldRenderItemIn3D(frameEvent.getItem()))
-            {
-                GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-            }
-
-            GlStateManager.pushAttrib();
-            RenderHelper.enableStandardItemLighting();
-            Minecraft.getMinecraft().getRenderItem().renderItem(frameEvent.getItem(), ItemCameraTransforms.TransformType.GUI);
-            RenderHelper.disableStandardItemLighting();
-            GlStateManager.popAttrib();
-            frameEvent.setCanceled(true);
-        }
     }
 
     @SubscribeEvent

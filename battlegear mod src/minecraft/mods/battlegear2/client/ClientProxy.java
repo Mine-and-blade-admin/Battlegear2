@@ -1,5 +1,7 @@
 package mods.battlegear2.client;
 
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import mods.battlegear2.Battlegear;
 import mods.battlegear2.CommonProxy;
 import mods.battlegear2.MobHookContainerClass;
@@ -7,21 +9,15 @@ import mods.battlegear2.api.Colorable;
 import mods.battlegear2.api.DefaultMesh;
 import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.core.BattlegearUtils;
-import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.quiver.QuiverMesh;
 import mods.battlegear2.api.shield.IShield;
-import mods.battlegear2.client.gui.BattlegearGuiKeyHandler;
-import mods.battlegear2.client.renderer.FlagPoleTileRenderer;
-import mods.battlegear2.client.renderer.LayerOffhandItem;
-import mods.battlegear2.client.renderer.LayerQuiver;
-import mods.battlegear2.client.renderer.ShieldModelLoader;
+import mods.battlegear2.client.renderer.*;
 import mods.battlegear2.client.utils.BattlegearClientUtils;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.items.ItemMBArrow;
-import mods.battlegear2.items.ItemShield;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -34,6 +30,8 @@ import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
+import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -45,6 +43,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -53,12 +52,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
@@ -68,16 +65,10 @@ public final class ClientProxy extends CommonProxy {
 
     public static boolean tconstructEnabled = false;
     public static Method updateTab, addTabs;
-    private static Object dynLightPlayerMod;
-    private static Method dynLightFromItemStack, refresh;
-    public static ItemStack heldCache = ItemStack.EMPTY;
     public static TextureAtlasSprite[] backgroundIcon;
 
     @Override
     public void registerHandlers() {
-        if(BattlegearConfig.enableGUIKeys){
-            MinecraftForge.EVENT_BUS.register(BattlegearGuiKeyHandler.INSTANCE);
-        }
         super.registerHandlers();
         MinecraftForge.EVENT_BUS.register(BattlegearClientEvents.INSTANCE);
         MinecraftForge.EVENT_BUS.register(BattlegearClientTickHandeler.INSTANCE);
@@ -96,7 +87,7 @@ public final class ClientProxy extends CommonProxy {
     public void startFlash(EntityPlayer player, float damage) {
     	if(player.getName().equals(Minecraft.getMinecraft().player.getName())){
             BattlegearClientTickHandeler.resetFlash();
-            ItemStack offhand = ((InventoryPlayerBattle)player.inventory).getCurrentOffhandWeapon();
+            ItemStack offhand = player.getHeldItemOffhand();
             if(offhand.getItem() instanceof IShield)
                 BattlegearClientTickHandeler.reduceBlockTime(((IShield) offhand.getItem()).getDamageDecayRate(offhand, damage));
         }
@@ -106,9 +97,10 @@ public final class ClientProxy extends CommonProxy {
     public void registerItemRenderers() {
         Map<String, RenderPlayer> map = Minecraft.getMinecraft().getRenderManager().getSkinMap();
         for (RenderPlayer render : map.values()) {
-            render.addLayer(new LayerOffhandItem(render));
-            if (BattlegearConfig.hasRender("quiver"))
+            render.addLayer(new LayerSheathedItem(render));
+            if (BattlegearConfig.hasRender("quiver")) {
                 render.addLayer(new LayerQuiver(render));
+            }
         }
         if (BattlegearConfig.hasRender("shield"))
             MinecraftForge.EVENT_BUS.register(new ShieldModelLoader());
@@ -151,7 +143,7 @@ public final class ClientProxy extends CommonProxy {
         if (BattlegearConfig.chain != null)
             modelMesher.register(BattlegearConfig.chain, DefaultMesh.INVENTORY);
         if (BattlegearConfig.quiver != null) {
-            modelMesher.register(BattlegearConfig.quiver, new QuiverMesh("_full", DefaultMesh.INVENTORY));
+            modelMesher.register(BattlegearConfig.quiver, DefaultMesh.INVENTORY);
             ModelBakery.registerItemVariants(BattlegearConfig.quiver, new ResourceLocation(BattlegearConfig.MODID + "quiver"), new ResourceLocation(BattlegearConfig.MODID + "quiver_full"));
             Minecraft.getMinecraft().getItemColors().registerItemColorHandler(new Colorable(), BattlegearConfig.quiver);
         }
@@ -240,21 +232,21 @@ public final class ClientProxy extends CommonProxy {
 
     @Override
     public void doSpecialAction(EntityPlayer entityPlayer, ItemStack itemStack) {
-        RayTraceResult mop = null;
-        if(itemStack.getItem() instanceof IShield){
-            mop = getMouseOver(4);
-        }
-
         FMLProxyPacket p;
-        if(mop != null && mop.entityHit instanceof EntityLivingBase){
-            p = new SpecialActionPacket(entityPlayer, mop.entityHit).generatePacket();
-            if(mop.entityHit instanceof EntityPlayerMP){
-                Battlegear.packetHandler.sendPacketToPlayer(p, (EntityPlayerMP) mop.entityHit);
+        if(itemStack.getItem() instanceof IShield){
+            RayTraceResult mop = getMouseOver(4);
+            if(mop != null && mop.entityHit instanceof EntityLivingBase){
+                p = new SpecialActionPacket(entityPlayer, mop.entityHit).generatePacket();
+                if(mop.entityHit instanceof EntityPlayerMP){
+                    Battlegear.packetHandler.sendPacketToPlayer(p, (EntityPlayerMP) mop.entityHit);
+                }
+                Battlegear.packetHandler.sendPacketToServer(p);
             }
-        }else{
-            p = new SpecialActionPacket(entityPlayer, null).generatePacket();
         }
-        Battlegear.packetHandler.sendPacketToServer(p);
+        else{
+            p = new SpecialActionPacket(entityPlayer, null).generatePacket();
+            Battlegear.packetHandler.sendPacketToServer(p);
+        }
     }
 
     @Override
@@ -293,44 +285,44 @@ public final class ClientProxy extends CommonProxy {
                 Vec3d vec32 = vec3.addVector(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0);
                 Vec3d vec33 = null;
                 Entity pointedEntity = null;
-                List list = mc.world.getEntitiesWithinAABBExcludingEntity(mc.getRenderViewEntity(), mc.getRenderViewEntity().getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand(1.0D, 1.0D, 1.0D));
+                List<Entity> list = mc.world.getEntitiesInAABBexcluding(mc.getRenderViewEntity(), mc.getRenderViewEntity().getEntityBoundingBox().addCoord(vec31.xCoord * d0, vec31.yCoord * d0, vec31.zCoord * d0).expand(1.0D, 1.0D, 1.0D), Predicates.and(new Predicate<Entity>() {
+                    @Override
+                    public boolean apply(@Nullable Entity input) {
+                        return input!=null && input.canBeCollidedWith();
+                    }
+                }, EntitySelectors.NOT_SPECTATING));
                 double d2 = d1;
 
-                for (Object o : list)
+                for (Entity entity : list)
                 {
-                    Entity entity = (Entity) o;
+                    double f2 = entity.getCollisionBorderSize();
+                    AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().expandXyz(f2);
+                    RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
 
-                    if (entity.canBeCollidedWith())
+                    if (axisalignedbb.isVecInside(vec3))
                     {
-                        double f2 = entity.getCollisionBorderSize();
-                        AxisAlignedBB axisalignedbb = entity.getEntityBoundingBox().expand(f2, f2, f2);
-                        RayTraceResult movingobjectposition = axisalignedbb.calculateIntercept(vec3, vec32);
-
-                        if (axisalignedbb.isVecInside(vec3))
+                        if (d2 >= 0.0D)
                         {
-                            if (d2 >= 0.0D)
-                            {
-                                pointedEntity = entity;
-                                vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
-                                d2 = 0.0D;
-                            }
+                            pointedEntity = entity;
+                            vec33 = movingobjectposition == null ? vec3 : movingobjectposition.hitVec;
+                            d2 = 0.0D;
                         }
-                        else if (movingobjectposition != null)
-                        {
-                            double d3 = vec3.distanceTo(movingobjectposition.hitVec);
+                    }
+                    else if (movingobjectposition != null)
+                    {
+                        double d3 = vec3.distanceTo(movingobjectposition.hitVec);
 
-                            if (d3 < d2 || d2 == 0.0D)
-                            {
-                                if (entity == entity.getRidingEntity() && !entity.canRiderInteract()) {
-                                    if (d2 == 0.0D) {
-                                        pointedEntity = entity;
-                                        vec33 = movingobjectposition.hitVec;
-                                    }
-                                } else {
+                        if (d3 < d2 || d2 == 0.0D)
+                        {
+                            if (entity.getLowestRidingEntity() == mc.getRenderViewEntity().getLowestRidingEntity() && !mc.getRenderViewEntity().canRiderInteract()) {
+                                if (d2 == 0.0D) {
                                     pointedEntity = entity;
                                     vec33 = movingobjectposition.hitVec;
-                                    d2 = d3;
                                 }
+                            } else {
+                                pointedEntity = entity;
+                                vec33 = movingobjectposition.hitVec;
+                                d2 = d3;
                             }
                         }
                     }
@@ -350,8 +342,8 @@ public final class ClientProxy extends CommonProxy {
     @Override
     public void tryUseTConstruct() {
     	try {
-            Object tcManager = Class.forName("tconstruct.TConstruct").getField("pulsar").get(null);
-            if((Boolean)tcManager.getClass().getMethod("isPulseLoaded", String.class).invoke(tcManager, "Tinkers' Armory")) {
+            Object tcManager = Class.forName("slimeknights.tconstruct.TConstruct").getField("pulseManager").get(null);
+            if((Boolean)tcManager.getClass().getMethod("isPulseLoaded", String.class).invoke(tcManager, "Tinkers' Armory")) {//TODO Check TConstruct for their inv tabs
                 Class<?> tabRegistry = Class.forName("tconstruct.client.tabs.TabRegistry");
                 Class abstractTab = Class.forName("tconstruct.client.tabs.AbstractTab");
                 Method registerTab = tabRegistry.getMethod("registerTab", abstractTab);
@@ -366,45 +358,6 @@ public final class ClientProxy extends CommonProxy {
 		} catch (Throwable ignored) {
 		}
 	}
-
-    @Override
-    public void tryUseDynamicLight(EntityPlayer player, ItemStack stack){
-        if(player==null && stack==null){
-            dynLightPlayerMod = Loader.instance().getIndexedModList().get("DynamicLights_thePlayer").getMod();
-			if(dynLightPlayerMod!=null) {
-				try {
-						refresh = Class.forName("mods.battlegear2.client.utils.DualHeldLight").getMethod("refresh", EntityPlayer.class, int.class, int.class);
-						//First attempt: retrieve private method from mod instance directly
-						dynLightFromItemStack = dynLightPlayerMod.getClass().getDeclaredMethod("getLightFromItemStack", ItemStack.class);
-						dynLightFromItemStack.setAccessible(true);
-				}catch (Exception first){//Second attempt: retrieve method from mod config helper
-                    try {
-                        Class<?> helper = Class.forName("atomicstryker.dynamiclights.client.ItemConfigHelper");
-                        Field config = dynLightPlayerMod.getClass().getDeclaredField("itemsMap");
-                        config.setAccessible(true);
-                        dynLightFromItemStack = helper.getMethod("getLightFromItemStack", ItemStack.class);
-                        dynLightPlayerMod = config.get(dynLightPlayerMod);
-                    }catch(Exception second){
-                        return;
-                    }
-				}
-			}
-        }
-        if(dynLightFromItemStack!=null && refresh!=null){
-            if(!ItemStack.areItemStacksEqual(stack, heldCache)) {
-                try {
-                    int lightNew = Integer.class.cast(dynLightFromItemStack.invoke(dynLightPlayerMod, stack));
-                    int lightOld = Integer.class.cast(dynLightFromItemStack.invoke(dynLightPlayerMod, heldCache));
-                    if (lightNew != lightOld) {
-                        refresh.invoke(null, player, lightNew, lightOld);
-                    }
-                }catch (Exception e){
-                    return;
-                }
-                heldCache = stack;
-            }
-        }
-    }
 
     @Override
     public EntityPlayer getClientPlayer(){

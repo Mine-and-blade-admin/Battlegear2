@@ -7,9 +7,9 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Render a player sheathed items
  */
-public class LayerOffhandItem extends LayerPlayerBase {
+public class LayerSheathedItem extends LayerPlayerBase {
 
-    public LayerOffhandItem(RenderPlayer playerRenderer)
+    public LayerSheathedItem(RenderPlayer playerRenderer)
     {
         super(playerRenderer);
     }

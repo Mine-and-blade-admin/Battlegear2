@@ -8,7 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EnumPlayerModelParts;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -34,7 +34,10 @@ public class LayerQuiver extends LayerPlayerBase{
             GlStateManager.pushMatrix();
             GlStateManager.color(1, 1, 1);
             Minecraft.getMinecraft().getTextureManager().bindTexture(BattlegearClientEvents.INSTANCE.quiverDetails);
-            if(player.isWearing(EnumPlayerModelParts.JACKET)){//chest armor
+            if (player.isSneaking()){//sneaking
+                GlStateManager.translate(0.0F, 0.2F, 0.0F);
+            }
+            if(player.hasItemInSlot(EntityEquipmentSlot.CHEST)){//chest armor
                 GlStateManager.translate(0, 0, scale);
             }
             renderer.getMainModel().bipedBody.postRender(scale);
