@@ -93,9 +93,6 @@ public class Battlegear {
         if(Loader.isModLoaded("TConstruct")){//Tinker's Construct support for tabs in main inventory
             proxy.tryUseTConstruct();
         }
-        if(Loader.isModLoaded("DynamicLights_thePlayer")){//Dynamic Light support for held light in left hand
-            proxy.tryUseDynamicLight(null, null);
-        }
     }
 
     @Mod.EventHandler
