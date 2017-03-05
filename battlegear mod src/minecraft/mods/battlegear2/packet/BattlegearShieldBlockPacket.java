@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import java.util.UUID;
+
 public final class BattlegearShieldBlockPacket extends AbstractMBPacket {
 	public static final String packetName = "MB2|Block";
 	private boolean block;
@@ -13,7 +15,7 @@ public final class BattlegearShieldBlockPacket extends AbstractMBPacket {
 
 	public BattlegearShieldBlockPacket(boolean block, EntityPlayer user) {
 		this.block = block;
-		this.username = user.getName();
+		this.username = user.getCachedUniqueIdString();
 	}
 
 	public BattlegearShieldBlockPacket() {
@@ -21,15 +23,17 @@ public final class BattlegearShieldBlockPacket extends AbstractMBPacket {
 
 	@Override
 	public void process(ByteBuf in, EntityPlayer player) {
+		UUID id;
         try {
             block = in.readBoolean();
             username = ByteBufUtils.readUTF8String(in);
+            id = UUID.fromString(username);
         }catch (Exception e){
             e.printStackTrace();
             return;
         }
         if (username != null) {
-            EntityPlayer entity = player.world.getPlayerEntityByName(username);
+            EntityPlayer entity = player.world.getPlayerEntityByUUID(id);
             if(entity!=null) {
                 if (entity.world instanceof WorldServer) {
                     ((WorldServer) entity.world).getEntityTracker().sendToTrackingAndSelf(entity, this.generatePacket());

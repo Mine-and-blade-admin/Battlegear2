@@ -5,6 +5,8 @@ import mods.battlegear2.Battlegear;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import java.util.UUID;
+
 public final class BattlegearShieldFlashPacket extends AbstractMBPacket{
 
     public static final String packetName = "MB2|ShieldFlash";
@@ -12,7 +14,7 @@ public final class BattlegearShieldFlashPacket extends AbstractMBPacket{
 	private float damage;
 
     public BattlegearShieldFlashPacket(EntityPlayer player, float damage) {
-    	this.username = player.getName();
+    	this.username = player.getCachedUniqueIdString();
     	this.damage = damage;
     }
 
@@ -21,14 +23,16 @@ public final class BattlegearShieldFlashPacket extends AbstractMBPacket{
     
     @Override
     public void process(ByteBuf in,EntityPlayer player) {
+        UUID id;
         try {
             username = ByteBufUtils.readUTF8String(in);
             damage = in.readFloat();
+            id = UUID.fromString(username);
         }catch (Exception e){
             e.printStackTrace();
             return;
         }
-        EntityPlayer targetPlayer = player.world.getPlayerEntityByName(username);
+        EntityPlayer targetPlayer = player.world.getPlayerEntityByUUID(id);
         if(targetPlayer!=null)
             Battlegear.proxy.startFlash(targetPlayer, damage);
     }

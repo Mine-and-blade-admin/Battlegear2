@@ -29,8 +29,6 @@ public final class BattlegearPacketHandeler {
         map.put(BattlegearShieldFlashPacket.packetName, new BattlegearShieldFlashPacket());
         map.put(SpecialActionPacket.packetName, new SpecialActionPacket());
         map.put(LoginPacket.packetName, new LoginPacket());
-        map.put(OffhandPlaceBlockPacket.packetName, new OffhandPlaceBlockPacket());
-        map.put(PickBlockPacket.packetName, new PickBlockPacket());
         map.put(WieldSetPacket.packetName, new WieldSetPacket());
         map.put(ReachTargetPacket.packetName, new ReachTargetPacket());
     }

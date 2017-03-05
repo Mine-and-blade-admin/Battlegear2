@@ -19,6 +19,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import java.util.UUID;
+
 public final class SpecialActionPacket extends AbstractMBPacket{
 
     public static final String packetName = "MB2|Special";
@@ -28,9 +30,9 @@ public final class SpecialActionPacket extends AbstractMBPacket{
     @Override
     public void process(ByteBuf inputStream, EntityPlayer player) {
         try {
-            this.player = player.world.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
+            this.player = player.world.getPlayerEntityByUUID(UUID.fromString(ByteBufUtils.readUTF8String(inputStream)));
             if (inputStream.readBoolean()) {
-                entityHit = player.world.getPlayerEntityByName(ByteBufUtils.readUTF8String(inputStream));
+                entityHit = player.world.getPlayerEntityByUUID(UUID.fromString(ByteBufUtils.readUTF8String(inputStream)));
             } else {
                 entityHit = player.world.getEntityByID(inputStream.readInt());
             }
@@ -41,18 +43,16 @@ public final class SpecialActionPacket extends AbstractMBPacket{
 
         if(this.player!=null){
             if (entityHit instanceof EntityLivingBase) {
-                ItemStack offhand = ((InventoryPlayerBattle) this.player.inventory).getCurrentOffhandWeapon();
-                if (offhand != null && offhand.getItem() instanceof IShield) {
+                ItemStack offhand = this.player.getHeldItemOffhand();
+                if (offhand.getItem() instanceof IShield) {
                     if (entityHit.canBePushed()) {
                         double d0 = entityHit.posX - this.player.posX;
                         double d1;
-
                         for (d1 = entityHit.posZ - this.player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D) {
                             d0 = (Math.random() - Math.random()) * 0.01D;
                         }
-                        double pow = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower, offhand) * 0.1D;
-
-                        ((EntityLivingBase) entityHit).knockBack(this.player, 0, -d0 * (1 + pow), -d1 * (1 + pow));
+                        float pow = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower, offhand) * 0.1F;
+                        ((EntityLivingBase) entityHit).knockBack(this.player, pow, -d0, -d1);
                     }
                     if (entityHit.getDistanceToEntity(this.player) < 2) {
                         float dam = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashDamage, offhand) * 2F;
@@ -67,7 +67,7 @@ public final class SpecialActionPacket extends AbstractMBPacket{
                 }
             }else{
                 ItemStack quiver = QuiverArrowRegistry.getArrowContainer(this.player);
-                if(quiver != null){
+                if(!quiver.isEmpty()){
                     SwapArrowEvent swapEvent = new SwapArrowEvent(this.player, quiver);
                     if(!MinecraftForge.EVENT_BUS.post(swapEvent) && swapEvent.slotStep!=0) {
                         ((IArrowContainer2) quiver.getItem()).setSelectedSlot(quiver, swapEvent.getNextSlot());
@@ -95,13 +95,12 @@ public final class SpecialActionPacket extends AbstractMBPacket{
 
 	@Override
 	public void write(ByteBuf out) {
-		boolean isPlayer = entityHit instanceof EntityPlayer;
+        ByteBufUtils.writeUTF8String(out, player.getCachedUniqueIdString());
 
-        ByteBufUtils.writeUTF8String(out, player.getName());
-
+        boolean isPlayer = entityHit instanceof EntityPlayer;
         out.writeBoolean(isPlayer);
         if(isPlayer){
-            ByteBufUtils.writeUTF8String(out, entityHit.getName());
+            ByteBufUtils.writeUTF8String(out, entityHit.getCachedUniqueIdString());
         }else{
             out.writeInt(entityHit != null?entityHit.getEntityId():-1);
         }

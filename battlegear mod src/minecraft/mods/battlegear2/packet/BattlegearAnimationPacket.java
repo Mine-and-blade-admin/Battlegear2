@@ -6,6 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import java.util.UUID;
+
 /**
  * User: nerd-boy
  * Date: 26/06/13
@@ -19,7 +21,7 @@ public final class BattlegearAnimationPacket extends AbstractMBPacket {
 
     public BattlegearAnimationPacket(EnumBGAnimations animation, EntityPlayer user) {
     	this.animation = animation;
-    	this.username = user.getName();
+    	this.username = user.getCachedUniqueIdString();
     }
 
     public BattlegearAnimationPacket() {
@@ -27,15 +29,17 @@ public final class BattlegearAnimationPacket extends AbstractMBPacket {
     
 	@Override
     public void process(ByteBuf in,EntityPlayer player) {
+        UUID id;
         try {
             animation = EnumBGAnimations.values()[in.readInt()];
             username = ByteBufUtils.readUTF8String(in);
+            id = UUID.fromString(username);
         }catch (Exception e){
             e.printStackTrace();
             return;
         }
         if (username != null && animation != null) {
-            EntityPlayer entity = player.world.getPlayerEntityByName(username);
+            EntityPlayer entity = player.world.getPlayerEntityByUUID(id);
             if(entity!=null){
                 if (entity.world instanceof WorldServer) {
                     ((WorldServer) entity.world).getEntityTracker().sendToTrackingAndSelf(entity, this.generatePacket());

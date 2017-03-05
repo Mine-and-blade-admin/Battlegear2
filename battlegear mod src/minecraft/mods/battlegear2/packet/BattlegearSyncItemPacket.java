@@ -9,6 +9,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import java.util.UUID;
+
 /**
  * User: nerd-boy
  * Date: 26/06/13
@@ -22,7 +24,7 @@ public final class BattlegearSyncItemPacket extends AbstractMBPacket {
 	private EntityPlayer player;
 
     public BattlegearSyncItemPacket(EntityPlayer player){
-        this(player.getName(), player.inventory, player);
+        this(player.getCachedUniqueIdString(), player.inventory, player);
     }
 
     private BattlegearSyncItemPacket(String user, InventoryPlayer inventory, EntityPlayer player) {
@@ -37,7 +39,7 @@ public final class BattlegearSyncItemPacket extends AbstractMBPacket {
 	@Override
     public void process(ByteBuf inputStream, EntityPlayer player) {
         this.user = ByteBufUtils.readUTF8String(inputStream);
-        this.player = player.world.getPlayerEntityByName(user);
+        this.player = player.world.getPlayerEntityByUUID(UUID.fromString(user));
         if(this.player!=null) {
             int current = inputStream.readInt();
             if(InventoryPlayerBattle.isValidSwitch(current))
