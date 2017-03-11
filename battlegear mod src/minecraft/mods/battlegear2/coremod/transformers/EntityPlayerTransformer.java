@@ -7,8 +7,8 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.*;
 
+import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public final class EntityPlayerTransformer extends TransformerBase {
 
@@ -51,7 +51,7 @@ public final class EntityPlayerTransformer extends TransformerBase {
         for (MethodNode mn : methods) {
             if (mn.name.equals("<init>")) {
                 logger.log(Level.INFO, "\tPatching constructor in EntityPlayer");
-                ListIterator<AbstractInsnNode> it = mn.instructions.iterator();
+                Iterator<AbstractInsnNode> it = mn.instructions.iterator();
 
                 while (it.hasNext()) {
                     AbstractInsnNode insn = it.next();
@@ -117,25 +117,27 @@ public final class EntityPlayerTransformer extends TransformerBase {
                 mn.instructions = mv.instructions;
                 found++;
             } else if(mn.name.equals(interactWithMethodName) && mn.desc.equals(interactWithMethodDesc)){
-                sendPatchLog("interact");
-                MethodNode mv = new MethodNode(ACC_PUBLIC, interactWithMethodName, interactWithMethodDesc, null, null);
-                mv.visitCode();
-                Label l0 = new Label();
-                mv.visitLabel(l0);
-                mv.visitVarInsn(ALOAD, 0);
-                mv.visitVarInsn(ALOAD, 1);
-                mv.visitVarInsn(ALOAD, 2);
-                mv.visitMethodInsn(INVOKESTATIC, UTILITY_CLASS, "interactWith", "(L" + entityPlayerClassName + ";L" + entityClassName +";L" + enumHandClassName +";)L" + enumActionResult + ";");
-                mv.visitInsn(ARETURN);
-                Label l1 = new Label();
-                mv.visitLabel(l1);
-                mv.visitLocalVariable("this", "L" + entityPlayerClassName + ";", null, l0, l1, 0);//TODO
-                mv.visitLocalVariable("p_190775_1_", "L" + entityClassName + ";", null, l0, l1, 1);
-                mv.visitLocalVariable("p_190775_2_", "L" + enumHandClassName + ";", null, l0, l1, 2);
-                mv.visitMaxs(2, 2);
-                mv.visitEnd();
-                //mn.instructions = mv.instructions;
-                found++;
+                sendPatchLog("interactOn");
+                InsnList newList = new InsnList();
+                Iterator<AbstractInsnNode> it = mn.instructions.iterator();
+                int count = 0;
+                while (it.hasNext()) {
+                    AbstractInsnNode insn = it.next();
+                    if(insn instanceof FieldInsnNode && insn.getOpcode() == GETSTATIC && insn.getNext() instanceof InsnNode && insn.getNext().getOpcode() == ARETURN){
+                        count++;
+                        if(count == 5){//The last returning instruction
+                            newList.add(new VarInsnNode(ALOAD, 0));
+                            newList.add(new VarInsnNode(ALOAD, 1));
+                            newList.add(new VarInsnNode(ALOAD, 2));
+                            newList.add(new MethodInsnNode(INVOKESTATIC, UTILITY_CLASS, "interactWith"
+                                    , "(L" + entityPlayerClassName + ";L" + entityClassName +";L" + enumHandClassName +";)L" + enumActionResult + ";"));
+                            found++;
+                            continue;
+                        }
+                    }
+                    newList.add(insn);
+                }
+                mn.instructions = newList;
             }
         }
 

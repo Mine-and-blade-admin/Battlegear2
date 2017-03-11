@@ -1,6 +1,9 @@
 package mods.battlegear2.api.core;
 
-import mods.battlegear2.api.*;
+import mods.battlegear2.api.IAllowItem;
+import mods.battlegear2.api.IUsableItem;
+import mods.battlegear2.api.IWield;
+import mods.battlegear2.api.PlayerEventChild;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.ISpecialBow;
 import mods.battlegear2.api.shield.IShield;
@@ -16,7 +19,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.MobEffects;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.*;
 import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.stats.AchievementList;
@@ -469,53 +471,22 @@ public class BattlegearUtils {
      * @return SUCCESS if any interaction happened, actually bypassing subsequent PlayerInteractEvent.Action.RIGHT_CLICK_AIR and PlayerControllerMP#sendUseItem on client side
      */
     public static EnumActionResult interactWith(EntityPlayer entityPlayer, Entity entity, EnumHand hand){
-        if (entityPlayer.isSpectator()){
-            if (entity instanceof IInventory){
-                entityPlayer.displayGUIChest((IInventory)entity);
-            }
-            return EnumActionResult.PASS;
-        }
-        final PlayerInteractEvent.EntityInteract event = new PlayerInteractEvent.EntityInteract(entityPlayer, hand, entity);
-        if (MinecraftForge.EVENT_BUS.post(event)) return EnumActionResult.PASS;
-        ItemStack itemstack = entityPlayer.getHeldItem(hand);
-        ItemStack copyStack = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
-        if(entity.processInitialInteract(entityPlayer, hand)) {//Had interaction with the entity
-            if (entityPlayer.capabilities.isCreativeMode && itemstack == entityPlayer.getHeldItem(hand) && itemstack.getCount() < copyStack.getCount()) {//The interaction kept the stack identity
-                itemstack.setCount(copyStack.getCount());
-            }else if (!entityPlayer.capabilities.isCreativeMode && itemstack.isEmpty()){//The interaction emptied the stack
-                ForgeEventFactory.onPlayerDestroyItem(entityPlayer, copyStack, hand);
-            }
-            return EnumActionResult.SUCCESS;
-        }
-        else{//No interaction with the entity
-            if (entity instanceof EntityLivingBase) {
-                if (entityPlayer.capabilities.isCreativeMode) {
-                    itemstack = copyStack;
+        if(hand == EnumHand.OFF_HAND && isPlayerInBattlemode(entityPlayer)){//No interaction with left hand item
+            PlayerInteractEvent.EntityInteract event = new PlayerInteractEvent.EntityInteract(entityPlayer, hand, entity);
+            PlayerEventChild.OffhandAttackEvent offAttackEvent = new PlayerEventChild.OffhandAttackEvent(event);
+            if(!MinecraftForge.EVENT_BUS.post(offAttackEvent)){
+                if (offAttackEvent.swingOffhand){
+                    sendOffSwingEvent(event);
                 }
-                if(!itemstack.isEmpty() && itemstack.interactWithEntity(entityPlayer, (EntityLivingBase) entity, hand)){//Had item interaction in either hand
-                    if (itemstack.isEmpty() && !entityPlayer.capabilities.isCreativeMode){
-                        ForgeEventFactory.onPlayerDestroyItem(entityPlayer, copyStack, hand);
-                        entityPlayer.setHeldItem(hand, ItemStack.EMPTY);
-                    }
+                if (offAttackEvent.shouldAttack) {
+                    ((IBattlePlayer) entityPlayer).attackTargetEntityWithCurrentOffItem(offAttackEvent.getTarget());
+                }
+                if(offAttackEvent.cancelParent){
                     return EnumActionResult.SUCCESS;
                 }
-                else if(hand == EnumHand.OFF_HAND && isPlayerInBattlemode(entityPlayer)){//No interaction with left hand item
-                    PlayerEventChild.OffhandAttackEvent offAttackEvent = new PlayerEventChild.OffhandAttackEvent(event);
-                    if(!MinecraftForge.EVENT_BUS.post(offAttackEvent)){
-                        if (offAttackEvent.swingOffhand){
-                            sendOffSwingEvent(event);
-                        }
-                        if (offAttackEvent.shouldAttack) {
-                            ((IBattlePlayer) entityPlayer).attackTargetEntityWithCurrentOffItem(offAttackEvent.getTarget());
-                        }
-                        if(offAttackEvent.cancelParent){
-                            return EnumActionResult.SUCCESS;
-                        }
-                    }
-                }
             }
-            return EnumActionResult.PASS;
         }
+        return EnumActionResult.PASS;
     }
 
     /**

@@ -28,8 +28,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.FakePlayer;
@@ -42,7 +40,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.List;
 
@@ -150,13 +147,13 @@ public final class BattlemodeHookContainerClass {
         }else if(event instanceof PlayerInteractEvent.RightClickBlock) {
             TileEntity tile = event.getEntityPlayer().world.getTileEntity(event.getPos());
             if(tile instanceof IFlagHolder) {
-                ItemStack mainHandItem = event.getEntityPlayer().getHeldItemMainhand();
+                ItemStack mainHandItem = event.getItemStack();
                 if (mainHandItem.isEmpty()) {
                     if(!event.getEntityPlayer().world.isRemote) {
                         List<ItemStack> flags = ((IFlagHolder) tile).getFlags();
                         if(flags.size()>0){
                             ItemStack flag = flags.remove(flags.size() - 1);
-                            event.getEntityPlayer().inventory.setInventorySlotContents(event.getEntityPlayer().inventory.currentItem, flag);
+                            event.getEntityPlayer().setHeldItem(event.getHand(), flag);
                             event.getEntityPlayer().world.scheduleUpdate(event.getPos(), event.getEntityPlayer().world.getBlockState(event.getPos()).getBlock(), 1);
                         }
                     }
@@ -165,7 +162,7 @@ public final class BattlemodeHookContainerClass {
                         ((PlayerInteractEvent.RightClickBlock) event).setUseItem(Event.Result.DENY);
                     }else if(((IFlagHolder) tile).addFlag(mainHandItem)){
                         if(!event.getEntityPlayer().capabilities.isCreativeMode){
-                            event.getEntityPlayer().inventory.decrStackSize(event.getEntityPlayer().inventory.currentItem, 1);
+                            mainHandItem.shrink(1);
                         }
                         event.getEntityPlayer().world.scheduleUpdate(event.getPos(), event.getEntityPlayer().world.getBlockState(event.getPos()).getBlock(), 1);
                         event.setCanceled(true);
@@ -182,7 +179,16 @@ public final class BattlemodeHookContainerClass {
      */
     private static PlayerInteractEvent copy(PlayerInteractEvent event){
         PlayerInteractEvent copy = null;
-        if(event instanceof PlayerInteractEvent.EntityInteract)
+        if(event instanceof PlayerInteractEvent.RightClickEmpty)
+            copy = new PlayerInteractEvent.RightClickEmpty(event.getEntityPlayer(), event.getHand());
+        else if(event instanceof PlayerInteractEvent.LeftClickBlock) {
+            copy = new PlayerInteractEvent.LeftClickBlock(event.getEntityPlayer(), event.getPos(), event.getFace(), ((PlayerInteractEvent.LeftClickBlock) event).getHitVec());
+            ((PlayerInteractEvent.LeftClickBlock)copy).setUseItem(((PlayerInteractEvent.LeftClickBlock) event).getUseItem());
+            ((PlayerInteractEvent.LeftClickBlock)copy).setUseBlock(((PlayerInteractEvent.LeftClickBlock) event).getUseBlock());
+        }
+        else if(event instanceof PlayerInteractEvent.EntityInteractSpecific)
+            copy = new PlayerInteractEvent.EntityInteractSpecific(event.getEntityPlayer(), event.getHand(), ((PlayerInteractEvent.EntityInteractSpecific) event).getTarget(), ((PlayerInteractEvent.EntityInteractSpecific) event).getLocalPos());
+        else if(event instanceof PlayerInteractEvent.EntityInteract)
             copy = new PlayerInteractEvent.EntityInteract(event.getEntityPlayer(), event.getHand(), ((PlayerInteractEvent.EntityInteract) event).getTarget());
         else if(event instanceof PlayerInteractEvent.RightClickBlock) {
             copy = new PlayerInteractEvent.RightClickBlock(event.getEntityPlayer(), event.getHand(), event.getPos(), event.getFace(), ((PlayerInteractEvent.RightClickBlock) event).getHitVec());
@@ -191,11 +197,6 @@ public final class BattlemodeHookContainerClass {
         }
         else if(event instanceof PlayerInteractEvent.RightClickItem)
             copy = new PlayerInteractEvent.RightClickItem(event.getEntityPlayer(),event.getHand());
-        else if(event instanceof PlayerInteractEvent.LeftClickBlock) {
-            copy = new PlayerInteractEvent.LeftClickBlock(event.getEntityPlayer(), event.getPos(), event.getFace(), ((PlayerInteractEvent.LeftClickBlock) event).getHitVec());
-            ((PlayerInteractEvent.LeftClickBlock)copy).setUseItem(((PlayerInteractEvent.LeftClickBlock) event).getUseItem());
-            ((PlayerInteractEvent.LeftClickBlock)copy).setUseBlock(((PlayerInteractEvent.LeftClickBlock) event).getUseBlock());
-        }
         if(event.isCanceled()){
             copy.setCanceled(true);
         }

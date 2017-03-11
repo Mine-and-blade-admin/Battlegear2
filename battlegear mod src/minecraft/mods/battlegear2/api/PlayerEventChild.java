@@ -1,5 +1,6 @@
 package mods.battlegear2.api;
 
+import mods.battlegear2.api.quiver.IArrowContainer2;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -98,7 +99,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
 
     /**
      * Called when a player right clicks an entity in battlemode
-     * Both {@link ItemStack} can be null
+     * Both {@link ItemStack} can be empty
      * Cancelling will prevent any further processing and prevails over the boolean fields
      */
     @Cancelable
@@ -259,6 +260,18 @@ public abstract class PlayerEventChild extends PlayerEvent{
                 this.arrow = arrow;
             }
 
+            /**
+             * Change the slot from which an arrow is pulled of the quiver
+             */
+            public void setQuiverSlotUsed(int slot){
+                if(quiver.getItem() instanceof IArrowContainer2){
+                    if(slot < ((IArrowContainer2) quiver.getItem()).getSlotCount(quiver)){
+                        if(!((IArrowContainer2) quiver.getItem()).getStackInSlot(quiver, slot).isEmpty()) {
+                            ((IArrowContainer2) quiver.getItem()).setSelectedSlot(quiver, slot);
+                        }
+                    }
+                }
+            }
         }
 
         /**
