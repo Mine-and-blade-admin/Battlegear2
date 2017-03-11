@@ -16,7 +16,16 @@
      private InventoryEnderChest theInventoryEnderChest = new InventoryEnderChest();
      /** The Container for the player's inventory (which opens when they press E) */
      public Container inventoryContainer;
-@@ -2375,26 +2375,13 @@
+@@ -1303,7 +1303,7 @@
+                     }
+                 }
+ 
+-                return EnumActionResult.PASS;
++                return mods.battlegear2.api.core.BattlegearUtils.interactWith(this, p_190775_1_, p_190775_2_);
+             }
+         }
+     }
+@@ -2375,25 +2375,14 @@
  
      public ItemStack getItemStackFromSlot(EntityEquipmentSlot slotIn)
      {
@@ -27,8 +36,8 @@
      public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack)
      {
 -        if (slotIn == EntityEquipmentSlot.MAINHAND)
--        {
 +        if(mods.battlegear2.api.core.BattlegearUtils.setItemStackToSlot(this, slotIn, stack))
+         {
              this.playEquipSound(stack);
 -            this.inventory.mainInventory.set(this.inventory.currentItem, stack);
 -        }
@@ -41,15 +50,13 @@
 -        {
 -            this.playEquipSound(stack);
 -            this.inventory.armorInventory.set(slotIn.getIndex(), stack);
--        }
+         }
      }
  
-     public Iterable<ItemStack> getHeldEquipment()
-@@ -2917,4 +2904,31 @@
+@@ -2917,4 +2906,30 @@
          OTHER_PROBLEM,
          NOT_SAFE;
      }
-+
 +    public int specialActionTimer = 0;
 +    public boolean isShielding = false;
 +    // -----MB-AddMethod-----

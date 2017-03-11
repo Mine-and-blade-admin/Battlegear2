@@ -1,6 +1,5 @@
 package mods.battlegear2;
 
-import mods.battlegear2.api.core.IBattlePlayer;
 import mods.battlegear2.api.weapons.Attributes;
 import mods.battlegear2.api.weapons.IBackStabbable;
 import mods.battlegear2.api.weapons.IPotionEffect;
@@ -8,7 +7,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AbstractAttributeMap;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
@@ -19,7 +17,6 @@ import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -171,15 +168,6 @@ public final class WeaponHookContainerClass {
             //add effects if they aren't already applied, with corresponding chance factor
             if (!entityHit.isPotionActive(effect.getKey().getPotion()) && effect.getValue() > roll) {
                 entityHit.addPotionEffect(new PotionEffect(effect.getKey()));
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public void onBlock(LivingEntityUseItemEvent.Start use) {
-        if(use.getEntityLiving() instanceof IBattlePlayer && ((IBattlePlayer) use.getEntityLiving()).isBattlemode()) {
-            if (!doBlocking && use.getDuration() > 0 && use.getItem().getItemUseAction() == EnumAction.BLOCK) {
-                use.setCanceled(true);
             }
         }
     }

@@ -281,7 +281,7 @@ public class QuiverArrowRegistry {
 
     /**
      * Default implementation of a arrow firing handler, which uses this registry of arrows to build an EntityArrow
-     * from registered class, with the (World, EntityLivingBase, float) constructor
+     * from registered class, with the (World, EntityLivingBase) constructor
      * If the arrow is unknown, the registered class is null or the constructor isn't valid, defers to other firing handlers silently
      */
     public static class DefaultArrowFire implements IArrowFireHandler {
