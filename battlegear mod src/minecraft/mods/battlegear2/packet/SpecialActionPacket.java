@@ -51,7 +51,7 @@ public final class SpecialActionPacket extends AbstractMBPacket{
                         for (d1 = entityHit.posZ - this.player.posZ; d0 * d0 + d1 * d1 < 1.0E-4D; d1 = (Math.random() - Math.random()) * 0.01D) {
                             d0 = (Math.random() - Math.random()) * 0.01D;
                         }
-                        float pow = EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower, offhand) * 0.1F;
+                        float pow = 0.5F + EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bashPower, offhand) * 0.1F;
                         ((EntityLivingBase) entityHit).knockBack(this.player, pow, -d0, -d1);
                     }
                     if (entityHit.getDistanceToEntity(this.player) < 2) {
