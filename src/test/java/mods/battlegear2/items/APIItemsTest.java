@@ -14,31 +14,36 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 
-@Mod(modid = "APITest", name = "API Items")
+@Mod(modid = "api_test", name = "API Items")
+@Mod.EventBusSubscriber(modid = "api_test")
 public class APIItemsTest {
     private Logger log;
     @Mod.EventHandler
     public void loading(FMLPreInitializationEvent event){
         log = event.getModLog();
-        register(new Sheathed(true), "backSheathed");
-        register(new Sheathed(false), "hipSheathed");
-        register(new Wielded(true), "wielded");
-        register(new Wielded(false), "notWielded");
-        register(new Allow(true), "allowCombo");
-        register(new Allow(false), "stopCombo");
-        register(new Usable(true), "usable");
-        register(new Usable(false), "unUsable");
     }
 
-    private void register(Item item, String name){
-        ItemStack temp = new ItemStack(GameRegistry.register(item.setUnlocalizedName(name).setRegistryName(name)));
+    @SubscribeEvent
+    public void registerItems(RegistryEvent.Register<Item> itemRegistry){
+        itemRegistry.getRegistry().register(register(new Sheathed(true), "backSheathed"));
+        itemRegistry.getRegistry().register(register(new Wielded(true), "wielded"));
+        itemRegistry.getRegistry().register(register(new Wielded(false), "notWielded"));
+        itemRegistry.getRegistry().register(register(new Allow(true), "allowCombo"));
+        itemRegistry.getRegistry().register(register(new Allow(false), "stopCombo"));
+        itemRegistry.getRegistry().register(register(new Usable(true), "usable"));
+        itemRegistry.getRegistry().register(register(new Usable(false), "unUsable"));
+    }
+
+    private Item register(Item item, String name){
+        ItemStack temp = new ItemStack(item.setUnlocalizedName(name).setRegistryName(name));
         log.info("Registered:" + temp);
         if(BattlegearUtils.checkForRightClickFunction(temp))
             log.info("Detected use item method override");
@@ -56,6 +61,7 @@ public class APIItemsTest {
             }
         } catch (Exception e) {
         }
+        return item;
     }
 
     private class ItemListener extends Item{

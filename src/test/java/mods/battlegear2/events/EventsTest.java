@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = "EventsTest", name = "Events")
+@Mod(modid = "events_test", name = "Events")
 public class EventsTest {
     private final boolean forge = true;
     private Logger log;
@@ -31,22 +31,22 @@ public class EventsTest {
     }
 
     @SubscribeEvent
-    public void onShielding(PlayerEventChild.OffhandAttackEvent attack){
+    public void onAttack(PlayerEventChild.OffhandAttackEvent attack){
         log.info("Off attack " + attack.getTarget() + attack.swingOffhand);
     }
 
     @SubscribeEvent
-    public void onShielding(PlayerEventChild.UseOffhandItemEvent use){
+    public void onUse(PlayerEventChild.UseOffhandItemEvent use){
         log.info("Off use " + use.swingOffhand);
     }
 
     @SubscribeEvent
-    public void onShielding(PlayerEventChild.OffhandSwingEvent swing){
+    public void onSwing(PlayerEventChild.OffhandSwingEvent swing){
         log.info("Swing off " + swing.onEntity());
     }
 
     @SubscribeEvent
-    public void onSwap(PlayerEventChild.QuiverArrowEvent quiver){
+    public void onArrow(PlayerEventChild.QuiverArrowEvent quiver){
         log.info("Quiver arrow from" + quiver.getBow() + " at " + quiver.getCharge());
     }
 
@@ -63,7 +63,7 @@ public class EventsTest {
         }
 
         @SubscribeEvent
-        public void preRender(RenderPlayerEventChild.PostRenderPlayerElement render){
+        public void postRender(RenderPlayerEventChild.PostRenderPlayerElement render){
             log.info("Postrender " + render.type + " in " + render.isFirstPerson);
         }
 
