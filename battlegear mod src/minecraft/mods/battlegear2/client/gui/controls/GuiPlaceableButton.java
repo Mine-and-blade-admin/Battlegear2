@@ -96,7 +96,7 @@ public abstract class GuiPlaceableButton extends GuiButton {
             {
                 color = 16777120;
             }
-            this.drawCenteredString(mc.fontRendererObj, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, color);
+            this.drawCenteredString(mc.fontRenderer, this.displayString, this.xPosition + this.width / 2, this.yPosition + (this.height - 8) / 2, color);
         }
     }
 

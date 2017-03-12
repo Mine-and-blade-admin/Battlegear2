@@ -49,7 +49,7 @@ public final class BattlegearPacketHandeler {
             Battlegear.proxy.getThreadListener().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    packet.process(event.getPacket().payload(), ((NetHandlerPlayServer) event.getHandler()).playerEntity);
+                    packet.process(event.getPacket().payload(), ((NetHandlerPlayServer) event.getHandler()).player);
                 }
             });
         }

@@ -56,7 +56,7 @@ public class GuiToggeableButton extends GuiButton {
         this.drawTexturedModalRect(start_x, start_y, 16, 16, 0, 1, 1, -1);
 
         if(par2 >= xPosition && par2 <=xPosition+width && par3 >= yPosition && par3 <=yPosition+height)
-            drawHoveringText(tooltip, par2, par3, par1Minecraft.fontRendererObj);
+            drawHoveringText(tooltip, par2, par3, par1Minecraft.fontRenderer);
     }
 
     protected void drawHoveringText(List par1List, int par2, int par3, FontRenderer font)

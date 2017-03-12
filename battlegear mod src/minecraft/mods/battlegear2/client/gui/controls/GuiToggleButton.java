@@ -38,7 +38,7 @@ public class GuiToggleButton extends GuiButton{
 	public void drawButton(@Nonnull Minecraft par1Minecraft, int par2, int par3) {
 		if (this.visible)
         {
-            FontRenderer fontrenderer = par1Minecraft.fontRendererObj;
+            FontRenderer fontrenderer = par1Minecraft.fontRenderer;
             par1Minecraft.getTextureManager().bindTexture(resourceLocation);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;

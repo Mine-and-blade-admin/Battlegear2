@@ -1,8 +1,8 @@
 Mine and Blade : Battlegear - 2
 ===============================
 	
-Minecraft version: 1.8  
-Forge Version: 1.8-11.14.4.1572
+Minecraft version: 1.11.2
+Forge Version: 1.11.2-13.20.0.2228
 
 This is the second iteration of Mine & Blade: Battlegear, the popular dual-wielding and combat mod for Minecraft.
 The mod has a heavy dependency on the use of ASM (coremod) to edit the bytecode of the minecraft base classes. 
@@ -30,7 +30,8 @@ What works
 * Quivers
 * Arrows
 
-**Note from nerd-boy:** I am not 100% happy with the way we are syncing items. It works now by sending a packet with all the "battle items" to each player that is viewing a player every second. I am not sure if this will be too much or not. Although right now I cannot think of another way to do it that doesn't require more bytecode manipulation. I think we already have enough AccessTransformers planed to keep us busy without adding more that we may in fact not need.
+**Note from nerd-boy:** I am not 100% happy with the way we are syncing items. It works now by sending a packet with all the "battle items" to each player that is viewing a player every second.
+I am not sure if this will be too much or not. Although right now I cannot think of another way to do it that doesn't require more bytecode manipulation. I think we already have enough AccessTransformers planed to keep us busy without adding more that we may in fact not need.
 
 What doesn't work
 -----------------
@@ -45,7 +46,9 @@ You can set a dev environment by Gradle, with IntelliJIdea:
 `` gradlew setupDecompWorkspace idea genIntellijRuns``
 or Eclipse:
 `` gradlew setupDecompWorkspace eclipse``
-then import the build.gradle file.
+then import the project file.
+Complete the running configurations with the VM option:
+`` -Dfml.coreMods.load=mods.battlegear2.coremod.BattlegearLoadingPlugin``
 
 **To make an addon**
 The files in /battlegear api folder can be used as external libraries.

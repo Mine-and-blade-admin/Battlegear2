@@ -26,7 +26,7 @@ public class GuiModUpdateButton extends GuiButton{
         super.drawButton(par1Minecraft, par2, par3);
 
         if(text == null){
-            text = par1Minecraft.fontRendererObj.listFormattedStringToWidth(I18n.format("mud.name"), 80);
+            text = par1Minecraft.fontRenderer.listFormattedStringToWidth(I18n.format("mud.name"), 80);
         }
         par1Minecraft.getRenderItem().renderItemIntoGUI(icon, xPosition+2, yPosition+2);
 
@@ -41,7 +41,7 @@ public class GuiModUpdateButton extends GuiButton{
         GlStateManager.scale(1F / scale, 1F / scale, 1F / scale);
 
         for(int i = 0; i < text.size() && i < 2; i++){
-            drawCenteredString(par1Minecraft.fontRendererObj, text.get(i), (int)(scale*(xPosition+20+40)), (int)(scale*((yPosition+3)+par1Minecraft.fontRendererObj.FONT_HEIGHT*i)), l);
+            drawCenteredString(par1Minecraft.fontRenderer, text.get(i), (int)(scale*(xPosition+20+40)), (int)(scale*((yPosition+3)+par1Minecraft.fontRenderer.FONT_HEIGHT*i)), l);
         }
         GlStateManager.scale(scale, scale, scale);
     }

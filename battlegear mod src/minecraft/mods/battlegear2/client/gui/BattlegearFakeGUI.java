@@ -36,7 +36,7 @@ public final class BattlegearFakeGUI extends GuiScreen{
         super.drawScreen(mouseX, mouseY, frame);
         for(Object obj:this.buttonList)
             if (((GuiButton) obj).isMouseOver()) {
-                drawCreativeTabHoveringText(I18n.format("gui.fake.help"+((GuiButton) obj).id), mouseX, mouseY);
+                drawHoveringText(I18n.format("gui.fake.help"+((GuiButton) obj).id), mouseX, mouseY);
             }
     }
 

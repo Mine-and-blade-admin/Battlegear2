@@ -117,7 +117,7 @@ public class BattlegearSigilGUI extends GuiContainer {
     }
 
     public FontRenderer getFontRenderer() {
-        return fontRendererObj;
+        return fontRenderer;
     }
     
     private void enableButtons(){

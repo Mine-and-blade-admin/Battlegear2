@@ -26,7 +26,7 @@ public class GuiColourToggleButton extends GuiToggleButton{
 		
 		if (this.visible)
         {
-			FontRenderer fontrenderer = par1Minecraft.fontRendererObj;
+			FontRenderer fontrenderer = par1Minecraft.fontRenderer;
 			par1Minecraft.getTextureManager().bindTexture(GuiToggleButton.resourceLocation);
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 			this.hovered = par2 >= this.xPosition && par3 >= this.yPosition && par2 < this.xPosition + this.width && par3 < this.yPosition + this.height;

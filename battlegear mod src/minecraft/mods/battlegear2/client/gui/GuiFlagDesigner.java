@@ -287,7 +287,7 @@ public class GuiFlagDesigner extends GuiScreen {
         slider.enabled = false;
         slider.visible = false;
 
-        colourTextField = new GuiTextFieldAlt(this.fontRendererObj, x_rpanel_start + 10 , y_rpanel_start+91, 75, 20);
+        colourTextField = new GuiTextFieldAlt(this.fontRenderer, x_rpanel_start + 10 , y_rpanel_start+91, 75, 20);
         colourTextField.setText("F000");
         colourTextField.setMaxStringLength(4);
         colourTextField.setEnableBackgroundDrawing(false);

@@ -179,7 +179,7 @@ public class BattlegearInGameGUI extends Gui {
             if (f1 > 0.0F) {
                 GlStateManager.popMatrix();
             }
-            mc.getRenderItem().renderItemOverlays(this.mc.fontRendererObj, itemstack, x, y);
+            mc.getRenderItem().renderItemOverlays(this.mc.fontRenderer, itemstack, x, y);
         }
     }
 
