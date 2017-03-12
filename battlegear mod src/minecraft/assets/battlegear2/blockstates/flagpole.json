@@ -5,6 +5,9 @@
     "uvlock": true
   },
   "variants": {
+    "inventory":{
+      "model": "battlegear2:flagpole"
+    },
     "axis":{
       "x":{},
       "y":{
