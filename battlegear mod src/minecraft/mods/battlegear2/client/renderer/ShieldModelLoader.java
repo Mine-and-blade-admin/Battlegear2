@@ -26,7 +26,7 @@ public class ShieldModelLoader extends BaseModelLoader{
     private final static String BACK_EXTENSION = ".back", TRIM_EXTENSION = ".trim";
 
     public ShieldModelLoader(){
-        this(1/16F, 0.5F);
+        this(0F, 0.5F);
     }
 
     public ShieldModelLoader(float backWidth, float trimWidth){
