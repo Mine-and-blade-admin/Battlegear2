@@ -31,14 +31,12 @@ public class EntityPoisonArrow extends AbstractMBArrow{
 
 	@Override
 	public boolean onHitEntity(Entity entityHit, DamageSource source, float ammount) {
-		boolean flag = false;
-		if(entityHit instanceof EntityLivingBase){
-			((EntityLivingBase) entityHit).addPotionEffect(new PotionEffect(WITHER, 200));
-            ((EntityLivingBase) entityHit).setArrowCountInEntity(((EntityLivingBase) entityHit).getArrowCountInEntity()+1);
-			flag = true;
-		}
-		setDead();
-		return flag;
+		return false;
+	}
+
+	@Override
+	protected void arrowHit(EntityLivingBase entityHit) {
+		entityHit.addPotionEffect(new PotionEffect(WITHER, 200));
 	}
 
 	@Override

@@ -38,7 +38,7 @@ public class EntityExplossiveArrow extends AbstractMBArrow{
     
     public void onExplode(){
         if (!this.world.isRemote) {
-            this.world.createExplosion(this, this.posX, this.posY, this.posZ, getExplosionStrength(), canBreakBlocks());
+            this.world.createExplosion(this.shootingEntity, this.posX, this.posY, this.posZ, getExplosionStrength(), canBreakBlocks());
             this.setDead();
         }
     }

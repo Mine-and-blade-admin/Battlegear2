@@ -1,15 +1,12 @@
 package mods.battlegear2.items.arrows;
 
-import mods.battlegear2.api.core.InventoryPlayerBattle;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
-import mods.battlegear2.items.ItemMBArrow;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -58,25 +55,6 @@ public abstract class AbstractMBArrow extends EntityArrow {
             }
         }
         super.onHit(raytraceResultIn);
-    }
-
-    /**
-     * Helper generation method for skeletons
-     * @param type the new type of the arrow
-     * @param arrow the original arrow fired by the skeleton
-     * @param skeleton the shooter
-     * @return
-     */
-    public static AbstractMBArrow generate(int type, EntityArrow arrow, AbstractSkeleton skeleton) {
-        AbstractMBArrow mbArrow = null;
-        if(arrow != null && skeleton != null && type<ItemMBArrow.arrows.length){
-            try {
-                mbArrow = ItemMBArrow.arrows[type].getConstructor(World.class, EntityLivingBase.class).newInstance(arrow.world, skeleton);
-            } catch (Exception e) {
-				e.printStackTrace();
-			}          		
-        }
-        return mbArrow;
     }
     
     @Override//Fixes picking up arrows

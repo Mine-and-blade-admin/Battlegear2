@@ -46,11 +46,11 @@ public class EntityLoveArrow extends AbstractMBArrow{
                         this.world.spawnEntity(child);
                     }
                 }
-                ((EntityAgeable) entityHit).setGrowingAge(AGE_TIMER);
+                ((EntityAgeable) entityHit).setGrowingAge(AGE_TIMER);//Fountain of youth
                 setDead();
                 return true;
             }else if(entityHit instanceof EntityCreature){
-                ((EntityCreature) entityHit).setAttackTarget(null);
+                ((EntityCreature) entityHit).setAttackTarget(null);//Try peacefulness
                 if(((EntityCreature) entityHit).getHeldItemMainhand().isEmpty()){
                     ((EntityCreature) entityHit).setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ItemMBArrow.component[5]));
                 }else if(((EntityCreature) entityHit).getHeldItemOffhand().isEmpty()){
@@ -65,7 +65,7 @@ public class EntityLoveArrow extends AbstractMBArrow{
                     entityitem.setOwner(entityHit.getName());
                 }
                 if(!((IBattlePlayer)entityHit).isBattlemode())
-                    ((EntityPlayer) entityHit).setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ItemMBArrow.component[5]));
+                    ((EntityPlayer) entityHit).setHeldItem(EnumHand.MAIN_HAND, new ItemStack(ItemMBArrow.component[5]));//Get a cookie
                 setDead();
                 return true;
             }

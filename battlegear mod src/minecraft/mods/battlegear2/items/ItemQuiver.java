@@ -8,12 +8,11 @@ import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
 import mods.battlegear2.api.quiver.QuiverMesh;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
-import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumActionResult;
@@ -121,23 +120,30 @@ public class ItemQuiver extends Item implements IArrowContainer2, IDyable, IShea
 
     @Override
     public void onArrowFired(World world, EntityPlayer player, ItemStack stack, ItemStack bow, EntityArrow arrow) {
-        if(!player.capabilities.isCreativeMode && EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, bow) == 0){
+        if(!player.capabilities.isCreativeMode){
             int selectedSlot = getSelectedSlot(stack);
             ItemStack arrowStack = getStackInSlot(stack, selectedSlot);
-            arrowStack.shrink(1);
-            if(arrowStack.getCount() <= 0){
-                //ForgeEventFactory.onPlayerDestroyItem(player, arrowStack);
-                arrowStack = null;
+            if(!(arrowStack.getItem() instanceof ItemArrow) || !((ItemArrow) arrowStack.getItem()).isInfinite(arrowStack, bow, player)) {
+                arrowStack.shrink(1);
+                if (arrowStack.isEmpty()) {
+                    //ForgeEventFactory.onPlayerDestroyItem(player, arrowStack);
+                    arrowStack = ItemStack.EMPTY;
+                }
+                setStackInSlot(stack, selectedSlot, arrowStack);
             }
-            setStackInSlot(stack, selectedSlot, arrowStack);
         }
         bow.getTagCompound().removeTag("Battlegear2-LoadedArrow");
     }
 
     @Override
     public void onPreArrowFired(PlayerEventChild.QuiverArrowEvent.Firing arrowEvent) {
-        if(arrowEvent.getArcher().capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantments.INFINITY, arrowEvent.getBow()) > 0){
-            arrowEvent.arrow.pickupStatus = EntityArrow.PickupStatus.DISALLOWED;
+        if(arrowEvent.getArcher().capabilities.isCreativeMode){
+            arrowEvent.arrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
+        }else{
+            ItemStack arrow = arrowEvent.getArrowInUse();
+            if(arrow.getItem() instanceof ItemArrow && ((ItemArrow) arrow.getItem()).isInfinite(arrow, arrowEvent.getBow(), arrowEvent.getArcher())){
+                arrowEvent.arrow.pickupStatus = EntityArrow.PickupStatus.CREATIVE_ONLY;
+            }
         }
         writeBowNBT(arrowEvent.getBow(), getStackInSlot(arrowEvent.quiver, getSelectedSlot(arrowEvent.quiver)));
     }

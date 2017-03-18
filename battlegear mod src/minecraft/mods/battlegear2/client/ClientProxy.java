@@ -11,13 +11,16 @@ import mods.battlegear2.api.IDyable;
 import mods.battlegear2.api.core.BattlegearUtils;
 import mods.battlegear2.api.quiver.IArrowContainer2;
 import mods.battlegear2.api.quiver.QuiverArrowRegistry;
-import mods.battlegear2.api.quiver.QuiverMesh;
 import mods.battlegear2.api.shield.IShield;
-import mods.battlegear2.client.renderer.*;
+import mods.battlegear2.client.renderer.FlagPoleTileRenderer;
+import mods.battlegear2.client.renderer.LayerQuiver;
+import mods.battlegear2.client.renderer.LayerSheathedItem;
+import mods.battlegear2.client.renderer.ShieldModelLoader;
 import mods.battlegear2.client.utils.BattlegearClientUtils;
 import mods.battlegear2.heraldry.BlockFlagPole;
 import mods.battlegear2.heraldry.TileEntityFlagPole;
 import mods.battlegear2.items.ItemMBArrow;
+import mods.battlegear2.items.arrows.AbstractMBArrow;
 import mods.battlegear2.packet.BattlegearAnimationPacket;
 import mods.battlegear2.packet.SpecialActionPacket;
 import mods.battlegear2.utils.BattlegearConfig;
@@ -29,9 +32,9 @@ import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.renderer.entity.RenderArrow;
 import net.minecraft.client.renderer.entity.RenderPlayer;
-import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.entity.RenderTippedArrow;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -159,6 +162,13 @@ public final class ClientProxy extends CommonProxy {
                 @Override
                 public ModelResourceLocation getModelLocation(ItemStack stack) {
                     return new ModelResourceLocation(variants[stack.getMetadata()], "inventory");
+                }
+            });
+            Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(AbstractMBArrow.class, new RenderArrow<AbstractMBArrow>(Minecraft.getMinecraft().getRenderManager()) {
+                @Nullable
+                @Override
+                protected ResourceLocation getEntityTexture(AbstractMBArrow entity) {
+                    return RenderTippedArrow.RES_ARROW;
                 }
             });
         }

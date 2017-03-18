@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
+import net.minecraft.stats.StatList;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.SoundCategory;
@@ -24,6 +25,7 @@ import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import net.minecraftforge.fml.common.eventhandler.Event.Result;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public final class BowHookContainerClass2 {
@@ -93,7 +95,7 @@ public final class BowHookContainerClass2 {
 		}
 	}
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public void onBowStartDraw(LivingEntityUseItemEvent.Start use){
         if(use.getDuration() > 1 && BattlegearUtils.isBow(use.getItem().getItem())){
             int lvl = mods.battlegear2.api.EnchantmentHelper.getEnchantmentLevel(BaseEnchantment.bowCharge, use.getItem());
@@ -129,7 +131,7 @@ public final class BowHookContainerClass2 {
     public void onBowFiring(ArrowLooseEvent event) {
         //Check if bow is charged enough
         float f = new PlayerEventChild.QuiverArrowEvent.ChargeCalculations(event).getCharge();
-        if(f>0){
+        if(f>=0.1F){
             ItemStack stack = QuiverArrowRegistry.getArrowContainer(event.getBow(), event.getEntityPlayer());
             if(stack.getItem() instanceof IArrowContainer2){
                 IArrowContainer2 quiver = (IArrowContainer2) stack.getItem();
@@ -137,9 +139,9 @@ public final class BowHookContainerClass2 {
                 EntityArrow entityarrow = quiver.getArrowType(stack, world, event.getEntityPlayer(), f*3.0F);
                 if(entityarrow!=null){
                     PlayerEventChild.QuiverArrowEvent.Firing arrowEvent = new PlayerEventChild.QuiverArrowEvent.Firing(event, stack, entityarrow);
-                    quiver.onPreArrowFired(arrowEvent);
-                    entityarrow.setAim(arrowEvent.getArcher(), arrowEvent.getArcher().rotationPitch, arrowEvent.getArcher().rotationYaw, 0, f*3F, 1F);
                     if(!MinecraftForge.EVENT_BUS.post(arrowEvent)){
+                        quiver.onPreArrowFired(arrowEvent);
+                        entityarrow.setAim(arrowEvent.getArcher(), arrowEvent.getArcher().rotationPitch, arrowEvent.getArcher().rotationYaw, 0, f*3F, 1F);
                         if (arrowEvent.isCritical || f == 1.0F)
                             entityarrow.setIsCritical(true);
                         if(arrowEvent.addEnchantments){
@@ -155,8 +157,10 @@ public final class BowHookContainerClass2 {
                                 entityarrow.setFire(100);
                             }
                         }
-                        if(arrowEvent.bowDamage>0)
+                        if(arrowEvent.bowDamage>0) {
                             event.getBow().damageItem(arrowEvent.bowDamage, event.getEntityPlayer());
+                            event.getEntityPlayer().addStat(StatList.getObjectUseStats(event.getBow().getItem()));
+                        }
                         if(arrowEvent.bowSoundVolume>0)
                             world.playSound(null, arrowEvent.getArcher().posX, arrowEvent.getArcher().posY, arrowEvent.getArcher().posZ, arrowEvent.bowSound, SoundCategory.PLAYERS, arrowEvent.bowSoundVolume, 1.0F / (arrowEvent.getPlayer().getRNG().nextFloat() * 0.4F + 1.2F) + f * 0.5F);
                         if (!world.isRemote)

@@ -38,7 +38,7 @@ public class Battlegear {
 
     @Mod.Instance(MODID)
     public static Battlegear INSTANCE;
-    @SidedProxy(modId=MODID, clientSide = "mods.battlegear2.client.ClientProxy", serverSide = "mods.battlegear2.CommonProxy")
+    @SidedProxy(modId = MODID, clientSide = "mods.battlegear2.client.ClientProxy", serverSide = "mods.battlegear2.CommonProxy")
     public static CommonProxy proxy;
 
     public static ItemArmor.ArmorMaterial knightArmourMaterial;
@@ -70,17 +70,17 @@ public class Battlegear {
             }
         }
         proxy.registerHandlers();
+        QuiverArrowRegistry.addArrowToRegistry(Items.ARROW, EntityTippedArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(Items.TIPPED_ARROW, EntityTippedArrow.class);
+        QuiverArrowRegistry.addArrowToRegistry(Items.SPECTRAL_ARROW, EntitySpectralArrow.class);
         //Fetch early messages
         IMCEvent imc = new IMCEvent();
-        imc.applyModContainer(Loader.instance().activeModContainer());
+        imc.applyModContainer(FMLCommonHandler.instance().findContainerFor(MODID));
         onMessage(imc);
     }
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        QuiverArrowRegistry.addArrowToRegistry(Items.ARROW, EntityTippedArrow.class);
-        QuiverArrowRegistry.addArrowToRegistry(Items.TIPPED_ARROW, EntityTippedArrow.class);
-        QuiverArrowRegistry.addArrowToRegistry(Items.SPECTRAL_ARROW, EntitySpectralArrow.class);
         proxy.registerItemRenderers();
         BattlegearConfig.registerRecipes();
         packetHandler = new BattlegearPacketHandeler();
