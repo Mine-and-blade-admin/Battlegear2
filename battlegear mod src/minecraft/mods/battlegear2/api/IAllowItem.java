@@ -11,10 +11,10 @@ public interface IAllowItem {
 	/**
      * Whether this item {inhand, not necessarily the player right hand} allows the other (opposite hand) to be wielded simultaneously
 	 * Called before both items are in place (though one can already be).
-	 * Note also applies for empty hands (null arg).
+	 * Note also applies for empty hands (ItemStack.EMPTY arg).
 	 * Note it is not necessary for the opposite hand item to implement this interface for this contract to be obeyed
-	 * @param inhand this item (not null)
-	 * @param oppositehand the other item (can be null if empty hand, can be of the same item instance, etc)
+	 * @param inhand this item (not empty)
+	 * @param oppositehand the other item (can be ItemStack.EMPTY if empty hand, can be of the same item instance, etc)
 	 * @param player the player entity trying to wield (placing each item in dual slots)
 	 * @return {
 	 * false:

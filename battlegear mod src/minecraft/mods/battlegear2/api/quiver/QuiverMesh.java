@@ -13,9 +13,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Created by Olivier on 04/06/2015.
+ * Collection of helpers for arrow container rendering
  */
 public final class QuiverMesh implements ItemMeshDefinition {
+    /**
+     * Describe the conditions to render the model on player's back
+     */
     public static final IItemPropertyGetter BACK_MODEL = new IItemPropertyGetter() {
         @Override
         public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
@@ -27,6 +30,9 @@ public final class QuiverMesh implements ItemMeshDefinition {
             return 0;
         }
     };
+    /**
+     * Describe the conditions to render the model with arrows
+     */
     public static final IItemPropertyGetter HAS_ARROW = new IItemPropertyGetter() {
         @Override
         public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
@@ -41,6 +47,9 @@ public final class QuiverMesh implements ItemMeshDefinition {
             return 0;
         }
     };
+    /**
+     * Describe when a bow is used with the arrow container
+     */
     public static final IItemPropertyGetter BOW_USE = new IItemPropertyGetter() {
         @Override
         public float apply(@Nonnull ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn) {
@@ -71,18 +80,10 @@ public final class QuiverMesh implements ItemMeshDefinition {
     @Override
     public ModelResourceLocation getModelLocation(@Nonnull ItemStack stack) {
         ModelResourceLocation emptyQuiver = empty.getModelLocation(stack);
-        if(stack.getItem() instanceof IArrowContainer2) {
-            IArrowContainer2 quiver = (IArrowContainer2) stack.getItem();
-            boolean hasArrows = false;
-            int maxStack = quiver.getSlotCount(stack);
-            for (int i = 0; i < maxStack && !hasArrows; i++) {
-                hasArrows = !quiver.getStackInSlot(stack, i).isEmpty();
-            }
-            if(hasArrows){
-                String variant = emptyQuiver.getVariant();
-                String path = emptyQuiver.toString().replace("#"+variant, suf);
-                return new ModelResourceLocation(path, variant);
-            }
+        if(HAS_ARROW.apply(stack, null, null) > 0){
+            String variant = emptyQuiver.getVariant();
+            String path = emptyQuiver.toString().replace("#"+variant, suf);
+            return new ModelResourceLocation(path, variant);
         }
         return emptyQuiver;
     }

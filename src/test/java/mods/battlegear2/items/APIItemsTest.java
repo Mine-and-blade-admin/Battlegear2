@@ -25,14 +25,14 @@ import javax.annotation.Nonnull;
 @Mod(modid = "api_test", name = "API Items")
 @Mod.EventBusSubscriber(modid = "api_test")
 public class APIItemsTest {
-    private Logger log;
+    private static Logger log;
     @Mod.EventHandler
     public void loading(FMLPreInitializationEvent event){
         log = event.getModLog();
     }
 
     @SubscribeEvent
-    public void registerItems(RegistryEvent.Register<Item> itemRegistry){
+    public static void registerItems(RegistryEvent.Register<Item> itemRegistry){
         itemRegistry.getRegistry().register(register(new Sheathed(true), "backSheathed"));
         itemRegistry.getRegistry().register(register(new Wielded(true), "wielded"));
         itemRegistry.getRegistry().register(register(new Wielded(false), "notWielded"));
@@ -42,7 +42,7 @@ public class APIItemsTest {
         itemRegistry.getRegistry().register(register(new Usable(false), "unUsable"));
     }
 
-    private Item register(Item item, String name){
+    private static Item register(Item item, String name){
         ItemStack temp = new ItemStack(item.setUnlocalizedName(name).setRegistryName(name));
         log.info("Registered:" + temp);
         if(BattlegearUtils.checkForRightClickFunction(temp))
@@ -64,7 +64,7 @@ public class APIItemsTest {
         return item;
     }
 
-    private class ItemListener extends Item{
+    private static class ItemListener extends Item{
         /////Checked by reflection
         /*
         @Override
@@ -111,7 +111,7 @@ public class APIItemsTest {
         }
     }
 
-    private class Sheathed extends ItemListener implements ISheathed{
+    private static class Sheathed extends ItemListener implements ISheathed{
         private final boolean isOnBack;
         Sheathed(boolean back){
             isOnBack = back;
@@ -123,7 +123,7 @@ public class APIItemsTest {
         }
     }
 
-    private class Wielded extends ItemListener implements IWield {
+    private static class Wielded extends ItemListener implements IWield {
         private final boolean isOffhand;
         Wielded(boolean off){
             isOffhand = off;
@@ -137,7 +137,7 @@ public class APIItemsTest {
         }
     }
 
-    private class Allow extends ItemListener implements IAllowItem{
+    private static class Allow extends ItemListener implements IAllowItem{
         private final boolean allowAll;
         Allow(boolean allow){
             allowAll = allow;
@@ -150,7 +150,7 @@ public class APIItemsTest {
         }
     }
 
-    private class Usable extends ItemListener implements IUsableItem{
+    private static class Usable extends ItemListener implements IUsableItem{
         private final boolean isUsed;
         Usable(boolean used){
             isUsed = used;

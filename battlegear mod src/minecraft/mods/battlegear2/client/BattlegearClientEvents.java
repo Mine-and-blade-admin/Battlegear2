@@ -32,7 +32,6 @@ import net.minecraft.entity.ai.attributes.BaseAttribute;
 import net.minecraft.entity.monster.AbstractSkeleton;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -162,7 +161,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
 
             GlStateManager.scale(1, -1, 1);
 
-			float f2 = interpolateRotation(event.getEntity().prevRenderYawOffset, event.getEntity().renderYawOffset, 0);
+			float f2 = interpolateRotation(event.getEntity().prevRenderYawOffset, event.getEntity().renderYawOffset, BattlegearClientTickHandeler.getPartialTick());
 
             GlStateManager.rotate(180.0F - f2, 0.0F, 1.0F, 0.0F);
 
@@ -218,15 +217,11 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
     }
 
 	/**
-	 * Returns a rotation angle that is inbetween two other rotation angles.
-	 * par1 and par2 are the angles between which to interpolate, par3 is
-	 * probably a float between 0.0 and 1.0 that tells us where "between" the
-	 * two angles we are. Example: par1 = 30, par2 = 50, par3 = 0.5, then return
-	 * = 40
+	 * Returns a rotation angle that is in between two other rotation angles.
+	 * Copy of {@link RenderLivingBase#interpolateRotation(float, float, float)}
 	 */
-	public float interpolateRotation(float par1, float par2, float par3) {
-		float f3 = par2 - par1;
-
+	public float interpolateRotation(float start, float end, float factor) {
+		float f3 = end - start;
 		while (f3 < -180.0F) {
             f3 += 360.0F;
 		}
@@ -234,8 +229,7 @@ public final class BattlegearClientEvents implements IResourceManagerReloadListe
 		while (f3 >= 180.0F) {
 			f3 -= 360.0F;
 		}
-
-		return par1 + par3 * f3;
+		return start + factor * f3;
 	}
 
     /**

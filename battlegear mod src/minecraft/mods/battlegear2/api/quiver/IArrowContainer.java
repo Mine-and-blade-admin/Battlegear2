@@ -4,14 +4,14 @@ import mods.battlegear2.api.PlayerEventChild;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
 
 /**
+ * Coming Soon:
  * To implement in Item instances that manage arrows
  * Is by default wieldable in both hands in "battlemode"
  * @see IAllowItem to change this behavior
  */
-public interface IArrowContainer2 {
+public interface IArrowContainer {
 
     /**
      * Returns the maximum amount of slots in the arrow container
@@ -43,10 +43,10 @@ public interface IArrowContainer2 {
     ItemStack getStackInSlot(ItemStack container, int slot);
 
     /**
-     * Sets places the given item stack in the given slot
+     * Places the given item stack in the given slot
      * @param container {@link ItemStack} representing this item
      * @param slot the slot index
-     * @param stack {@link ItemStack} representing the new stack
+     * @param stack {@link ItemStack} representing the stack to put in
      */
     void setStackInSlot(ItemStack container, int slot, ItemStack stack);
 
@@ -64,21 +64,16 @@ public interface IArrowContainer2 {
      * @param container The {@link ItemStack} representing this item
      * @param charge Amount of charge in the bow, ranging from 0.2F to 2.0F
      * @param player The {@link EntityPlayer} using the bow
-     * @param world The world in which the arrow would spawn
      * @return the arrow entity to spawn when bow is used
      */
-    EntityArrow getArrowType(ItemStack container, World world, EntityPlayer player, float charge);
+    EntityArrow getArrowType(ItemStack container, EntityPlayer player, float charge);
 
     /**
      * Action to take after an arrow has been fired
-     * Usually equal to removing an arrow from the container
-     * @param player The {@link EntityPlayer} using the bow
-     * @param world The world in which the arrow has spawned
-     * @param container The {@link ItemStack} representing this item
-     * @param bow The bow which fired
-     * @param arrow the arrow fired
+     * Usually equal to removing an arrow from this container
+     * @param arrowEvent Wrapper for all information about the firing
      */
-    void onArrowFired(World world, EntityPlayer player, ItemStack container, ItemStack bow, EntityArrow arrow);
+    void onArrowFired(PlayerEventChild.QuiverArrowEvent.Firing arrowEvent);
 
     /**
      * Called before the arrow is fired from this container
@@ -108,5 +103,4 @@ public interface IArrowContainer2 {
      * @return true if the default quiver model can be rendered
      */
     boolean renderDefaultQuiverModel(ItemStack container);
-
 }

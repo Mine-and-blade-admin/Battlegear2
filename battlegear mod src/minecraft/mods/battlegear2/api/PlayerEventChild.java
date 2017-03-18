@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
@@ -149,9 +150,8 @@ public abstract class PlayerEventChild extends PlayerEvent{
     }
 
     /**
-     * This event replicates the event usage of {@link PlayerInteractEvent} for the item in left hand on right click,
-     * allowing support for other mods that use such event to customize item usage
-     * Item#onItemUseFirst(...), Item#onItemRightClick(...) and Item#onItemUse(...) will then get called the same way as with the item in the player right hand for PlayerInteractEvent
+     * This wrapper replicates the event usage of {@link PlayerInteractEvent.RightClickBlock}, {@link PlayerInteractEvent.RightClickItem} for the item in left hand on right click
+     * It is not posted on MinecraftForge.EVENT_BUS, since those events support left hand usage
      */
     @Cancelable
     public static class UseOffhandItemEvent extends PlayerEventChild{
@@ -164,7 +164,7 @@ public abstract class PlayerEventChild extends PlayerEvent{
          */
         public final ItemStack offhand;
         /**
-         * The equivalent {@link PlayerInteractEvent} that would have been triggered if the offhand item was held in right hand and right click was pressed
+         * The {@link PlayerInteractEvent} that has been triggered while the offhand item was held in right hand and right click was pressed
          */
         public final PlayerInteractEvent event;
         public UseOffhandItemEvent(PlayerInteractEvent event){
@@ -175,14 +175,12 @@ public abstract class PlayerEventChild extends PlayerEvent{
         }
 
         public boolean onBlock(){
-            return event instanceof PlayerInteractEvent.RightClickBlock || event instanceof PlayerInteractEvent.LeftClickBlock;
+            return event instanceof PlayerInteractEvent.RightClickBlock;
         }
 
         public void setUseBlock(Result trigger){
             if(event instanceof PlayerInteractEvent.RightClickBlock){
                 ((PlayerInteractEvent.RightClickBlock) event).setUseBlock(trigger);
-            }else if(event instanceof PlayerInteractEvent.LeftClickBlock){
-                ((PlayerInteractEvent.LeftClickBlock) event).setUseBlock(trigger);
             }
         }
     }
@@ -264,13 +262,19 @@ public abstract class PlayerEventChild extends PlayerEvent{
              * Change the slot from which an arrow is pulled of the quiver
              */
             public void setQuiverSlotUsed(int slot){
-                if(quiver.getItem() instanceof IArrowContainer2){
-                    if(slot < ((IArrowContainer2) quiver.getItem()).getSlotCount(quiver)){
-                        if(!((IArrowContainer2) quiver.getItem()).getStackInSlot(quiver, slot).isEmpty()) {
-                            ((IArrowContainer2) quiver.getItem()).setSelectedSlot(quiver, slot);
-                        }
+                if(slot < ((IArrowContainer2) quiver.getItem()).getSlotCount(quiver)){
+                    if(!((IArrowContainer2) quiver.getItem()).getStackInSlot(quiver, slot).isEmpty()) {
+                        ((IArrowContainer2) quiver.getItem()).setSelectedSlot(quiver, slot);
                     }
                 }
+            }
+
+            /**
+             *
+             * @return The arrow stack to fire, depending on which slot is selected
+             */
+            public ItemStack getArrowInUse(){
+                return ((IArrowContainer2) quiver.getItem()).getStackInSlot(quiver, ((IArrowContainer2) quiver.getItem()).getSelectedSlot(quiver));
             }
         }
 
